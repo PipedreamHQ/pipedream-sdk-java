@@ -1,0 +1,3 @@
+rootProject.name = 'pipedream'
+
+include 'sample-app'
