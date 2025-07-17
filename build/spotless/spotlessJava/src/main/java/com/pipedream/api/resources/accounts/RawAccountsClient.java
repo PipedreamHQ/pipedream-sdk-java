@@ -145,8 +145,9 @@ public class RawAccountsClient {
         }
         Map<String, Object> properties = new HashMap<>();
         properties.put("app_slug", request.getAppSlug());
-        properties.put("cfmap_json", request.getCfmapJson());
-        properties.put("connect_token", request.getConnectToken());
+        if (request.getCfmapJson().isPresent()) {
+            properties.put("cfmap_json", request.getCfmapJson());
+        }
         if (request.getName().isPresent()) {
             properties.put("name", request.getName());
         }

@@ -29,9 +29,7 @@ public final class CreateAccountRequest {
 
     private final String appSlug;
 
-    private final String cfmapJson;
-
-    private final String connectToken;
+    private final Optional<String> cfmapJson;
 
     private final Optional<String> name;
 
@@ -42,8 +40,7 @@ public final class CreateAccountRequest {
             Optional<String> externalUserId,
             Optional<String> oauthAppId,
             String appSlug,
-            String cfmapJson,
-            String connectToken,
+            Optional<String> cfmapJson,
             Optional<String> name,
             Map<String, Object> additionalProperties) {
         this.appId = appId;
@@ -51,7 +48,6 @@ public final class CreateAccountRequest {
         this.oauthAppId = oauthAppId;
         this.appSlug = appSlug;
         this.cfmapJson = cfmapJson;
-        this.connectToken = connectToken;
         this.name = name;
         this.additionalProperties = additionalProperties;
     }
@@ -89,16 +85,8 @@ public final class CreateAccountRequest {
      * @return JSON string containing the custom fields mapping
      */
     @JsonProperty("cfmap_json")
-    public String getCfmapJson() {
+    public Optional<String> getCfmapJson() {
         return cfmapJson;
-    }
-
-    /**
-     * @return The connect token for authentication
-     */
-    @JsonProperty("connect_token")
-    public String getConnectToken() {
-        return connectToken;
     }
 
     /**
@@ -126,20 +114,12 @@ public final class CreateAccountRequest {
                 && oauthAppId.equals(other.oauthAppId)
                 && appSlug.equals(other.appSlug)
                 && cfmapJson.equals(other.cfmapJson)
-                && connectToken.equals(other.connectToken)
                 && name.equals(other.name);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(
-                this.appId,
-                this.externalUserId,
-                this.oauthAppId,
-                this.appSlug,
-                this.cfmapJson,
-                this.connectToken,
-                this.name);
+        return Objects.hash(this.appId, this.externalUserId, this.oauthAppId, this.appSlug, this.cfmapJson, this.name);
     }
 
     @java.lang.Override
@@ -155,23 +135,9 @@ public final class CreateAccountRequest {
         /**
          * <p>The app slug for the account</p>
          */
-        CfmapJsonStage appSlug(@NotNull String appSlug);
+        _FinalStage appSlug(@NotNull String appSlug);
 
         Builder from(CreateAccountRequest other);
-    }
-
-    public interface CfmapJsonStage {
-        /**
-         * <p>JSON string containing the custom fields mapping</p>
-         */
-        ConnectTokenStage cfmapJson(@NotNull String cfmapJson);
-    }
-
-    public interface ConnectTokenStage {
-        /**
-         * <p>The connect token for authentication</p>
-         */
-        _FinalStage connectToken(@NotNull String connectToken);
     }
 
     public interface _FinalStage {
@@ -196,6 +162,13 @@ public final class CreateAccountRequest {
         _FinalStage oauthAppId(String oauthAppId);
 
         /**
+         * <p>JSON string containing the custom fields mapping</p>
+         */
+        _FinalStage cfmapJson(Optional<String> cfmapJson);
+
+        _FinalStage cfmapJson(String cfmapJson);
+
+        /**
          * <p>Optional name for the account</p>
          */
         _FinalStage name(Optional<String> name);
@@ -204,14 +177,12 @@ public final class CreateAccountRequest {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements AppSlugStage, CfmapJsonStage, ConnectTokenStage, _FinalStage {
+    public static final class Builder implements AppSlugStage, _FinalStage {
         private String appSlug;
 
-        private String cfmapJson;
-
-        private String connectToken;
-
         private Optional<String> name = Optional.empty();
+
+        private Optional<String> cfmapJson = Optional.empty();
 
         private Optional<String> oauthAppId = Optional.empty();
 
@@ -231,7 +202,6 @@ public final class CreateAccountRequest {
             oauthAppId(other.getOauthAppId());
             appSlug(other.getAppSlug());
             cfmapJson(other.getCfmapJson());
-            connectToken(other.getConnectToken());
             name(other.getName());
             return this;
         }
@@ -243,32 +213,8 @@ public final class CreateAccountRequest {
          */
         @java.lang.Override
         @JsonSetter("app_slug")
-        public CfmapJsonStage appSlug(@NotNull String appSlug) {
+        public _FinalStage appSlug(@NotNull String appSlug) {
             this.appSlug = Objects.requireNonNull(appSlug, "appSlug must not be null");
-            return this;
-        }
-
-        /**
-         * <p>JSON string containing the custom fields mapping</p>
-         * <p>JSON string containing the custom fields mapping</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("cfmap_json")
-        public ConnectTokenStage cfmapJson(@NotNull String cfmapJson) {
-            this.cfmapJson = Objects.requireNonNull(cfmapJson, "cfmapJson must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The connect token for authentication</p>
-         * <p>The connect token for authentication</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("connect_token")
-        public _FinalStage connectToken(@NotNull String connectToken) {
-            this.connectToken = Objects.requireNonNull(connectToken, "connectToken must not be null");
             return this;
         }
 
@@ -289,6 +235,26 @@ public final class CreateAccountRequest {
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public _FinalStage name(Optional<String> name) {
             this.name = name;
+            return this;
+        }
+
+        /**
+         * <p>JSON string containing the custom fields mapping</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage cfmapJson(String cfmapJson) {
+            this.cfmapJson = Optional.ofNullable(cfmapJson);
+            return this;
+        }
+
+        /**
+         * <p>JSON string containing the custom fields mapping</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "cfmap_json", nulls = Nulls.SKIP)
+        public _FinalStage cfmapJson(Optional<String> cfmapJson) {
+            this.cfmapJson = cfmapJson;
             return this;
         }
 
@@ -348,7 +314,7 @@ public final class CreateAccountRequest {
         @java.lang.Override
         public CreateAccountRequest build() {
             return new CreateAccountRequest(
-                    appId, externalUserId, oauthAppId, appSlug, cfmapJson, connectToken, name, additionalProperties);
+                    appId, externalUserId, oauthAppId, appSlug, cfmapJson, name, additionalProperties);
         }
     }
 }
