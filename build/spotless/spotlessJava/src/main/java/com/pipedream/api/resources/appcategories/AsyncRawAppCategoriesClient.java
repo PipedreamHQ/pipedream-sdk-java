@@ -6,9 +6,9 @@ package com.pipedream.api.resources.appcategories;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
+import com.pipedream.api.core.PipedreamApiClientApiException;
+import com.pipedream.api.core.PipedreamApiClientException;
+import com.pipedream.api.core.PipedreamApiClientHttpResponse;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.types.AppCategory;
 import java.io.IOException;
@@ -31,11 +31,11 @@ public class AsyncRawAppCategoriesClient {
         this.clientOptions = clientOptions;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<List<AppCategory>>> list() {
+    public CompletableFuture<PipedreamApiClientHttpResponse<List<AppCategory>>> list() {
         return list(null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<List<AppCategory>>> list(RequestOptions requestOptions) {
+    public CompletableFuture<PipedreamApiClientHttpResponse<List<AppCategory>>> list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
@@ -50,43 +50,46 @@ public class AsyncRawAppCategoriesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<List<AppCategory>>> future = new CompletableFuture<>();
+        CompletableFuture<PipedreamApiClientHttpResponse<List<AppCategory>>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new PipedreamApiClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
                                         responseBody.string(), new TypeReference<List<AppCategory>>() {}),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new PipedreamApiClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(
+                            new PipedreamApiClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(
+                        new PipedreamApiClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<AppCategory>> retrieve(String id) {
+    public CompletableFuture<PipedreamApiClientHttpResponse<AppCategory>> retrieve(String id) {
         return retrieve(id, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<AppCategory>> retrieve(String id, RequestOptions requestOptions) {
+    public CompletableFuture<PipedreamApiClientHttpResponse<AppCategory>> retrieve(
+            String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
@@ -102,32 +105,34 @@ public class AsyncRawAppCategoriesClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<AppCategory>> future = new CompletableFuture<>();
+        CompletableFuture<PipedreamApiClientHttpResponse<AppCategory>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new PipedreamApiClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), AppCategory.class),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new PipedreamApiClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(
+                            new PipedreamApiClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(
+                        new PipedreamApiClientException("Network error executing HTTP request", e));
             }
         });
         return future;

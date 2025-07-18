@@ -6,12 +6,12 @@ package com.pipedream.api.core;
 /**
  * This class serves as the base exception for all errors in the SDK.
  */
-public class PipedreamApiException extends RuntimeException {
-    public PipedreamApiException(String message) {
+public class PipedreamApiClientException extends RuntimeException {
+    public PipedreamApiClientException(String message) {
         super(message);
     }
 
-    public PipedreamApiException(String message, Exception e) {
+    public PipedreamApiClientException(String message, Exception e) {
         super(message, e);
     }
 }

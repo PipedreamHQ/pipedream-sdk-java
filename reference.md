@@ -318,6 +318,8 @@ client.accounts().create(
     CreateAccountRequest
         .builder()
         .appSlug("app_slug")
+        .cfmapJson("cfmap_json")
+        .connectToken("connect_token")
         .build()
 );
 ```
@@ -374,7 +376,15 @@ client.accounts().create(
 <dl>
 <dd>
 
-**cfmapJson:** `Optional<String>` — JSON string containing the custom fields mapping
+**cfmapJson:** `String` — JSON string containing the custom fields mapping
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectToken:** `String` — The connect token for authentication
     
 </dd>
 </dl>
