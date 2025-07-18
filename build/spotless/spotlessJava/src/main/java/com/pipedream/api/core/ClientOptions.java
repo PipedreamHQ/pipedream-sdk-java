@@ -37,7 +37,7 @@ public final class ClientOptions {
             {
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.pipedream.fern:api-sdk");
-                put("X-Fern-SDK-Version", "0.0.202");
+                put("X-Fern-SDK-Version", "0.0.217");
             }
         });
         this.headerSuppliers = headerSuppliers;

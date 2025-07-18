@@ -4,11 +4,11 @@
 package com.pipedream.api.resources.appcategories;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.types.AppCategory;
 import java.io.IOException;
@@ -27,11 +27,11 @@ public class RawAppCategoriesClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<List<AppCategory>> list() {
+    public BaseClientHttpResponse<List<AppCategory>> list() {
         return list(null);
     }
 
-    public PipedreamApiHttpResponse<List<AppCategory>> list(RequestOptions requestOptions) {
+    public BaseClientHttpResponse<List<AppCategory>> list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
@@ -49,27 +49,27 @@ public class RawAppCategoriesClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<List<AppCategory>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<AppCategory> retrieve(String id) {
+    public BaseClientHttpResponse<AppCategory> retrieve(String id) {
         return retrieve(id, null);
     }
 
-    public PipedreamApiHttpResponse<AppCategory> retrieve(String id, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<AppCategory> retrieve(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
@@ -88,17 +88,17 @@ public class RawAppCategoriesClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), AppCategory.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 }

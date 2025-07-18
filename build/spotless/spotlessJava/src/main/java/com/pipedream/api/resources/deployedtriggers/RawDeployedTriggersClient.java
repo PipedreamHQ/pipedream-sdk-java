@@ -3,12 +3,12 @@
  */
 package com.pipedream.api.resources.deployedtriggers;
 
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
@@ -48,11 +48,11 @@ public class RawDeployedTriggersClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
-    public PipedreamApiHttpResponse<SyncPagingIterable<DeployedComponent>> list(
+    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -93,29 +93,29 @@ public class RawDeployedTriggersClient {
                         .after(startingAfter)
                         .build();
                 List<DeployedComponent> result = parsedResponse.getData();
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         new SyncPagingIterable<DeployedComponent>(
                                 startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
                                         .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<DeployedComponent> retrieve(
+    public BaseClientHttpResponse<DeployedComponent> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<DeployedComponent> retrieve(
+    public BaseClientHttpResponse<DeployedComponent> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -139,24 +139,24 @@ public class RawDeployedTriggersClient {
             if (response.isSuccessful()) {
                 GetTriggerResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
-                return new PipedreamApiHttpResponse<>(parsedResponse.getData(), response);
+                return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
+    public BaseClientHttpResponse<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<DeployedComponent> update(
+    public BaseClientHttpResponse<DeployedComponent> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -198,24 +198,24 @@ public class RawDeployedTriggersClient {
             if (response.isSuccessful()) {
                 GetTriggerResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
-                return new PipedreamApiHttpResponse<>(parsedResponse.getData(), response);
+                return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
+    public BaseClientHttpResponse<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
         return delete(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<Void> delete(
+    public BaseClientHttpResponse<Void> delete(
             String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -240,25 +240,25 @@ public class RawDeployedTriggersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(null, response);
+                return new BaseClientHttpResponse<>(null, response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<List<EmittedEvent>> listEvents(
+    public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request) {
         return listEvents(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<List<EmittedEvent>> listEvents(
+    public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -286,25 +286,25 @@ public class RawDeployedTriggersClient {
             if (response.isSuccessful()) {
                 GetTriggerEventsResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerEventsResponse.class);
-                return new PipedreamApiHttpResponse<>(parsedResponse.getData(), response);
+                return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
+    public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
+    public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -327,27 +327,27 @@ public class RawDeployedTriggersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWorkflowsResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
+    public BaseClientHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request) {
         return updateWorkflows(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
+    public BaseClientHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -380,27 +380,27 @@ public class RawDeployedTriggersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWorkflowsResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
+    public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
+    public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -423,27 +423,27 @@ public class RawDeployedTriggersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWebhooksResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
+    public BaseClientHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
         return updateWebhooks(triggerId, request, null);
     }
 
-    public PipedreamApiHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
+    public BaseClientHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -476,18 +476,18 @@ public class RawDeployedTriggersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWebhooksResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 }

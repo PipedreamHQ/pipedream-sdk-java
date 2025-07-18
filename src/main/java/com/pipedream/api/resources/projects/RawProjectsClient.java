@@ -3,11 +3,11 @@
  */
 package com.pipedream.api.resources.projects;
 
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.io.IOException;
@@ -25,11 +25,11 @@ public class RawProjectsClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<ProjectInfoResponse> retrieveInfo() {
+    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo() {
         return retrieveInfo(null);
     }
 
-    public PipedreamApiHttpResponse<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
+    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -49,18 +49,18 @@ public class RawProjectsClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ProjectInfoResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 }

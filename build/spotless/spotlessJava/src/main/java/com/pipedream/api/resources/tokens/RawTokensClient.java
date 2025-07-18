@@ -4,12 +4,12 @@
 package com.pipedream.api.resources.tokens;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.resources.tokens.requests.CreateTokenRequest;
@@ -32,11 +32,11 @@ public class RawTokensClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<CreateTokenResponse> create(CreateTokenRequest request) {
+    public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenRequest request) {
         return create(request, null);
     }
 
-    public PipedreamApiHttpResponse<CreateTokenResponse> create(
+    public BaseClientHttpResponse<CreateTokenResponse> create(
             CreateTokenRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -47,7 +47,7 @@ public class RawTokensClient {
             body = RequestBody.create(
                     ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
-            throw new PipedreamApiException("Failed to serialize request", e);
+            throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
@@ -63,30 +63,30 @@ public class RawTokensClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CreateTokenResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<ValidateTokenResponse> validate(String ctok) {
+    public BaseClientHttpResponse<ValidateTokenResponse> validate(String ctok) {
         return validate(ctok, TokensValidateRequest.builder().build());
     }
 
-    public PipedreamApiHttpResponse<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
+    public BaseClientHttpResponse<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
     }
 
-    public PipedreamApiHttpResponse<ValidateTokenResponse> validate(
+    public BaseClientHttpResponse<ValidateTokenResponse> validate(
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -110,18 +110,18 @@ public class RawTokensClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ValidateTokenResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 }

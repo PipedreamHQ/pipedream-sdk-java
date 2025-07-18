@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>0.0.202</version>
+  <version>0.0.217</version>
 </dependency>
 ```
 
@@ -36,12 +36,12 @@ Instantiate and use the client with the following:
 ```java
 package com.example.usage;
 
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 import com.pipedream.api.resources.accounts.requests.CreateAccountRequest;
 
 public class Example {
     public static void main(String[] args) {
-        PipedreamApiClient client = PipedreamApiClient
+        BaseClient client = BaseClient
             .builder()
             .clientId("<clientId>")
             .clientSecret("<clientSecret>")
@@ -52,6 +52,8 @@ public class Example {
             CreateAccountRequest
                 .builder()
                 .appSlug("app_slug")
+                .cfmapJson("cfmap_json")
+                .connectToken("connect_token")
                 .build()
         );
     }
@@ -63,10 +65,10 @@ public class Example {
 This SDK allows you to configure different environments for API requests.
 
 ```java
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 import com.pipedream.api.core.Environment;
 
-PipedreamApiClient client = PipedreamApiClient
+BaseClient client = BaseClient
     .builder()
     .environment(Environment.Prod)
     .build();
@@ -77,9 +79,9 @@ PipedreamApiClient client = PipedreamApiClient
 You can set a custom base URL when constructing the client.
 
 ```java
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 
-PipedreamApiClient client = PipedreamApiClient
+BaseClient client = BaseClient
     .builder()
     .url("https://example.com")
     .build();
@@ -107,12 +109,12 @@ This SDK is built to work with any instance of `OkHttpClient`. By default, if no
 However, you can pass your own client like so:
 
 ```java
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 import okhttp3.OkHttpClient;
 
 OkHttpClient customClient = ...;
 
-PipedreamApiClient client = PipedreamApiClient
+BaseClient client = BaseClient
     .builder()
     .httpClient(customClient)
     .build();
@@ -133,9 +135,9 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `maxRetries` client option to configure this behavior.
 
 ```java
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 
-PipedreamApiClient client = PipedreamApiClient
+BaseClient client = BaseClient
     .builder()
     .maxRetries(1)
     .build();
@@ -146,11 +148,11 @@ PipedreamApiClient client = PipedreamApiClient
 The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
 
 ```java
-import com.pipedream.api.PipedreamApiClient;
+import com.pipedream.api.BaseClient;
 import com.pipedream.api.core.RequestOptions;
 
 // Client level
-PipedreamApiClient client = PipedreamApiClient
+BaseClient client = BaseClient
     .builder()
     .timeout(10)
     .build();

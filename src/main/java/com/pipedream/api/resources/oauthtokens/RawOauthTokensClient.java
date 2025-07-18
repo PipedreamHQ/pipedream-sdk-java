@@ -4,12 +4,12 @@
 package com.pipedream.api.resources.oauthtokens;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.resources.oauthtokens.requests.CreateOAuthTokenOpts;
 import com.pipedream.api.types.CreateOAuthTokenResponse;
@@ -29,11 +29,11 @@ public class RawOauthTokensClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<CreateOAuthTokenResponse> create(CreateOAuthTokenOpts request) {
+    public BaseClientHttpResponse<CreateOAuthTokenResponse> create(CreateOAuthTokenOpts request) {
         return create(request, null);
     }
 
-    public PipedreamApiHttpResponse<CreateOAuthTokenResponse> create(
+    public BaseClientHttpResponse<CreateOAuthTokenResponse> create(
             CreateOAuthTokenOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -44,7 +44,7 @@ public class RawOauthTokensClient {
             body = RequestBody.create(
                     ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
-            throw new PipedreamApiException("Failed to serialize request", e);
+            throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
@@ -60,18 +60,18 @@ public class RawOauthTokensClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CreateOAuthTokenResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 }

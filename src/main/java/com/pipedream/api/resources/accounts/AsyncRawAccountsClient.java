@@ -3,12 +3,12 @@
  */
 package com.pipedream.api.resources.accounts;
 
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
@@ -42,15 +42,15 @@ public class AsyncRawAccountsClient {
         this.clientOptions = clientOptions;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<Account>>> list() {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list() {
         return list(AccountsListRequest.builder().build());
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<Account>>> list(AccountsListRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(AccountsListRequest request) {
         return list(request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<Account>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(
             AccountsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -98,7 +98,7 @@ public class AsyncRawAccountsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<Account>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -113,7 +113,7 @@ public class AsyncRawAccountsClient {
                                 .after(startingAfter)
                                 .build();
                         List<Account> result = parsedResponse.getData();
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 new SyncPagingIterable<Account>(startingAfter.isPresent(), result, () -> {
                                     try {
                                         return list(nextRequest, requestOptions)
@@ -127,30 +127,30 @@ public class AsyncRawAccountsClient {
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Account>> create(CreateAccountRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Account>> create(CreateAccountRequest request) {
         return create(request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Account>> create(
+    public CompletableFuture<BaseClientHttpResponse<Account>> create(
             CreateAccountRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -171,9 +171,8 @@ public class AsyncRawAccountsClient {
         }
         Map<String, Object> properties = new HashMap<>();
         properties.put("app_slug", request.getAppSlug());
-        if (request.getCfmapJson().isPresent()) {
-            properties.put("cfmap_json", request.getCfmapJson());
-        }
+        properties.put("cfmap_json", request.getCfmapJson());
+        properties.put("connect_token", request.getConnectToken());
         if (request.getName().isPresent()) {
             properties.put("name", request.getName());
         }
@@ -195,46 +194,46 @@ public class AsyncRawAccountsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<Account>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Account>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Account>> retrieve(String accountId) {
+    public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(String accountId) {
         return retrieve(accountId, AccountsRetrieveRequest.builder().build());
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Account>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
             String accountId, AccountsRetrieveRequest request) {
         return retrieve(accountId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Account>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
             String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -259,41 +258,41 @@ public class AsyncRawAccountsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<Account>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Account>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> delete(String accountId) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId) {
         return delete(accountId, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> delete(String accountId, RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -310,40 +309,40 @@ public class AsyncRawAccountsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<Void>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Void>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(null, response));
+                        future.complete(new BaseClientHttpResponse<>(null, response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> deleteByApp(String appId) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId) {
         return deleteByApp(appId, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> deleteByApp(String appId, RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -361,30 +360,30 @@ public class AsyncRawAccountsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<Void>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Void>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(null, response));
+                        future.complete(new BaseClientHttpResponse<>(null, response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;

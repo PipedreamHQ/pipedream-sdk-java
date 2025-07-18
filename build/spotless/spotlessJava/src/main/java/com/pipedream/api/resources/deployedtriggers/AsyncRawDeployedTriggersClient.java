@@ -3,12 +3,12 @@
  */
 package com.pipedream.api.resources.deployedtriggers;
 
+import com.pipedream.api.core.BaseClientApiException;
+import com.pipedream.api.core.BaseClientException;
+import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
@@ -53,12 +53,12 @@ public class AsyncRawDeployedTriggersClient {
         this.clientOptions = clientOptions;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
             DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -88,7 +88,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<SyncPagingIterable<DeployedComponent>>> future =
+        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> future =
                 new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
@@ -104,7 +104,7 @@ public class AsyncRawDeployedTriggersClient {
                                 .after(startingAfter)
                                 .build();
                         List<DeployedComponent> result = parsedResponse.getData();
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 new SyncPagingIterable<DeployedComponent>(startingAfter.isPresent(), result, () -> {
                                     try {
                                         return list(nextRequest, requestOptions)
@@ -118,31 +118,31 @@ public class AsyncRawDeployedTriggersClient {
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -161,7 +161,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -169,35 +169,35 @@ public class AsyncRawDeployedTriggersClient {
                     if (response.isSuccessful()) {
                         GetTriggerResponse parsedResponse =
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
-                        future.complete(new PipedreamApiHttpResponse<>(parsedResponse.getData(), response));
+                        future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> update(
+    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
             String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> update(
+    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -234,7 +234,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -242,35 +242,35 @@ public class AsyncRawDeployedTriggersClient {
                     if (response.isSuccessful()) {
                         GetTriggerResponse parsedResponse =
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
-                        future.complete(new PipedreamApiHttpResponse<>(parsedResponse.getData(), response));
+                        future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> delete(
+    public CompletableFuture<BaseClientHttpResponse<Void>> delete(
             String triggerId, DeployedTriggersDeleteRequest request) {
         return delete(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<Void>> delete(
+    public CompletableFuture<BaseClientHttpResponse<Void>> delete(
             String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -292,41 +292,41 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<Void>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Void>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(null, response));
+                        future.complete(new BaseClientHttpResponse<>(null, response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<List<EmittedEvent>>> listEvents(
+    public CompletableFuture<BaseClientHttpResponse<List<EmittedEvent>>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request) {
         return listEvents(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<List<EmittedEvent>>> listEvents(
+    public CompletableFuture<BaseClientHttpResponse<List<EmittedEvent>>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -349,7 +349,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<List<EmittedEvent>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<List<EmittedEvent>>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -357,35 +357,35 @@ public class AsyncRawDeployedTriggersClient {
                     if (response.isSuccessful()) {
                         GetTriggerEventsResponse parsedResponse = ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), GetTriggerEventsResponse.class);
-                        future.complete(new PipedreamApiHttpResponse<>(parsedResponse.getData(), response));
+                        future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -405,44 +405,44 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
                                         responseBody.string(), GetTriggerWorkflowsResponse.class),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request) {
         return updateWorkflows(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -472,44 +472,44 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<GetTriggerWorkflowsResponse>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
                                         responseBody.string(), GetTriggerWorkflowsResponse.class),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -529,44 +529,44 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
                                         responseBody.string(), GetTriggerWebhooksResponse.class),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
         return updateWebhooks(triggerId, request, null);
     }
 
-    public CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
+    public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -596,33 +596,33 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PipedreamApiHttpResponse<GetTriggerWebhooksResponse>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        future.complete(new PipedreamApiHttpResponse<>(
+                        future.complete(new BaseClientHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
                                         responseBody.string(), GetTriggerWebhooksResponse.class),
                                 response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    future.completeExceptionally(new PipedreamApiApiException(
+                    future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
                             ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
-                    future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PipedreamApiException("Network error executing HTTP request", e));
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
             }
         });
         return future;

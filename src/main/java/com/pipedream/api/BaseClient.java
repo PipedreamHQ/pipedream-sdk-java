@@ -19,7 +19,7 @@ import com.pipedream.api.resources.triggers.TriggersClient;
 import com.pipedream.api.resources.users.UsersClient;
 import java.util.function.Supplier;
 
-public class PipedreamApiClient {
+public class BaseClient {
     protected final ClientOptions clientOptions;
 
     protected final Supplier<AppCategoriesClient> appCategoriesClient;
@@ -46,7 +46,7 @@ public class PipedreamApiClient {
 
     protected final Supplier<OauthTokensClient> oauthTokensClient;
 
-    public PipedreamApiClient(ClientOptions clientOptions) {
+    public BaseClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AppCategoriesClient(clientOptions));
         this.appsClient = Suppliers.memoize(() -> new AppsClient(clientOptions));
@@ -110,7 +110,7 @@ public class PipedreamApiClient {
         return this.oauthTokensClient.get();
     }
 
-    public static PipedreamApiClientBuilder builder() {
-        return new PipedreamApiClientBuilder();
+    public static BaseClientBuilder builder() {
+        return new BaseClientBuilder();
     }
 }
