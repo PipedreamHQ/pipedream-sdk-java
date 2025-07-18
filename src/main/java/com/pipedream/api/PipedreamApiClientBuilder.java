@@ -5,36 +5,23 @@ package com.pipedream.api;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
-import com.pipedream.api.core.OAuthTokenSupplier;
-import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import okhttp3.OkHttpClient;
 
 public final class PipedreamApiClientBuilder {
     private ClientOptions.Builder clientOptionsBuilder = ClientOptions.builder();
 
-    private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
-
-    private String clientSecret = System.getenv("PIPEDREAM_CLIENT_SECRET");
+    private String accessToken = System.getenv("PIPEDREAM_ACCESS_TOKEN");
 
     private String projectEnvironment = null;
 
     private Environment environment = Environment.PROD;
 
     /**
-     * Sets clientId.
-     * Defaults to the PIPEDREAM_CLIENT_ID environment variable.
+     * Sets accessToken.
+     * Defaults to the PIPEDREAM_ACCESS_TOKEN environment variable.
      */
-    public PipedreamApiClientBuilder clientId(String clientId) {
-        this.clientId = clientId;
-        return this;
-    }
-
-    /**
-     * Sets clientSecret.
-     * Defaults to the PIPEDREAM_CLIENT_SECRET environment variable.
-     */
-    public PipedreamApiClientBuilder clientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
+    public PipedreamApiClientBuilder accessToken(String accessToken) {
+        this.accessToken = accessToken;
         return this;
     }
 
@@ -86,10 +73,7 @@ public final class PipedreamApiClientBuilder {
     }
 
     public PipedreamApiClient build() {
-        OauthTokensClient authClient = new OauthTokensClient(
-                ClientOptions.builder().environment(this.environment).build());
-        OAuthTokenSupplier oAuthTokenSupplier = new OAuthTokenSupplier(clientId, clientSecret, authClient);
-        this.clientOptionsBuilder.addHeader("Authorization", oAuthTokenSupplier);
+        this.clientOptionsBuilder.addHeader("Authorization", "Bearer " + this.accessToken);
         if (projectEnvironment != null) {
             this.clientOptionsBuilder.addHeader("x-pd-environment", this.projectEnvironment);
         }

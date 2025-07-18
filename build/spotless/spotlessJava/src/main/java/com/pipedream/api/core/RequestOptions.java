@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public final class RequestOptions {
+    private final String accessToken;
+
     private final String projectEnvironment;
 
     private final Optional<Integer> timeout;
@@ -21,11 +23,13 @@ public final class RequestOptions {
     private final Map<String, Supplier<String>> headerSuppliers;
 
     private RequestOptions(
+            String accessToken,
             String projectEnvironment,
             Optional<Integer> timeout,
             TimeUnit timeoutTimeUnit,
             Map<String, String> headers,
             Map<String, Supplier<String>> headerSuppliers) {
+        this.accessToken = accessToken;
         this.projectEnvironment = projectEnvironment;
         this.timeout = timeout;
         this.timeoutTimeUnit = timeoutTimeUnit;
@@ -43,6 +47,9 @@ public final class RequestOptions {
 
     public Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
+        if (this.accessToken != null) {
+            headers.put("Authorization", "Bearer " + this.accessToken);
+        }
         if (this.projectEnvironment != null) {
             headers.put("x-pd-environment", this.projectEnvironment);
         }
@@ -58,6 +65,8 @@ public final class RequestOptions {
     }
 
     public static final class Builder {
+        private String accessToken = null;
+
         private String projectEnvironment = null;
 
         private Optional<Integer> timeout = Optional.empty();
@@ -67,6 +76,11 @@ public final class RequestOptions {
         private final Map<String, String> headers = new HashMap<>();
 
         private final Map<String, Supplier<String>> headerSuppliers = new HashMap<>();
+
+        public Builder accessToken(String accessToken) {
+            this.accessToken = accessToken;
+            return this;
+        }
 
         public Builder projectEnvironment(String projectEnvironment) {
             this.projectEnvironment = projectEnvironment;
@@ -95,7 +109,8 @@ public final class RequestOptions {
         }
 
         public RequestOptions build() {
-            return new RequestOptions(projectEnvironment, timeout, timeoutTimeUnit, headers, headerSuppliers);
+            return new RequestOptions(
+                    accessToken, projectEnvironment, timeout, timeoutTimeUnit, headers, headerSuppliers);
         }
     }
 }

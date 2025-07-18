@@ -5,9 +5,9 @@ package com.pipedream.api.resources.users;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
+import com.pipedream.api.core.PipedreamApiClientApiException;
+import com.pipedream.api.core.PipedreamApiClientException;
+import com.pipedream.api.core.PipedreamApiClientHttpResponse;
 import com.pipedream.api.core.RequestOptions;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -24,11 +24,12 @@ public class RawUsersClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<Void> deleteExternalUser(String externalUserId) {
+    public PipedreamApiClientHttpResponse<Void> deleteExternalUser(String externalUserId) {
         return deleteExternalUser(externalUserId, null);
     }
 
-    public PipedreamApiHttpResponse<Void> deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
+    public PipedreamApiClientHttpResponse<Void> deleteExternalUser(
+            String externalUserId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -48,16 +49,16 @@ public class RawUsersClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(null, response);
+                return new PipedreamApiClientHttpResponse<>(null, response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new PipedreamApiClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new PipedreamApiClientException("Network error executing HTTP request", e);
         }
     }
 }

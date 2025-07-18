@@ -6,9 +6,9 @@ package com.pipedream.api.resources.components;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.PipedreamApiApiException;
-import com.pipedream.api.core.PipedreamApiException;
-import com.pipedream.api.core.PipedreamApiHttpResponse;
+import com.pipedream.api.core.PipedreamApiClientApiException;
+import com.pipedream.api.core.PipedreamApiClientException;
+import com.pipedream.api.core.PipedreamApiClientHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
@@ -38,15 +38,15 @@ public class RawComponentsClient {
         this.clientOptions = clientOptions;
     }
 
-    public PipedreamApiHttpResponse<SyncPagingIterable<Component>> list() {
+    public PipedreamApiClientHttpResponse<SyncPagingIterable<Component>> list() {
         return list(ComponentsListRequest.builder().build());
     }
 
-    public PipedreamApiHttpResponse<SyncPagingIterable<Component>> list(ComponentsListRequest request) {
+    public PipedreamApiClientHttpResponse<SyncPagingIterable<Component>> list(ComponentsListRequest request) {
         return list(request, null);
     }
 
-    public PipedreamApiHttpResponse<SyncPagingIterable<Component>> list(
+    public PipedreamApiClientHttpResponse<SyncPagingIterable<Component>> list(
             ComponentsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -92,28 +92,28 @@ public class RawComponentsClient {
                         .after(startingAfter)
                         .build();
                 List<Component> result = parsedResponse.getData();
-                return new PipedreamApiHttpResponse<>(
+                return new PipedreamApiClientHttpResponse<>(
                         new SyncPagingIterable<Component>(
                                 startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
                                         .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new PipedreamApiClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new PipedreamApiClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<Component> retrieve(String componentId) {
+    public PipedreamApiClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
-    public PipedreamApiHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
+    public PipedreamApiClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -136,24 +136,24 @@ public class RawComponentsClient {
             if (response.isSuccessful()) {
                 GetComponentResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentResponse.class);
-                return new PipedreamApiHttpResponse<>(parsedResponse.getData(), response);
+                return new PipedreamApiClientHttpResponse<>(parsedResponse.getData(), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new PipedreamApiClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new PipedreamApiClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<ConfigurePropResponse> configureProp(ComponentsConfigurePropRequest request) {
+    public PipedreamApiClientHttpResponse<ConfigurePropResponse> configureProp(ComponentsConfigurePropRequest request) {
         return configureProp(request, null);
     }
 
-    public PipedreamApiHttpResponse<ConfigurePropResponse> configureProp(
+    public PipedreamApiClientHttpResponse<ConfigurePropResponse> configureProp(
             ComponentsConfigurePropRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -185,26 +185,26 @@ public class RawComponentsClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new PipedreamApiClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConfigurePropResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new PipedreamApiClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new PipedreamApiClientException("Network error executing HTTP request", e);
         }
     }
 
-    public PipedreamApiHttpResponse<ReloadPropsResponse> reloadProps(ComponentsReloadPropsRequest request) {
+    public PipedreamApiClientHttpResponse<ReloadPropsResponse> reloadProps(ComponentsReloadPropsRequest request) {
         return reloadProps(request, null);
     }
 
-    public PipedreamApiHttpResponse<ReloadPropsResponse> reloadProps(
+    public PipedreamApiClientHttpResponse<ReloadPropsResponse> reloadProps(
             ComponentsReloadPropsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -236,18 +236,18 @@ public class RawComponentsClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new PipedreamApiHttpResponse<>(
+                return new PipedreamApiClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ReloadPropsResponse.class),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new PipedreamApiApiException(
+            throw new PipedreamApiClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new PipedreamApiException("Network error executing HTTP request", e);
+            throw new PipedreamApiClientException("Network error executing HTTP request", e);
         }
     }
 }
