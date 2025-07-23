@@ -4,12 +4,12 @@
 package com.pipedream.api.resources.proxy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.pipedream.api.core.BaseClientApiException;
-import com.pipedream.api.core.BaseClientException;
-import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.core.PipedreamClientApiException;
+import com.pipedream.api.core.PipedreamClientException;
+import com.pipedream.api.core.PipedreamClientHttpResponse;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.resources.proxy.requests.ProxyDeleteRequest;
@@ -34,11 +34,11 @@ public class RawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> get(String url64, ProxyGetRequest request) {
+    public PipedreamClientHttpResponse<Map<String, Object>> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> get(
+    public PipedreamClientHttpResponse<Map<String, Object>> get(
             String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -61,27 +61,27 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
+                return new PipedreamClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<Map<String, Object>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new BaseClientApiException(
+            throw new PipedreamClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
+            throw new PipedreamClientException("Network error executing HTTP request", e);
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> post(String url64, ProxyPostRequest request) {
+    public PipedreamClientHttpResponse<Map<String, Object>> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> post(
+    public PipedreamClientHttpResponse<Map<String, Object>> post(
             String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -112,27 +112,27 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
+                return new PipedreamClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<Map<String, Object>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new BaseClientApiException(
+            throw new PipedreamClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
+            throw new PipedreamClientException("Network error executing HTTP request", e);
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> put(String url64, ProxyPutRequest request) {
+    public PipedreamClientHttpResponse<Map<String, Object>> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> put(
+    public PipedreamClientHttpResponse<Map<String, Object>> put(
             String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -163,27 +163,27 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
+                return new PipedreamClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<Map<String, Object>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new BaseClientApiException(
+            throw new PipedreamClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
+            throw new PipedreamClientException("Network error executing HTTP request", e);
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> delete(String url64, ProxyDeleteRequest request) {
+    public PipedreamClientHttpResponse<Map<String, Object>> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> delete(
+    public PipedreamClientHttpResponse<Map<String, Object>> delete(
             String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -206,27 +206,27 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
+                return new PipedreamClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<Map<String, Object>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new BaseClientApiException(
+            throw new PipedreamClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
+            throw new PipedreamClientException("Network error executing HTTP request", e);
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> patch(String url64, ProxyPatchRequest request) {
+    public PipedreamClientHttpResponse<Map<String, Object>> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> patch(
+    public PipedreamClientHttpResponse<Map<String, Object>> patch(
             String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -257,19 +257,19 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
+                return new PipedreamClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
                                 responseBody.string(), new TypeReference<Map<String, Object>>() {}),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            throw new BaseClientApiException(
+            throw new PipedreamClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
+            throw new PipedreamClientException("Network error executing HTTP request", e);
         }
     }
 }

@@ -9,7 +9,7 @@ import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import okhttp3.OkHttpClient;
 
-public final class AsyncBaseClientBuilder {
+public final class AsyncPipedreamClientBuilder {
     private ClientOptions.Builder clientOptionsBuilder = ClientOptions.builder();
 
     private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
@@ -24,7 +24,7 @@ public final class AsyncBaseClientBuilder {
      * Sets clientId.
      * Defaults to the PIPEDREAM_CLIENT_ID environment variable.
      */
-    public AsyncBaseClientBuilder clientId(String clientId) {
+    public AsyncPipedreamClientBuilder clientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -33,7 +33,7 @@ public final class AsyncBaseClientBuilder {
      * Sets clientSecret.
      * Defaults to the PIPEDREAM_CLIENT_SECRET environment variable.
      */
-    public AsyncBaseClientBuilder clientSecret(String clientSecret) {
+    public AsyncPipedreamClientBuilder clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
@@ -41,17 +41,17 @@ public final class AsyncBaseClientBuilder {
     /**
      * Sets projectEnvironment
      */
-    public AsyncBaseClientBuilder projectEnvironment(String projectEnvironment) {
+    public AsyncPipedreamClientBuilder projectEnvironment(String projectEnvironment) {
         this.projectEnvironment = projectEnvironment;
         return this;
     }
 
-    public AsyncBaseClientBuilder environment(Environment environment) {
+    public AsyncPipedreamClientBuilder environment(Environment environment) {
         this.environment = environment;
         return this;
     }
 
-    public AsyncBaseClientBuilder url(String url) {
+    public AsyncPipedreamClientBuilder url(String url) {
         this.environment = Environment.custom(url);
         return this;
     }
@@ -59,7 +59,7 @@ public final class AsyncBaseClientBuilder {
     /**
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
-    public AsyncBaseClientBuilder timeout(int timeout) {
+    public AsyncPipedreamClientBuilder timeout(int timeout) {
         this.clientOptionsBuilder.timeout(timeout);
         return this;
     }
@@ -67,7 +67,7 @@ public final class AsyncBaseClientBuilder {
     /**
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
-    public AsyncBaseClientBuilder maxRetries(int maxRetries) {
+    public AsyncPipedreamClientBuilder maxRetries(int maxRetries) {
         this.clientOptionsBuilder.maxRetries(maxRetries);
         return this;
     }
@@ -75,17 +75,17 @@ public final class AsyncBaseClientBuilder {
     /**
      * Sets the underlying OkHttp client
      */
-    public AsyncBaseClientBuilder httpClient(OkHttpClient httpClient) {
+    public AsyncPipedreamClientBuilder httpClient(OkHttpClient httpClient) {
         this.clientOptionsBuilder.httpClient(httpClient);
         return this;
     }
 
-    public AsyncBaseClientBuilder projectId(String projectId) {
+    public AsyncPipedreamClientBuilder projectId(String projectId) {
         clientOptionsBuilder.projectId(projectId);
         return this;
     }
 
-    public AsyncBaseClient build() {
+    public AsyncPipedreamClient build() {
         OauthTokensClient authClient = new OauthTokensClient(
                 ClientOptions.builder().environment(this.environment).build());
         OAuthTokenSupplier oAuthTokenSupplier = new OAuthTokenSupplier(clientId, clientSecret, authClient);
@@ -94,6 +94,6 @@ public final class AsyncBaseClientBuilder {
             this.clientOptionsBuilder.addHeader("x-pd-environment", this.projectEnvironment);
         }
         clientOptionsBuilder.environment(this.environment);
-        return new AsyncBaseClient(clientOptionsBuilder.build());
+        return new AsyncPipedreamClient(clientOptionsBuilder.build());
     }
 }

@@ -19,7 +19,7 @@ import com.pipedream.api.resources.triggers.AsyncTriggersClient;
 import com.pipedream.api.resources.users.AsyncUsersClient;
 import java.util.function.Supplier;
 
-public class AsyncBaseClient {
+public class AsyncPipedreamClient {
     protected final ClientOptions clientOptions;
 
     protected final Supplier<AsyncAppCategoriesClient> appCategoriesClient;
@@ -46,7 +46,7 @@ public class AsyncBaseClient {
 
     protected final Supplier<AsyncOauthTokensClient> oauthTokensClient;
 
-    public AsyncBaseClient(ClientOptions clientOptions) {
+    public AsyncPipedreamClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AsyncAppCategoriesClient(clientOptions));
         this.appsClient = Suppliers.memoize(() -> new AsyncAppsClient(clientOptions));
@@ -110,7 +110,7 @@ public class AsyncBaseClient {
         return this.oauthTokensClient.get();
     }
 
-    public static AsyncBaseClientBuilder builder() {
-        return new AsyncBaseClientBuilder();
+    public static AsyncPipedreamClientBuilder builder() {
+        return new AsyncPipedreamClientBuilder();
     }
 }

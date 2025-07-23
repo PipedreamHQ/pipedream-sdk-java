@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import okhttp3.Response;
 
-public final class BaseClientHttpResponse<T> {
+public final class PipedreamClientHttpResponse<T> {
 
     private final T body;
 
     private final Map<String, List<String>> headers;
 
-    public BaseClientHttpResponse(T body, Response rawResponse) {
+    public PipedreamClientHttpResponse(T body, Response rawResponse) {
         this.body = body;
 
         Map<String, List<String>> headers = new HashMap<>();
