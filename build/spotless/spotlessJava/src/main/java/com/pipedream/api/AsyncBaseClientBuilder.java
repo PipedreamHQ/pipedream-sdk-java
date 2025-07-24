@@ -9,7 +9,7 @@ import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import okhttp3.OkHttpClient;
 
-public final class AsyncBaseClientBuilder {
+public class AsyncBaseClientBuilder {
     private ClientOptions.Builder clientOptionsBuilder = ClientOptions.builder();
 
     private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
@@ -85,6 +85,11 @@ public final class AsyncBaseClientBuilder {
         return this;
     }
 
+    protected ClientOptions buildClientOptions() {
+        clientOptionsBuilder.environment(this.environment);
+        return clientOptionsBuilder.build();
+    }
+
     public AsyncBaseClient build() {
         OauthTokensClient authClient = new OauthTokensClient(
                 ClientOptions.builder().environment(this.environment).build());
@@ -93,7 +98,6 @@ public final class AsyncBaseClientBuilder {
         if (projectEnvironment != null) {
             this.clientOptionsBuilder.addHeader("x-pd-environment", this.projectEnvironment);
         }
-        clientOptionsBuilder.environment(this.environment);
-        return new AsyncBaseClient(clientOptionsBuilder.build());
+        return new AsyncBaseClient(buildClientOptions());
     }
 }

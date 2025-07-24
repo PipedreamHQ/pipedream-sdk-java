@@ -37,7 +37,7 @@ public final class ClientOptions {
             {
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.pipedream.fern:api-sdk");
-                put("X-Fern-SDK-Version", "0.0.220");
+                put("X-Fern-SDK-Version", "0.0.237");
             }
         });
         this.headerSuppliers = headerSuppliers;
@@ -93,7 +93,7 @@ public final class ClientOptions {
         return new Builder();
     }
 
-    public static final class Builder {
+    public static class Builder {
         private Environment environment;
 
         private final Map<String, String> headers = new HashMap<>();
@@ -181,6 +181,18 @@ public final class ClientOptions {
 
             return new ClientOptions(
                     environment, headers, headerSuppliers, httpClient, this.timeout.get(), this.projectId);
+        }
+
+        /**
+         * Create a new Builder initialized with values from an existing ClientOptions
+         */
+        public static Builder from(ClientOptions clientOptions) {
+            Builder builder = new Builder();
+            builder.environment = clientOptions.environment();
+            builder.timeout = Optional.of(clientOptions.timeout(null));
+            builder.httpClient = clientOptions.httpClient();
+            builder.projectId = clientOptions.projectId();
+            return builder;
         }
     }
 }
