@@ -8,7 +8,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
-import com.pipedream.api.resources.accounts.requests.CreateAccountRequest;
+import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
 
 public class AccountsClient {
@@ -40,11 +40,11 @@ public class AccountsClient {
         return this.rawClient.list(request, requestOptions).body();
     }
 
-    public Account create(CreateAccountRequest request) {
+    public Account create(CreateAccountOpts request) {
         return this.rawClient.create(request).body();
     }
 
-    public Account create(CreateAccountRequest request, RequestOptions requestOptions) {
+    public Account create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }
 

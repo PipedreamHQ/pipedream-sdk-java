@@ -12,7 +12,7 @@ import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.tokens.requests.CreateTokenRequest;
+import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
 import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
@@ -32,15 +32,16 @@ public class RawTokensClient {
         this.clientOptions = clientOptions;
     }
 
-    public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenRequest request) {
+    public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenOpts request) {
         return create(request, null);
     }
 
-    public BaseClientHttpResponse<CreateTokenResponse> create(
-            CreateTokenRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("v1/connect/tokens")
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("tokens")
                 .build();
         RequestBody body;
         try {
@@ -90,7 +91,9 @@ public class RawTokensClient {
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("v1/connect/tokens")
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("tokens")
                 .addPathSegment(ctok)
                 .addPathSegments("validate");
         if (request.getParams().isPresent()) {

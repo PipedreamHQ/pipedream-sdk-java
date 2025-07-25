@@ -3,7 +3,6 @@
  */
 package com.pipedream.api.resources.proxy;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -18,7 +17,6 @@ import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
 import java.io.IOException;
-import java.util.Map;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -34,12 +32,11 @@ public class RawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> get(String url64, ProxyGetRequest request) {
+    public BaseClientHttpResponse<Object> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> get(
-            String url64, ProxyGetRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Object> get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -62,9 +59,7 @@ public class RawProxyClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
@@ -77,12 +72,11 @@ public class RawProxyClient {
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> post(String url64, ProxyPostRequest request) {
+    public BaseClientHttpResponse<Object> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> post(
-            String url64, ProxyPostRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Object> post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -113,9 +107,7 @@ public class RawProxyClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
@@ -128,12 +120,11 @@ public class RawProxyClient {
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> put(String url64, ProxyPutRequest request) {
+    public BaseClientHttpResponse<Object> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> put(
-            String url64, ProxyPutRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Object> put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -164,9 +155,7 @@ public class RawProxyClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
@@ -179,11 +168,11 @@ public class RawProxyClient {
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> delete(String url64, ProxyDeleteRequest request) {
+    public BaseClientHttpResponse<Object> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> delete(
+    public BaseClientHttpResponse<Object> delete(
             String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -207,9 +196,7 @@ public class RawProxyClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
@@ -222,11 +209,11 @@ public class RawProxyClient {
         }
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> patch(String url64, ProxyPatchRequest request) {
+    public BaseClientHttpResponse<Object> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
-    public BaseClientHttpResponse<Map<String, Object>> patch(
+    public BaseClientHttpResponse<Object> patch(
             String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -258,9 +245,7 @@ public class RawProxyClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(

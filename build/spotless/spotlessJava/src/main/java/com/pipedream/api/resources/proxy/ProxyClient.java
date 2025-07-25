@@ -10,7 +10,6 @@ import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
-import java.util.Map;
 
 public class ProxyClient {
     protected final ClientOptions clientOptions;
@@ -29,43 +28,43 @@ public class ProxyClient {
         return this.rawClient;
     }
 
-    public Map<String, Object> get(String url64, ProxyGetRequest request) {
+    public Object get(String url64, ProxyGetRequest request) {
         return this.rawClient.get(url64, request).body();
     }
 
-    public Map<String, Object> get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
+    public Object get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         return this.rawClient.get(url64, request, requestOptions).body();
     }
 
-    public Map<String, Object> post(String url64, ProxyPostRequest request) {
+    public Object post(String url64, ProxyPostRequest request) {
         return this.rawClient.post(url64, request).body();
     }
 
-    public Map<String, Object> post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
+    public Object post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         return this.rawClient.post(url64, request, requestOptions).body();
     }
 
-    public Map<String, Object> put(String url64, ProxyPutRequest request) {
+    public Object put(String url64, ProxyPutRequest request) {
         return this.rawClient.put(url64, request).body();
     }
 
-    public Map<String, Object> put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
+    public Object put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         return this.rawClient.put(url64, request, requestOptions).body();
     }
 
-    public Map<String, Object> delete(String url64, ProxyDeleteRequest request) {
+    public Object delete(String url64, ProxyDeleteRequest request) {
         return this.rawClient.delete(url64, request).body();
     }
 
-    public Map<String, Object> delete(String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
+    public Object delete(String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(url64, request, requestOptions).body();
     }
 
-    public Map<String, Object> patch(String url64, ProxyPatchRequest request) {
+    public Object patch(String url64, ProxyPatchRequest request) {
         return this.rawClient.patch(url64, request).body();
     }
 
-    public Map<String, Object> patch(String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
+    public Object patch(String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         return this.rawClient.patch(url64, request, requestOptions).body();
     }
 }

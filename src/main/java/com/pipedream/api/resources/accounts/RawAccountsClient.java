@@ -14,7 +14,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
-import com.pipedream.api.resources.accounts.requests.CreateAccountRequest;
+import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
 import com.pipedream.api.types.ListAccountsResponse;
 import java.io.IOException;
@@ -121,11 +121,11 @@ public class RawAccountsClient {
         }
     }
 
-    public BaseClientHttpResponse<Account> create(CreateAccountRequest request) {
+    public BaseClientHttpResponse<Account> create(CreateAccountOpts request) {
         return create(request, null);
     }
 
-    public BaseClientHttpResponse<Account> create(CreateAccountRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Account> create(CreateAccountOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

@@ -20,15 +20,13 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = CreateTokenRequest.Builder.class)
-public final class CreateTokenRequest {
+@JsonDeserialize(builder = CreateTokenOpts.Builder.class)
+public final class CreateTokenOpts {
     private final Optional<List<String>> allowedOrigins;
 
     private final Optional<String> errorRedirectUri;
 
     private final String externalUserId;
-
-    private final String projectId;
 
     private final Optional<String> successRedirectUri;
 
@@ -36,18 +34,16 @@ public final class CreateTokenRequest {
 
     private final Map<String, Object> additionalProperties;
 
-    private CreateTokenRequest(
+    private CreateTokenOpts(
             Optional<List<String>> allowedOrigins,
             Optional<String> errorRedirectUri,
             String externalUserId,
-            String projectId,
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
             Map<String, Object> additionalProperties) {
         this.allowedOrigins = allowedOrigins;
         this.errorRedirectUri = errorRedirectUri;
         this.externalUserId = externalUserId;
-        this.projectId = projectId;
         this.successRedirectUri = successRedirectUri;
         this.webhookUri = webhookUri;
         this.additionalProperties = additionalProperties;
@@ -78,14 +74,6 @@ public final class CreateTokenRequest {
     }
 
     /**
-     * @return The ID of the project
-     */
-    @JsonProperty("project_id")
-    public String getProjectId() {
-        return projectId;
-    }
-
-    /**
      * @return URI to redirect to on success
      */
     @JsonProperty("success_redirect_uri")
@@ -104,7 +92,7 @@ public final class CreateTokenRequest {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof CreateTokenRequest && equalTo((CreateTokenRequest) other);
+        return other instanceof CreateTokenOpts && equalTo((CreateTokenOpts) other);
     }
 
     @JsonAnyGetter
@@ -112,11 +100,10 @@ public final class CreateTokenRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(CreateTokenRequest other) {
+    private boolean equalTo(CreateTokenOpts other) {
         return allowedOrigins.equals(other.allowedOrigins)
                 && errorRedirectUri.equals(other.errorRedirectUri)
                 && externalUserId.equals(other.externalUserId)
-                && projectId.equals(other.projectId)
                 && successRedirectUri.equals(other.successRedirectUri)
                 && webhookUri.equals(other.webhookUri);
     }
@@ -127,7 +114,6 @@ public final class CreateTokenRequest {
                 this.allowedOrigins,
                 this.errorRedirectUri,
                 this.externalUserId,
-                this.projectId,
                 this.successRedirectUri,
                 this.webhookUri);
     }
@@ -145,20 +131,13 @@ public final class CreateTokenRequest {
         /**
          * <p>Your end user ID, for whom you're creating the token</p>
          */
-        ProjectIdStage externalUserId(@NotNull String externalUserId);
+        _FinalStage externalUserId(@NotNull String externalUserId);
 
-        Builder from(CreateTokenRequest other);
-    }
-
-    public interface ProjectIdStage {
-        /**
-         * <p>The ID of the project</p>
-         */
-        _FinalStage projectId(@NotNull String projectId);
+        Builder from(CreateTokenOpts other);
     }
 
     public interface _FinalStage {
-        CreateTokenRequest build();
+        CreateTokenOpts build();
 
         /**
          * <p>List of allowed origins for CORS</p>
@@ -190,10 +169,8 @@ public final class CreateTokenRequest {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ExternalUserIdStage, ProjectIdStage, _FinalStage {
+    public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
-
-        private String projectId;
 
         private Optional<String> webhookUri = Optional.empty();
 
@@ -209,11 +186,10 @@ public final class CreateTokenRequest {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(CreateTokenRequest other) {
+        public Builder from(CreateTokenOpts other) {
             allowedOrigins(other.getAllowedOrigins());
             errorRedirectUri(other.getErrorRedirectUri());
             externalUserId(other.getExternalUserId());
-            projectId(other.getProjectId());
             successRedirectUri(other.getSuccessRedirectUri());
             webhookUri(other.getWebhookUri());
             return this;
@@ -226,20 +202,8 @@ public final class CreateTokenRequest {
          */
         @java.lang.Override
         @JsonSetter("external_user_id")
-        public ProjectIdStage externalUserId(@NotNull String externalUserId) {
+        public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The ID of the project</p>
-         * <p>The ID of the project</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("project_id")
-        public _FinalStage projectId(@NotNull String projectId) {
-            this.projectId = Objects.requireNonNull(projectId, "projectId must not be null");
             return this;
         }
 
@@ -324,12 +288,11 @@ public final class CreateTokenRequest {
         }
 
         @java.lang.Override
-        public CreateTokenRequest build() {
-            return new CreateTokenRequest(
+        public CreateTokenOpts build() {
+            return new CreateTokenOpts(
                     allowedOrigins,
                     errorRedirectUri,
                     externalUserId,
-                    projectId,
                     successRedirectUri,
                     webhookUri,
                     additionalProperties);

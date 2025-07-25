@@ -3,7 +3,6 @@
  */
 package com.pipedream.api.resources.proxy;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -18,7 +17,6 @@ import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,11 +36,11 @@ public class AsyncRawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> get(String url64, ProxyGetRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Object>> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> get(
+    public CompletableFuture<BaseClientHttpResponse<Object>> get(
             String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -62,16 +60,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                                response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -94,11 +90,11 @@ public class AsyncRawProxyClient {
         return future;
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> post(String url64, ProxyPostRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Object>> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> post(
+    public CompletableFuture<BaseClientHttpResponse<Object>> post(
             String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -126,16 +122,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                                response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -158,11 +152,11 @@ public class AsyncRawProxyClient {
         return future;
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> put(String url64, ProxyPutRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Object>> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> put(
+    public CompletableFuture<BaseClientHttpResponse<Object>> put(
             String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -190,16 +184,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                                response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -222,12 +214,11 @@ public class AsyncRawProxyClient {
         return future;
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> delete(
-            String url64, ProxyDeleteRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Object>> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> delete(
+    public CompletableFuture<BaseClientHttpResponse<Object>> delete(
             String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -247,16 +238,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                                response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -279,12 +268,11 @@ public class AsyncRawProxyClient {
         return future;
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> patch(
-            String url64, ProxyPatchRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<Object>> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
-    public CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> patch(
+    public CompletableFuture<BaseClientHttpResponse<Object>> patch(
             String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -312,16 +300,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Map<String, Object>>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBody.string(), new TypeReference<Map<String, Object>>() {}),
-                                response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";

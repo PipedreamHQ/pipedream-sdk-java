@@ -5,7 +5,7 @@ package com.pipedream.api.resources.tokens;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.tokens.requests.CreateTokenRequest;
+import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
 import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
@@ -27,11 +27,11 @@ public class TokensClient {
         return this.rawClient;
     }
 
-    public CreateTokenResponse create(CreateTokenRequest request) {
+    public CreateTokenResponse create(CreateTokenOpts request) {
         return this.rawClient.create(request).body();
     }
 
-    public CreateTokenResponse create(CreateTokenRequest request, RequestOptions requestOptions) {
+    public CreateTokenResponse create(CreateTokenOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }
 

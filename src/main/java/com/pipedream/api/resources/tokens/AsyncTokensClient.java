@@ -5,7 +5,7 @@ package com.pipedream.api.resources.tokens;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.tokens.requests.CreateTokenRequest;
+import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
 import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
@@ -28,11 +28,11 @@ public class AsyncTokensClient {
         return this.rawClient;
     }
 
-    public CompletableFuture<CreateTokenResponse> create(CreateTokenRequest request) {
+    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<CreateTokenResponse> create(CreateTokenRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 
