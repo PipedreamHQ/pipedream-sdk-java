@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>0.0.255</version>
+  <version>0.0.256</version>
 </dependency>
 ```
 
