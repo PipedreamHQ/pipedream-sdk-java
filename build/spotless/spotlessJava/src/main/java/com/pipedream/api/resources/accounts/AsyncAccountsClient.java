@@ -8,7 +8,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
-import com.pipedream.api.resources.accounts.requests.CreateAccountRequest;
+import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,11 +42,11 @@ public class AsyncAccountsClient {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Account> create(CreateAccountRequest request) {
+    public CompletableFuture<Account> create(CreateAccountOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Account> create(CreateAccountRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Account> create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 

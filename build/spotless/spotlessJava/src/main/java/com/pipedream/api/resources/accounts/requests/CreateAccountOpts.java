@@ -19,8 +19,8 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = CreateAccountRequest.Builder.class)
-public final class CreateAccountRequest {
+@JsonDeserialize(builder = CreateAccountOpts.Builder.class)
+public final class CreateAccountOpts {
     private final Optional<String> appId;
 
     private final Optional<String> externalUserId;
@@ -37,7 +37,7 @@ public final class CreateAccountRequest {
 
     private final Map<String, Object> additionalProperties;
 
-    private CreateAccountRequest(
+    private CreateAccountOpts(
             Optional<String> appId,
             Optional<String> externalUserId,
             Optional<String> oauthAppId,
@@ -112,7 +112,7 @@ public final class CreateAccountRequest {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof CreateAccountRequest && equalTo((CreateAccountRequest) other);
+        return other instanceof CreateAccountOpts && equalTo((CreateAccountOpts) other);
     }
 
     @JsonAnyGetter
@@ -120,7 +120,7 @@ public final class CreateAccountRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(CreateAccountRequest other) {
+    private boolean equalTo(CreateAccountOpts other) {
         return appId.equals(other.appId)
                 && externalUserId.equals(other.externalUserId)
                 && oauthAppId.equals(other.oauthAppId)
@@ -157,7 +157,7 @@ public final class CreateAccountRequest {
          */
         CfmapJsonStage appSlug(@NotNull String appSlug);
 
-        Builder from(CreateAccountRequest other);
+        Builder from(CreateAccountOpts other);
     }
 
     public interface CfmapJsonStage {
@@ -175,7 +175,7 @@ public final class CreateAccountRequest {
     }
 
     public interface _FinalStage {
-        CreateAccountRequest build();
+        CreateAccountOpts build();
 
         /**
          * <p>The app slug or ID to filter accounts by.</p>
@@ -225,7 +225,7 @@ public final class CreateAccountRequest {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(CreateAccountRequest other) {
+        public Builder from(CreateAccountOpts other) {
             appId(other.getAppId());
             externalUserId(other.getExternalUserId());
             oauthAppId(other.getOauthAppId());
@@ -346,8 +346,8 @@ public final class CreateAccountRequest {
         }
 
         @java.lang.Override
-        public CreateAccountRequest build() {
-            return new CreateAccountRequest(
+        public CreateAccountOpts build() {
+            return new CreateAccountOpts(
                     appId, externalUserId, oauthAppId, appSlug, cfmapJson, connectToken, name, additionalProperties);
         }
     }

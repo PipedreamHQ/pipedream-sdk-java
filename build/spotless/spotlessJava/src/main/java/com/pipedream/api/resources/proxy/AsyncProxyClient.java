@@ -10,7 +10,6 @@ import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncProxyClient {
@@ -30,48 +29,43 @@ public class AsyncProxyClient {
         return this.rawClient;
     }
 
-    public CompletableFuture<Map<String, Object>> get(String url64, ProxyGetRequest request) {
+    public CompletableFuture<Object> get(String url64, ProxyGetRequest request) {
         return this.rawClient.get(url64, request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> get(
-            String url64, ProxyGetRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         return this.rawClient.get(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> post(String url64, ProxyPostRequest request) {
+    public CompletableFuture<Object> post(String url64, ProxyPostRequest request) {
         return this.rawClient.post(url64, request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> post(
-            String url64, ProxyPostRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         return this.rawClient.post(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> put(String url64, ProxyPutRequest request) {
+    public CompletableFuture<Object> put(String url64, ProxyPutRequest request) {
         return this.rawClient.put(url64, request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> put(
-            String url64, ProxyPutRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         return this.rawClient.put(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> delete(String url64, ProxyDeleteRequest request) {
+    public CompletableFuture<Object> delete(String url64, ProxyDeleteRequest request) {
         return this.rawClient.delete(url64, request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> delete(
-            String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> delete(String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> patch(String url64, ProxyPatchRequest request) {
+    public CompletableFuture<Object> patch(String url64, ProxyPatchRequest request) {
         return this.rawClient.patch(url64, request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<Map<String, Object>> patch(
-            String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> patch(String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         return this.rawClient.patch(url64, request, requestOptions).thenApply(response -> response.body());
     }
 }

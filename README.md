@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>0.0.237</version>
+  <version>0.0.255</version>
 </dependency>
 ```
 
@@ -37,7 +37,7 @@ Instantiate and use the client with the following:
 package com.example.usage;
 
 import com.pipedream.api.BaseClient;
-import com.pipedream.api.resources.accounts.requests.CreateAccountRequest;
+import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 
 public class Example {
     public static void main(String[] args) {
@@ -49,7 +49,7 @@ public class Example {
 
         client.accounts().create(
             "project_id",
-            CreateAccountRequest
+            CreateAccountOpts
                 .builder()
                 .appSlug("app_slug")
                 .cfmapJson("cfmap_json")

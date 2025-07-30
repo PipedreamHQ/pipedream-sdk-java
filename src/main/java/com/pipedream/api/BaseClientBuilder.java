@@ -7,10 +7,13 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import java.util.Optional;
 import okhttp3.OkHttpClient;
 
 public class BaseClientBuilder {
-    private ClientOptions.Builder clientOptionsBuilder = ClientOptions.builder();
+    private Optional<Integer> timeout = Optional.empty();
+
+    private Optional<Integer> maxRetries = Optional.empty();
 
     private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
 
@@ -19,6 +22,8 @@ public class BaseClientBuilder {
     private String projectEnvironment = null;
 
     private Environment environment = Environment.PROD;
+
+    private OkHttpClient httpClient;
 
     /**
      * Sets clientId.
@@ -60,7 +65,7 @@ public class BaseClientBuilder {
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
     public BaseClientBuilder timeout(int timeout) {
-        this.clientOptionsBuilder.timeout(timeout);
+        this.timeout = Optional.of(timeout);
         return this;
     }
 
@@ -68,7 +73,7 @@ public class BaseClientBuilder {
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
     public BaseClientBuilder maxRetries(int maxRetries) {
-        this.clientOptionsBuilder.maxRetries(maxRetries);
+        this.maxRetries = Optional.of(maxRetries);
         return this;
     }
 
@@ -76,7 +81,7 @@ public class BaseClientBuilder {
      * Sets the underlying OkHttp client
      */
     public BaseClientBuilder httpClient(OkHttpClient httpClient) {
-        this.clientOptionsBuilder.httpClient(httpClient);
+        this.httpClient = httpClient;
         return this;
     }
 
@@ -86,18 +91,156 @@ public class BaseClientBuilder {
     }
 
     protected ClientOptions buildClientOptions() {
-        clientOptionsBuilder.environment(this.environment);
-        return clientOptionsBuilder.build();
+        ClientOptions.Builder builder = ClientOptions.builder();
+        setEnvironment(builder);
+        setAuthentication(builder);
+        setCustomHeaders(builder);
+        setVariables(builder);
+        setHttpClient(builder);
+        setTimeouts(builder);
+        setRetries(builder);
+        setAdditional(builder);
+        return builder.build();
     }
 
-    public BaseClient build() {
-        OauthTokensClient authClient = new OauthTokensClient(
-                ClientOptions.builder().environment(this.environment).build());
-        OAuthTokenSupplier oAuthTokenSupplier = new OAuthTokenSupplier(clientId, clientSecret, authClient);
-        this.clientOptionsBuilder.addHeader("Authorization", oAuthTokenSupplier);
-        if (projectEnvironment != null) {
-            this.clientOptionsBuilder.addHeader("x-pd-environment", this.projectEnvironment);
+    /**
+     * Sets the environment configuration for the client.
+     * Override this method to modify URLs or add environment-specific logic.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setEnvironment(ClientOptions.Builder builder) {
+        builder.environment(this.environment);
+    }
+
+    /**
+     * Override this method to customize authentication.
+     * This method is called during client options construction to set up authentication headers.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     *
+     * Example:
+     * <pre>{@code
+     * @Override
+     * protected void setAuthentication(ClientOptions.Builder builder) {
+     *     super.setAuthentication(builder); // Keep existing auth
+     *     builder.addHeader("X-API-Key", this.apiKey);
+     * }
+     * }</pre>
+     */
+    protected void setAuthentication(ClientOptions.Builder builder) {
+        if (this.clientId != null && this.clientSecret != null) {
+            OauthTokensClient authClient = new OauthTokensClient(
+                    ClientOptions.builder().environment(this.environment).build());
+            OAuthTokenSupplier oAuthTokenSupplier =
+                    new OAuthTokenSupplier(this.clientId, this.clientSecret, authClient);
+            builder.addHeader("Authorization", oAuthTokenSupplier);
         }
+    }
+
+    /**
+     * Override this method to add or modify custom headers.
+     * This method is called during client options construction to set up custom headers defined in the API.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     *
+     * Example:
+     * <pre>{@code
+     * @Override
+     * protected void setCustomHeaders(ClientOptions.Builder builder) {
+     *     super.setCustomHeaders(builder); // Keep existing headers
+     *     builder.addHeader("X-Trace-ID", generateTraceId());
+     * }
+     * }</pre>
+     */
+    protected void setCustomHeaders(ClientOptions.Builder builder) {
+        if (this.projectEnvironment != null) {
+            builder.addHeader("x-pd-environment", this.projectEnvironment);
+        }
+    }
+
+    /**
+     * Override this method to configure API variables defined in the specification.
+     * Available variables: projectId
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setVariables(ClientOptions.Builder builder) {}
+
+    /**
+     * Sets the request timeout configuration.
+     * Override this method to customize timeout behavior.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setTimeouts(ClientOptions.Builder builder) {
+        if (this.timeout.isPresent()) {
+            builder.timeout(this.timeout.get());
+        }
+    }
+
+    /**
+     * Sets the retry configuration for failed requests.
+     * Override this method to implement custom retry strategies.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setRetries(ClientOptions.Builder builder) {
+        if (this.maxRetries.isPresent()) {
+            builder.maxRetries(this.maxRetries.get());
+        }
+    }
+
+    /**
+     * Sets the OkHttp client configuration.
+     * Override this method to customize HTTP client behavior (interceptors, connection pools, etc).
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setHttpClient(ClientOptions.Builder builder) {
+        if (this.httpClient != null) {
+            builder.httpClient(this.httpClient);
+        }
+    }
+
+    /**
+     * Override this method to add any additional configuration to the client.
+     * This method is called at the end of the configuration chain, allowing you to add
+     * custom headers, modify settings, or perform any other client customization.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     *
+     * Example:
+     * <pre>{@code
+     * @Override
+     * protected void setAdditional(ClientOptions.Builder builder) {
+     *     builder.addHeader("X-Request-ID", () -> UUID.randomUUID().toString());
+     *     builder.addHeader("X-Client-Version", "1.0.0");
+     * }
+     * }</pre>
+     */
+    protected void setAdditional(ClientOptions.Builder builder) {}
+
+    /**
+     * Override this method to add custom validation logic before the client is built.
+     * This method is called at the beginning of the build() method to ensure the configuration is valid.
+     * Throw an exception to prevent client creation if validation fails.
+     *
+     * Example:
+     * <pre>{@code
+     * @Override
+     * protected void validateConfiguration() {
+     *     super.validateConfiguration(); // Run parent validations
+     *     if (tenantId == null || tenantId.isEmpty()) {
+     *         throw new IllegalStateException("tenantId is required");
+     *     }
+     * }
+     * }</pre>
+     */
+    protected void validateConfiguration() {}
+
+    public BaseClient build() {
+        validateConfiguration();
         return new BaseClient(buildClientOptions());
     }
 }

@@ -315,7 +315,7 @@ client.accounts().list(
 ```java
 client.accounts().create(
     "project_id",
-    CreateAccountRequest
+    CreateAccountOpts
         .builder()
         .appSlug("app_slug")
         .cfmapJson("cfmap_json")
@@ -2289,7 +2289,7 @@ client.projects().retrieveInfo("project_id");
 </details>
 
 ## Proxy
-<details><summary><code>client.proxy.get(projectId, url64) -> Map&lt;String, Object&gt;</code></summary>
+<details><summary><code>client.proxy.get(projectId, url64) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2361,7 +2361,7 @@ client.proxy().get(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.post(projectId, url64, request) -> Map&lt;String, Object&gt;</code></summary>
+<details><summary><code>client.proxy.post(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2446,7 +2446,7 @@ client.proxy().post(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.put(projectId, url64, request) -> Map&lt;String, Object&gt;</code></summary>
+<details><summary><code>client.proxy.put(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2531,7 +2531,7 @@ client.proxy().put(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.delete(projectId, url64) -> Map&lt;String, Object&gt;</code></summary>
+<details><summary><code>client.proxy.delete(projectId, url64) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2603,7 +2603,7 @@ client.proxy().delete(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.patch(projectId, url64, request) -> Map&lt;String, Object&gt;</code></summary>
+<details><summary><code>client.proxy.patch(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2689,7 +2689,7 @@ client.proxy().patch(
 </details>
 
 ## Tokens
-<details><summary><code>client.tokens.create(request) -> CreateTokenResponse</code></summary>
+<details><summary><code>client.tokens.create(projectId, request) -> CreateTokenResponse</code></summary>
 <dl>
 <dd>
 
@@ -2703,10 +2703,10 @@ client.proxy().patch(
 
 ```java
 client.tokens().create(
-    CreateTokenRequest
+    "project_id",
+    CreateTokenOpts
         .builder()
         .externalUserId("external_user_id")
-        .projectId("project_id")
         .build()
 );
 ```
@@ -2719,6 +2719,14 @@ client.tokens().create(
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
 
 <dl>
 <dd>
@@ -2747,14 +2755,6 @@ client.tokens().create(
 <dl>
 <dd>
 
-**projectId:** `String` — The ID of the project
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **successRedirectUri:** `Optional<String>` — URI to redirect to on success
     
 </dd>
@@ -2775,7 +2775,7 @@ client.tokens().create(
 </dl>
 </details>
 
-<details><summary><code>client.tokens.validate(ctok) -> ValidateTokenResponse</code></summary>
+<details><summary><code>client.tokens.validate(projectId, ctok) -> ValidateTokenResponse</code></summary>
 <dl>
 <dd>
 
@@ -2789,6 +2789,7 @@ client.tokens().create(
 
 ```java
 client.tokens().validate(
+    "project_id",
     "ctok",
     TokensValidateRequest
         .builder()
@@ -2804,6 +2805,14 @@ client.tokens().validate(
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
 
 <dl>
 <dd>

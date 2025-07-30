@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 public final class ConnectTokenCreateOpts {
     private final String externalUserId;
 
-    private final String projectId;
-
     private final Optional<List<String>> allowedOrigins;
 
     private final Optional<String> errorRedirectUri;
@@ -38,14 +36,12 @@ public final class ConnectTokenCreateOpts {
 
     private ConnectTokenCreateOpts(
             String externalUserId,
-            String projectId,
             Optional<List<String>> allowedOrigins,
             Optional<String> errorRedirectUri,
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
             Map<String, Object> additionalProperties) {
         this.externalUserId = externalUserId;
-        this.projectId = projectId;
         this.allowedOrigins = allowedOrigins;
         this.errorRedirectUri = errorRedirectUri;
         this.successRedirectUri = successRedirectUri;
@@ -59,14 +55,6 @@ public final class ConnectTokenCreateOpts {
     @JsonProperty("external_user_id")
     public String getExternalUserId() {
         return externalUserId;
-    }
-
-    /**
-     * @return The ID of the project
-     */
-    @JsonProperty("project_id")
-    public String getProjectId() {
-        return projectId;
     }
 
     /**
@@ -114,7 +102,6 @@ public final class ConnectTokenCreateOpts {
 
     private boolean equalTo(ConnectTokenCreateOpts other) {
         return externalUserId.equals(other.externalUserId)
-                && projectId.equals(other.projectId)
                 && allowedOrigins.equals(other.allowedOrigins)
                 && errorRedirectUri.equals(other.errorRedirectUri)
                 && successRedirectUri.equals(other.successRedirectUri)
@@ -125,7 +112,6 @@ public final class ConnectTokenCreateOpts {
     public int hashCode() {
         return Objects.hash(
                 this.externalUserId,
-                this.projectId,
                 this.allowedOrigins,
                 this.errorRedirectUri,
                 this.successRedirectUri,
@@ -145,16 +131,9 @@ public final class ConnectTokenCreateOpts {
         /**
          * <p>Your end user ID, for whom you're creating the token</p>
          */
-        ProjectIdStage externalUserId(@NotNull String externalUserId);
+        _FinalStage externalUserId(@NotNull String externalUserId);
 
         Builder from(ConnectTokenCreateOpts other);
-    }
-
-    public interface ProjectIdStage {
-        /**
-         * <p>The ID of the project</p>
-         */
-        _FinalStage projectId(@NotNull String projectId);
     }
 
     public interface _FinalStage {
@@ -190,10 +169,8 @@ public final class ConnectTokenCreateOpts {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ExternalUserIdStage, ProjectIdStage, _FinalStage {
+    public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
-
-        private String projectId;
 
         private Optional<String> webhookUri = Optional.empty();
 
@@ -211,7 +188,6 @@ public final class ConnectTokenCreateOpts {
         @java.lang.Override
         public Builder from(ConnectTokenCreateOpts other) {
             externalUserId(other.getExternalUserId());
-            projectId(other.getProjectId());
             allowedOrigins(other.getAllowedOrigins());
             errorRedirectUri(other.getErrorRedirectUri());
             successRedirectUri(other.getSuccessRedirectUri());
@@ -226,20 +202,8 @@ public final class ConnectTokenCreateOpts {
          */
         @java.lang.Override
         @JsonSetter("external_user_id")
-        public ProjectIdStage externalUserId(@NotNull String externalUserId) {
+        public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The ID of the project</p>
-         * <p>The ID of the project</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("project_id")
-        public _FinalStage projectId(@NotNull String projectId) {
-            this.projectId = Objects.requireNonNull(projectId, "projectId must not be null");
             return this;
         }
 
@@ -327,7 +291,6 @@ public final class ConnectTokenCreateOpts {
         public ConnectTokenCreateOpts build() {
             return new ConnectTokenCreateOpts(
                     externalUserId,
-                    projectId,
                     allowedOrigins,
                     errorRedirectUri,
                     successRedirectUri,
