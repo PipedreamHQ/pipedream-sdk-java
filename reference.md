@@ -2289,7 +2289,7 @@ client.projects().retrieveInfo("project_id");
 </details>
 
 ## Proxy
-<details><summary><code>client.proxy.get(url, request) -> Object</code></summary>
+<details><summary><code>client.proxy.get(projectId, url64) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2303,7 +2303,8 @@ client.projects().retrieveInfo("project_id");
 
 ```java
 client.proxy().get(
-    "https://api.example.com/endpoint",
+    "project_id",
+    "url_64",
     ProxyGetRequest
         .builder()
         .externalUserId("external_user_id")
@@ -2324,7 +2325,15 @@ client.proxy().get(
 <dl>
 <dd>
 
-**url:** `String` — The target URL to proxy the request to
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url64:** `String` — Base64-encoded target URL
     
 </dd>
 </dl>
@@ -2347,19 +2356,12 @@ client.proxy().get(
 </dd>
 </dl>
 
-#### 📄 Response
-
-The proxy methods intelligently handle responses:
-- **JSON responses**: Automatically parsed and returned as structured objects
-- **Non-JSON responses**: Returned as raw strings (HTML, XML, plain text, etc.)
-- **Empty responses**: Return `null`
-
 
 </dd>
 </dl>
 </details>
 
-<details><summary><code>client.proxy.post(url, request) -> Object</code></summary>
+<details><summary><code>client.proxy.post(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2373,7 +2375,8 @@ The proxy methods intelligently handle responses:
 
 ```java
 client.proxy().post(
-    "https://api.example.com/endpoint",
+    "project_id",
+    "url_64",
     ProxyPostRequest
         .builder()
         .externalUserId("external_user_id")
@@ -2399,7 +2402,15 @@ client.proxy().post(
 <dl>
 <dd>
 
-**url:** `String` — The target URL to proxy the request to
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url64:** `String` — Base64-encoded target URL
     
 </dd>
 </dl>
@@ -2435,7 +2446,7 @@ client.proxy().post(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.put(url, request) -> Object</code></summary>
+<details><summary><code>client.proxy.put(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2449,7 +2460,8 @@ client.proxy().post(
 
 ```java
 client.proxy().put(
-    "https://api.example.com/endpoint",
+    "project_id",
+    "url_64",
     ProxyPutRequest
         .builder()
         .externalUserId("external_user_id")
@@ -2475,7 +2487,15 @@ client.proxy().put(
 <dl>
 <dd>
 
-**url:** `String` — The target URL to proxy the request to
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url64:** `String` — Base64-encoded target URL
     
 </dd>
 </dl>
@@ -2511,7 +2531,7 @@ client.proxy().put(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.delete(url, request) -> Object</code></summary>
+<details><summary><code>client.proxy.delete(projectId, url64) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2525,7 +2545,8 @@ client.proxy().put(
 
 ```java
 client.proxy().delete(
-    "https://api.example.com/endpoint",
+    "project_id",
+    "url_64",
     ProxyDeleteRequest
         .builder()
         .externalUserId("external_user_id")
@@ -2546,7 +2567,15 @@ client.proxy().delete(
 <dl>
 <dd>
 
-**url:** `String` — The target URL to proxy the request to
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url64:** `String` — Base64-encoded target URL
     
 </dd>
 </dl>
@@ -2574,7 +2603,7 @@ client.proxy().delete(
 </dl>
 </details>
 
-<details><summary><code>client.proxy.patch(url, request) -> Object</code></summary>
+<details><summary><code>client.proxy.patch(projectId, url64, request) -> Object</code></summary>
 <dl>
 <dd>
 
@@ -2588,7 +2617,8 @@ client.proxy().delete(
 
 ```java
 client.proxy().patch(
-    "https://api.example.com/endpoint",
+    "project_id",
+    "url_64",
     ProxyPatchRequest
         .builder()
         .externalUserId("external_user_id")
@@ -2614,7 +2644,15 @@ client.proxy().patch(
 <dl>
 <dd>
 
-**url:** `String` — The target URL to proxy the request to
+**projectId:** `String` — The project ID, which starts with 'proj_'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url64:** `String` — Base64-encoded target URL
     
 </dd>
 </dl>
@@ -2788,205 +2826,6 @@ client.tokens().validate(
 <dd>
 
 **params:** `Optional<ValidateTokenParams>` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-## Workflows
-<details><summary><code>client.workflows.invoke(urlOrEndpoint) -> Object</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-// Simple workflow invocation (uses OAuth authentication by default)
-client.workflows().invoke("eo3xxxx");
-
-// Advanced workflow invocation with all options
-client.workflows().invoke(
-    InvokeWorkflowOpts
-        .builder()
-        .urlOrEndpoint("https://eo3xxxx.m.pipedream.net")
-        .body(
-            new HashMap<String, Object>() {{
-                put("name", "John Doe");
-                put("email", "john@example.com");
-            }}
-        )
-        .headers(
-            new HashMap<String, String>() {{
-                put("Content-Type", "application/json");
-                put("Authorization", "Bearer your-token"); // For STATIC_BEARER auth
-            }}
-        )
-        .method("POST")
-        .authType(HTTPAuthType.STATIC_BEARER)
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**urlOrEndpoint:** `String` — Either a workflow endpoint ID (e.g., 'eo3xxxx') or a full workflow URL
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**body:** `Optional<Object>` — Request body to send to the workflow (will be JSON serialized)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**headers:** `Optional<Map<String, String>>` — Additional headers to include in the request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**method:** `Optional<String>` — HTTP method to use (defaults to 'POST')
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**authType:** `Optional<HTTPAuthType>` — Authentication type: OAUTH (default), STATIC_BEARER, or NONE
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.workflows.invokeForExternalUser(urlOrEndpoint, externalUserId) -> Object</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-// Simple external user invocation (uses OAuth authentication by default)
-client.workflows().invokeForExternalUser("eo3xxxx", "user123");
-
-// Advanced external user invocation with all options
-client.workflows().invokeForExternalUser(
-    InvokeWorkflowForExternalUserOpts
-        .builder()
-        .url("https://eo3xxxx.m.pipedream.net")
-        .externalUserId("user123")
-        .body(
-            new HashMap<String, Object>() {{
-                put("action", "process_data");
-                put("data", Arrays.asList("item1", "item2"));
-            }}
-        )
-        .headers(
-            new HashMap<String, String>() {{
-                put("X-Custom-Header", "value");
-            }}
-        )
-        .method("POST")
-        .authType(HTTPAuthType.OAUTH)
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**url:** `String` — The full workflow URL to invoke
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**externalUserId:** `String` — The external user ID for Pipedream Connect authentication
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**body:** `Optional<Object>` — Request body to send to the workflow (will be JSON serialized)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**headers:** `Optional<Map<String, String>>` — Additional headers to include in the request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**method:** `Optional<String>` — HTTP method to use (defaults to 'POST')
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**authType:** `Optional<HTTPAuthType>` — Authentication type: OAUTH (default), STATIC_BEARER, or NONE
     
 </dd>
 </dl>
