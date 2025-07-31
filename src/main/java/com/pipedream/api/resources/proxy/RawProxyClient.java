@@ -32,17 +32,6 @@ public class RawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    private Object parseResponse(String responseBodyString) {
-        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-            return null;
-        }
-        try {
-            return ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
-        } catch (Exception jsonException) {
-            return responseBodyString;
-        }
-    }
-
     public BaseClientHttpResponse<Object> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
@@ -69,15 +58,14 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
@@ -118,15 +106,14 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
@@ -167,15 +154,14 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
@@ -209,15 +195,14 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
@@ -259,15 +244,14 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);

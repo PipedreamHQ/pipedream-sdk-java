@@ -36,17 +36,6 @@ public class AsyncRawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    private Object parseResponse(String responseBodyString) {
-        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-            return null;
-        }
-        try {
-            return ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
-        } catch (Exception jsonException) {
-            return responseBodyString;
-        }
-    }
-
     public CompletableFuture<BaseClientHttpResponse<Object>> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
@@ -77,20 +66,15 @@ public class AsyncRawProxyClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-                            future.complete(new BaseClientHttpResponse<>(null, response));
-                            return;
-                        }
-                        Object parsedResponse = parseResponse(responseBodyString);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse, response));
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
-                            parseResponse(responseBodyString),
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
@@ -144,20 +128,15 @@ public class AsyncRawProxyClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-                            future.complete(new BaseClientHttpResponse<>(null, response));
-                            return;
-                        }
-                        Object parsedResponse = parseResponse(responseBodyString);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse, response));
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
-                            parseResponse(responseBodyString),
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
@@ -211,20 +190,15 @@ public class AsyncRawProxyClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-                            future.complete(new BaseClientHttpResponse<>(null, response));
-                            return;
-                        }
-                        Object parsedResponse = parseResponse(responseBodyString);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse, response));
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
-                            parseResponse(responseBodyString),
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
@@ -270,20 +244,15 @@ public class AsyncRawProxyClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-                            future.complete(new BaseClientHttpResponse<>(null, response));
-                            return;
-                        }
-                        Object parsedResponse = parseResponse(responseBodyString);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse, response));
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
-                            parseResponse(responseBodyString),
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
@@ -337,20 +306,15 @@ public class AsyncRawProxyClient {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
-                        String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-                            future.complete(new BaseClientHttpResponse<>(null, response));
-                            return;
-                        }
-                        Object parsedResponse = parseResponse(responseBodyString);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse, response));
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),
-                            parseResponse(responseBodyString),
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                             response));
                     return;
                 } catch (IOException e) {
