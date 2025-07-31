@@ -8,7 +8,7 @@ import org.apache.commons.text.lookup.StringLookupFactory;
 /**
  * Builder for creating PipedreamClient instances.
  */
-public final class PipedreamClientBuilder extends BaseClientBuilder<PipedreamClientBuilder> {
+public final class PipedreamClientBuilder extends BaseClientBuilder {
     private String projectId;
 
     public PipedreamClient build() {

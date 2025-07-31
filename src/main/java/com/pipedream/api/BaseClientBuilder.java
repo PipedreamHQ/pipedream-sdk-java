@@ -23,6 +23,8 @@ public class BaseClientBuilder {
 
     private Environment environment = Environment.PROD;
 
+    private String projectId;
+
     private OkHttpClient httpClient;
 
     /**
@@ -86,7 +88,7 @@ public class BaseClientBuilder {
     }
 
     public BaseClientBuilder projectId(String projectId) {
-        clientOptionsBuilder.projectId(projectId);
+        this.projectId = projectId;
         return this;
     }
 

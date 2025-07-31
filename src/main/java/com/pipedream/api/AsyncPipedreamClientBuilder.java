@@ -8,7 +8,7 @@ import org.apache.commons.text.lookup.StringLookupFactory;
 /**
  * Builder for creating AsyncPipedreamClient instances.
  */
-public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<AsyncPipedreamClientBuilder> {
+public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder {
     private String projectId;
 
     public AsyncPipedreamClient build() {
