@@ -78,7 +78,8 @@ public class AsyncRawProxyClient {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
+                        if (responseBodyString == null
+                                || responseBodyString.trim().isEmpty()) {
                             future.complete(new BaseClientHttpResponse<>(null, response));
                             return;
                         }
@@ -145,7 +146,8 @@ public class AsyncRawProxyClient {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
+                        if (responseBodyString == null
+                                || responseBodyString.trim().isEmpty()) {
                             future.complete(new BaseClientHttpResponse<>(null, response));
                             return;
                         }
@@ -212,7 +214,8 @@ public class AsyncRawProxyClient {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
+                        if (responseBodyString == null
+                                || responseBodyString.trim().isEmpty()) {
                             future.complete(new BaseClientHttpResponse<>(null, response));
                             return;
                         }
@@ -271,7 +274,8 @@ public class AsyncRawProxyClient {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
+                        if (responseBodyString == null
+                                || responseBodyString.trim().isEmpty()) {
                             future.complete(new BaseClientHttpResponse<>(null, response));
                             return;
                         }
@@ -338,7 +342,8 @@ public class AsyncRawProxyClient {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful()) {
                         String responseBodyString = responseBody != null ? responseBody.string() : null;
-                        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
+                        if (responseBodyString == null
+                                || responseBodyString.trim().isEmpty()) {
                             future.complete(new BaseClientHttpResponse<>(null, response));
                             return;
                         }

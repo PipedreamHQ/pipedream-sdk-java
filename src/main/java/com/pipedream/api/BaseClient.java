@@ -17,7 +17,6 @@ import com.pipedream.api.resources.proxy.ProxyClient;
 import com.pipedream.api.resources.tokens.TokensClient;
 import com.pipedream.api.resources.triggers.TriggersClient;
 import com.pipedream.api.resources.users.UsersClient;
-
 import java.util.function.Supplier;
 
 public class BaseClient {
