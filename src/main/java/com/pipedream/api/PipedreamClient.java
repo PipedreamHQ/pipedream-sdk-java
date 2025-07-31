@@ -2,13 +2,20 @@ package com.pipedream.api;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
-import java.util.Optional;
+import com.pipedream.api.core.Suppliers;
+import com.pipedream.api.resources.workflows.WorkflowsClient;
 import org.immutables.value.Value;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @Value
 public class PipedreamClient extends BaseClient {
+    private final Supplier<WorkflowsClient> workflowsClient;
+
     public PipedreamClient(final ClientOptions clientOptions) {
         super(clientOptions);
+        this.workflowsClient = Suppliers.memoize(() -> new WorkflowsClient(clientOptions));
     }
 
     public static PipedreamClientBuilder builder() {
@@ -32,5 +39,9 @@ public class PipedreamClient extends BaseClient {
         // further process it. The processing consists of removing the `Bearer`
         // or `Basic` prefix from the header value.
         return Optional.ofNullable(authorizationHeader).map(h -> h.replaceFirst("^.*?\\s+", ""));
+    }
+
+    public WorkflowsClient workflows() {
+        return this.workflowsClient.get();
     }
 }
