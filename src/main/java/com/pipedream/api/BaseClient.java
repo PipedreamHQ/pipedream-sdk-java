@@ -17,7 +17,7 @@ import com.pipedream.api.resources.proxy.ProxyClient;
 import com.pipedream.api.resources.tokens.TokensClient;
 import com.pipedream.api.resources.triggers.TriggersClient;
 import com.pipedream.api.resources.users.UsersClient;
-import com.pipedream.api.resources.workflows.WorkflowsClient;
+
 import java.util.function.Supplier;
 
 public class BaseClient {
@@ -47,8 +47,6 @@ public class BaseClient {
 
     protected final Supplier<OauthTokensClient> oauthTokensClient;
 
-    protected final Supplier<WorkflowsClient> workflowsClient;
-
     public BaseClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AppCategoriesClient(clientOptions));
@@ -63,7 +61,6 @@ public class BaseClient {
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new TokensClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new OauthTokensClient(clientOptions));
-        this.workflowsClient = Suppliers.memoize(() -> new WorkflowsClient(clientOptions));
     }
 
     public AppCategoriesClient appCategories() {
@@ -112,10 +109,6 @@ public class BaseClient {
 
     public OauthTokensClient oauthTokens() {
         return this.oauthTokensClient.get();
-    }
-
-    public WorkflowsClient workflows() {
-        return this.workflowsClient.get();
     }
 
     public static BaseClientBuilder builder() {

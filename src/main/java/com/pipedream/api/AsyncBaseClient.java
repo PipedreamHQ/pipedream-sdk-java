@@ -17,7 +17,7 @@ import com.pipedream.api.resources.proxy.AsyncProxyClient;
 import com.pipedream.api.resources.tokens.AsyncTokensClient;
 import com.pipedream.api.resources.triggers.AsyncTriggersClient;
 import com.pipedream.api.resources.users.AsyncUsersClient;
-import com.pipedream.api.resources.workflows.AsyncWorkflowsClient;
+
 import java.util.function.Supplier;
 
 public class AsyncBaseClient {
@@ -47,8 +47,6 @@ public class AsyncBaseClient {
 
     protected final Supplier<AsyncOauthTokensClient> oauthTokensClient;
 
-    protected final Supplier<AsyncWorkflowsClient> workflowsClient;
-
     public AsyncBaseClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AsyncAppCategoriesClient(clientOptions));
@@ -63,7 +61,6 @@ public class AsyncBaseClient {
         this.proxyClient = Suppliers.memoize(() -> new AsyncProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new AsyncTokensClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new AsyncOauthTokensClient(clientOptions));
-        this.workflowsClient = Suppliers.memoize(() -> new AsyncWorkflowsClient(clientOptions));
     }
 
     public AsyncAppCategoriesClient appCategories() {
@@ -112,10 +109,6 @@ public class AsyncBaseClient {
 
     public AsyncOauthTokensClient oauthTokens() {
         return this.oauthTokensClient.get();
-    }
-
-    public AsyncWorkflowsClient workflows() {
-        return this.workflowsClient.get();
     }
 
     public static AsyncBaseClientBuilder builder() {
