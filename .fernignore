@@ -3,6 +3,7 @@
 .github/workflows/ci.yml
 LICENSE
 
+# Custom Pipedream client files
 src/main/java/com/pipedream/api/AsyncBaseClient.java
 src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
 src/main/java/com/pipedream/api/BaseClient.java
@@ -11,6 +12,24 @@ src/main/java/com/pipedream/api/PipedreamClient.java
 src/main/java/com/pipedream/api/PipedreamClientBuilder.java
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
 src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
-src/main/java/com/pipedream/api/resources/proxy/**/*.java
-src/main/java/com/pipedream/api/resources/workflows/**/*.java
+
+# Custom Proxy files
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPostRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPatchRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPutRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyDeleteRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyGetRequest.java
+src/main/java/com/pipedream/api/resources/proxy/RawProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/ProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/AsyncProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/AsyncRawProxyClient.java
+
+# Custom Workflow files
+src/main/java/com/pipedream/api/resources/workflows/AsyncWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowOpts.java
+src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowForExternalUserOpts.java
+src/main/java/com/pipedream/api/resources/workflows/AsyncRawWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/WorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/RawWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/package-info.java
 src/main/java/com/pipedream/api/types/HTTPAuthType.java
