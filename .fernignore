@@ -1,13 +1,15 @@
 # Specify files that shouldn't be modified by Fern
+
+# Custom CI/CD
 .github/workflows/auto-close-empty-prs.yml
-.github/workflows/ci.yml
+
+# Our own license
 LICENSE
 
+# References doc (we have additional use cases)
+reference.md
+
 # Custom Pipedream client files
-src/main/java/com/pipedream/api/AsyncBaseClient.java
-src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
-src/main/java/com/pipedream/api/BaseClient.java
-src/main/java/com/pipedream/api/BaseClientBuilder.java
 src/main/java/com/pipedream/api/PipedreamClient.java
 src/main/java/com/pipedream/api/PipedreamClientBuilder.java
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
