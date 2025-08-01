@@ -10,7 +10,7 @@ import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
 
-public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
+public class BaseClientBuilder {
     private Optional<Integer> timeout = Optional.empty();
 
     private Optional<Integer> maxRetries = Optional.empty();
@@ -29,68 +29,65 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      * Sets clientId.
      * Defaults to the PIPEDREAM_CLIENT_ID environment variable.
      */
-    @SuppressWarnings("unchecked")
-    public T clientId(String clientId) {
+    public BaseClientBuilder clientId(String clientId) {
         this.clientId = clientId;
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets clientSecret.
      * Defaults to the PIPEDREAM_CLIENT_SECRET environment variable.
      */
-    @SuppressWarnings("unchecked")
-    public T clientSecret(String clientSecret) {
+    public BaseClientBuilder clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets projectEnvironment
      */
-    @SuppressWarnings("unchecked")
-    public T projectEnvironment(String projectEnvironment) {
+    public BaseClientBuilder projectEnvironment(String projectEnvironment) {
         this.projectEnvironment = projectEnvironment;
-        return (T) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public T environment(Environment environment) {
+    public BaseClientBuilder environment(Environment environment) {
         this.environment = environment;
-        return (T) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public T url(String url) {
+    public BaseClientBuilder url(String url) {
         this.environment = Environment.custom(url);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
-    @SuppressWarnings("unchecked")
-    public T timeout(int timeout) {
+    public BaseClientBuilder timeout(int timeout) {
         this.timeout = Optional.of(timeout);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
-    @SuppressWarnings("unchecked")
-    public T maxRetries(int maxRetries) {
+    public BaseClientBuilder maxRetries(int maxRetries) {
         this.maxRetries = Optional.of(maxRetries);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the underlying OkHttp client
      */
-    @SuppressWarnings("unchecked")
-    public T httpClient(OkHttpClient httpClient) {
+    public BaseClientBuilder httpClient(OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        return (T) this;
+        return this;
+    }
+
+    public BaseClientBuilder projectId(String projectId) {
+        clientOptionsBuilder.projectId(projectId);
+        return this;
     }
 
     protected ClientOptions buildClientOptions() {
@@ -124,7 +121,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAuthentication(ClientOptions.Builder builder) {
      *     super.setAuthentication(builder); // Keep existing auth
      *     builder.addHeader("X-API-Key", this.apiKey);
@@ -149,7 +146,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setCustomHeaders(ClientOptions.Builder builder) {
      *     super.setCustomHeaders(builder); // Keep existing headers
      *     builder.addHeader("X-Trace-ID", generateTraceId());
@@ -215,9 +212,9 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAdditional(ClientOptions.Builder builder) {
-     *     builder.addHeader("X-Request-ID", () -> UUID.randomUUID().toString());
+     *     builder.addHeader("X-Request-ID", () -&gt; UUID.randomUUID().toString());
      *     builder.addHeader("X-Client-Version", "1.0.0");
      * }
      * }</pre>
@@ -231,7 +228,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void validateConfiguration() {
      *     super.validateConfiguration(); // Run parent validations
      *     if (tenantId == null || tenantId.isEmpty()) {
