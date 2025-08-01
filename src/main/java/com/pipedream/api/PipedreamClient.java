@@ -6,9 +6,7 @@ import com.pipedream.api.core.Suppliers;
 import com.pipedream.api.resources.workflows.WorkflowsClient;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.immutables.value.Value;
 
-@Value
 public class PipedreamClient extends BaseClient {
     private final Supplier<WorkflowsClient> workflowsClient;
 
