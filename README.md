@@ -37,7 +37,7 @@ Instantiate and use the client with the following:
 package com.example.usage;
 
 import com.pipedream.api.BaseClient;
-import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
+import com.pipedream.api.resources.actions.requests.RunActionOpts;
 
 public class Example {
     public static void main(String[] args) {
@@ -47,13 +47,12 @@ public class Example {
             .clientSecret("<clientSecret>")
             .build();
 
-        client.accounts().create(
+        client.actions().run(
             "project_id",
-            CreateAccountOpts
+            RunActionOpts
                 .builder()
-                .appSlug("app_slug")
-                .cfmapJson("cfmap_json")
-                .connectToken("connect_token")
+                .id("id")
+                .externalUserId("external_user_id")
                 .build()
         );
     }
@@ -95,7 +94,7 @@ When the API returns a non-success status code (4xx or 5xx response), an API exc
 import com.pipedream.api.core.PipedreamApiApiException;
 
 try {
-    client.accounts().create(...);
+    client.actions().run(...);
 } catch (PipedreamApiApiException e) {
     // Do something with the API exception...
 }
@@ -158,7 +157,7 @@ BaseClient client = BaseClient
     .build();
 
 // Request level
-client.accounts().create(
+client.actions().run(
     ...,
     RequestOptions
         .builder()
