@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.resources.actions.types.RunActionOptsStashId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +32,8 @@ public final class RunActionOpts {
 
     private final Optional<String> dynamicPropsId;
 
+    private final Optional<RunActionOptsStashId> stashId;
+
     private final Map<String, Object> additionalProperties;
 
     private RunActionOpts(
@@ -39,12 +42,14 @@ public final class RunActionOpts {
             String externalUserId,
             Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
+            Optional<RunActionOptsStashId> stashId,
             Map<String, Object> additionalProperties) {
         this.asyncHandle = asyncHandle;
         this.id = id;
         this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
+        this.stashId = stashId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -85,6 +90,14 @@ public final class RunActionOpts {
         return dynamicPropsId;
     }
 
+    /**
+     * @return The ID of the File Stash to use for syncing the action's /tmp directory
+     */
+    @JsonProperty("stash_id")
+    public Optional<RunActionOptsStashId> getStashId() {
+        return stashId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -101,12 +114,19 @@ public final class RunActionOpts {
                 && id.equals(other.id)
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
-                && dynamicPropsId.equals(other.dynamicPropsId);
+                && dynamicPropsId.equals(other.dynamicPropsId)
+                && stashId.equals(other.stashId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.asyncHandle, this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId);
+        return Objects.hash(
+                this.asyncHandle,
+                this.id,
+                this.externalUserId,
+                this.configuredProps,
+                this.dynamicPropsId,
+                this.stashId);
     }
 
     @java.lang.Override
@@ -154,6 +174,13 @@ public final class RunActionOpts {
         _FinalStage dynamicPropsId(Optional<String> dynamicPropsId);
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
+
+        /**
+         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
+         */
+        _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
+
+        _FinalStage stashId(RunActionOptsStashId stashId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -161,6 +188,8 @@ public final class RunActionOpts {
         private String id;
 
         private String externalUserId;
+
+        private Optional<RunActionOptsStashId> stashId = Optional.empty();
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
@@ -180,6 +209,7 @@ public final class RunActionOpts {
             externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
+            stashId(other.getStashId());
             return this;
         }
 
@@ -204,6 +234,26 @@ public final class RunActionOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage stashId(RunActionOptsStashId stashId) {
+            this.stashId = Optional.ofNullable(stashId);
+            return this;
+        }
+
+        /**
+         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
+        public _FinalStage stashId(Optional<RunActionOptsStashId> stashId) {
+            this.stashId = stashId;
             return this;
         }
 
@@ -263,7 +313,7 @@ public final class RunActionOpts {
         @java.lang.Override
         public RunActionOpts build() {
             return new RunActionOpts(
-                    asyncHandle, id, externalUserId, configuredProps, dynamicPropsId, additionalProperties);
+                    asyncHandle, id, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
         }
     }
 }
