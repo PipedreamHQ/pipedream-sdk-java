@@ -5,7 +5,7 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ConfigurablePropAlertAlertType {
+public enum ConfigurablePropAlertType {
     INFO("info"),
 
     NEUTRAL("neutral"),
@@ -16,7 +16,7 @@ public enum ConfigurablePropAlertAlertType {
 
     private final String value;
 
-    ConfigurablePropAlertAlertType(String value) {
+    ConfigurablePropAlertType(String value) {
         this.value = value;
     }
 

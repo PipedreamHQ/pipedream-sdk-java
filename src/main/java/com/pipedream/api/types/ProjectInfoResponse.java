@@ -21,17 +21,17 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ProjectInfoResponse.Builder.class)
 public final class ProjectInfoResponse {
-    private final List<ProjectInfoResponseAppsItem> apps;
+    private final List<ProjectInfoResponseApp> apps;
 
     private final Map<String, Object> additionalProperties;
 
-    private ProjectInfoResponse(List<ProjectInfoResponseAppsItem> apps, Map<String, Object> additionalProperties) {
+    private ProjectInfoResponse(List<ProjectInfoResponseApp> apps, Map<String, Object> additionalProperties) {
         this.apps = apps;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("apps")
-    public List<ProjectInfoResponseAppsItem> getApps() {
+    public List<ProjectInfoResponseApp> getApps() {
         return apps;
     }
 
@@ -66,7 +66,7 @@ public final class ProjectInfoResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private List<ProjectInfoResponseAppsItem> apps = new ArrayList<>();
+        private List<ProjectInfoResponseApp> apps = new ArrayList<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -79,18 +79,18 @@ public final class ProjectInfoResponse {
         }
 
         @JsonSetter(value = "apps", nulls = Nulls.SKIP)
-        public Builder apps(List<ProjectInfoResponseAppsItem> apps) {
+        public Builder apps(List<ProjectInfoResponseApp> apps) {
             this.apps.clear();
             this.apps.addAll(apps);
             return this;
         }
 
-        public Builder addApps(ProjectInfoResponseAppsItem apps) {
+        public Builder addApps(ProjectInfoResponseApp apps) {
             this.apps.add(apps);
             return this;
         }
 
-        public Builder addAllApps(List<ProjectInfoResponseAppsItem> apps) {
+        public Builder addAllApps(List<ProjectInfoResponseApp> apps) {
             this.apps.addAll(apps);
             return this;
         }
