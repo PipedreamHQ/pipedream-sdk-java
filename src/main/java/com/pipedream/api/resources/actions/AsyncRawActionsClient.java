@@ -343,9 +343,6 @@ public class AsyncRawActionsClient {
         if (request.getDynamicPropsId().isPresent()) {
             properties.put("dynamic_props_id", request.getDynamicPropsId());
         }
-        if (request.getStashId().isPresent()) {
-            properties.put("stash_id", request.getStashId());
-        }
         RequestBody body;
         try {
             body = RequestBody.create(

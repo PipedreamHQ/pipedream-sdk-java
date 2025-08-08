@@ -52,9 +52,6 @@ public final class CreateTokenResponse {
         return expiresAt;
     }
 
-    /**
-     * @return The generated token
-     */
     @JsonProperty("token")
     public String getToken() {
         return token;
@@ -108,9 +105,6 @@ public final class CreateTokenResponse {
     }
 
     public interface TokenStage {
-        /**
-         * <p>The generated token</p>
-         */
         _FinalStage token(@NotNull String token);
     }
 
@@ -163,11 +157,6 @@ public final class CreateTokenResponse {
             return this;
         }
 
-        /**
-         * <p>The generated token</p>
-         * <p>The generated token</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
         @JsonSetter("token")
         public _FinalStage token(@NotNull String token) {
