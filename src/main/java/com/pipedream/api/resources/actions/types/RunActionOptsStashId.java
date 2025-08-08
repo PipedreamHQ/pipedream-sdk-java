@@ -6,12 +6,14 @@ package com.pipedream.api.resources.actions.types;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.pipedream.api.core.ObjectMappers;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
 @JsonDeserialize(using = RunActionOptsStashId.Deserializer.class)
 public final class RunActionOptsStashId {
@@ -32,8 +34,10 @@ public final class RunActionOptsStashId {
     @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
-            return visitor.visit((String) this.value);
+            return visitor.visit((Optional<String>) this.value);
         } else if (this.type == 1) {
+            return visitor.visit((String) this.value);
+        } else if (this.type == 2) {
             return visitor.visit((boolean) this.value);
         }
         throw new IllegalStateException("Failed to visit value. This should never happen.");
@@ -59,15 +63,33 @@ public final class RunActionOptsStashId {
         return this.value.toString();
     }
 
-    public static RunActionOptsStashId of(String value) {
+    public static RunActionOptsStashId of(Optional<String> value) {
         return new RunActionOptsStashId(value, 0);
     }
 
-    public static RunActionOptsStashId of(boolean value) {
+    /**
+     * @param value must be one of the following:
+     * <ul>
+     * <li>"NEW"</li>
+     * </ul>
+     */
+    public static RunActionOptsStashId of(String value) {
         return new RunActionOptsStashId(value, 1);
     }
 
+    public static RunActionOptsStashId of(boolean value) {
+        return new RunActionOptsStashId(value, 2);
+    }
+
     public interface Visitor<T> {
+        T visit(Optional<String> value);
+
+        /**
+         * @param value must be one of the following:
+         * <ul>
+         * <li>"NEW"</li>
+         * </ul>
+         */
         T visit(String value);
 
         T visit(boolean value);
@@ -81,6 +103,10 @@ public final class RunActionOptsStashId {
         @java.lang.Override
         public RunActionOptsStashId deserialize(JsonParser p, DeserializationContext context) throws IOException {
             Object value = p.readValueAs(Object.class);
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Optional<String>>() {}));
+            } catch (IllegalArgumentException e) {
+            }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
             } catch (IllegalArgumentException e) {

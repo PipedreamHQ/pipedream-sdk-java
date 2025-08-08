@@ -23,25 +23,73 @@ import java.util.Optional;
 public final class ConfigurePropResponse {
     private final Optional<List<PropOption>> options;
 
+    private final Optional<List<String>> stringOptions;
+
+    private final Optional<Map<String, Object>> observations;
+
+    private final Optional<String> asyncHandle;
+
+    private final Optional<Map<String, Object>> context;
+
     private final Optional<List<String>> errors;
 
     private final Map<String, Object> additionalProperties;
 
     private ConfigurePropResponse(
             Optional<List<PropOption>> options,
+            Optional<List<String>> stringOptions,
+            Optional<Map<String, Object>> observations,
+            Optional<String> asyncHandle,
+            Optional<Map<String, Object>> context,
             Optional<List<String>> errors,
             Map<String, Object> additionalProperties) {
         this.options = options;
+        this.stringOptions = stringOptions;
+        this.observations = observations;
+        this.asyncHandle = asyncHandle;
+        this.context = context;
         this.errors = errors;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Available options for the configured prop
+     * @return Available options (with labels) for the configured prop
      */
     @JsonProperty("options")
     public Optional<List<PropOption>> getOptions() {
         return options;
+    }
+
+    /**
+     * @return Available options for the configured prop
+     */
+    @JsonProperty("string_options")
+    public Optional<List<String>> getStringOptions() {
+        return stringOptions;
+    }
+
+    /**
+     * @return Any logs produced during the configuration of the prop
+     */
+    @JsonProperty("observations")
+    public Optional<Map<String, Object>> getObservations() {
+        return observations;
+    }
+
+    /**
+     * @return Handle for async operations
+     */
+    @JsonProperty("async_handle")
+    public Optional<String> getAsyncHandle() {
+        return asyncHandle;
+    }
+
+    /**
+     * @return New context after configuring the prop
+     */
+    @JsonProperty("context")
+    public Optional<Map<String, Object>> getContext() {
+        return context;
     }
 
     /**
@@ -64,12 +112,18 @@ public final class ConfigurePropResponse {
     }
 
     private boolean equalTo(ConfigurePropResponse other) {
-        return options.equals(other.options) && errors.equals(other.errors);
+        return options.equals(other.options)
+                && stringOptions.equals(other.stringOptions)
+                && observations.equals(other.observations)
+                && asyncHandle.equals(other.asyncHandle)
+                && context.equals(other.context)
+                && errors.equals(other.errors);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.options, this.errors);
+        return Objects.hash(
+                this.options, this.stringOptions, this.observations, this.asyncHandle, this.context, this.errors);
     }
 
     @java.lang.Override
@@ -85,6 +139,14 @@ public final class ConfigurePropResponse {
     public static final class Builder {
         private Optional<List<PropOption>> options = Optional.empty();
 
+        private Optional<List<String>> stringOptions = Optional.empty();
+
+        private Optional<Map<String, Object>> observations = Optional.empty();
+
+        private Optional<String> asyncHandle = Optional.empty();
+
+        private Optional<Map<String, Object>> context = Optional.empty();
+
         private Optional<List<String>> errors = Optional.empty();
 
         @JsonAnySetter
@@ -94,12 +156,16 @@ public final class ConfigurePropResponse {
 
         public Builder from(ConfigurePropResponse other) {
             options(other.getOptions());
+            stringOptions(other.getStringOptions());
+            observations(other.getObservations());
+            asyncHandle(other.getAsyncHandle());
+            context(other.getContext());
             errors(other.getErrors());
             return this;
         }
 
         /**
-         * <p>Available options for the configured prop</p>
+         * <p>Available options (with labels) for the configured prop</p>
          */
         @JsonSetter(value = "options", nulls = Nulls.SKIP)
         public Builder options(Optional<List<PropOption>> options) {
@@ -109,6 +175,62 @@ public final class ConfigurePropResponse {
 
         public Builder options(List<PropOption> options) {
             this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        /**
+         * <p>Available options for the configured prop</p>
+         */
+        @JsonSetter(value = "string_options", nulls = Nulls.SKIP)
+        public Builder stringOptions(Optional<List<String>> stringOptions) {
+            this.stringOptions = stringOptions;
+            return this;
+        }
+
+        public Builder stringOptions(List<String> stringOptions) {
+            this.stringOptions = Optional.ofNullable(stringOptions);
+            return this;
+        }
+
+        /**
+         * <p>Any logs produced during the configuration of the prop</p>
+         */
+        @JsonSetter(value = "observations", nulls = Nulls.SKIP)
+        public Builder observations(Optional<Map<String, Object>> observations) {
+            this.observations = observations;
+            return this;
+        }
+
+        public Builder observations(Map<String, Object> observations) {
+            this.observations = Optional.ofNullable(observations);
+            return this;
+        }
+
+        /**
+         * <p>Handle for async operations</p>
+         */
+        @JsonSetter(value = "async_handle", nulls = Nulls.SKIP)
+        public Builder asyncHandle(Optional<String> asyncHandle) {
+            this.asyncHandle = asyncHandle;
+            return this;
+        }
+
+        public Builder asyncHandle(String asyncHandle) {
+            this.asyncHandle = Optional.ofNullable(asyncHandle);
+            return this;
+        }
+
+        /**
+         * <p>New context after configuring the prop</p>
+         */
+        @JsonSetter(value = "context", nulls = Nulls.SKIP)
+        public Builder context(Optional<Map<String, Object>> context) {
+            this.context = context;
+            return this;
+        }
+
+        public Builder context(Map<String, Object> context) {
+            this.context = Optional.ofNullable(context);
             return this;
         }
 
@@ -127,7 +249,8 @@ public final class ConfigurePropResponse {
         }
 
         public ConfigurePropResponse build() {
-            return new ConfigurePropResponse(options, errors, additionalProperties);
+            return new ConfigurePropResponse(
+                    options, stringOptions, observations, asyncHandle, context, errors, additionalProperties);
         }
     }
 }
