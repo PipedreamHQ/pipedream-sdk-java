@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.resources.actions.types.RunActionOptsStashId;
+import com.pipedream.api.types.RunActionOptsStashId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -90,9 +90,6 @@ public final class RunActionOpts {
         return dynamicPropsId;
     }
 
-    /**
-     * @return The ID of the File Stash to use for syncing the action's /tmp directory
-     */
     @JsonProperty("stash_id")
     public Optional<RunActionOptsStashId> getStashId() {
         return stashId;
@@ -175,9 +172,6 @@ public final class RunActionOpts {
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
 
-        /**
-         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
-         */
         _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
 
         _FinalStage stashId(RunActionOptsStashId stashId);
@@ -237,19 +231,12 @@ public final class RunActionOpts {
             return this;
         }
 
-        /**
-         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
         public _FinalStage stashId(RunActionOptsStashId stashId) {
             this.stashId = Optional.ofNullable(stashId);
             return this;
         }
 
-        /**
-         * <p>The ID of the File Stash to use for syncing the action's /tmp directory</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
         public _FinalStage stashId(Optional<RunActionOptsStashId> stashId) {

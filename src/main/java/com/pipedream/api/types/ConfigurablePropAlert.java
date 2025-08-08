@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropAlert {
     private final Optional<String> type;
 
-    private final Optional<ConfigurablePropAlertAlertType> alertType;
+    private final Optional<ConfigurablePropAlertType> alertType;
 
     private final Optional<String> content;
 
@@ -51,7 +51,7 @@ public final class ConfigurablePropAlert {
 
     private ConfigurablePropAlert(
             Optional<String> type,
-            Optional<ConfigurablePropAlertAlertType> alertType,
+            Optional<ConfigurablePropAlertType> alertType,
             Optional<String> content,
             String name,
             Optional<String> label,
@@ -85,11 +85,8 @@ public final class ConfigurablePropAlert {
         return type;
     }
 
-    /**
-     * @return The severity level of the alert.
-     */
     @JsonProperty("alertType")
-    public Optional<ConfigurablePropAlertAlertType> getAlertType() {
+    public Optional<ConfigurablePropAlertType> getAlertType() {
         return alertType;
     }
 
@@ -251,12 +248,9 @@ public final class ConfigurablePropAlert {
 
         _FinalStage type(String type);
 
-        /**
-         * <p>The severity level of the alert.</p>
-         */
-        _FinalStage alertType(Optional<ConfigurablePropAlertAlertType> alertType);
+        _FinalStage alertType(Optional<ConfigurablePropAlertType> alertType);
 
-        _FinalStage alertType(ConfigurablePropAlertAlertType alertType);
+        _FinalStage alertType(ConfigurablePropAlertType alertType);
 
         /**
          * <p>The content of the alert, which can include HTML or plain text.</p>
@@ -353,7 +347,7 @@ public final class ConfigurablePropAlert {
 
         private Optional<String> content = Optional.empty();
 
-        private Optional<ConfigurablePropAlertAlertType> alertType = Optional.empty();
+        private Optional<ConfigurablePropAlertType> alertType = Optional.empty();
 
         private Optional<String> type = Optional.empty();
 
@@ -592,22 +586,15 @@ public final class ConfigurablePropAlert {
             return this;
         }
 
-        /**
-         * <p>The severity level of the alert.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage alertType(ConfigurablePropAlertAlertType alertType) {
+        public _FinalStage alertType(ConfigurablePropAlertType alertType) {
             this.alertType = Optional.ofNullable(alertType);
             return this;
         }
 
-        /**
-         * <p>The severity level of the alert.</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "alertType", nulls = Nulls.SKIP)
-        public _FinalStage alertType(Optional<ConfigurablePropAlertAlertType> alertType) {
+        public _FinalStage alertType(Optional<ConfigurablePropAlertType> alertType) {
             this.alertType = alertType;
             return this;
         }
