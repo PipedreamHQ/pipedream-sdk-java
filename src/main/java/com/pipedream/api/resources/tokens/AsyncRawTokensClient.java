@@ -110,7 +110,9 @@ public class AsyncRawTokensClient {
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("v1/connect/tokens")
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("tokens")
                 .addPathSegment(ctok)
                 .addPathSegments("validate");
         if (request.getParams().isPresent()) {

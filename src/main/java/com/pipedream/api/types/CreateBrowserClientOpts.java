@@ -12,33 +12,35 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ProjectInfoResponse.Builder.class)
-public final class ProjectInfoResponse {
-    private final List<ProjectInfoResponseAppsItem> apps;
+@JsonDeserialize(builder = CreateBrowserClientOpts.Builder.class)
+public final class CreateBrowserClientOpts {
+    private final Optional<String> apiUrl;
 
     private final Map<String, Object> additionalProperties;
 
-    private ProjectInfoResponse(List<ProjectInfoResponseAppsItem> apps, Map<String, Object> additionalProperties) {
-        this.apps = apps;
+    private CreateBrowserClientOpts(Optional<String> apiUrl, Map<String, Object> additionalProperties) {
+        this.apiUrl = apiUrl;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("apps")
-    public List<ProjectInfoResponseAppsItem> getApps() {
-        return apps;
+    /**
+     * @return The API URL to use
+     */
+    @JsonProperty("api_url")
+    public Optional<String> getApiUrl() {
+        return apiUrl;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ProjectInfoResponse && equalTo((ProjectInfoResponse) other);
+        return other instanceof CreateBrowserClientOpts && equalTo((CreateBrowserClientOpts) other);
     }
 
     @JsonAnyGetter
@@ -46,13 +48,13 @@ public final class ProjectInfoResponse {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ProjectInfoResponse other) {
-        return apps.equals(other.apps);
+    private boolean equalTo(CreateBrowserClientOpts other) {
+        return apiUrl.equals(other.apiUrl);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.apps);
+        return Objects.hash(this.apiUrl);
     }
 
     @java.lang.Override
@@ -66,37 +68,34 @@ public final class ProjectInfoResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private List<ProjectInfoResponseAppsItem> apps = new ArrayList<>();
+        private Optional<String> apiUrl = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(ProjectInfoResponse other) {
-            apps(other.getApps());
+        public Builder from(CreateBrowserClientOpts other) {
+            apiUrl(other.getApiUrl());
             return this;
         }
 
-        @JsonSetter(value = "apps", nulls = Nulls.SKIP)
-        public Builder apps(List<ProjectInfoResponseAppsItem> apps) {
-            this.apps.clear();
-            this.apps.addAll(apps);
+        /**
+         * <p>The API URL to use</p>
+         */
+        @JsonSetter(value = "api_url", nulls = Nulls.SKIP)
+        public Builder apiUrl(Optional<String> apiUrl) {
+            this.apiUrl = apiUrl;
             return this;
         }
 
-        public Builder addApps(ProjectInfoResponseAppsItem apps) {
-            this.apps.add(apps);
+        public Builder apiUrl(String apiUrl) {
+            this.apiUrl = Optional.ofNullable(apiUrl);
             return this;
         }
 
-        public Builder addAllApps(List<ProjectInfoResponseAppsItem> apps) {
-            this.apps.addAll(apps);
-            return this;
-        }
-
-        public ProjectInfoResponse build() {
-            return new ProjectInfoResponse(apps, additionalProperties);
+        public CreateBrowserClientOpts build() {
+            return new CreateBrowserClientOpts(apiUrl, additionalProperties);
         }
     }
 }
