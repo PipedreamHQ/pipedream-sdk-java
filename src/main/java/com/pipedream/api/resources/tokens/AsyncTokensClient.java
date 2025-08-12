@@ -36,10 +36,6 @@ public class AsyncTokensClient {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<ValidateTokenResponse> validate(String ctok) {
-        return this.rawClient.validate(ctok).thenApply(response -> response.body());
-    }
-
     public CompletableFuture<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
         return this.rawClient.validate(ctok, request).thenApply(response -> response.body());
     }

@@ -6,12 +6,12 @@ package com.pipedream.api.resources.actions;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.actions.requests.ActionsConfigurePropRequest;
 import com.pipedream.api.resources.actions.requests.ActionsListRequest;
-import com.pipedream.api.resources.actions.requests.ActionsReloadPropsRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
+import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
+import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import com.pipedream.api.types.RunActionResponse;
 import java.util.concurrent.CompletableFuture;
@@ -54,21 +54,20 @@ public class AsyncActionsClient {
         return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<ConfigurePropResponse> configureProp(ActionsConfigurePropRequest request) {
+    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).thenApply(response -> response.body());
     }
 
     public CompletableFuture<ConfigurePropResponse> configureProp(
-            ActionsConfigurePropRequest request, RequestOptions requestOptions) {
+            ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ActionsReloadPropsRequest request) {
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).thenApply(response -> response.body());
     }
 
-    public CompletableFuture<ReloadPropsResponse> reloadProps(
-            ActionsReloadPropsRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
     }
 

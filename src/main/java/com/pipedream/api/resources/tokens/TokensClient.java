@@ -35,10 +35,6 @@ public class TokensClient {
         return this.rawClient.create(request, requestOptions).body();
     }
 
-    public ValidateTokenResponse validate(String ctok) {
-        return this.rawClient.validate(ctok).body();
-    }
-
     public ValidateTokenResponse validate(String ctok, TokensValidateRequest request) {
         return this.rawClient.validate(ctok, request).body();
     }
