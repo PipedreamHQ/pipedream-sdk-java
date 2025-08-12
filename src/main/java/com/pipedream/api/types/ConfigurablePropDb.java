@@ -13,24 +13,15 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ConfigurablePropInteger.Builder.class)
-public final class ConfigurablePropInteger {
+@JsonDeserialize(builder = ConfigurablePropDb.Builder.class)
+public final class ConfigurablePropDb {
     private final Optional<String> type;
-
-    private final Optional<Integer> min;
-
-    private final Optional<Integer> max;
-
-    private final Optional<Integer> default_;
-
-    private final Optional<List<Integer>> options;
 
     private final String name;
 
@@ -54,12 +45,8 @@ public final class ConfigurablePropInteger {
 
     private final Map<String, Object> additionalProperties;
 
-    private ConfigurablePropInteger(
+    private ConfigurablePropDb(
             Optional<String> type,
-            Optional<Integer> min,
-            Optional<Integer> max,
-            Optional<Integer> default_,
-            Optional<List<Integer>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -72,10 +59,6 @@ public final class ConfigurablePropInteger {
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
         this.type = type;
-        this.min = min;
-        this.max = max;
-        this.default_ = default_;
-        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -92,38 +75,6 @@ public final class ConfigurablePropInteger {
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
-    }
-
-    /**
-     * @return The minimum value for this integer prop.
-     */
-    @JsonProperty("min")
-    public Optional<Integer> getMin() {
-        return min;
-    }
-
-    /**
-     * @return The maximum value for this integer prop.
-     */
-    @JsonProperty("max")
-    public Optional<Integer> getMax() {
-        return max;
-    }
-
-    /**
-     * @return Default integer value
-     */
-    @JsonProperty("default")
-    public Optional<Integer> getDefault() {
-        return default_;
-    }
-
-    /**
-     * @return Available integer options
-     */
-    @JsonProperty("options")
-    public Optional<List<Integer>> getOptions() {
-        return options;
     }
 
     /**
@@ -209,7 +160,7 @@ public final class ConfigurablePropInteger {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ConfigurablePropInteger && equalTo((ConfigurablePropInteger) other);
+        return other instanceof ConfigurablePropDb && equalTo((ConfigurablePropDb) other);
     }
 
     @JsonAnyGetter
@@ -217,12 +168,8 @@ public final class ConfigurablePropInteger {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ConfigurablePropInteger other) {
+    private boolean equalTo(ConfigurablePropDb other) {
         return type.equals(other.type)
-                && min.equals(other.min)
-                && max.equals(other.max)
-                && default_.equals(other.default_)
-                && options.equals(other.options)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -239,10 +186,6 @@ public final class ConfigurablePropInteger {
     public int hashCode() {
         return Objects.hash(
                 this.type,
-                this.min,
-                this.max,
-                this.default_,
-                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -270,43 +213,15 @@ public final class ConfigurablePropInteger {
          */
         _FinalStage name(@NotNull String name);
 
-        Builder from(ConfigurablePropInteger other);
+        Builder from(ConfigurablePropDb other);
     }
 
     public interface _FinalStage {
-        ConfigurablePropInteger build();
+        ConfigurablePropDb build();
 
         _FinalStage type(Optional<String> type);
 
         _FinalStage type(String type);
-
-        /**
-         * <p>The minimum value for this integer prop.</p>
-         */
-        _FinalStage min(Optional<Integer> min);
-
-        _FinalStage min(Integer min);
-
-        /**
-         * <p>The maximum value for this integer prop.</p>
-         */
-        _FinalStage max(Optional<Integer> max);
-
-        _FinalStage max(Integer max);
-
-        /**
-         * <p>Default integer value</p>
-         */
-        _FinalStage default_(Optional<Integer> default_);
-
-        _FinalStage default_(Integer default_);
-
-        /**
-         * <p>Available integer options</p>
-         */
-        _FinalStage options(Optional<List<Integer>> options);
-
-        _FinalStage options(List<Integer> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -394,14 +309,6 @@ public final class ConfigurablePropInteger {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<List<Integer>> options = Optional.empty();
-
-        private Optional<Integer> default_ = Optional.empty();
-
-        private Optional<Integer> max = Optional.empty();
-
-        private Optional<Integer> min = Optional.empty();
-
         private Optional<String> type = Optional.empty();
 
         @JsonAnySetter
@@ -410,12 +317,8 @@ public final class ConfigurablePropInteger {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(ConfigurablePropInteger other) {
+        public Builder from(ConfigurablePropDb other) {
             type(other.getType());
-            min(other.getMin());
-            max(other.getMax());
-            default_(other.getDefault());
-            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -621,86 +524,6 @@ public final class ConfigurablePropInteger {
             return this;
         }
 
-        /**
-         * <p>Available integer options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage options(List<Integer> options) {
-            this.options = Optional.ofNullable(options);
-            return this;
-        }
-
-        /**
-         * <p>Available integer options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<Integer>> options) {
-            this.options = options;
-            return this;
-        }
-
-        /**
-         * <p>Default integer value</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage default_(Integer default_) {
-            this.default_ = Optional.ofNullable(default_);
-            return this;
-        }
-
-        /**
-         * <p>Default integer value</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<Integer> default_) {
-            this.default_ = default_;
-            return this;
-        }
-
-        /**
-         * <p>The maximum value for this integer prop.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage max(Integer max) {
-            this.max = Optional.ofNullable(max);
-            return this;
-        }
-
-        /**
-         * <p>The maximum value for this integer prop.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "max", nulls = Nulls.SKIP)
-        public _FinalStage max(Optional<Integer> max) {
-            this.max = max;
-            return this;
-        }
-
-        /**
-         * <p>The minimum value for this integer prop.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage min(Integer min) {
-            this.min = Optional.ofNullable(min);
-            return this;
-        }
-
-        /**
-         * <p>The minimum value for this integer prop.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "min", nulls = Nulls.SKIP)
-        public _FinalStage min(Optional<Integer> min) {
-            this.min = min;
-            return this;
-        }
-
         @java.lang.Override
         public _FinalStage type(String type) {
             this.type = Optional.ofNullable(type);
@@ -715,13 +538,9 @@ public final class ConfigurablePropInteger {
         }
 
         @java.lang.Override
-        public ConfigurablePropInteger build() {
-            return new ConfigurablePropInteger(
+        public ConfigurablePropDb build() {
+            return new ConfigurablePropDb(
                     type,
-                    min,
-                    max,
-                    default_,
-                    options,
                     name,
                     label,
                     description,
