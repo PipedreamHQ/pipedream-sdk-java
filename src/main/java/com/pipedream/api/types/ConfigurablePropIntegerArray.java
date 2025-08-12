@@ -20,15 +20,15 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ConfigurablePropInteger.Builder.class)
-public final class ConfigurablePropInteger {
+@JsonDeserialize(builder = ConfigurablePropIntegerArray.Builder.class)
+public final class ConfigurablePropIntegerArray {
     private final Optional<String> type;
 
     private final Optional<Integer> min;
 
     private final Optional<Integer> max;
 
-    private final Optional<Integer> default_;
+    private final Optional<List<Integer>> default_;
 
     private final Optional<List<Integer>> options;
 
@@ -54,11 +54,11 @@ public final class ConfigurablePropInteger {
 
     private final Map<String, Object> additionalProperties;
 
-    private ConfigurablePropInteger(
+    private ConfigurablePropIntegerArray(
             Optional<String> type,
             Optional<Integer> min,
             Optional<Integer> max,
-            Optional<Integer> default_,
+            Optional<List<Integer>> default_,
             Optional<List<Integer>> options,
             String name,
             Optional<String> label,
@@ -95,7 +95,7 @@ public final class ConfigurablePropInteger {
     }
 
     /**
-     * @return The minimum value for this integer prop.
+     * @return The minimum value for integers in this array
      */
     @JsonProperty("min")
     public Optional<Integer> getMin() {
@@ -103,7 +103,7 @@ public final class ConfigurablePropInteger {
     }
 
     /**
-     * @return The maximum value for this integer prop.
+     * @return The maximum value for integers in this array
      */
     @JsonProperty("max")
     public Optional<Integer> getMax() {
@@ -111,15 +111,15 @@ public final class ConfigurablePropInteger {
     }
 
     /**
-     * @return Default integer value
+     * @return Default array of integers
      */
     @JsonProperty("default")
-    public Optional<Integer> getDefault() {
+    public Optional<List<Integer>> getDefault() {
         return default_;
     }
 
     /**
-     * @return Available integer options
+     * @return Available options for the integer array
      */
     @JsonProperty("options")
     public Optional<List<Integer>> getOptions() {
@@ -209,7 +209,7 @@ public final class ConfigurablePropInteger {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ConfigurablePropInteger && equalTo((ConfigurablePropInteger) other);
+        return other instanceof ConfigurablePropIntegerArray && equalTo((ConfigurablePropIntegerArray) other);
     }
 
     @JsonAnyGetter
@@ -217,7 +217,7 @@ public final class ConfigurablePropInteger {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ConfigurablePropInteger other) {
+    private boolean equalTo(ConfigurablePropIntegerArray other) {
         return type.equals(other.type)
                 && min.equals(other.min)
                 && max.equals(other.max)
@@ -270,39 +270,39 @@ public final class ConfigurablePropInteger {
          */
         _FinalStage name(@NotNull String name);
 
-        Builder from(ConfigurablePropInteger other);
+        Builder from(ConfigurablePropIntegerArray other);
     }
 
     public interface _FinalStage {
-        ConfigurablePropInteger build();
+        ConfigurablePropIntegerArray build();
 
         _FinalStage type(Optional<String> type);
 
         _FinalStage type(String type);
 
         /**
-         * <p>The minimum value for this integer prop.</p>
+         * <p>The minimum value for integers in this array</p>
          */
         _FinalStage min(Optional<Integer> min);
 
         _FinalStage min(Integer min);
 
         /**
-         * <p>The maximum value for this integer prop.</p>
+         * <p>The maximum value for integers in this array</p>
          */
         _FinalStage max(Optional<Integer> max);
 
         _FinalStage max(Integer max);
 
         /**
-         * <p>Default integer value</p>
+         * <p>Default array of integers</p>
          */
-        _FinalStage default_(Optional<Integer> default_);
+        _FinalStage default_(Optional<List<Integer>> default_);
 
-        _FinalStage default_(Integer default_);
+        _FinalStage default_(List<Integer> default_);
 
         /**
-         * <p>Available integer options</p>
+         * <p>Available options for the integer array</p>
          */
         _FinalStage options(Optional<List<Integer>> options);
 
@@ -396,7 +396,7 @@ public final class ConfigurablePropInteger {
 
         private Optional<List<Integer>> options = Optional.empty();
 
-        private Optional<Integer> default_ = Optional.empty();
+        private Optional<List<Integer>> default_ = Optional.empty();
 
         private Optional<Integer> max = Optional.empty();
 
@@ -410,7 +410,7 @@ public final class ConfigurablePropInteger {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(ConfigurablePropInteger other) {
+        public Builder from(ConfigurablePropIntegerArray other) {
             type(other.getType());
             min(other.getMin());
             max(other.getMax());
@@ -622,7 +622,7 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>Available integer options</p>
+         * <p>Available options for the integer array</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -632,7 +632,7 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>Available integer options</p>
+         * <p>Available options for the integer array</p>
          */
         @java.lang.Override
         @JsonSetter(value = "options", nulls = Nulls.SKIP)
@@ -642,27 +642,27 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>Default integer value</p>
+         * <p>Default array of integers</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage default_(Integer default_) {
+        public _FinalStage default_(List<Integer> default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
         /**
-         * <p>Default integer value</p>
+         * <p>Default array of integers</p>
          */
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<Integer> default_) {
+        public _FinalStage default_(Optional<List<Integer>> default_) {
             this.default_ = default_;
             return this;
         }
 
         /**
-         * <p>The maximum value for this integer prop.</p>
+         * <p>The maximum value for integers in this array</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -672,7 +672,7 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>The maximum value for this integer prop.</p>
+         * <p>The maximum value for integers in this array</p>
          */
         @java.lang.Override
         @JsonSetter(value = "max", nulls = Nulls.SKIP)
@@ -682,7 +682,7 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>The minimum value for this integer prop.</p>
+         * <p>The minimum value for integers in this array</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -692,7 +692,7 @@ public final class ConfigurablePropInteger {
         }
 
         /**
-         * <p>The minimum value for this integer prop.</p>
+         * <p>The minimum value for integers in this array</p>
          */
         @java.lang.Override
         @JsonSetter(value = "min", nulls = Nulls.SKIP)
@@ -715,8 +715,8 @@ public final class ConfigurablePropInteger {
         }
 
         @java.lang.Override
-        public ConfigurablePropInteger build() {
-            return new ConfigurablePropInteger(
+        public ConfigurablePropIntegerArray build() {
+            return new ConfigurablePropIntegerArray(
                     type,
                     min,
                     max,
