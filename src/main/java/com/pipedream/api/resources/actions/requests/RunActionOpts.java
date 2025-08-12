@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.types.RunActionOptsStashId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RunActionOpts.Builder.class)
 public final class RunActionOpts {
+    private final Optional<String> asyncHandle;
+
     private final String id;
 
     private final String externalUserId;
@@ -30,23 +31,26 @@ public final class RunActionOpts {
 
     private final Optional<String> dynamicPropsId;
 
-    private final Optional<RunActionOptsStashId> stashId;
-
     private final Map<String, Object> additionalProperties;
 
     private RunActionOpts(
+            Optional<String> asyncHandle,
             String id,
             String externalUserId,
             Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
-            Optional<RunActionOptsStashId> stashId,
             Map<String, Object> additionalProperties) {
+        this.asyncHandle = asyncHandle;
         this.id = id;
         this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
-        this.stashId = stashId;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("x-async-handle")
+    public Optional<String> getAsyncHandle() {
+        return asyncHandle;
     }
 
     /**
@@ -81,11 +85,6 @@ public final class RunActionOpts {
         return dynamicPropsId;
     }
 
-    @JsonProperty("stash_id")
-    public Optional<RunActionOptsStashId> getStashId() {
-        return stashId;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -98,16 +97,16 @@ public final class RunActionOpts {
     }
 
     private boolean equalTo(RunActionOpts other) {
-        return id.equals(other.id)
+        return asyncHandle.equals(other.asyncHandle)
+                && id.equals(other.id)
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
-                && dynamicPropsId.equals(other.dynamicPropsId)
-                && stashId.equals(other.stashId);
+                && dynamicPropsId.equals(other.dynamicPropsId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.stashId);
+        return Objects.hash(this.asyncHandle, this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId);
     }
 
     @java.lang.Override
@@ -138,6 +137,10 @@ public final class RunActionOpts {
     public interface _FinalStage {
         RunActionOpts build();
 
+        _FinalStage asyncHandle(Optional<String> asyncHandle);
+
+        _FinalStage asyncHandle(String asyncHandle);
+
         /**
          * <p>The configured properties for the action</p>
          */
@@ -151,10 +154,6 @@ public final class RunActionOpts {
         _FinalStage dynamicPropsId(Optional<String> dynamicPropsId);
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
-
-        _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
-
-        _FinalStage stashId(RunActionOptsStashId stashId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -163,11 +162,11 @@ public final class RunActionOpts {
 
         private String externalUserId;
 
-        private Optional<RunActionOptsStashId> stashId = Optional.empty();
-
         private Optional<String> dynamicPropsId = Optional.empty();
 
         private Optional<Map<String, Object>> configuredProps = Optional.empty();
+
+        private Optional<String> asyncHandle = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -176,11 +175,11 @@ public final class RunActionOpts {
 
         @java.lang.Override
         public Builder from(RunActionOpts other) {
+            asyncHandle(other.getAsyncHandle());
             id(other.getId());
             externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
-            stashId(other.getStashId());
             return this;
         }
 
@@ -205,19 +204,6 @@ public final class RunActionOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage stashId(RunActionOptsStashId stashId) {
-            this.stashId = Optional.ofNullable(stashId);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
-        public _FinalStage stashId(Optional<RunActionOptsStashId> stashId) {
-            this.stashId = stashId;
             return this;
         }
 
@@ -262,9 +248,22 @@ public final class RunActionOpts {
         }
 
         @java.lang.Override
+        public _FinalStage asyncHandle(String asyncHandle) {
+            this.asyncHandle = Optional.ofNullable(asyncHandle);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "x-async-handle", nulls = Nulls.SKIP)
+        public _FinalStage asyncHandle(Optional<String> asyncHandle) {
+            this.asyncHandle = asyncHandle;
+            return this;
+        }
+
+        @java.lang.Override
         public RunActionOpts build() {
             return new RunActionOpts(
-                    id, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
+                    asyncHandle, id, externalUserId, configuredProps, dynamicPropsId, additionalProperties);
         }
     }
 }

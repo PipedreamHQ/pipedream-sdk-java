@@ -97,6 +97,10 @@ public class AsyncRawTokensClient {
         return future;
     }
 
+    public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(String ctok) {
+        return validate(ctok, TokensValidateRequest.builder().build());
+    }
+
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
             String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
@@ -106,13 +110,14 @@ public class AsyncRawTokensClient {
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("v1/connect/tokens")
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("tokens")
                 .addPathSegment(ctok)
                 .addPathSegments("validate");
-        QueryStringMapper.addQueryParameter(httpUrl, "app_id", request.getAppId(), false);
-        if (request.getOauthAppId().isPresent()) {
+        if (request.getParams().isPresent()) {
             QueryStringMapper.addQueryParameter(
-                    httpUrl, "oauth_app_id", request.getOauthAppId().get(), false);
+                    httpUrl, "params", request.getParams().get(), false);
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
