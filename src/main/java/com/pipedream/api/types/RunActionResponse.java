@@ -58,6 +58,9 @@ public final class RunActionResponse {
         return ret;
     }
 
+    /**
+     * @return The ID of the File Stash that was used to sync the action's /tmp directory
+     */
     @JsonProperty("stash_id")
     public Optional<String> getStashId() {
         return stashId;
@@ -151,6 +154,9 @@ public final class RunActionResponse {
             return this;
         }
 
+        /**
+         * <p>The ID of the File Stash that was used to sync the action's /tmp directory</p>
+         */
         @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
         public Builder stashId(Optional<String> stashId) {
             this.stashId = stashId;

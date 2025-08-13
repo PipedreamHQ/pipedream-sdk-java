@@ -90,6 +90,9 @@ public final class App {
         return name;
     }
 
+    /**
+     * @return The authentication type used by the app
+     */
     @JsonProperty("auth_type")
     public Optional<AppAuthType> getAuthType() {
         return authType;
@@ -221,6 +224,9 @@ public final class App {
 
         _FinalStage id(String id);
 
+        /**
+         * <p>The authentication type used by the app</p>
+         */
         _FinalStage authType(Optional<AppAuthType> authType);
 
         _FinalStage authType(AppAuthType authType);
@@ -408,12 +414,19 @@ public final class App {
             return this;
         }
 
+        /**
+         * <p>The authentication type used by the app</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage authType(AppAuthType authType) {
             this.authType = Optional.ofNullable(authType);
             return this;
         }
 
+        /**
+         * <p>The authentication type used by the app</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "auth_type", nulls = Nulls.SKIP)
         public _FinalStage authType(Optional<AppAuthType> authType) {

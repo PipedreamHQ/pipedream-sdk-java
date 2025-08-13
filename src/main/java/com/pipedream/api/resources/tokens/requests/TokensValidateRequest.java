@@ -12,41 +12,27 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.types.ValidateTokenParams;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TokensValidateRequest.Builder.class)
 public final class TokensValidateRequest {
-    private final String appId;
-
-    private final Optional<String> oauthAppId;
+    private final Optional<ValidateTokenParams> params;
 
     private final Map<String, Object> additionalProperties;
 
-    private TokensValidateRequest(String appId, Optional<String> oauthAppId, Map<String, Object> additionalProperties) {
-        this.appId = appId;
-        this.oauthAppId = oauthAppId;
+    private TokensValidateRequest(Optional<ValidateTokenParams> params, Map<String, Object> additionalProperties) {
+        this.params = params;
         this.additionalProperties = additionalProperties;
     }
 
-    /**
-     * @return The app ID to validate against
-     */
-    @JsonProperty("app_id")
-    public String getAppId() {
-        return appId;
-    }
-
-    /**
-     * @return The OAuth app ID to validate against (if the token is for an OAuth app)
-     */
-    @JsonProperty("oauth_app_id")
-    public Optional<String> getOauthAppId() {
-        return oauthAppId;
+    @JsonProperty("params")
+    public Optional<ValidateTokenParams> getParams() {
+        return params;
     }
 
     @java.lang.Override
@@ -61,12 +47,12 @@ public final class TokensValidateRequest {
     }
 
     private boolean equalTo(TokensValidateRequest other) {
-        return appId.equals(other.appId) && oauthAppId.equals(other.oauthAppId);
+        return params.equals(other.params);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.appId, this.oauthAppId);
+        return Objects.hash(this.params);
     }
 
     @java.lang.Override
@@ -74,83 +60,37 @@ public final class TokensValidateRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static AppIdStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface AppIdStage {
-        /**
-         * <p>The app ID to validate against</p>
-         */
-        _FinalStage appId(@NotNull String appId);
-
-        Builder from(TokensValidateRequest other);
-    }
-
-    public interface _FinalStage {
-        TokensValidateRequest build();
-
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         */
-        _FinalStage oauthAppId(Optional<String> oauthAppId);
-
-        _FinalStage oauthAppId(String oauthAppId);
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements AppIdStage, _FinalStage {
-        private String appId;
-
-        private Optional<String> oauthAppId = Optional.empty();
+    public static final class Builder {
+        private Optional<ValidateTokenParams> params = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
         public Builder from(TokensValidateRequest other) {
-            appId(other.getAppId());
-            oauthAppId(other.getOauthAppId());
+            params(other.getParams());
             return this;
         }
 
-        /**
-         * <p>The app ID to validate against</p>
-         * <p>The app ID to validate against</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("app_id")
-        public _FinalStage appId(@NotNull String appId) {
-            this.appId = Objects.requireNonNull(appId, "appId must not be null");
+        @JsonSetter(value = "params", nulls = Nulls.SKIP)
+        public Builder params(Optional<ValidateTokenParams> params) {
+            this.params = params;
             return this;
         }
 
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage oauthAppId(String oauthAppId) {
-            this.oauthAppId = Optional.ofNullable(oauthAppId);
+        public Builder params(ValidateTokenParams params) {
+            this.params = Optional.ofNullable(params);
             return this;
         }
 
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
-        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
-            this.oauthAppId = oauthAppId;
-            return this;
-        }
-
-        @java.lang.Override
         public TokensValidateRequest build() {
-            return new TokensValidateRequest(appId, oauthAppId, additionalProperties);
+            return new TokensValidateRequest(params, additionalProperties);
         }
     }
 }
