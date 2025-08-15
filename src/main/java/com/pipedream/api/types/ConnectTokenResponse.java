@@ -18,8 +18,8 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = CreateTokenResponse.Builder.class)
-public final class CreateTokenResponse {
+@JsonDeserialize(builder = ConnectTokenResponse.Builder.class)
+public final class ConnectTokenResponse {
     private final String connectLinkUrl;
 
     private final OffsetDateTime expiresAt;
@@ -28,7 +28,7 @@ public final class CreateTokenResponse {
 
     private final Map<String, Object> additionalProperties;
 
-    private CreateTokenResponse(
+    private ConnectTokenResponse(
             String connectLinkUrl, OffsetDateTime expiresAt, String token, Map<String, Object> additionalProperties) {
         this.connectLinkUrl = connectLinkUrl;
         this.expiresAt = expiresAt;
@@ -63,7 +63,7 @@ public final class CreateTokenResponse {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof CreateTokenResponse && equalTo((CreateTokenResponse) other);
+        return other instanceof ConnectTokenResponse && equalTo((ConnectTokenResponse) other);
     }
 
     @JsonAnyGetter
@@ -71,7 +71,7 @@ public final class CreateTokenResponse {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(CreateTokenResponse other) {
+    private boolean equalTo(ConnectTokenResponse other) {
         return connectLinkUrl.equals(other.connectLinkUrl)
                 && expiresAt.equals(other.expiresAt)
                 && token.equals(other.token);
@@ -97,7 +97,7 @@ public final class CreateTokenResponse {
          */
         ExpiresAtStage connectLinkUrl(@NotNull String connectLinkUrl);
 
-        Builder from(CreateTokenResponse other);
+        Builder from(ConnectTokenResponse other);
     }
 
     public interface ExpiresAtStage {
@@ -115,7 +115,7 @@ public final class CreateTokenResponse {
     }
 
     public interface _FinalStage {
-        CreateTokenResponse build();
+        ConnectTokenResponse build();
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -132,7 +132,7 @@ public final class CreateTokenResponse {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(CreateTokenResponse other) {
+        public Builder from(ConnectTokenResponse other) {
             connectLinkUrl(other.getConnectLinkUrl());
             expiresAt(other.getExpiresAt());
             token(other.getToken());
@@ -176,8 +176,8 @@ public final class CreateTokenResponse {
         }
 
         @java.lang.Override
-        public CreateTokenResponse build() {
-            return new CreateTokenResponse(connectLinkUrl, expiresAt, token, additionalProperties);
+        public ConnectTokenResponse build() {
+            return new ConnectTokenResponse(connectLinkUrl, expiresAt, token, additionalProperties);
         }
     }
 }

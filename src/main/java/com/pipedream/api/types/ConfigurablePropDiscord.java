@@ -16,14 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscord.Builder.class)
 public final class ConfigurablePropDiscord {
     private final Optional<String> type;
 
-    private final String name;
+    private final Optional<String> name;
 
     private final Optional<String> label;
 
@@ -47,7 +46,7 @@ public final class ConfigurablePropDiscord {
 
     private ConfigurablePropDiscord(
             Optional<String> type,
-            String name,
+            Optional<String> name,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -81,7 +80,7 @@ public final class ConfigurablePropDiscord {
      * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
      */
     @JsonProperty("name")
-    public String getName() {
+    public Optional<String> getName() {
         return name;
     }
 
@@ -203,120 +202,39 @@ public final class ConfigurablePropDiscord {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface NameStage {
-        /**
-         * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         */
-        _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropDiscord other);
-    }
-
-    public interface _FinalStage {
-        ConfigurablePropDiscord build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         */
-        _FinalStage label(Optional<String> label);
-
-        _FinalStage label(String label);
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         */
-        _FinalStage description(Optional<String> description);
-
-        _FinalStage description(String description);
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         */
-        _FinalStage optional(Optional<Boolean> optional);
-
-        _FinalStage optional(Boolean optional);
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         */
-        _FinalStage disabled(Optional<Boolean> disabled);
-
-        _FinalStage disabled(Boolean disabled);
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         */
-        _FinalStage hidden(Optional<Boolean> hidden);
-
-        _FinalStage hidden(Boolean hidden);
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         */
-        _FinalStage remoteOptions(Optional<Boolean> remoteOptions);
-
-        _FinalStage remoteOptions(Boolean remoteOptions);
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         */
-        _FinalStage useQuery(Optional<Boolean> useQuery);
-
-        _FinalStage useQuery(Boolean useQuery);
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        _FinalStage reloadProps(Optional<Boolean> reloadProps);
-
-        _FinalStage reloadProps(Boolean reloadProps);
-
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         */
-        _FinalStage withLabel(Optional<Boolean> withLabel);
-
-        _FinalStage withLabel(Boolean withLabel);
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
-        private String name;
+    public static final class Builder {
+        private Optional<String> type = Optional.empty();
 
-        private Optional<Boolean> withLabel = Optional.empty();
-
-        private Optional<Boolean> reloadProps = Optional.empty();
-
-        private Optional<Boolean> useQuery = Optional.empty();
-
-        private Optional<Boolean> remoteOptions = Optional.empty();
-
-        private Optional<Boolean> hidden = Optional.empty();
-
-        private Optional<Boolean> disabled = Optional.empty();
-
-        private Optional<Boolean> optional = Optional.empty();
-
-        private Optional<String> description = Optional.empty();
+        private Optional<String> name = Optional.empty();
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
+        private Optional<String> description = Optional.empty();
+
+        private Optional<Boolean> optional = Optional.empty();
+
+        private Optional<Boolean> disabled = Optional.empty();
+
+        private Optional<Boolean> hidden = Optional.empty();
+
+        private Optional<Boolean> remoteOptions = Optional.empty();
+
+        private Optional<Boolean> useQuery = Optional.empty();
+
+        private Optional<Boolean> reloadProps = Optional.empty();
+
+        private Optional<Boolean> withLabel = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
         public Builder from(ConfigurablePropDiscord other) {
             type(other.getType());
             name(other.getName());
@@ -332,212 +250,157 @@ public final class ConfigurablePropDiscord {
             return this;
         }
 
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public Builder type(Optional<String> type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @java.lang.Override
-        @JsonSetter("name")
-        public _FinalStage name(@NotNull String name) {
-            this.name = Objects.requireNonNull(name, "name must not be null");
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public Builder name(Optional<String> name) {
+            this.name = name;
             return this;
         }
 
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage withLabel(Boolean withLabel) {
-            this.withLabel = Optional.ofNullable(withLabel);
-            return this;
-        }
-
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "withLabel", nulls = Nulls.SKIP)
-        public _FinalStage withLabel(Optional<Boolean> withLabel) {
-            this.withLabel = withLabel;
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage reloadProps(Boolean reloadProps) {
-            this.reloadProps = Optional.ofNullable(reloadProps);
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "reloadProps", nulls = Nulls.SKIP)
-        public _FinalStage reloadProps(Optional<Boolean> reloadProps) {
-            this.reloadProps = reloadProps;
-            return this;
-        }
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage useQuery(Boolean useQuery) {
-            this.useQuery = Optional.ofNullable(useQuery);
-            return this;
-        }
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "useQuery", nulls = Nulls.SKIP)
-        public _FinalStage useQuery(Optional<Boolean> useQuery) {
-            this.useQuery = useQuery;
-            return this;
-        }
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage remoteOptions(Boolean remoteOptions) {
-            this.remoteOptions = Optional.ofNullable(remoteOptions);
-            return this;
-        }
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "remoteOptions", nulls = Nulls.SKIP)
-        public _FinalStage remoteOptions(Optional<Boolean> remoteOptions) {
-            this.remoteOptions = remoteOptions;
-            return this;
-        }
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage hidden(Boolean hidden) {
-            this.hidden = Optional.ofNullable(hidden);
-            return this;
-        }
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
-        public _FinalStage hidden(Optional<Boolean> hidden) {
-            this.hidden = hidden;
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage disabled(Boolean disabled) {
-            this.disabled = Optional.ofNullable(disabled);
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
-        public _FinalStage disabled(Optional<Boolean> disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage optional(Boolean optional) {
-            this.optional = Optional.ofNullable(optional);
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "optional", nulls = Nulls.SKIP)
-        public _FinalStage optional(Optional<Boolean> optional) {
-            this.optional = optional;
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(String description) {
-            this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "description", nulls = Nulls.SKIP)
-        public _FinalStage description(Optional<String> description) {
-            this.description = description;
+        public Builder name(String name) {
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @java.lang.Override
-        public _FinalStage label(String label) {
+        @JsonSetter(value = "label", nulls = Nulls.SKIP)
+        public Builder label(Optional<String> label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder label(String label) {
             this.label = Optional.ofNullable(label);
             return this;
         }
 
         /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
+         * <p>A description of the prop, shown to the user when configuring the component.</p>
          */
-        @java.lang.Override
-        @JsonSetter(value = "label", nulls = Nulls.SKIP)
-        public _FinalStage label(Optional<String> label) {
-            this.label = label;
+        @JsonSetter(value = "description", nulls = Nulls.SKIP)
+        public Builder description(Optional<String> description) {
+            this.description = description;
             return this;
         }
 
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
+        public Builder description(String description) {
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
+        /**
+         * <p>If true, this prop does not need to be specified.</p>
+         */
+        @JsonSetter(value = "optional", nulls = Nulls.SKIP)
+        public Builder optional(Optional<Boolean> optional) {
+            this.optional = optional;
             return this;
         }
 
-        @java.lang.Override
+        public Builder optional(Boolean optional) {
+            this.optional = Optional.ofNullable(optional);
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop will be ignored.</p>
+         */
+        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
+        public Builder disabled(Optional<Boolean> disabled) {
+            this.disabled = disabled;
+            return this;
+        }
+
+        public Builder disabled(Boolean disabled) {
+            this.disabled = Optional.ofNullable(disabled);
+            return this;
+        }
+
+        /**
+         * <p>If true, should not expose this prop to the user</p>
+         */
+        @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
+        public Builder hidden(Optional<Boolean> hidden) {
+            this.hidden = hidden;
+            return this;
+        }
+
+        public Builder hidden(Boolean hidden) {
+            this.hidden = Optional.ofNullable(hidden);
+            return this;
+        }
+
+        /**
+         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
+         */
+        @JsonSetter(value = "remoteOptions", nulls = Nulls.SKIP)
+        public Builder remoteOptions(Optional<Boolean> remoteOptions) {
+            this.remoteOptions = remoteOptions;
+            return this;
+        }
+
+        public Builder remoteOptions(Boolean remoteOptions) {
+            this.remoteOptions = Optional.ofNullable(remoteOptions);
+            return this;
+        }
+
+        /**
+         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
+         */
+        @JsonSetter(value = "useQuery", nulls = Nulls.SKIP)
+        public Builder useQuery(Optional<Boolean> useQuery) {
+            this.useQuery = useQuery;
+            return this;
+        }
+
+        public Builder useQuery(Boolean useQuery) {
+            this.useQuery = Optional.ofNullable(useQuery);
+            return this;
+        }
+
+        /**
+         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
+         */
+        @JsonSetter(value = "reloadProps", nulls = Nulls.SKIP)
+        public Builder reloadProps(Optional<Boolean> reloadProps) {
+            this.reloadProps = reloadProps;
+            return this;
+        }
+
+        public Builder reloadProps(Boolean reloadProps) {
+            this.reloadProps = Optional.ofNullable(reloadProps);
+            return this;
+        }
+
+        /**
+         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
+         */
+        @JsonSetter(value = "withLabel", nulls = Nulls.SKIP)
+        public Builder withLabel(Optional<Boolean> withLabel) {
+            this.withLabel = withLabel;
+            return this;
+        }
+
+        public Builder withLabel(Boolean withLabel) {
+            this.withLabel = Optional.ofNullable(withLabel);
+            return this;
+        }
+
         public ConfigurablePropDiscord build() {
             return new ConfigurablePropDiscord(
                     type,
