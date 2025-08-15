@@ -18,29 +18,29 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ConfigurablePropSqlAuth.Builder.class)
-public final class ConfigurablePropSqlAuth {
-    private final Optional<String> app;
+@JsonDeserialize(builder = CreateBrowserClientOpts.Builder.class)
+public final class CreateBrowserClientOpts {
+    private final Optional<String> apiUrl;
 
     private final Map<String, Object> additionalProperties;
 
-    private ConfigurablePropSqlAuth(Optional<String> app, Map<String, Object> additionalProperties) {
-        this.app = app;
+    private CreateBrowserClientOpts(Optional<String> apiUrl, Map<String, Object> additionalProperties) {
+        this.apiUrl = apiUrl;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return The app that provides SQL authentication
+     * @return The API URL to use
      */
-    @JsonProperty("app")
-    public Optional<String> getApp() {
-        return app;
+    @JsonProperty("api_url")
+    public Optional<String> getApiUrl() {
+        return apiUrl;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ConfigurablePropSqlAuth && equalTo((ConfigurablePropSqlAuth) other);
+        return other instanceof CreateBrowserClientOpts && equalTo((CreateBrowserClientOpts) other);
     }
 
     @JsonAnyGetter
@@ -48,13 +48,13 @@ public final class ConfigurablePropSqlAuth {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ConfigurablePropSqlAuth other) {
-        return app.equals(other.app);
+    private boolean equalTo(CreateBrowserClientOpts other) {
+        return apiUrl.equals(other.apiUrl);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.app);
+        return Objects.hash(this.apiUrl);
     }
 
     @java.lang.Override
@@ -68,34 +68,34 @@ public final class ConfigurablePropSqlAuth {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<String> app = Optional.empty();
+        private Optional<String> apiUrl = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(ConfigurablePropSqlAuth other) {
-            app(other.getApp());
+        public Builder from(CreateBrowserClientOpts other) {
+            apiUrl(other.getApiUrl());
             return this;
         }
 
         /**
-         * <p>The app that provides SQL authentication</p>
+         * <p>The API URL to use</p>
          */
-        @JsonSetter(value = "app", nulls = Nulls.SKIP)
-        public Builder app(Optional<String> app) {
-            this.app = app;
+        @JsonSetter(value = "api_url", nulls = Nulls.SKIP)
+        public Builder apiUrl(Optional<String> apiUrl) {
+            this.apiUrl = apiUrl;
             return this;
         }
 
-        public Builder app(String app) {
-            this.app = Optional.ofNullable(app);
+        public Builder apiUrl(String apiUrl) {
+            this.apiUrl = Optional.ofNullable(apiUrl);
             return this;
         }
 
-        public ConfigurablePropSqlAuth build() {
-            return new ConfigurablePropSqlAuth(app, additionalProperties);
+        public CreateBrowserClientOpts build() {
+            return new CreateBrowserClientOpts(apiUrl, additionalProperties);
         }
     }
 }
