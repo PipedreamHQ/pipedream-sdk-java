@@ -7,12 +7,12 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
+import com.pipedream.api.resources.triggers.requests.TriggersConfigurePropRequest;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersReloadPropsRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployedComponent;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 
 public class TriggersClient {
@@ -52,19 +52,19 @@ public class TriggersClient {
         return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+    public ConfigurePropResponse configureProp(TriggersConfigurePropRequest request) {
         return this.rawClient.configureProp(request).body();
     }
 
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+    public ConfigurePropResponse configureProp(TriggersConfigurePropRequest request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+    public ReloadPropsResponse reloadProps(TriggersReloadPropsRequest request) {
         return this.rawClient.reloadProps(request).body();
     }
 
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+    public ReloadPropsResponse reloadProps(TriggersReloadPropsRequest request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 
