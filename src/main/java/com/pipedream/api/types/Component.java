@@ -103,6 +103,9 @@ public final class Component {
         return componentType;
     }
 
+    /**
+     * @return Indicates if a File Stash ID is optional or required to run the component
+     */
     @JsonProperty("stash")
     public Optional<ComponentStash> getStash() {
         return stash;
@@ -196,6 +199,9 @@ public final class Component {
 
         _FinalStage componentType(String componentType);
 
+        /**
+         * <p>Indicates if a File Stash ID is optional or required to run the component</p>
+         */
         _FinalStage stash(Optional<ComponentStash> stash);
 
         _FinalStage stash(ComponentStash stash);
@@ -270,12 +276,19 @@ public final class Component {
             return this;
         }
 
+        /**
+         * <p>Indicates if a File Stash ID is optional or required to run the component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage stash(ComponentStash stash) {
             this.stash = Optional.ofNullable(stash);
             return this;
         }
 
+        /**
+         * <p>Indicates if a File Stash ID is optional or required to run the component</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "stash", nulls = Nulls.SKIP)
         public _FinalStage stash(Optional<ComponentStash> stash) {

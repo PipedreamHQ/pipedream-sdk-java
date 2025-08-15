@@ -3,7 +3,6 @@
  */
 package com.pipedream.api.resources.components;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -13,13 +12,13 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.components.requests.ComponentsConfigurePropRequest;
 import com.pipedream.api.resources.components.requests.ComponentsListRequest;
+import com.pipedream.api.resources.components.requests.ComponentsReloadPropsRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import java.io.IOException;
 import java.util.List;
@@ -150,12 +149,12 @@ public class RawComponentsClient {
         }
     }
 
-    public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
+    public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ComponentsConfigurePropRequest request) {
         return configureProp(request, null);
     }
 
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
+            ComponentsConfigurePropRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -165,17 +164,20 @@ public class RawComponentsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new BaseClientException("Failed to serialize request", e);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        if (request.getAsyncHandle().isPresent()) {
+            _requestBuilder.addHeader("x-async-handle", request.getAsyncHandle().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -198,12 +200,12 @@ public class RawComponentsClient {
         }
     }
 
-    public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
+    public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ComponentsReloadPropsRequest request) {
         return reloadProps(request, null);
     }
 
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
-            ReloadPropsOpts request, RequestOptions requestOptions) {
+            ComponentsReloadPropsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -213,17 +215,20 @@ public class RawComponentsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new BaseClientException("Failed to serialize request", e);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        if (request.getAsyncHandle().isPresent()) {
+            _requestBuilder.addHeader("x-async-handle", request.getAsyncHandle().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
