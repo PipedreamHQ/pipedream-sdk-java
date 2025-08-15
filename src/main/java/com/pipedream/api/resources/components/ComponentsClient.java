@@ -6,11 +6,11 @@ package com.pipedream.api.resources.components;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.components.requests.ComponentsConfigurePropRequest;
 import com.pipedream.api.resources.components.requests.ComponentsListRequest;
+import com.pipedream.api.resources.components.requests.ComponentsReloadPropsRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 
 public class ComponentsClient {
@@ -50,19 +50,19 @@ public class ComponentsClient {
         return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+    public ConfigurePropResponse configureProp(ComponentsConfigurePropRequest request) {
         return this.rawClient.configureProp(request).body();
     }
 
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+    public ConfigurePropResponse configureProp(ComponentsConfigurePropRequest request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+    public ReloadPropsResponse reloadProps(ComponentsReloadPropsRequest request) {
         return this.rawClient.reloadProps(request).body();
     }
 
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+    public ReloadPropsResponse reloadProps(ComponentsReloadPropsRequest request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 }
