@@ -27,8 +27,6 @@ public final class ConfigurePropResponse {
 
     private final Optional<Map<String, Object>> observations;
 
-    private final Optional<String> asyncHandle;
-
     private final Optional<Map<String, Object>> context;
 
     private final Optional<List<String>> errors;
@@ -39,14 +37,12 @@ public final class ConfigurePropResponse {
             Optional<List<PropOption>> options,
             Optional<List<String>> stringOptions,
             Optional<Map<String, Object>> observations,
-            Optional<String> asyncHandle,
             Optional<Map<String, Object>> context,
             Optional<List<String>> errors,
             Map<String, Object> additionalProperties) {
         this.options = options;
         this.stringOptions = stringOptions;
         this.observations = observations;
-        this.asyncHandle = asyncHandle;
         this.context = context;
         this.errors = errors;
         this.additionalProperties = additionalProperties;
@@ -74,14 +70,6 @@ public final class ConfigurePropResponse {
     @JsonProperty("observations")
     public Optional<Map<String, Object>> getObservations() {
         return observations;
-    }
-
-    /**
-     * @return Handle for async operations
-     */
-    @JsonProperty("async_handle")
-    public Optional<String> getAsyncHandle() {
-        return asyncHandle;
     }
 
     /**
@@ -115,15 +103,13 @@ public final class ConfigurePropResponse {
         return options.equals(other.options)
                 && stringOptions.equals(other.stringOptions)
                 && observations.equals(other.observations)
-                && asyncHandle.equals(other.asyncHandle)
                 && context.equals(other.context)
                 && errors.equals(other.errors);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(
-                this.options, this.stringOptions, this.observations, this.asyncHandle, this.context, this.errors);
+        return Objects.hash(this.options, this.stringOptions, this.observations, this.context, this.errors);
     }
 
     @java.lang.Override
@@ -143,8 +129,6 @@ public final class ConfigurePropResponse {
 
         private Optional<Map<String, Object>> observations = Optional.empty();
 
-        private Optional<String> asyncHandle = Optional.empty();
-
         private Optional<Map<String, Object>> context = Optional.empty();
 
         private Optional<List<String>> errors = Optional.empty();
@@ -158,7 +142,6 @@ public final class ConfigurePropResponse {
             options(other.getOptions());
             stringOptions(other.getStringOptions());
             observations(other.getObservations());
-            asyncHandle(other.getAsyncHandle());
             context(other.getContext());
             errors(other.getErrors());
             return this;
@@ -207,20 +190,6 @@ public final class ConfigurePropResponse {
         }
 
         /**
-         * <p>Handle for async operations</p>
-         */
-        @JsonSetter(value = "async_handle", nulls = Nulls.SKIP)
-        public Builder asyncHandle(Optional<String> asyncHandle) {
-            this.asyncHandle = asyncHandle;
-            return this;
-        }
-
-        public Builder asyncHandle(String asyncHandle) {
-            this.asyncHandle = Optional.ofNullable(asyncHandle);
-            return this;
-        }
-
-        /**
          * <p>New context after configuring the prop</p>
          */
         @JsonSetter(value = "context", nulls = Nulls.SKIP)
@@ -250,7 +219,7 @@ public final class ConfigurePropResponse {
 
         public ConfigurePropResponse build() {
             return new ConfigurePropResponse(
-                    options, stringOptions, observations, asyncHandle, context, errors, additionalProperties);
+                    options, stringOptions, observations, context, errors, additionalProperties);
         }
     }
 }

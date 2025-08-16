@@ -17,11 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Account.Builder.class)
 public final class Account {
-    private final Optional<String> id;
+    private final String id;
 
     private final Optional<String> name;
 
@@ -50,7 +51,7 @@ public final class Account {
     private final Map<String, Object> additionalProperties;
 
     private Account(
-            Optional<String> id,
+            String id,
             Optional<String> name,
             Optional<String> externalId,
             Optional<Boolean> healthy,
@@ -84,7 +85,7 @@ public final class Account {
      * @return The unique ID of the account.
      */
     @JsonProperty("id")
-    public Optional<String> getId() {
+    public String getId() {
         return id;
     }
 
@@ -231,43 +232,138 @@ public final class Account {
         return ObjectMappers.stringify(this);
     }
 
-    public static Builder builder() {
+    public static IdStage builder() {
         return new Builder();
     }
 
+    public interface IdStage {
+        /**
+         * <p>The unique ID of the account.</p>
+         */
+        _FinalStage id(@NotNull String id);
+
+        Builder from(Account other);
+    }
+
+    public interface _FinalStage {
+        Account build();
+
+        /**
+         * <p>The custom name of the account if set.</p>
+         */
+        _FinalStage name(Optional<String> name);
+
+        _FinalStage name(String name);
+
+        /**
+         * <p>The external ID associated with the account.</p>
+         */
+        _FinalStage externalId(Optional<String> externalId);
+
+        _FinalStage externalId(String externalId);
+
+        /**
+         * <p>Indicates if the account is healthy. Pipedream will periodically retry token refresh and test requests for unhealthy accounts</p>
+         */
+        _FinalStage healthy(Optional<Boolean> healthy);
+
+        _FinalStage healthy(Boolean healthy);
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         */
+        _FinalStage dead(Optional<Boolean> dead);
+
+        _FinalStage dead(Boolean dead);
+
+        _FinalStage app(Optional<App> app);
+
+        _FinalStage app(App app);
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         */
+        _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
+
+        _FinalStage createdAt(OffsetDateTime createdAt);
+
+        /**
+         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
+         */
+        _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
+
+        _FinalStage updatedAt(OffsetDateTime updatedAt);
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         */
+        _FinalStage credentials(Optional<Map<String, Object>> credentials);
+
+        _FinalStage credentials(Map<String, Object> credentials);
+
+        /**
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
+         */
+        _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt);
+
+        _FinalStage expiresAt(OffsetDateTime expiresAt);
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         */
+        _FinalStage error(Optional<String> error);
+
+        _FinalStage error(String error);
+
+        /**
+         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
+         */
+        _FinalStage lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt);
+
+        _FinalStage lastRefreshedAt(OffsetDateTime lastRefreshedAt);
+
+        /**
+         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
+         */
+        _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt);
+
+        _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt);
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder {
-        private Optional<String> id = Optional.empty();
+    public static final class Builder implements IdStage, _FinalStage {
+        private String id;
 
-        private Optional<String> name = Optional.empty();
-
-        private Optional<String> externalId = Optional.empty();
-
-        private Optional<Boolean> healthy = Optional.empty();
-
-        private Optional<Boolean> dead = Optional.empty();
-
-        private Optional<App> app = Optional.empty();
-
-        private Optional<OffsetDateTime> createdAt = Optional.empty();
-
-        private Optional<OffsetDateTime> updatedAt = Optional.empty();
-
-        private Optional<Map<String, Object>> credentials = Optional.empty();
-
-        private Optional<OffsetDateTime> expiresAt = Optional.empty();
-
-        private Optional<String> error = Optional.empty();
+        private Optional<OffsetDateTime> nextRefreshAt = Optional.empty();
 
         private Optional<OffsetDateTime> lastRefreshedAt = Optional.empty();
 
-        private Optional<OffsetDateTime> nextRefreshAt = Optional.empty();
+        private Optional<String> error = Optional.empty();
+
+        private Optional<OffsetDateTime> expiresAt = Optional.empty();
+
+        private Optional<Map<String, Object>> credentials = Optional.empty();
+
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<App> app = Optional.empty();
+
+        private Optional<Boolean> dead = Optional.empty();
+
+        private Optional<Boolean> healthy = Optional.empty();
+
+        private Optional<String> externalId = Optional.empty();
+
+        private Optional<String> name = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
+        @java.lang.Override
         public Builder from(Account other) {
             id(other.getId());
             name(other.getName());
@@ -287,183 +383,250 @@ public final class Account {
 
         /**
          * <p>The unique ID of the account.</p>
+         * <p>The unique ID of the account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @JsonSetter(value = "id", nulls = Nulls.SKIP)
-        public Builder id(Optional<String> id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = Optional.ofNullable(id);
+        @java.lang.Override
+        @JsonSetter("id")
+        public _FinalStage id(@NotNull String id) {
+            this.id = Objects.requireNonNull(id, "id must not be null");
             return this;
         }
 
         /**
-         * <p>The custom name of the account if set.</p>
+         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.ofNullable(name);
-            return this;
-        }
-
-        /**
-         * <p>The external ID associated with the account.</p>
-         */
-        @JsonSetter(value = "external_id", nulls = Nulls.SKIP)
-        public Builder externalId(Optional<String> externalId) {
-            this.externalId = externalId;
-            return this;
-        }
-
-        public Builder externalId(String externalId) {
-            this.externalId = Optional.ofNullable(externalId);
-            return this;
-        }
-
-        /**
-         * <p>Indicates if the account is healthy. Pipedream will periodically retry token refresh and test requests for unhealthy accounts</p>
-         */
-        @JsonSetter(value = "healthy", nulls = Nulls.SKIP)
-        public Builder healthy(Optional<Boolean> healthy) {
-            this.healthy = healthy;
-            return this;
-        }
-
-        public Builder healthy(Boolean healthy) {
-            this.healthy = Optional.ofNullable(healthy);
-            return this;
-        }
-
-        /**
-         * <p>Indicates if the account is no longer active</p>
-         */
-        @JsonSetter(value = "dead", nulls = Nulls.SKIP)
-        public Builder dead(Optional<Boolean> dead) {
-            this.dead = dead;
-            return this;
-        }
-
-        public Builder dead(Boolean dead) {
-            this.dead = Optional.ofNullable(dead);
-            return this;
-        }
-
-        @JsonSetter(value = "app", nulls = Nulls.SKIP)
-        public Builder app(Optional<App> app) {
-            this.app = app;
-            return this;
-        }
-
-        public Builder app(App app) {
-            this.app = Optional.ofNullable(app);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
-         */
-        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
-        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.ofNullable(createdAt);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
-         */
-        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
-        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.ofNullable(updatedAt);
-            return this;
-        }
-
-        /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
-         */
-        @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
-        public Builder credentials(Optional<Map<String, Object>> credentials) {
-            this.credentials = credentials;
-            return this;
-        }
-
-        public Builder credentials(Map<String, Object> credentials) {
-            this.credentials = Optional.ofNullable(credentials);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
-         */
-        @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
-        public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
-            this.expiresAt = expiresAt;
-            return this;
-        }
-
-        public Builder expiresAt(OffsetDateTime expiresAt) {
-            this.expiresAt = Optional.ofNullable(expiresAt);
-            return this;
-        }
-
-        /**
-         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
-         */
-        @JsonSetter(value = "error", nulls = Nulls.SKIP)
-        public Builder error(Optional<String> error) {
-            this.error = error;
-            return this;
-        }
-
-        public Builder error(String error) {
-            this.error = Optional.ofNullable(error);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
-         */
-        @JsonSetter(value = "last_refreshed_at", nulls = Nulls.SKIP)
-        public Builder lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt) {
-            this.lastRefreshedAt = lastRefreshedAt;
-            return this;
-        }
-
-        public Builder lastRefreshedAt(OffsetDateTime lastRefreshedAt) {
-            this.lastRefreshedAt = Optional.ofNullable(lastRefreshedAt);
+        @java.lang.Override
+        public _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt) {
+            this.nextRefreshAt = Optional.ofNullable(nextRefreshAt);
             return this;
         }
 
         /**
          * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
          */
+        @java.lang.Override
         @JsonSetter(value = "next_refresh_at", nulls = Nulls.SKIP)
-        public Builder nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt) {
+        public _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt) {
             this.nextRefreshAt = nextRefreshAt;
             return this;
         }
 
-        public Builder nextRefreshAt(OffsetDateTime nextRefreshAt) {
-            this.nextRefreshAt = Optional.ofNullable(nextRefreshAt);
+        /**
+         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage lastRefreshedAt(OffsetDateTime lastRefreshedAt) {
+            this.lastRefreshedAt = Optional.ofNullable(lastRefreshedAt);
             return this;
         }
 
+        /**
+         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "last_refreshed_at", nulls = Nulls.SKIP)
+        public _FinalStage lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt) {
+            this.lastRefreshedAt = lastRefreshedAt;
+            return this;
+        }
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage error(String error) {
+            this.error = Optional.ofNullable(error);
+            return this;
+        }
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "error", nulls = Nulls.SKIP)
+        public _FinalStage error(Optional<String> error) {
+            this.error = error;
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage expiresAt(OffsetDateTime expiresAt) {
+            this.expiresAt = Optional.ofNullable(expiresAt);
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
+        public _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage credentials(Map<String, Object> credentials) {
+            this.credentials = Optional.ofNullable(credentials);
+            return this;
+        }
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
+        public _FinalStage credentials(Optional<Map<String, Object>> credentials) {
+            this.credentials = credentials;
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.ofNullable(updatedAt);
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.ofNullable(createdAt);
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public _FinalStage createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage app(App app) {
+            this.app = Optional.ofNullable(app);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "app", nulls = Nulls.SKIP)
+        public _FinalStage app(Optional<App> app) {
+            this.app = app;
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage dead(Boolean dead) {
+            this.dead = Optional.ofNullable(dead);
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "dead", nulls = Nulls.SKIP)
+        public _FinalStage dead(Optional<Boolean> dead) {
+            this.dead = dead;
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is healthy. Pipedream will periodically retry token refresh and test requests for unhealthy accounts</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage healthy(Boolean healthy) {
+            this.healthy = Optional.ofNullable(healthy);
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is healthy. Pipedream will periodically retry token refresh and test requests for unhealthy accounts</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "healthy", nulls = Nulls.SKIP)
+        public _FinalStage healthy(Optional<Boolean> healthy) {
+            this.healthy = healthy;
+            return this;
+        }
+
+        /**
+         * <p>The external ID associated with the account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage externalId(String externalId) {
+            this.externalId = Optional.ofNullable(externalId);
+            return this;
+        }
+
+        /**
+         * <p>The external ID associated with the account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "external_id", nulls = Nulls.SKIP)
+        public _FinalStage externalId(Optional<String> externalId) {
+            this.externalId = externalId;
+            return this;
+        }
+
+        /**
+         * <p>The custom name of the account if set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage name(String name) {
+            this.name = Optional.ofNullable(name);
+            return this;
+        }
+
+        /**
+         * <p>The custom name of the account if set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public _FinalStage name(Optional<String> name) {
+            this.name = name;
+            return this;
+        }
+
+        @java.lang.Override
         public Account build() {
             return new Account(
                     id,

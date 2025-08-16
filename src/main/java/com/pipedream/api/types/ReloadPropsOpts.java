@@ -31,8 +31,6 @@ public final class ReloadPropsOpts {
 
     private final Optional<String> dynamicPropsId;
 
-    private final Optional<String> asyncHandle;
-
     private final Map<String, Object> additionalProperties;
 
     private ReloadPropsOpts(
@@ -41,14 +39,12 @@ public final class ReloadPropsOpts {
             Optional<Boolean> blocking,
             Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
-            Optional<String> asyncHandle,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.externalUserId = externalUserId;
         this.blocking = blocking;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
-        this.asyncHandle = asyncHandle;
         this.additionalProperties = additionalProperties;
     }
 
@@ -92,14 +88,6 @@ public final class ReloadPropsOpts {
         return dynamicPropsId;
     }
 
-    /**
-     * @return Handle for async operations
-     */
-    @JsonProperty("async_handle")
-    public Optional<String> getAsyncHandle() {
-        return asyncHandle;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -116,19 +104,12 @@ public final class ReloadPropsOpts {
                 && externalUserId.equals(other.externalUserId)
                 && blocking.equals(other.blocking)
                 && configuredProps.equals(other.configuredProps)
-                && dynamicPropsId.equals(other.dynamicPropsId)
-                && asyncHandle.equals(other.asyncHandle);
+                && dynamicPropsId.equals(other.dynamicPropsId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(
-                this.id,
-                this.externalUserId,
-                this.blocking,
-                this.configuredProps,
-                this.dynamicPropsId,
-                this.asyncHandle);
+        return Objects.hash(this.id, this.externalUserId, this.blocking, this.configuredProps, this.dynamicPropsId);
     }
 
     @java.lang.Override
@@ -179,13 +160,6 @@ public final class ReloadPropsOpts {
         _FinalStage dynamicPropsId(Optional<String> dynamicPropsId);
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
-
-        /**
-         * <p>Handle for async operations</p>
-         */
-        _FinalStage asyncHandle(Optional<String> asyncHandle);
-
-        _FinalStage asyncHandle(String asyncHandle);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -193,8 +167,6 @@ public final class ReloadPropsOpts {
         private String id;
 
         private String externalUserId;
-
-        private Optional<String> asyncHandle = Optional.empty();
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
@@ -214,7 +186,6 @@ public final class ReloadPropsOpts {
             blocking(other.getBlocking());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
-            asyncHandle(other.getAsyncHandle());
             return this;
         }
 
@@ -239,26 +210,6 @@ public final class ReloadPropsOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Handle for async operations</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage asyncHandle(String asyncHandle) {
-            this.asyncHandle = Optional.ofNullable(asyncHandle);
-            return this;
-        }
-
-        /**
-         * <p>Handle for async operations</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "async_handle", nulls = Nulls.SKIP)
-        public _FinalStage asyncHandle(Optional<String> asyncHandle) {
-            this.asyncHandle = asyncHandle;
             return this;
         }
 
@@ -325,7 +276,7 @@ public final class ReloadPropsOpts {
         @java.lang.Override
         public ReloadPropsOpts build() {
             return new ReloadPropsOpts(
-                    id, externalUserId, blocking, configuredProps, dynamicPropsId, asyncHandle, additionalProperties);
+                    id, externalUserId, blocking, configuredProps, dynamicPropsId, additionalProperties);
         }
     }
 }
