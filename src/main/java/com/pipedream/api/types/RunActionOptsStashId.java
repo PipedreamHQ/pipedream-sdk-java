@@ -105,11 +105,11 @@ public final class RunActionOptsStashId {
             Object value = p.readValueAs(Object.class);
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Optional<String>>() {}));
-            } catch (IllegalArgumentException e) {
+            } catch (RuntimeException e) {
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
-            } catch (IllegalArgumentException e) {
+            } catch (RuntimeException e) {
             }
             if (value instanceof Boolean) {
                 return of((Boolean) value);
