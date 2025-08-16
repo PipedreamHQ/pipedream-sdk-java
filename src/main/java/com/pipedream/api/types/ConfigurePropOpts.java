@@ -33,6 +33,8 @@ public final class ConfigurePropOpts {
 
     private final Optional<String> dynamicPropsId;
 
+    private final Optional<String> asyncHandle;
+
     private final Optional<Double> page;
 
     private final Optional<Map<String, Object>> prevContext;
@@ -48,6 +50,7 @@ public final class ConfigurePropOpts {
             Optional<Boolean> blocking,
             Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
+            Optional<String> asyncHandle,
             Optional<Double> page,
             Optional<Map<String, Object>> prevContext,
             Optional<String> query,
@@ -58,6 +61,7 @@ public final class ConfigurePropOpts {
         this.blocking = blocking;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
+        this.asyncHandle = asyncHandle;
         this.page = page;
         this.prevContext = prevContext;
         this.query = query;
@@ -113,6 +117,14 @@ public final class ConfigurePropOpts {
     }
 
     /**
+     * @return Handle for async operations
+     */
+    @JsonProperty("async_handle")
+    public Optional<String> getAsyncHandle() {
+        return asyncHandle;
+    }
+
+    /**
      * @return Page number for paginated results
      */
     @JsonProperty("page")
@@ -154,6 +166,7 @@ public final class ConfigurePropOpts {
                 && blocking.equals(other.blocking)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
+                && asyncHandle.equals(other.asyncHandle)
                 && page.equals(other.page)
                 && prevContext.equals(other.prevContext)
                 && query.equals(other.query);
@@ -168,6 +181,7 @@ public final class ConfigurePropOpts {
                 this.blocking,
                 this.configuredProps,
                 this.dynamicPropsId,
+                this.asyncHandle,
                 this.page,
                 this.prevContext,
                 this.query);
@@ -230,6 +244,13 @@ public final class ConfigurePropOpts {
         _FinalStage dynamicPropsId(String dynamicPropsId);
 
         /**
+         * <p>Handle for async operations</p>
+         */
+        _FinalStage asyncHandle(Optional<String> asyncHandle);
+
+        _FinalStage asyncHandle(String asyncHandle);
+
+        /**
          * <p>Page number for paginated results</p>
          */
         _FinalStage page(Optional<Double> page);
@@ -265,6 +286,8 @@ public final class ConfigurePropOpts {
 
         private Optional<Double> page = Optional.empty();
 
+        private Optional<String> asyncHandle = Optional.empty();
+
         private Optional<String> dynamicPropsId = Optional.empty();
 
         private Optional<Map<String, Object>> configuredProps = Optional.empty();
@@ -284,6 +307,7 @@ public final class ConfigurePropOpts {
             blocking(other.getBlocking());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
+            asyncHandle(other.getAsyncHandle());
             page(other.getPage());
             prevContext(other.getPrevContext());
             query(other.getQuery());
@@ -387,6 +411,26 @@ public final class ConfigurePropOpts {
         }
 
         /**
+         * <p>Handle for async operations</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage asyncHandle(String asyncHandle) {
+            this.asyncHandle = Optional.ofNullable(asyncHandle);
+            return this;
+        }
+
+        /**
+         * <p>Handle for async operations</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "async_handle", nulls = Nulls.SKIP)
+        public _FinalStage asyncHandle(Optional<String> asyncHandle) {
+            this.asyncHandle = asyncHandle;
+            return this;
+        }
+
+        /**
          * <p>The ID for dynamic props</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -455,6 +499,7 @@ public final class ConfigurePropOpts {
                     blocking,
                     configuredProps,
                     dynamicPropsId,
+                    asyncHandle,
                     page,
                     prevContext,
                     query,
