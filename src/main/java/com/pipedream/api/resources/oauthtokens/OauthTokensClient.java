@@ -25,10 +25,16 @@ public class OauthTokensClient {
         return this.rawClient;
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public CreateOAuthTokenResponse create(CreateOAuthTokenOpts request) {
         return this.rawClient.create(request).body();
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public CreateOAuthTokenResponse create(CreateOAuthTokenOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }

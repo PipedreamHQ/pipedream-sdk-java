@@ -32,46 +32,79 @@ public class ActionsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list() {
         return this.rawClient.list().body();
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(ActionsListRequest request) {
         return this.rawClient.list(request).body();
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(ActionsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public Component retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).body();
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public Component retrieve(String componentId, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).body();
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).body();
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public RunActionResponse run(RunActionOpts request) {
         return this.rawClient.run(request).body();
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public RunActionResponse run(RunActionOpts request, RequestOptions requestOptions) {
         return this.rawClient.run(request, requestOptions).body();
     }

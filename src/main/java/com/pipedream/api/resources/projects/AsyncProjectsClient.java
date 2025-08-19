@@ -25,10 +25,16 @@ public class AsyncProjectsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public CompletableFuture<ProjectInfoResponse> retrieveInfo() {
         return this.rawClient.retrieveInfo().thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public CompletableFuture<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
         return this.rawClient.retrieveInfo(requestOptions).thenApply(response -> response.body());
     }

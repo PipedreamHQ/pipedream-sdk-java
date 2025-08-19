@@ -36,10 +36,16 @@ public class AsyncRawTokensClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public CompletableFuture<BaseClientHttpResponse<CreateTokenResponse>> create(CreateTokenOpts request) {
         return create(request, null);
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public CompletableFuture<BaseClientHttpResponse<CreateTokenResponse>> create(
             CreateTokenOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -97,11 +103,17 @@ public class AsyncRawTokensClient {
         return future;
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
             String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

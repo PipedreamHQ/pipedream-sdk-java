@@ -38,62 +38,104 @@ public class DeployedTriggersClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public SyncPagingIterable<DeployedComponent> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).body();
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public SyncPagingIterable<DeployedComponent> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public DeployedComponent retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return this.rawClient.retrieve(triggerId, request).body();
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public DeployedComponent retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public DeployedComponent update(String triggerId, UpdateTriggerOpts request) {
         return this.rawClient.update(triggerId, request).body();
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public DeployedComponent update(String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.update(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public void delete(String triggerId, DeployedTriggersDeleteRequest request) {
         this.rawClient.delete(triggerId, request).body();
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public void delete(String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         this.rawClient.delete(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public List<EmittedEvent> listEvents(String triggerId, DeployedTriggersListEventsRequest request) {
         return this.rawClient.listEvents(triggerId, request).body();
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public List<EmittedEvent> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         return this.rawClient.listEvents(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public GetTriggerWorkflowsResponse listWorkflows(String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return this.rawClient.listWorkflows(triggerId, request).body();
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public GetTriggerWorkflowsResponse listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWorkflows(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public GetTriggerWorkflowsResponse updateWorkflows(String triggerId, UpdateTriggerWorkflowsOpts request) {
         return this.rawClient.updateWorkflows(triggerId, request).body();
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public GetTriggerWorkflowsResponse updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         return this.rawClient
@@ -101,19 +143,31 @@ public class DeployedTriggersClient {
                 .body();
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public GetTriggerWebhooksResponse listWebhooks(String triggerId, DeployedTriggersListWebhooksRequest request) {
         return this.rawClient.listWebhooks(triggerId, request).body();
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public GetTriggerWebhooksResponse listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWebhooks(triggerId, request, requestOptions).body();
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public GetTriggerWebhooksResponse updateWebhooks(String triggerId, UpdateTriggerWebhooksOpts request) {
         return this.rawClient.updateWebhooks(triggerId, request).body();
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public GetTriggerWebhooksResponse updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         return this.rawClient.updateWebhooks(triggerId, request, requestOptions).body();

@@ -31,10 +31,16 @@ public class AsyncRawAppCategoriesClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public CompletableFuture<BaseClientHttpResponse<List<AppCategory>>> list() {
         return list(null);
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public CompletableFuture<BaseClientHttpResponse<List<AppCategory>>> list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -82,10 +88,16 @@ public class AsyncRawAppCategoriesClient {
         return future;
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(String id) {
         return retrieve(id, null);
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

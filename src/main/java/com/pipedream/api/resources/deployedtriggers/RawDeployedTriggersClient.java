@@ -48,10 +48,16 @@ public class RawDeployedTriggersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -110,11 +116,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public BaseClientHttpResponse<DeployedComponent> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public BaseClientHttpResponse<DeployedComponent> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -152,10 +164,16 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public BaseClientHttpResponse<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public BaseClientHttpResponse<DeployedComponent> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -211,10 +229,16 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public BaseClientHttpResponse<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
         return delete(triggerId, request, null);
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public BaseClientHttpResponse<Void> delete(
             String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -253,11 +277,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request) {
         return listEvents(triggerId, request, null);
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -299,11 +329,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -342,11 +378,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request) {
         return updateWorkflows(triggerId, request, null);
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -395,11 +437,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -438,11 +486,17 @@ public class RawDeployedTriggersClient {
         }
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
         return updateWebhooks(triggerId, request, null);
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

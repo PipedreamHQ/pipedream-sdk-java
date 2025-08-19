@@ -24,10 +24,16 @@ public class ProjectsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public ProjectInfoResponse retrieveInfo() {
         return this.rawClient.retrieveInfo().body();
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public ProjectInfoResponse retrieveInfo(RequestOptions requestOptions) {
         return this.rawClient.retrieveInfo(requestOptions).body();
     }
