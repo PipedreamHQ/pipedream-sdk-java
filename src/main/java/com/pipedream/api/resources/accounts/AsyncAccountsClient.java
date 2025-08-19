@@ -29,52 +29,88 @@ public class AsyncAccountsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<SyncPagingIterable<Account>> list() {
         return this.rawClient.list().thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<SyncPagingIterable<Account>> list(AccountsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<SyncPagingIterable<Account>> list(
             AccountsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public CompletableFuture<Account> create(CreateAccountOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public CompletableFuture<Account> create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<Account> retrieve(String accountId) {
         return this.rawClient.retrieve(accountId).thenApply(response -> response.body());
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<Account> retrieve(String accountId, AccountsRetrieveRequest request) {
         return this.rawClient.retrieve(accountId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<Account> retrieve(
             String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(accountId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public CompletableFuture<Void> delete(String accountId) {
         return this.rawClient.delete(accountId).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public CompletableFuture<Void> delete(String accountId, RequestOptions requestOptions) {
         return this.rawClient.delete(accountId, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public CompletableFuture<Void> deleteByApp(String appId) {
         return this.rawClient.deleteByApp(appId).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public CompletableFuture<Void> deleteByApp(String appId, RequestOptions requestOptions) {
         return this.rawClient.deleteByApp(appId, requestOptions).thenApply(response -> response.body());
     }

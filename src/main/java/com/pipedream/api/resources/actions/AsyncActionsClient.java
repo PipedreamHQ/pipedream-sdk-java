@@ -33,48 +33,81 @@ public class AsyncActionsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list() {
         return this.rawClient.list().thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(ActionsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(
             ActionsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public CompletableFuture<Component> retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).thenApply(response -> response.body());
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public CompletableFuture<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public CompletableFuture<RunActionResponse> run(RunActionOpts request) {
         return this.rawClient.run(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public CompletableFuture<RunActionResponse> run(RunActionOpts request, RequestOptions requestOptions) {
         return this.rawClient.run(request, requestOptions).thenApply(response -> response.body());
     }

@@ -42,14 +42,23 @@ public class AsyncRawAccountsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list() {
         return list(AccountsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(AccountsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(
             AccountsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -146,10 +155,16 @@ public class AsyncRawAccountsClient {
         return future;
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(CreateAccountOpts request) {
         return create(request, null);
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(
             CreateAccountOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -224,15 +239,24 @@ public class AsyncRawAccountsClient {
         return future;
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(String accountId) {
         return retrieve(accountId, AccountsRetrieveRequest.builder().build());
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
             String accountId, AccountsRetrieveRequest request) {
         return retrieve(accountId, request, null);
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
             String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -288,10 +312,16 @@ public class AsyncRawAccountsClient {
         return future;
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId) {
         return delete(accountId, null);
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -338,10 +368,16 @@ public class AsyncRawAccountsClient {
         return future;
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId) {
         return deleteByApp(appId, null);
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

@@ -41,14 +41,23 @@ public class RawActionsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list() {
         return list(ActionsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ActionsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(
             ActionsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -112,10 +121,16 @@ public class RawActionsClient {
         }
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -152,10 +167,16 @@ public class RawActionsClient {
         }
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -200,10 +221,16 @@ public class RawActionsClient {
         }
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -248,10 +275,16 @@ public class RawActionsClient {
         }
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public BaseClientHttpResponse<RunActionResponse> run(RunActionOpts request) {
         return run(request, null);
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public BaseClientHttpResponse<RunActionResponse> run(RunActionOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

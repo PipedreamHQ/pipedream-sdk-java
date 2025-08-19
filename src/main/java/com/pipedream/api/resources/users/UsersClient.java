@@ -23,10 +23,16 @@ public class UsersClient {
         return this.rawClient;
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public void deleteExternalUser(String externalUserId) {
         this.rawClient.deleteExternalUser(externalUserId).body();
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public void deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
         this.rawClient.deleteExternalUser(externalUserId, requestOptions).body();
     }

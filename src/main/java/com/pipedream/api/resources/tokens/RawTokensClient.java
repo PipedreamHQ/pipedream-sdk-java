@@ -32,10 +32,16 @@ public class RawTokensClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenOpts request) {
         return create(request, null);
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public BaseClientHttpResponse<CreateTokenResponse> create(CreateTokenOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -79,10 +85,16 @@ public class RawTokensClient {
         }
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public BaseClientHttpResponse<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public BaseClientHttpResponse<ValidateTokenResponse> validate(
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

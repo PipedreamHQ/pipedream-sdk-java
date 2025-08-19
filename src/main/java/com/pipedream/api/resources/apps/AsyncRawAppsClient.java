@@ -37,14 +37,23 @@ public class AsyncRawAppsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<App>>> list() {
         return list(AppsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<App>>> list(AppsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<App>>> list(
             AppsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -135,10 +144,16 @@ public class AsyncRawAppsClient {
         return future;
     }
 
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
     public CompletableFuture<BaseClientHttpResponse<GetAppResponse>> retrieve(String appId) {
         return retrieve(appId, null);
     }
 
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
     public CompletableFuture<BaseClientHttpResponse<GetAppResponse>> retrieve(
             String appId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

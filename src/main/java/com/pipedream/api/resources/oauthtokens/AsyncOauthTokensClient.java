@@ -26,10 +26,16 @@ public class AsyncOauthTokensClient {
         return this.rawClient;
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public CompletableFuture<CreateOAuthTokenResponse> create(CreateOAuthTokenOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public CompletableFuture<CreateOAuthTokenResponse> create(
             CreateOAuthTokenOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());

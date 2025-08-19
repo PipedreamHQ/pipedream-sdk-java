@@ -21,22 +21,44 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ReloadPropsResponse.Builder.class)
 public final class ReloadPropsResponse {
-    private final Optional<List<ConfigurableProp>> configurableProps;
+    private final Optional<Map<String, Object>> observations;
+
+    private final Optional<List<String>> errors;
+
+    private final Optional<DynamicProps> dynamicProps;
 
     private final Map<String, Object> additionalProperties;
 
     private ReloadPropsResponse(
-            Optional<List<ConfigurableProp>> configurableProps, Map<String, Object> additionalProperties) {
-        this.configurableProps = configurableProps;
+            Optional<Map<String, Object>> observations,
+            Optional<List<String>> errors,
+            Optional<DynamicProps> dynamicProps,
+            Map<String, Object> additionalProperties) {
+        this.observations = observations;
+        this.errors = errors;
+        this.dynamicProps = dynamicProps;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return The updated configurable properties
+     * @return Any logs produced during the configuration of the prop
      */
-    @JsonProperty("configurable_props")
-    public Optional<List<ConfigurableProp>> getConfigurableProps() {
-        return configurableProps;
+    @JsonProperty("observations")
+    public Optional<Map<String, Object>> getObservations() {
+        return observations;
+    }
+
+    /**
+     * @return Any errors that occurred during configuration
+     */
+    @JsonProperty("errors")
+    public Optional<List<String>> getErrors() {
+        return errors;
+    }
+
+    @JsonProperty("dynamicProps")
+    public Optional<DynamicProps> getDynamicProps() {
+        return dynamicProps;
     }
 
     @java.lang.Override
@@ -51,12 +73,14 @@ public final class ReloadPropsResponse {
     }
 
     private boolean equalTo(ReloadPropsResponse other) {
-        return configurableProps.equals(other.configurableProps);
+        return observations.equals(other.observations)
+                && errors.equals(other.errors)
+                && dynamicProps.equals(other.dynamicProps);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configurableProps);
+        return Objects.hash(this.observations, this.errors, this.dynamicProps);
     }
 
     @java.lang.Override
@@ -70,7 +94,11 @@ public final class ReloadPropsResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<ConfigurableProp>> configurableProps = Optional.empty();
+        private Optional<Map<String, Object>> observations = Optional.empty();
+
+        private Optional<List<String>> errors = Optional.empty();
+
+        private Optional<DynamicProps> dynamicProps = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -78,26 +106,53 @@ public final class ReloadPropsResponse {
         private Builder() {}
 
         public Builder from(ReloadPropsResponse other) {
-            configurableProps(other.getConfigurableProps());
+            observations(other.getObservations());
+            errors(other.getErrors());
+            dynamicProps(other.getDynamicProps());
             return this;
         }
 
         /**
-         * <p>The updated configurable properties</p>
+         * <p>Any logs produced during the configuration of the prop</p>
          */
-        @JsonSetter(value = "configurable_props", nulls = Nulls.SKIP)
-        public Builder configurableProps(Optional<List<ConfigurableProp>> configurableProps) {
-            this.configurableProps = configurableProps;
+        @JsonSetter(value = "observations", nulls = Nulls.SKIP)
+        public Builder observations(Optional<Map<String, Object>> observations) {
+            this.observations = observations;
             return this;
         }
 
-        public Builder configurableProps(List<ConfigurableProp> configurableProps) {
-            this.configurableProps = Optional.ofNullable(configurableProps);
+        public Builder observations(Map<String, Object> observations) {
+            this.observations = Optional.ofNullable(observations);
+            return this;
+        }
+
+        /**
+         * <p>Any errors that occurred during configuration</p>
+         */
+        @JsonSetter(value = "errors", nulls = Nulls.SKIP)
+        public Builder errors(Optional<List<String>> errors) {
+            this.errors = errors;
+            return this;
+        }
+
+        public Builder errors(List<String> errors) {
+            this.errors = Optional.ofNullable(errors);
+            return this;
+        }
+
+        @JsonSetter(value = "dynamicProps", nulls = Nulls.SKIP)
+        public Builder dynamicProps(Optional<DynamicProps> dynamicProps) {
+            this.dynamicProps = dynamicProps;
+            return this;
+        }
+
+        public Builder dynamicProps(DynamicProps dynamicProps) {
+            this.dynamicProps = Optional.ofNullable(dynamicProps);
             return this;
         }
 
         public ReloadPropsResponse build() {
-            return new ReloadPropsResponse(configurableProps, additionalProperties);
+            return new ReloadPropsResponse(observations, errors, dynamicProps, additionalProperties);
         }
     }
 }
