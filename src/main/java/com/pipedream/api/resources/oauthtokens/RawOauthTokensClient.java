@@ -29,10 +29,16 @@ public class RawOauthTokensClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public BaseClientHttpResponse<CreateOAuthTokenResponse> create(CreateOAuthTokenOpts request) {
         return create(request, null);
     }
 
+    /**
+     * Exchange OAuth credentials for an access token
+     */
     public BaseClientHttpResponse<CreateOAuthTokenResponse> create(
             CreateOAuthTokenOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

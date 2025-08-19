@@ -25,18 +25,30 @@ public class AppCategoriesClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public List<AppCategory> list() {
         return this.rawClient.list().body();
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public List<AppCategory> list(RequestOptions requestOptions) {
         return this.rawClient.list(requestOptions).body();
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public AppCategory retrieve(String id) {
         return this.rawClient.retrieve(id).body();
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public AppCategory retrieve(String id, RequestOptions requestOptions) {
         return this.rawClient.retrieve(id, requestOptions).body();
     }

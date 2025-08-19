@@ -33,48 +33,81 @@ public class AsyncTriggersClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list() {
         return this.rawClient.list().thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(TriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(
             TriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public CompletableFuture<Component> retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).thenApply(response -> response.body());
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public CompletableFuture<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public CompletableFuture<DeployedComponent> deploy(DeployTriggerOpts request) {
         return this.rawClient.deploy(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public CompletableFuture<DeployedComponent> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.deploy(request, requestOptions).thenApply(response -> response.body());
     }

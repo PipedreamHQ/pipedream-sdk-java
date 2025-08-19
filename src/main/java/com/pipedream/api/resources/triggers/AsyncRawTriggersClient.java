@@ -47,14 +47,23 @@ public class AsyncRawTriggersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
         return list(TriggersListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(TriggersListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
             TriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -138,10 +147,16 @@ public class AsyncRawTriggersClient {
         return future;
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
             String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -192,10 +207,16 @@ public class AsyncRawTriggersClient {
         return future;
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -253,10 +274,16 @@ public class AsyncRawTriggersClient {
         return future;
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -314,10 +341,16 @@ public class AsyncRawTriggersClient {
         return future;
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> deploy(
             DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

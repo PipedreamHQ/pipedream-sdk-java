@@ -27,10 +27,16 @@ public class RawAppCategoriesClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public BaseClientHttpResponse<List<AppCategory>> list() {
         return list(null);
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public BaseClientHttpResponse<List<AppCategory>> list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -65,10 +71,16 @@ public class RawAppCategoriesClient {
         }
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public BaseClientHttpResponse<AppCategory> retrieve(String id) {
         return retrieve(id, null);
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public BaseClientHttpResponse<AppCategory> retrieve(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

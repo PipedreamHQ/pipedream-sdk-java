@@ -28,10 +28,16 @@ public class AsyncRawUsersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> deleteExternalUser(String externalUserId) {
         return deleteExternalUser(externalUserId, null);
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> deleteExternalUser(
             String externalUserId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

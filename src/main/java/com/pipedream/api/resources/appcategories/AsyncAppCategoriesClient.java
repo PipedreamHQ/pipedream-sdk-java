@@ -26,18 +26,30 @@ public class AsyncAppCategoriesClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public CompletableFuture<List<AppCategory>> list() {
         return this.rawClient.list().thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve all available categories for integrated apps
+     */
     public CompletableFuture<List<AppCategory>> list(RequestOptions requestOptions) {
         return this.rawClient.list(requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public CompletableFuture<AppCategory> retrieve(String id) {
         return this.rawClient.retrieve(id).thenApply(response -> response.body());
     }
 
+    /**
+     * Get details of a specific app category by its ID
+     */
     public CompletableFuture<AppCategory> retrieve(String id, RequestOptions requestOptions) {
         return this.rawClient.retrieve(id, requestOptions).thenApply(response -> response.body());
     }

@@ -24,10 +24,16 @@ public class AsyncUsersClient {
         return this.rawClient;
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public CompletableFuture<Void> deleteExternalUser(String externalUserId) {
         return this.rawClient.deleteExternalUser(externalUserId).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
     public CompletableFuture<Void> deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
         return this.rawClient.deleteExternalUser(externalUserId, requestOptions).thenApply(response -> response.body());
     }

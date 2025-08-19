@@ -25,10 +25,16 @@ public class RawProjectsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo() {
         return retrieveInfo(null);
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
