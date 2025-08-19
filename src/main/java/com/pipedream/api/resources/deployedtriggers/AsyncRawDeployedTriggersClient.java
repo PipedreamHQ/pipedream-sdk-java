@@ -53,11 +53,17 @@ public class AsyncRawDeployedTriggersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
             DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -137,11 +143,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -192,11 +204,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
             String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -265,11 +283,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> delete(
             String triggerId, DeployedTriggersDeleteRequest request) {
         return delete(triggerId, request, null);
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public CompletableFuture<BaseClientHttpResponse<Void>> delete(
             String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -321,11 +345,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<List<EmittedEvent>>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request) {
         return listEvents(triggerId, request, null);
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<List<EmittedEvent>>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -380,11 +410,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -437,11 +473,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request) {
         return updateWorkflows(triggerId, request, null);
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWorkflowsResponse>> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -504,11 +546,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -561,11 +609,17 @@ public class AsyncRawDeployedTriggersClient {
         return future;
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
         return updateWebhooks(triggerId, request, null);
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public CompletableFuture<BaseClientHttpResponse<GetTriggerWebhooksResponse>> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

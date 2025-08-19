@@ -39,14 +39,23 @@ public class RawComponentsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list() {
         return list(ComponentsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ComponentsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(
             ComponentsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -110,10 +119,16 @@ public class RawComponentsClient {
         }
     }
 
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -150,10 +165,16 @@ public class RawComponentsClient {
         }
     }
 
+    /**
+     * Retrieve remote options for a given prop for a component
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a component
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -198,10 +219,16 @@ public class RawComponentsClient {
         }
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

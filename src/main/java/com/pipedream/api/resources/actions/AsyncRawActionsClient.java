@@ -46,14 +46,23 @@ public class AsyncRawActionsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
         return list(ActionsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ActionsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
             ActionsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -137,10 +146,16 @@ public class AsyncRawActionsClient {
         return future;
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
             String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -191,10 +206,16 @@ public class AsyncRawActionsClient {
         return future;
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a action
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -252,10 +273,16 @@ public class AsyncRawActionsClient {
         return future;
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -313,10 +340,16 @@ public class AsyncRawActionsClient {
         return future;
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public CompletableFuture<BaseClientHttpResponse<RunActionResponse>> run(RunActionOpts request) {
         return run(request, null);
     }
 
+    /**
+     * Execute an action with the provided configuration and return results
+     */
     public CompletableFuture<BaseClientHttpResponse<RunActionResponse>> run(
             RunActionOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

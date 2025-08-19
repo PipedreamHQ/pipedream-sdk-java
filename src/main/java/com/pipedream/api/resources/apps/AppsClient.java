@@ -27,22 +27,37 @@ public class AppsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public SyncPagingIterable<App> list() {
         return this.rawClient.list().body();
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public SyncPagingIterable<App> list(AppsListRequest request) {
         return this.rawClient.list(request).body();
     }
 
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public SyncPagingIterable<App> list(AppsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
     public GetAppResponse retrieve(String appId) {
         return this.rawClient.retrieve(appId).body();
     }
 
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
     public GetAppResponse retrieve(String appId, RequestOptions requestOptions) {
         return this.rawClient.retrieve(appId, requestOptions).body();
     }

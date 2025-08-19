@@ -28,50 +28,86 @@ public class AccountsClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public SyncPagingIterable<Account> list() {
         return this.rawClient.list().body();
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public SyncPagingIterable<Account> list(AccountsListRequest request) {
         return this.rawClient.list(request).body();
     }
 
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public SyncPagingIterable<Account> list(AccountsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public Account create(CreateAccountOpts request) {
         return this.rawClient.create(request).body();
     }
 
+    /**
+     * Connect a new account for an external user in the project
+     */
     public Account create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public Account retrieve(String accountId) {
         return this.rawClient.retrieve(accountId).body();
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public Account retrieve(String accountId, AccountsRetrieveRequest request) {
         return this.rawClient.retrieve(accountId, request).body();
     }
 
+    /**
+     * Get the details for a specific connected account
+     */
     public Account retrieve(String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(accountId, request, requestOptions).body();
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public void delete(String accountId) {
         this.rawClient.delete(accountId).body();
     }
 
+    /**
+     * Remove a connected account and its associated credentials
+     */
     public void delete(String accountId, RequestOptions requestOptions) {
         this.rawClient.delete(accountId, requestOptions).body();
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public void deleteByApp(String appId) {
         this.rawClient.deleteByApp(appId).body();
     }
 
+    /**
+     * Remove all connected accounts for a specific app
+     */
     public void deleteByApp(String appId, RequestOptions requestOptions) {
         this.rawClient.deleteByApp(appId, requestOptions).body();
     }

@@ -27,18 +27,30 @@ public class TokensClient {
         return this.rawClient;
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public CreateTokenResponse create(CreateTokenOpts request) {
         return this.rawClient.create(request).body();
     }
 
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
     public CreateTokenResponse create(CreateTokenOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public ValidateTokenResponse validate(String ctok, TokensValidateRequest request) {
         return this.rawClient.validate(ctok, request).body();
     }
 
+    /**
+     * Confirm the validity of a Connect token
+     */
     public ValidateTokenResponse validate(String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         return this.rawClient.validate(ctok, request, requestOptions).body();
     }

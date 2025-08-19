@@ -44,15 +44,24 @@ public class AsyncRawComponentsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
         return list(ComponentsListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
             ComponentsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
             ComponentsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -136,10 +145,16 @@ public class AsyncRawComponentsClient {
         return future;
     }
 
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
             String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -190,10 +205,16 @@ public class AsyncRawComponentsClient {
         return future;
     }
 
+    /**
+     * Retrieve remote options for a given prop for a component
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a component
+     */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -251,10 +272,16 @@ public class AsyncRawComponentsClient {
         return future;
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

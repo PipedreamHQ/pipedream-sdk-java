@@ -39,67 +39,109 @@ public class AsyncDeployedTriggersClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve all deployed triggers for a specific external user
+     */
     public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public CompletableFuture<DeployedComponent> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return this.rawClient.retrieve(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Get details of a specific deployed trigger by its ID
+     */
     public CompletableFuture<DeployedComponent> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public CompletableFuture<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
         return this.rawClient.update(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Modify the configuration of a deployed trigger, including active status
+     */
     public CompletableFuture<DeployedComponent> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.update(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public CompletableFuture<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
         return this.rawClient.delete(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Remove a deployed trigger and stop receiving events
+     */
     public CompletableFuture<Void> delete(
             String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public CompletableFuture<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request) {
         return this.rawClient.listEvents(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Retrieve recent events emitted by a deployed trigger
+     */
     public CompletableFuture<List<EmittedEvent>> listEvents(
             String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         return this.rawClient.listEvents(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public CompletableFuture<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return this.rawClient.listWorkflows(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Get workflows connected to receive events from this trigger
+     */
     public CompletableFuture<GetTriggerWorkflowsResponse> listWorkflows(
             String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWorkflows(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public CompletableFuture<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request) {
         return this.rawClient.updateWorkflows(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Connect or disconnect workflows to receive trigger events
+     */
     public CompletableFuture<GetTriggerWorkflowsResponse> updateWorkflows(
             String triggerId, UpdateTriggerWorkflowsOpts request, RequestOptions requestOptions) {
         return this.rawClient
@@ -107,21 +149,33 @@ public class AsyncDeployedTriggersClient {
                 .thenApply(response -> response.body());
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public CompletableFuture<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request) {
         return this.rawClient.listWebhooks(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Get webhook URLs configured to receive trigger events
+     */
     public CompletableFuture<GetTriggerWebhooksResponse> listWebhooks(
             String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWebhooks(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public CompletableFuture<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
         return this.rawClient.updateWebhooks(triggerId, request).thenApply(response -> response.body());
     }
 
+    /**
+     * Configure webhook URLs to receive trigger events
+     */
     public CompletableFuture<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         return this.rawClient.updateWebhooks(triggerId, request, requestOptions).thenApply(response -> response.body());

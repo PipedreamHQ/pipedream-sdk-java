@@ -32,46 +32,79 @@ public class TriggersClient {
         return this.rawClient;
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list() {
         return this.rawClient.list().body();
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(TriggersListRequest request) {
         return this.rawClient.list(request).body();
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(TriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public Component retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).body();
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public Component retrieve(String componentId, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).body();
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).body();
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public DeployedComponent deploy(DeployTriggerOpts request) {
         return this.rawClient.deploy(request).body();
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public DeployedComponent deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.deploy(request, requestOptions).body();
     }

@@ -42,14 +42,23 @@ public class RawTriggersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list() {
         return list(TriggersListRequest.builder().build());
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(TriggersListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(
             TriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -113,10 +122,16 @@ public class RawTriggersClient {
         }
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, null);
     }
 
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
     public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -153,10 +168,16 @@ public class RawTriggersClient {
         }
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
+    /**
+     * Retrieve remote options for a given prop for a trigger
+     */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -201,10 +222,16 @@ public class RawTriggersClient {
         }
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -249,10 +276,16 @@ public class RawTriggersClient {
         }
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public BaseClientHttpResponse<DeployedComponent> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
     public BaseClientHttpResponse<DeployedComponent> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

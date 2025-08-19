@@ -29,10 +29,16 @@ public class AsyncRawProjectsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo() {
         return retrieveInfo(null);
     }
 
+    /**
+     * Retrieve project configuration and environment details
+     */
     public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
