@@ -3,7 +3,7 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FPipedreamHQ%2Fpipedream-sdk-java)
 [![Maven Central](https://img.shields.io/maven-central/v/com.pipedream/pipedream)](https://central.sonatype.com/artifact/com.pipedream/pipedream)
 
-The Pipedream Java library provides convenient access to the Pipedream API from Java.
+The Pipedream Java library provides convenient access to the Pipedream APIs from Java.
 
 ## Installation
 
@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
