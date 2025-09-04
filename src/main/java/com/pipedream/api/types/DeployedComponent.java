@@ -32,7 +32,7 @@ public final class DeployedComponent {
 
     private final List<ConfigurableProp> configurableProps;
 
-    private final Map<String, Object> configuredProps;
+    private final Map<String, ConfiguredPropsValue> configuredProps;
 
     private final boolean active;
 
@@ -53,7 +53,7 @@ public final class DeployedComponent {
             String ownerId,
             String componentId,
             List<ConfigurableProp> configurableProps,
-            Map<String, Object> configuredProps,
+            Map<String, ConfiguredPropsValue> configuredProps,
             boolean active,
             int createdAt,
             int updatedAt,
@@ -107,11 +107,8 @@ public final class DeployedComponent {
         return configurableProps;
     }
 
-    /**
-     * @return The configured properties of the component
-     */
     @JsonProperty("configured_props")
-    public Map<String, Object> getConfiguredProps() {
+    public Map<String, ConfiguredPropsValue> getConfiguredProps() {
         return configuredProps;
     }
 
@@ -280,14 +277,11 @@ public final class DeployedComponent {
 
         _FinalStage addAllConfigurableProps(List<ConfigurableProp> configurableProps);
 
-        /**
-         * <p>The configured properties of the component</p>
-         */
-        _FinalStage configuredProps(Map<String, Object> configuredProps);
+        _FinalStage configuredProps(Map<String, ConfiguredPropsValue> configuredProps);
 
-        _FinalStage putAllConfiguredProps(Map<String, Object> configuredProps);
+        _FinalStage putAllConfiguredProps(Map<String, ConfiguredPropsValue> configuredProps);
 
-        _FinalStage configuredProps(String key, Object value);
+        _FinalStage configuredProps(String key, ConfiguredPropsValue value);
 
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
@@ -323,7 +317,7 @@ public final class DeployedComponent {
 
         private Optional<Object> callbackObservations = Optional.empty();
 
-        private Map<String, Object> configuredProps = new LinkedHashMap<>();
+        private Map<String, ConfiguredPropsValue> configuredProps = new LinkedHashMap<>();
 
         private List<ConfigurableProp> configurableProps = new ArrayList<>();
 
@@ -457,32 +451,21 @@ public final class DeployedComponent {
             return this;
         }
 
-        /**
-         * <p>The configured properties of the component</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage configuredProps(String key, Object value) {
+        public _FinalStage configuredProps(String key, ConfiguredPropsValue value) {
             this.configuredProps.put(key, value);
             return this;
         }
 
-        /**
-         * <p>The configured properties of the component</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage putAllConfiguredProps(Map<String, Object> configuredProps) {
+        public _FinalStage putAllConfiguredProps(Map<String, ConfiguredPropsValue> configuredProps) {
             this.configuredProps.putAll(configuredProps);
             return this;
         }
 
-        /**
-         * <p>The configured properties of the component</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Map<String, Object> configuredProps) {
+        public _FinalStage configuredProps(Map<String, ConfiguredPropsValue> configuredProps) {
             this.configuredProps.clear();
             this.configuredProps.putAll(configuredProps);
             return this;

@@ -27,7 +27,7 @@ public final class ReloadPropsOpts {
 
     private final Optional<Boolean> blocking;
 
-    private final Optional<Map<String, Object>> configuredProps;
+    private final Optional<Map<String, ConfiguredPropsValue>> configuredProps;
 
     private final Optional<String> dynamicPropsId;
 
@@ -37,7 +37,7 @@ public final class ReloadPropsOpts {
             String id,
             String externalUserId,
             Optional<Boolean> blocking,
-            Optional<Map<String, Object>> configuredProps,
+            Optional<Map<String, ConfiguredPropsValue>> configuredProps,
             Optional<String> dynamicPropsId,
             Map<String, Object> additionalProperties) {
         this.id = id;
@@ -72,11 +72,8 @@ public final class ReloadPropsOpts {
         return blocking;
     }
 
-    /**
-     * @return The configured properties for the component
-     */
     @JsonProperty("configured_props")
-    public Optional<Map<String, Object>> getConfiguredProps() {
+    public Optional<Map<String, ConfiguredPropsValue>> getConfiguredProps() {
         return configuredProps;
     }
 
@@ -147,12 +144,9 @@ public final class ReloadPropsOpts {
 
         _FinalStage blocking(Boolean blocking);
 
-        /**
-         * <p>The configured properties for the component</p>
-         */
-        _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps);
+        _FinalStage configuredProps(Optional<Map<String, ConfiguredPropsValue>> configuredProps);
 
-        _FinalStage configuredProps(Map<String, Object> configuredProps);
+        _FinalStage configuredProps(Map<String, ConfiguredPropsValue> configuredProps);
 
         /**
          * <p>The ID for dynamic props</p>
@@ -170,7 +164,7 @@ public final class ReloadPropsOpts {
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
-        private Optional<Map<String, Object>> configuredProps = Optional.empty();
+        private Optional<Map<String, ConfiguredPropsValue>> configuredProps = Optional.empty();
 
         private Optional<Boolean> blocking = Optional.empty();
 
@@ -233,22 +227,15 @@ public final class ReloadPropsOpts {
             return this;
         }
 
-        /**
-         * <p>The configured properties for the component</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage configuredProps(Map<String, Object> configuredProps) {
+        public _FinalStage configuredProps(Map<String, ConfiguredPropsValue> configuredProps) {
             this.configuredProps = Optional.ofNullable(configuredProps);
             return this;
         }
 
-        /**
-         * <p>The configured properties for the component</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps) {
+        public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropsValue>> configuredProps) {
             this.configuredProps = configuredProps;
             return this;
         }
