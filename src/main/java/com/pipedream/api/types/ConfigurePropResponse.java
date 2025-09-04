@@ -21,11 +21,11 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurePropResponse.Builder.class)
 public final class ConfigurePropResponse {
-    private final Optional<List<PropOption>> options;
+    private final Optional<List<ConfigurePropResponseOptionsItem>> options;
 
     private final Optional<List<String>> stringOptions;
 
-    private final Optional<Map<String, Object>> observations;
+    private final Optional<List<Observation>> observations;
 
     private final Optional<Map<String, Object>> context;
 
@@ -34,9 +34,9 @@ public final class ConfigurePropResponse {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurePropResponse(
-            Optional<List<PropOption>> options,
+            Optional<List<ConfigurePropResponseOptionsItem>> options,
             Optional<List<String>> stringOptions,
-            Optional<Map<String, Object>> observations,
+            Optional<List<Observation>> observations,
             Optional<Map<String, Object>> context,
             Optional<List<String>> errors,
             Map<String, Object> additionalProperties) {
@@ -52,7 +52,7 @@ public final class ConfigurePropResponse {
      * @return Available options (with labels) for the configured prop
      */
     @JsonProperty("options")
-    public Optional<List<PropOption>> getOptions() {
+    public Optional<List<ConfigurePropResponseOptionsItem>> getOptions() {
         return options;
     }
 
@@ -64,11 +64,8 @@ public final class ConfigurePropResponse {
         return stringOptions;
     }
 
-    /**
-     * @return Any logs produced during the configuration of the prop
-     */
     @JsonProperty("observations")
-    public Optional<Map<String, Object>> getObservations() {
+    public Optional<List<Observation>> getObservations() {
         return observations;
     }
 
@@ -123,11 +120,11 @@ public final class ConfigurePropResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<PropOption>> options = Optional.empty();
+        private Optional<List<ConfigurePropResponseOptionsItem>> options = Optional.empty();
 
         private Optional<List<String>> stringOptions = Optional.empty();
 
-        private Optional<Map<String, Object>> observations = Optional.empty();
+        private Optional<List<Observation>> observations = Optional.empty();
 
         private Optional<Map<String, Object>> context = Optional.empty();
 
@@ -151,12 +148,12 @@ public final class ConfigurePropResponse {
          * <p>Available options (with labels) for the configured prop</p>
          */
         @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public Builder options(Optional<List<PropOption>> options) {
+        public Builder options(Optional<List<ConfigurePropResponseOptionsItem>> options) {
             this.options = options;
             return this;
         }
 
-        public Builder options(List<PropOption> options) {
+        public Builder options(List<ConfigurePropResponseOptionsItem> options) {
             this.options = Optional.ofNullable(options);
             return this;
         }
@@ -175,16 +172,13 @@ public final class ConfigurePropResponse {
             return this;
         }
 
-        /**
-         * <p>Any logs produced during the configuration of the prop</p>
-         */
         @JsonSetter(value = "observations", nulls = Nulls.SKIP)
-        public Builder observations(Optional<Map<String, Object>> observations) {
+        public Builder observations(Optional<List<Observation>> observations) {
             this.observations = observations;
             return this;
         }
 
-        public Builder observations(Map<String, Object> observations) {
+        public Builder observations(List<Observation> observations) {
             this.observations = Optional.ofNullable(observations);
             return this;
         }
