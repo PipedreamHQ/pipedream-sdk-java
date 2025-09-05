@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAlert.Builder.class)
 public final class ConfigurablePropAlert {
-    private final Optional<String> type;
-
     private final Optional<ConfigurablePropAlertType> alertType;
 
     private final Optional<String> content;
@@ -50,7 +48,6 @@ public final class ConfigurablePropAlert {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAlert(
-            Optional<String> type,
             Optional<ConfigurablePropAlertType> alertType,
             Optional<String> content,
             String name,
@@ -64,7 +61,6 @@ public final class ConfigurablePropAlert {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.alertType = alertType;
         this.content = content;
         this.name = name;
@@ -81,8 +77,8 @@ public final class ConfigurablePropAlert {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "alert";
     }
 
     @JsonProperty("alertType")
@@ -190,8 +186,7 @@ public final class ConfigurablePropAlert {
     }
 
     private boolean equalTo(ConfigurablePropAlert other) {
-        return type.equals(other.type)
-                && alertType.equals(other.alertType)
+        return alertType.equals(other.alertType)
                 && content.equals(other.content)
                 && name.equals(other.name)
                 && label.equals(other.label)
@@ -208,7 +203,6 @@ public final class ConfigurablePropAlert {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.alertType,
                 this.content,
                 this.name,
@@ -243,10 +237,6 @@ public final class ConfigurablePropAlert {
 
     public interface _FinalStage {
         ConfigurablePropAlert build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         _FinalStage alertType(Optional<ConfigurablePropAlertType> alertType);
 
@@ -349,8 +339,6 @@ public final class ConfigurablePropAlert {
 
         private Optional<ConfigurablePropAlertType> alertType = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -358,7 +346,6 @@ public final class ConfigurablePropAlert {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAlert other) {
-            type(other.getType());
             alertType(other.getAlertType());
             content(other.getContent());
             name(other.getName());
@@ -600,22 +587,8 @@ public final class ConfigurablePropAlert {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropAlert build() {
             return new ConfigurablePropAlert(
-                    type,
                     alertType,
                     content,
                     name,

@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAirtableViewId.Builder.class)
 public final class ConfigurablePropAirtableViewId {
-    private final Optional<String> type;
-
     private final Optional<String> tableIdProp;
 
     private final String name;
@@ -48,7 +46,6 @@ public final class ConfigurablePropAirtableViewId {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAirtableViewId(
-            Optional<String> type,
             Optional<String> tableIdProp,
             String name,
             Optional<String> label,
@@ -61,7 +58,6 @@ public final class ConfigurablePropAirtableViewId {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.tableIdProp = tableIdProp;
         this.name = name;
         this.label = label;
@@ -77,8 +73,8 @@ public final class ConfigurablePropAirtableViewId {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.airtable.viewId";
     }
 
     /**
@@ -181,8 +177,7 @@ public final class ConfigurablePropAirtableViewId {
     }
 
     private boolean equalTo(ConfigurablePropAirtableViewId other) {
-        return type.equals(other.type)
-                && tableIdProp.equals(other.tableIdProp)
+        return tableIdProp.equals(other.tableIdProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropAirtableViewId {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.tableIdProp,
                 this.name,
                 this.label,
@@ -232,10 +226,6 @@ public final class ConfigurablePropAirtableViewId {
 
     public interface _FinalStage {
         ConfigurablePropAirtableViewId build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>The name of the prop that provides the Airtable table ID</p>
@@ -332,8 +322,6 @@ public final class ConfigurablePropAirtableViewId {
 
         private Optional<String> tableIdProp = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropAirtableViewId {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableViewId other) {
-            type(other.getType());
             tableIdProp(other.getTableIdProp());
             name(other.getName());
             label(other.getLabel());
@@ -569,22 +556,8 @@ public final class ConfigurablePropAirtableViewId {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropAirtableViewId build() {
             return new ConfigurablePropAirtableViewId(
-                    type,
                     tableIdProp,
                     name,
                     label,

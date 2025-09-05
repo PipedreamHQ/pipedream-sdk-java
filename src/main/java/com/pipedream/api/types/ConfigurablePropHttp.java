@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropHttp.Builder.class)
 public final class ConfigurablePropHttp {
-    private final Optional<String> type;
-
     private final Optional<Boolean> customResponse;
 
     private final String name;
@@ -48,7 +46,6 @@ public final class ConfigurablePropHttp {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropHttp(
-            Optional<String> type,
             Optional<Boolean> customResponse,
             String name,
             Optional<String> label,
@@ -61,7 +58,6 @@ public final class ConfigurablePropHttp {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.customResponse = customResponse;
         this.name = name;
         this.label = label;
@@ -77,8 +73,8 @@ public final class ConfigurablePropHttp {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.interface.http";
     }
 
     /**
@@ -181,8 +177,7 @@ public final class ConfigurablePropHttp {
     }
 
     private boolean equalTo(ConfigurablePropHttp other) {
-        return type.equals(other.type)
-                && customResponse.equals(other.customResponse)
+        return customResponse.equals(other.customResponse)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropHttp {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.customResponse,
                 this.name,
                 this.label,
@@ -232,10 +226,6 @@ public final class ConfigurablePropHttp {
 
     public interface _FinalStage {
         ConfigurablePropHttp build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>Whether this HTTP interface allows custom responses</p>
@@ -332,8 +322,6 @@ public final class ConfigurablePropHttp {
 
         private Optional<Boolean> customResponse = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropHttp {
 
         @java.lang.Override
         public Builder from(ConfigurablePropHttp other) {
-            type(other.getType());
             customResponse(other.getCustomResponse());
             name(other.getName());
             label(other.getLabel());
@@ -569,22 +556,8 @@ public final class ConfigurablePropHttp {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropHttp build() {
             return new ConfigurablePropHttp(
-                    type,
                     customResponse,
                     name,
                     label,

@@ -22,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropTimer.Builder.class)
 public final class ConfigurablePropTimer {
-    private final Optional<String> type;
-
     private final Optional<ConfigurablePropTimerStatic> static_;
 
     private final Optional<ConfigurablePropTimerDefault> default_;
@@ -53,7 +51,6 @@ public final class ConfigurablePropTimer {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropTimer(
-            Optional<String> type,
             Optional<ConfigurablePropTimerStatic> static_,
             Optional<ConfigurablePropTimerDefault> default_,
             Optional<List<Optional<ConfigurablePropTimerOption>>> options,
@@ -68,7 +65,6 @@ public final class ConfigurablePropTimer {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.static_ = static_;
         this.default_ = default_;
         this.options = options;
@@ -86,8 +82,8 @@ public final class ConfigurablePropTimer {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.interface.timer";
     }
 
     @JsonProperty("static")
@@ -200,8 +196,7 @@ public final class ConfigurablePropTimer {
     }
 
     private boolean equalTo(ConfigurablePropTimer other) {
-        return type.equals(other.type)
-                && static_.equals(other.static_)
+        return static_.equals(other.static_)
                 && default_.equals(other.default_)
                 && options.equals(other.options)
                 && name.equals(other.name)
@@ -219,7 +214,6 @@ public final class ConfigurablePropTimer {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.static_,
                 this.default_,
                 this.options,
@@ -255,10 +249,6 @@ public final class ConfigurablePropTimer {
 
     public interface _FinalStage {
         ConfigurablePropTimer build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         _FinalStage static_(Optional<ConfigurablePropTimerStatic> static_);
 
@@ -367,8 +357,6 @@ public final class ConfigurablePropTimer {
 
         private Optional<ConfigurablePropTimerStatic> static_ = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -376,7 +364,6 @@ public final class ConfigurablePropTimer {
 
         @java.lang.Override
         public Builder from(ConfigurablePropTimer other) {
-            type(other.getType());
             static_(other.getStatic());
             default_(other.getDefault());
             options(other.getOptions());
@@ -632,22 +619,8 @@ public final class ConfigurablePropTimer {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropTimer build() {
             return new ConfigurablePropTimer(
-                    type,
                     static_,
                     default_,
                     options,

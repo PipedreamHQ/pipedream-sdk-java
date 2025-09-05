@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropStringArray.Builder.class)
 public final class ConfigurablePropStringArray {
-    private final Optional<String> type;
-
     private final Optional<Boolean> secret;
 
     private final String name;
@@ -48,7 +46,6 @@ public final class ConfigurablePropStringArray {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropStringArray(
-            Optional<String> type,
             Optional<Boolean> secret,
             String name,
             Optional<String> label,
@@ -61,7 +58,6 @@ public final class ConfigurablePropStringArray {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.secret = secret;
         this.name = name;
         this.label = label;
@@ -77,8 +73,8 @@ public final class ConfigurablePropStringArray {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "string[]";
     }
 
     /**
@@ -181,8 +177,7 @@ public final class ConfigurablePropStringArray {
     }
 
     private boolean equalTo(ConfigurablePropStringArray other) {
-        return type.equals(other.type)
-                && secret.equals(other.secret)
+        return secret.equals(other.secret)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropStringArray {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.secret,
                 this.name,
                 this.label,
@@ -232,10 +226,6 @@ public final class ConfigurablePropStringArray {
 
     public interface _FinalStage {
         ConfigurablePropStringArray build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
@@ -332,8 +322,6 @@ public final class ConfigurablePropStringArray {
 
         private Optional<Boolean> secret = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropStringArray {
 
         @java.lang.Override
         public Builder from(ConfigurablePropStringArray other) {
-            type(other.getType());
             secret(other.getSecret());
             name(other.getName());
             label(other.getLabel());
@@ -569,22 +556,8 @@ public final class ConfigurablePropStringArray {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropStringArray build() {
             return new ConfigurablePropStringArray(
-                    type,
                     secret,
                     name,
                     label,

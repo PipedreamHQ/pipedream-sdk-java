@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropApp.Builder.class)
 public final class ConfigurablePropApp {
-    private final Optional<String> type;
-
     private final Optional<String> app;
 
     private final String name;
@@ -48,7 +46,6 @@ public final class ConfigurablePropApp {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropApp(
-            Optional<String> type,
             Optional<String> app,
             String name,
             Optional<String> label,
@@ -61,7 +58,6 @@ public final class ConfigurablePropApp {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.app = app;
         this.name = name;
         this.label = label;
@@ -77,8 +73,8 @@ public final class ConfigurablePropApp {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "app";
     }
 
     /**
@@ -181,8 +177,7 @@ public final class ConfigurablePropApp {
     }
 
     private boolean equalTo(ConfigurablePropApp other) {
-        return type.equals(other.type)
-                && app.equals(other.app)
+        return app.equals(other.app)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropApp {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.app,
                 this.name,
                 this.label,
@@ -232,10 +226,6 @@ public final class ConfigurablePropApp {
 
     public interface _FinalStage {
         ConfigurablePropApp build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
@@ -332,8 +322,6 @@ public final class ConfigurablePropApp {
 
         private Optional<String> app = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropApp {
 
         @java.lang.Override
         public Builder from(ConfigurablePropApp other) {
-            type(other.getType());
             app(other.getApp());
             name(other.getName());
             label(other.getLabel());
@@ -569,22 +556,8 @@ public final class ConfigurablePropApp {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropApp build() {
             return new ConfigurablePropApp(
-                    type,
                     app,
                     name,
                     label,
