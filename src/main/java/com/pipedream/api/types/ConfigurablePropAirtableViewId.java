@@ -21,9 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAirtableViewId.Builder.class)
 public final class ConfigurablePropAirtableViewId {
-    private final Optional<String> type;
-
-    private final Optional<String> tableIdProp;
+    private final String tableIdProp;
 
     private final String name;
 
@@ -48,8 +46,7 @@ public final class ConfigurablePropAirtableViewId {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAirtableViewId(
-            Optional<String> type,
-            Optional<String> tableIdProp,
+            String tableIdProp,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,7 +58,6 @@ public final class ConfigurablePropAirtableViewId {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.tableIdProp = tableIdProp;
         this.name = name;
         this.label = label;
@@ -77,15 +73,15 @@ public final class ConfigurablePropAirtableViewId {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.airtable.viewId";
     }
 
     /**
      * @return The name of the prop that provides the Airtable table ID
      */
     @JsonProperty("tableIdProp")
-    public Optional<String> getTableIdProp() {
+    public String getTableIdProp() {
         return tableIdProp;
     }
 
@@ -181,8 +177,7 @@ public final class ConfigurablePropAirtableViewId {
     }
 
     private boolean equalTo(ConfigurablePropAirtableViewId other) {
-        return type.equals(other.type)
-                && tableIdProp.equals(other.tableIdProp)
+        return tableIdProp.equals(other.tableIdProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropAirtableViewId {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.tableIdProp,
                 this.name,
                 this.label,
@@ -217,8 +211,17 @@ public final class ConfigurablePropAirtableViewId {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static TableIdPropStage builder() {
         return new Builder();
+    }
+
+    public interface TableIdPropStage {
+        /**
+         * <p>The name of the prop that provides the Airtable table ID</p>
+         */
+        NameStage tableIdProp(@NotNull String tableIdProp);
+
+        Builder from(ConfigurablePropAirtableViewId other);
     }
 
     public interface NameStage {
@@ -226,23 +229,10 @@ public final class ConfigurablePropAirtableViewId {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropAirtableViewId other);
     }
 
     public interface _FinalStage {
         ConfigurablePropAirtableViewId build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name of the prop that provides the Airtable table ID</p>
-         */
-        _FinalStage tableIdProp(Optional<String> tableIdProp);
-
-        _FinalStage tableIdProp(String tableIdProp);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +299,9 @@ public final class ConfigurablePropAirtableViewId {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements TableIdPropStage, NameStage, _FinalStage {
+        private String tableIdProp;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -330,10 +322,6 @@ public final class ConfigurablePropAirtableViewId {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> tableIdProp = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropAirtableViewId {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableViewId other) {
-            type(other.getType());
             tableIdProp(other.getTableIdProp());
             name(other.getName());
             label(other.getLabel());
@@ -353,6 +340,18 @@ public final class ConfigurablePropAirtableViewId {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name of the prop that provides the Airtable table ID</p>
+         * <p>The name of the prop that provides the Airtable table ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("tableIdProp")
+        public NameStage tableIdProp(@NotNull String tableIdProp) {
+            this.tableIdProp = Objects.requireNonNull(tableIdProp, "tableIdProp must not be null");
             return this;
         }
 
@@ -548,43 +547,9 @@ public final class ConfigurablePropAirtableViewId {
             return this;
         }
 
-        /**
-         * <p>The name of the prop that provides the Airtable table ID</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage tableIdProp(String tableIdProp) {
-            this.tableIdProp = Optional.ofNullable(tableIdProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the prop that provides the Airtable table ID</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "tableIdProp", nulls = Nulls.SKIP)
-        public _FinalStage tableIdProp(Optional<String> tableIdProp) {
-            this.tableIdProp = tableIdProp;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropAirtableViewId build() {
             return new ConfigurablePropAirtableViewId(
-                    type,
                     tableIdProp,
                     name,
                     label,

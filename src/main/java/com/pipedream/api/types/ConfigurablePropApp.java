@@ -21,9 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropApp.Builder.class)
 public final class ConfigurablePropApp {
-    private final Optional<String> type;
-
-    private final Optional<String> app;
+    private final String app;
 
     private final String name;
 
@@ -48,8 +46,7 @@ public final class ConfigurablePropApp {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropApp(
-            Optional<String> type,
-            Optional<String> app,
+            String app,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,7 +58,6 @@ public final class ConfigurablePropApp {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.app = app;
         this.name = name;
         this.label = label;
@@ -77,15 +73,15 @@ public final class ConfigurablePropApp {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "app";
     }
 
     /**
      * @return The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.
      */
     @JsonProperty("app")
-    public Optional<String> getApp() {
+    public String getApp() {
         return app;
     }
 
@@ -181,8 +177,7 @@ public final class ConfigurablePropApp {
     }
 
     private boolean equalTo(ConfigurablePropApp other) {
-        return type.equals(other.type)
-                && app.equals(other.app)
+        return app.equals(other.app)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropApp {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.app,
                 this.name,
                 this.label,
@@ -217,8 +211,17 @@ public final class ConfigurablePropApp {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static AppStage builder() {
         return new Builder();
+    }
+
+    public interface AppStage {
+        /**
+         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
+         */
+        NameStage app(@NotNull String app);
+
+        Builder from(ConfigurablePropApp other);
     }
 
     public interface NameStage {
@@ -226,23 +229,10 @@ public final class ConfigurablePropApp {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropApp other);
     }
 
     public interface _FinalStage {
         ConfigurablePropApp build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
-         */
-        _FinalStage app(Optional<String> app);
-
-        _FinalStage app(String app);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +299,9 @@ public final class ConfigurablePropApp {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements AppStage, NameStage, _FinalStage {
+        private String app;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -330,10 +322,6 @@ public final class ConfigurablePropApp {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> app = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropApp {
 
         @java.lang.Override
         public Builder from(ConfigurablePropApp other) {
-            type(other.getType());
             app(other.getApp());
             name(other.getName());
             label(other.getLabel());
@@ -353,6 +340,18 @@ public final class ConfigurablePropApp {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
+         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("app")
+        public NameStage app(@NotNull String app) {
+            this.app = Objects.requireNonNull(app, "app must not be null");
             return this;
         }
 
@@ -548,43 +547,9 @@ public final class ConfigurablePropApp {
             return this;
         }
 
-        /**
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage app(String app) {
-            this.app = Optional.ofNullable(app);
-            return this;
-        }
-
-        /**
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "app", nulls = Nulls.SKIP)
-        public _FinalStage app(Optional<String> app) {
-            this.app = app;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropApp build() {
             return new ConfigurablePropApp(
-                    type,
                     app,
                     name,
                     label,

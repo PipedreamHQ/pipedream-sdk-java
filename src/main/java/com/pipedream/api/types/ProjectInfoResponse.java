@@ -91,7 +91,9 @@ public final class ProjectInfoResponse {
         }
 
         public Builder addAllApps(List<ProjectInfoResponseApp> apps) {
-            this.apps.addAll(apps);
+            if (apps != null) {
+                this.apps.addAll(apps);
+            }
             return this;
         }
 

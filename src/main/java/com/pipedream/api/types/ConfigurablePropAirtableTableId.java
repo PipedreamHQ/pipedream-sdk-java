@@ -21,9 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAirtableTableId.Builder.class)
 public final class ConfigurablePropAirtableTableId {
-    private final Optional<String> type;
-
-    private final Optional<String> baseIdProp;
+    private final String baseIdProp;
 
     private final String name;
 
@@ -48,8 +46,7 @@ public final class ConfigurablePropAirtableTableId {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAirtableTableId(
-            Optional<String> type,
-            Optional<String> baseIdProp,
+            String baseIdProp,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,7 +58,6 @@ public final class ConfigurablePropAirtableTableId {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.baseIdProp = baseIdProp;
         this.name = name;
         this.label = label;
@@ -77,15 +73,15 @@ public final class ConfigurablePropAirtableTableId {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.airtable.tableId";
     }
 
     /**
      * @return The name of the prop that provides the Airtable base ID
      */
     @JsonProperty("baseIdProp")
-    public Optional<String> getBaseIdProp() {
+    public String getBaseIdProp() {
         return baseIdProp;
     }
 
@@ -181,8 +177,7 @@ public final class ConfigurablePropAirtableTableId {
     }
 
     private boolean equalTo(ConfigurablePropAirtableTableId other) {
-        return type.equals(other.type)
-                && baseIdProp.equals(other.baseIdProp)
+        return baseIdProp.equals(other.baseIdProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropAirtableTableId {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.baseIdProp,
                 this.name,
                 this.label,
@@ -217,8 +211,17 @@ public final class ConfigurablePropAirtableTableId {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static BaseIdPropStage builder() {
         return new Builder();
+    }
+
+    public interface BaseIdPropStage {
+        /**
+         * <p>The name of the prop that provides the Airtable base ID</p>
+         */
+        NameStage baseIdProp(@NotNull String baseIdProp);
+
+        Builder from(ConfigurablePropAirtableTableId other);
     }
 
     public interface NameStage {
@@ -226,23 +229,10 @@ public final class ConfigurablePropAirtableTableId {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropAirtableTableId other);
     }
 
     public interface _FinalStage {
         ConfigurablePropAirtableTableId build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name of the prop that provides the Airtable base ID</p>
-         */
-        _FinalStage baseIdProp(Optional<String> baseIdProp);
-
-        _FinalStage baseIdProp(String baseIdProp);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +299,9 @@ public final class ConfigurablePropAirtableTableId {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements BaseIdPropStage, NameStage, _FinalStage {
+        private String baseIdProp;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -330,10 +322,6 @@ public final class ConfigurablePropAirtableTableId {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> baseIdProp = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropAirtableTableId {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableTableId other) {
-            type(other.getType());
             baseIdProp(other.getBaseIdProp());
             name(other.getName());
             label(other.getLabel());
@@ -353,6 +340,18 @@ public final class ConfigurablePropAirtableTableId {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name of the prop that provides the Airtable base ID</p>
+         * <p>The name of the prop that provides the Airtable base ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("baseIdProp")
+        public NameStage baseIdProp(@NotNull String baseIdProp) {
+            this.baseIdProp = Objects.requireNonNull(baseIdProp, "baseIdProp must not be null");
             return this;
         }
 
@@ -548,43 +547,9 @@ public final class ConfigurablePropAirtableTableId {
             return this;
         }
 
-        /**
-         * <p>The name of the prop that provides the Airtable base ID</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage baseIdProp(String baseIdProp) {
-            this.baseIdProp = Optional.ofNullable(baseIdProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the prop that provides the Airtable base ID</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "baseIdProp", nulls = Nulls.SKIP)
-        public _FinalStage baseIdProp(Optional<String> baseIdProp) {
-            this.baseIdProp = baseIdProp;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropAirtableTableId build() {
             return new ConfigurablePropAirtableTableId(
-                    type,
                     baseIdProp,
                     name,
                     label,

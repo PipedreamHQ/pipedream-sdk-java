@@ -22,9 +22,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropApphook.Builder.class)
 public final class ConfigurablePropApphook {
-    private final Optional<String> type;
-
-    private final Optional<String> appProp;
+    private final String appProp;
 
     private final Optional<List<String>> eventNames;
 
@@ -55,8 +53,7 @@ public final class ConfigurablePropApphook {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropApphook(
-            Optional<String> type,
-            Optional<String> appProp,
+            String appProp,
             Optional<List<String>> eventNames,
             Optional<Boolean> remote,
             Optional<List<Object>> static_,
@@ -71,7 +68,6 @@ public final class ConfigurablePropApphook {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.appProp = appProp;
         this.eventNames = eventNames;
         this.remote = remote;
@@ -90,15 +86,15 @@ public final class ConfigurablePropApphook {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.interface.apphook";
     }
 
     /**
      * @return The name of the app prop that this apphook depends on
      */
     @JsonProperty("appProp")
-    public Optional<String> getAppProp() {
+    public String getAppProp() {
         return appProp;
     }
 
@@ -218,8 +214,7 @@ public final class ConfigurablePropApphook {
     }
 
     private boolean equalTo(ConfigurablePropApphook other) {
-        return type.equals(other.type)
-                && appProp.equals(other.appProp)
+        return appProp.equals(other.appProp)
                 && eventNames.equals(other.eventNames)
                 && remote.equals(other.remote)
                 && static_.equals(other.static_)
@@ -238,7 +233,6 @@ public final class ConfigurablePropApphook {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.appProp,
                 this.eventNames,
                 this.remote,
@@ -260,8 +254,17 @@ public final class ConfigurablePropApphook {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static AppPropStage builder() {
         return new Builder();
+    }
+
+    public interface AppPropStage {
+        /**
+         * <p>The name of the app prop that this apphook depends on</p>
+         */
+        NameStage appProp(@NotNull String appProp);
+
+        Builder from(ConfigurablePropApphook other);
     }
 
     public interface NameStage {
@@ -269,23 +272,10 @@ public final class ConfigurablePropApphook {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropApphook other);
     }
 
     public interface _FinalStage {
         ConfigurablePropApphook build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name of the app prop that this apphook depends on</p>
-         */
-        _FinalStage appProp(Optional<String> appProp);
-
-        _FinalStage appProp(String appProp);
 
         /**
          * <p>List of event names to listen for</p>
@@ -373,7 +363,9 @@ public final class ConfigurablePropApphook {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements AppPropStage, NameStage, _FinalStage {
+        private String appProp;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -400,10 +392,6 @@ public final class ConfigurablePropApphook {
 
         private Optional<List<String>> eventNames = Optional.empty();
 
-        private Optional<String> appProp = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -411,7 +399,6 @@ public final class ConfigurablePropApphook {
 
         @java.lang.Override
         public Builder from(ConfigurablePropApphook other) {
-            type(other.getType());
             appProp(other.getAppProp());
             eventNames(other.getEventNames());
             remote(other.getRemote());
@@ -426,6 +413,18 @@ public final class ConfigurablePropApphook {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name of the app prop that this apphook depends on</p>
+         * <p>The name of the app prop that this apphook depends on</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("appProp")
+        public NameStage appProp(@NotNull String appProp) {
+            this.appProp = Objects.requireNonNull(appProp, "appProp must not be null");
             return this;
         }
 
@@ -681,43 +680,9 @@ public final class ConfigurablePropApphook {
             return this;
         }
 
-        /**
-         * <p>The name of the app prop that this apphook depends on</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appProp(String appProp) {
-            this.appProp = Optional.ofNullable(appProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that this apphook depends on</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
-        public _FinalStage appProp(Optional<String> appProp) {
-            this.appProp = appProp;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropApphook build() {
             return new ConfigurablePropApphook(
-                    type,
                     appProp,
                     eventNames,
                     remote,

@@ -21,11 +21,9 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAlert.Builder.class)
 public final class ConfigurablePropAlert {
-    private final Optional<String> type;
-
     private final Optional<ConfigurablePropAlertType> alertType;
 
-    private final Optional<String> content;
+    private final String content;
 
     private final String name;
 
@@ -50,9 +48,8 @@ public final class ConfigurablePropAlert {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAlert(
-            Optional<String> type,
             Optional<ConfigurablePropAlertType> alertType,
-            Optional<String> content,
+            String content,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -64,7 +61,6 @@ public final class ConfigurablePropAlert {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.alertType = alertType;
         this.content = content;
         this.name = name;
@@ -81,8 +77,8 @@ public final class ConfigurablePropAlert {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "alert";
     }
 
     @JsonProperty("alertType")
@@ -94,7 +90,7 @@ public final class ConfigurablePropAlert {
      * @return The content of the alert, which can include HTML or plain text.
      */
     @JsonProperty("content")
-    public Optional<String> getContent() {
+    public String getContent() {
         return content;
     }
 
@@ -190,8 +186,7 @@ public final class ConfigurablePropAlert {
     }
 
     private boolean equalTo(ConfigurablePropAlert other) {
-        return type.equals(other.type)
-                && alertType.equals(other.alertType)
+        return alertType.equals(other.alertType)
                 && content.equals(other.content)
                 && name.equals(other.name)
                 && label.equals(other.label)
@@ -208,7 +203,6 @@ public final class ConfigurablePropAlert {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.alertType,
                 this.content,
                 this.name,
@@ -228,8 +222,17 @@ public final class ConfigurablePropAlert {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static ContentStage builder() {
         return new Builder();
+    }
+
+    public interface ContentStage {
+        /**
+         * <p>The content of the alert, which can include HTML or plain text.</p>
+         */
+        NameStage content(@NotNull String content);
+
+        Builder from(ConfigurablePropAlert other);
     }
 
     public interface NameStage {
@@ -237,27 +240,14 @@ public final class ConfigurablePropAlert {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropAlert other);
     }
 
     public interface _FinalStage {
         ConfigurablePropAlert build();
 
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
         _FinalStage alertType(Optional<ConfigurablePropAlertType> alertType);
 
         _FinalStage alertType(ConfigurablePropAlertType alertType);
-
-        /**
-         * <p>The content of the alert, which can include HTML or plain text.</p>
-         */
-        _FinalStage content(Optional<String> content);
-
-        _FinalStage content(String content);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -324,7 +314,9 @@ public final class ConfigurablePropAlert {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements ContentStage, NameStage, _FinalStage {
+        private String content;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -345,11 +337,7 @@ public final class ConfigurablePropAlert {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> content = Optional.empty();
-
         private Optional<ConfigurablePropAlertType> alertType = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -358,7 +346,6 @@ public final class ConfigurablePropAlert {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAlert other) {
-            type(other.getType());
             alertType(other.getAlertType());
             content(other.getContent());
             name(other.getName());
@@ -371,6 +358,18 @@ public final class ConfigurablePropAlert {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The content of the alert, which can include HTML or plain text.</p>
+         * <p>The content of the alert, which can include HTML or plain text.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("content")
+        public NameStage content(@NotNull String content) {
+            this.content = Objects.requireNonNull(content, "content must not be null");
             return this;
         }
 
@@ -566,26 +565,6 @@ public final class ConfigurablePropAlert {
             return this;
         }
 
-        /**
-         * <p>The content of the alert, which can include HTML or plain text.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage content(String content) {
-            this.content = Optional.ofNullable(content);
-            return this;
-        }
-
-        /**
-         * <p>The content of the alert, which can include HTML or plain text.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "content", nulls = Nulls.SKIP)
-        public _FinalStage content(Optional<String> content) {
-            this.content = content;
-            return this;
-        }
-
         @java.lang.Override
         public _FinalStage alertType(ConfigurablePropAlertType alertType) {
             this.alertType = Optional.ofNullable(alertType);
@@ -600,22 +579,8 @@ public final class ConfigurablePropAlert {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropAlert build() {
             return new ConfigurablePropAlert(
-                    type,
                     alertType,
                     content,
                     name,

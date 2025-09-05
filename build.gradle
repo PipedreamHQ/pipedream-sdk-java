@@ -48,7 +48,7 @@ java {
 
 group = 'com.pipedream'
 
-version = '1.0.2'
+version = '1.0.3'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -79,7 +79,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.pipedream'
             artifactId = 'pipedream'
-            version = '1.0.2'
+            version = '1.0.3'
             from components.java
             pom {
                 name = 'pipedream'
@@ -123,9 +123,10 @@ sonatypeCentralUpload {
 }
 
 signing {
-    def signingKeyId = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
+    def signingKeyId = "$System.env.MAVEN_SIGNATURE_KID"
+    def signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
     def signingPassword = "$System.env.MAVEN_SIGNATURE_PASSWORD"
-    useInMemoryPgpKeys(signingKeyId, signingPassword)
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign publishing.publications.maven
 }
 
