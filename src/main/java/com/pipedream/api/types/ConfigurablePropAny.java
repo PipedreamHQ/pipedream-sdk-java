@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAny.Builder.class)
 public final class ConfigurablePropAny {
-    private final Optional<String> type;
-
     private final String name;
 
     private final Optional<String> label;
@@ -46,7 +44,6 @@ public final class ConfigurablePropAny {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAny(
-            Optional<String> type,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -58,7 +55,6 @@ public final class ConfigurablePropAny {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -73,8 +69,8 @@ public final class ConfigurablePropAny {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "any";
     }
 
     /**
@@ -169,8 +165,7 @@ public final class ConfigurablePropAny {
     }
 
     private boolean equalTo(ConfigurablePropAny other) {
-        return type.equals(other.type)
-                && name.equals(other.name)
+        return name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -185,7 +180,6 @@ public final class ConfigurablePropAny {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.name,
                 this.label,
                 this.description,
@@ -218,10 +212,6 @@ public final class ConfigurablePropAny {
 
     public interface _FinalStage {
         ConfigurablePropAny build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,8 +299,6 @@ public final class ConfigurablePropAny {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -318,7 +306,6 @@ public final class ConfigurablePropAny {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAny other) {
-            type(other.getType());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -525,22 +512,8 @@ public final class ConfigurablePropAny {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropAny build() {
             return new ConfigurablePropAny(
-                    type,
                     name,
                     label,
                     description,

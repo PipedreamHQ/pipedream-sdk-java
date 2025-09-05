@@ -91,7 +91,9 @@ public final class GetTriggerWorkflowsResponse {
         }
 
         public Builder addAllWorkflowIds(List<String> workflowIds) {
-            this.workflowIds.addAll(workflowIds);
+            if (workflowIds != null) {
+                this.workflowIds.addAll(workflowIds);
+            }
             return this;
         }
 
