@@ -21,9 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscordChannel.Builder.class)
 public final class ConfigurablePropDiscordChannel {
-    private final Optional<String> type;
-
-    private final Optional<String> appProp;
+    private final String appProp;
 
     private final String name;
 
@@ -48,8 +46,7 @@ public final class ConfigurablePropDiscordChannel {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDiscordChannel(
-            Optional<String> type,
-            Optional<String> appProp,
+            String appProp,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,7 +58,6 @@ public final class ConfigurablePropDiscordChannel {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.appProp = appProp;
         this.name = name;
         this.label = label;
@@ -77,15 +73,15 @@ public final class ConfigurablePropDiscordChannel {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.discord.channel";
     }
 
     /**
      * @return The name of the app prop that provides Discord authentication
      */
     @JsonProperty("appProp")
-    public Optional<String> getAppProp() {
+    public String getAppProp() {
         return appProp;
     }
 
@@ -181,8 +177,7 @@ public final class ConfigurablePropDiscordChannel {
     }
 
     private boolean equalTo(ConfigurablePropDiscordChannel other) {
-        return type.equals(other.type)
-                && appProp.equals(other.appProp)
+        return appProp.equals(other.appProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropDiscordChannel {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.appProp,
                 this.name,
                 this.label,
@@ -217,8 +211,17 @@ public final class ConfigurablePropDiscordChannel {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static AppPropStage builder() {
         return new Builder();
+    }
+
+    public interface AppPropStage {
+        /**
+         * <p>The name of the app prop that provides Discord authentication</p>
+         */
+        NameStage appProp(@NotNull String appProp);
+
+        Builder from(ConfigurablePropDiscordChannel other);
     }
 
     public interface NameStage {
@@ -226,23 +229,10 @@ public final class ConfigurablePropDiscordChannel {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropDiscordChannel other);
     }
 
     public interface _FinalStage {
         ConfigurablePropDiscordChannel build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        _FinalStage appProp(Optional<String> appProp);
-
-        _FinalStage appProp(String appProp);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +299,9 @@ public final class ConfigurablePropDiscordChannel {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements AppPropStage, NameStage, _FinalStage {
+        private String appProp;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -330,10 +322,6 @@ public final class ConfigurablePropDiscordChannel {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> appProp = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropDiscordChannel {
 
         @java.lang.Override
         public Builder from(ConfigurablePropDiscordChannel other) {
-            type(other.getType());
             appProp(other.getAppProp());
             name(other.getName());
             label(other.getLabel());
@@ -353,6 +340,18 @@ public final class ConfigurablePropDiscordChannel {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name of the app prop that provides Discord authentication</p>
+         * <p>The name of the app prop that provides Discord authentication</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("appProp")
+        public NameStage appProp(@NotNull String appProp) {
+            this.appProp = Objects.requireNonNull(appProp, "appProp must not be null");
             return this;
         }
 
@@ -548,43 +547,9 @@ public final class ConfigurablePropDiscordChannel {
             return this;
         }
 
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appProp(String appProp) {
-            this.appProp = Optional.ofNullable(appProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
-        public _FinalStage appProp(Optional<String> appProp) {
-            this.appProp = appProp;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropDiscordChannel build() {
             return new ConfigurablePropDiscordChannel(
-                    type,
                     appProp,
                     name,
                     label,

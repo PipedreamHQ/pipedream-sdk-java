@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscordChannelArray.Builder.class)
 public final class ConfigurablePropDiscordChannelArray {
-    private final Optional<String> type;
-
     private final Optional<String> appProp;
 
     private final String name;
@@ -48,7 +46,6 @@ public final class ConfigurablePropDiscordChannelArray {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDiscordChannelArray(
-            Optional<String> type,
             Optional<String> appProp,
             String name,
             Optional<String> label,
@@ -61,7 +58,6 @@ public final class ConfigurablePropDiscordChannelArray {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.appProp = appProp;
         this.name = name;
         this.label = label;
@@ -77,8 +73,8 @@ public final class ConfigurablePropDiscordChannelArray {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.discord.channel[]";
     }
 
     /**
@@ -182,8 +178,7 @@ public final class ConfigurablePropDiscordChannelArray {
     }
 
     private boolean equalTo(ConfigurablePropDiscordChannelArray other) {
-        return type.equals(other.type)
-                && appProp.equals(other.appProp)
+        return appProp.equals(other.appProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -199,7 +194,6 @@ public final class ConfigurablePropDiscordChannelArray {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.appProp,
                 this.name,
                 this.label,
@@ -233,10 +227,6 @@ public final class ConfigurablePropDiscordChannelArray {
 
     public interface _FinalStage {
         ConfigurablePropDiscordChannelArray build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         /**
          * <p>The name of the app prop that provides Discord authentication</p>
@@ -333,8 +323,6 @@ public final class ConfigurablePropDiscordChannelArray {
 
         private Optional<String> appProp = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -342,7 +330,6 @@ public final class ConfigurablePropDiscordChannelArray {
 
         @java.lang.Override
         public Builder from(ConfigurablePropDiscordChannelArray other) {
-            type(other.getType());
             appProp(other.getAppProp());
             name(other.getName());
             label(other.getLabel());
@@ -570,22 +557,8 @@ public final class ConfigurablePropDiscordChannelArray {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropDiscordChannelArray build() {
             return new ConfigurablePropDiscordChannelArray(
-                    type,
                     appProp,
                     name,
                     label,

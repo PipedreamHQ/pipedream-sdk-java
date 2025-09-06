@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropSql.Builder.class)
 public final class ConfigurablePropSql {
-    private final Optional<String> type;
-
     private final Optional<ConfigurablePropSqlAuth> auth;
 
     private final Optional<String> default_;
@@ -50,7 +48,6 @@ public final class ConfigurablePropSql {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropSql(
-            Optional<String> type,
             Optional<ConfigurablePropSqlAuth> auth,
             Optional<String> default_,
             String name,
@@ -64,7 +61,6 @@ public final class ConfigurablePropSql {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.auth = auth;
         this.default_ = default_;
         this.name = name;
@@ -81,8 +77,8 @@ public final class ConfigurablePropSql {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "sql";
     }
 
     @JsonProperty("auth")
@@ -190,8 +186,7 @@ public final class ConfigurablePropSql {
     }
 
     private boolean equalTo(ConfigurablePropSql other) {
-        return type.equals(other.type)
-                && auth.equals(other.auth)
+        return auth.equals(other.auth)
                 && default_.equals(other.default_)
                 && name.equals(other.name)
                 && label.equals(other.label)
@@ -208,7 +203,6 @@ public final class ConfigurablePropSql {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.auth,
                 this.default_,
                 this.name,
@@ -243,10 +237,6 @@ public final class ConfigurablePropSql {
 
     public interface _FinalStage {
         ConfigurablePropSql build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
 
         _FinalStage auth(Optional<ConfigurablePropSqlAuth> auth);
 
@@ -349,8 +339,6 @@ public final class ConfigurablePropSql {
 
         private Optional<ConfigurablePropSqlAuth> auth = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -358,7 +346,6 @@ public final class ConfigurablePropSql {
 
         @java.lang.Override
         public Builder from(ConfigurablePropSql other) {
-            type(other.getType());
             auth(other.getAuth());
             default_(other.getDefault());
             name(other.getName());
@@ -600,22 +587,8 @@ public final class ConfigurablePropSql {
         }
 
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropSql build() {
             return new ConfigurablePropSql(
-                    type,
                     auth,
                     default_,
                     name,
