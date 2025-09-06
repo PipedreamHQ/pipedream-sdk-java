@@ -91,7 +91,9 @@ public final class GetTriggerWebhooksResponse {
         }
 
         public Builder addAllWebhookUrls(List<String> webhookUrls) {
-            this.webhookUrls.addAll(webhookUrls);
+            if (webhookUrls != null) {
+                this.webhookUrls.addAll(webhookUrls);
+            }
             return this;
         }
 
