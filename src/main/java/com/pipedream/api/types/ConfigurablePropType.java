@@ -16,6 +16,8 @@ public enum ConfigurablePropType {
 
     DISCORD_CHANNEL("$.discord.channel"),
 
+    DISCORD_CHANNEL_ARRAY("$.discord.channel[]"),
+
     INTERFACE_APPHOOK("$.interface.apphook"),
 
     INTERFACE_HTTP("$.interface.http"),
@@ -40,11 +42,15 @@ public enum ConfigurablePropType {
 
     INTEGER("integer"),
 
+    INTEGER_ARRAY("integer[]"),
+
     OBJECT("object"),
 
     SQL("sql"),
 
-    STRING("string");
+    STRING("string"),
+
+    STRING_ARRAY("string[]");
 
     private final String value;
 
