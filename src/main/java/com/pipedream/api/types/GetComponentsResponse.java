@@ -116,7 +116,9 @@ public final class GetComponentsResponse {
 
         @java.lang.Override
         public _FinalStage addAllData(List<Component> data) {
-            this.data.addAll(data);
+            if (data != null) {
+                this.data.addAll(data);
+            }
             return this;
         }
 

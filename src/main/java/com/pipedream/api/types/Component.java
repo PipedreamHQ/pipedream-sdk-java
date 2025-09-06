@@ -325,7 +325,9 @@ public final class Component {
 
         @java.lang.Override
         public _FinalStage addAllConfigurableProps(List<ConfigurableProp> configurableProps) {
-            this.configurableProps.addAll(configurableProps);
+            if (configurableProps != null) {
+                this.configurableProps.addAll(configurableProps);
+            }
             return this;
         }
 

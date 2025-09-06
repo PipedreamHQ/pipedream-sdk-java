@@ -21,9 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropAirtableBaseId.Builder.class)
 public final class ConfigurablePropAirtableBaseId {
-    private final Optional<String> type;
-
-    private final Optional<String> appProp;
+    private final String appProp;
 
     private final String name;
 
@@ -48,8 +46,7 @@ public final class ConfigurablePropAirtableBaseId {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropAirtableBaseId(
-            Optional<String> type,
-            Optional<String> appProp,
+            String appProp,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,7 +58,6 @@ public final class ConfigurablePropAirtableBaseId {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.appProp = appProp;
         this.name = name;
         this.label = label;
@@ -77,15 +73,15 @@ public final class ConfigurablePropAirtableBaseId {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "$.airtable.baseId";
     }
 
     /**
      * @return The name of the app prop that provides Airtable authentication
      */
     @JsonProperty("appProp")
-    public Optional<String> getAppProp() {
+    public String getAppProp() {
         return appProp;
     }
 
@@ -181,8 +177,7 @@ public final class ConfigurablePropAirtableBaseId {
     }
 
     private boolean equalTo(ConfigurablePropAirtableBaseId other) {
-        return type.equals(other.type)
-                && appProp.equals(other.appProp)
+        return appProp.equals(other.appProp)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -198,7 +193,6 @@ public final class ConfigurablePropAirtableBaseId {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
                 this.appProp,
                 this.name,
                 this.label,
@@ -217,8 +211,17 @@ public final class ConfigurablePropAirtableBaseId {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static AppPropStage builder() {
         return new Builder();
+    }
+
+    public interface AppPropStage {
+        /**
+         * <p>The name of the app prop that provides Airtable authentication</p>
+         */
+        NameStage appProp(@NotNull String appProp);
+
+        Builder from(ConfigurablePropAirtableBaseId other);
     }
 
     public interface NameStage {
@@ -226,23 +229,10 @@ public final class ConfigurablePropAirtableBaseId {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropAirtableBaseId other);
     }
 
     public interface _FinalStage {
         ConfigurablePropAirtableBaseId build();
-
-        _FinalStage type(Optional<String> type);
-
-        _FinalStage type(String type);
-
-        /**
-         * <p>The name of the app prop that provides Airtable authentication</p>
-         */
-        _FinalStage appProp(Optional<String> appProp);
-
-        _FinalStage appProp(String appProp);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +299,9 @@ public final class ConfigurablePropAirtableBaseId {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements AppPropStage, NameStage, _FinalStage {
+        private String appProp;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -330,10 +322,6 @@ public final class ConfigurablePropAirtableBaseId {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> appProp = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,7 +329,6 @@ public final class ConfigurablePropAirtableBaseId {
 
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableBaseId other) {
-            type(other.getType());
             appProp(other.getAppProp());
             name(other.getName());
             label(other.getLabel());
@@ -353,6 +340,18 @@ public final class ConfigurablePropAirtableBaseId {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        /**
+         * <p>The name of the app prop that provides Airtable authentication</p>
+         * <p>The name of the app prop that provides Airtable authentication</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("appProp")
+        public NameStage appProp(@NotNull String appProp) {
+            this.appProp = Objects.requireNonNull(appProp, "appProp must not be null");
             return this;
         }
 
@@ -548,43 +547,9 @@ public final class ConfigurablePropAirtableBaseId {
             return this;
         }
 
-        /**
-         * <p>The name of the app prop that provides Airtable authentication</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appProp(String appProp) {
-            this.appProp = Optional.ofNullable(appProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Airtable authentication</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
-        public _FinalStage appProp(Optional<String> appProp) {
-            this.appProp = appProp;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurablePropAirtableBaseId build() {
             return new ConfigurablePropAirtableBaseId(
-                    type,
                     appProp,
                     name,
                     label,

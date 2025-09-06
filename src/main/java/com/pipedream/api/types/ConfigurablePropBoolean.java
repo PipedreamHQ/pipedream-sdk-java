@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropBoolean.Builder.class)
 public final class ConfigurablePropBoolean {
-    private final Optional<String> type;
+    private final Optional<Boolean> default_;
 
     private final String name;
 
@@ -46,7 +46,7 @@ public final class ConfigurablePropBoolean {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropBoolean(
-            Optional<String> type,
+            Optional<Boolean> default_,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -58,7 +58,7 @@ public final class ConfigurablePropBoolean {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.type = type;
+        this.default_ = default_;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -73,8 +73,16 @@ public final class ConfigurablePropBoolean {
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
+    public String getType() {
+        return "boolean";
+    }
+
+    /**
+     * @return The default value for this prop
+     */
+    @JsonProperty("default")
+    public Optional<Boolean> getDefault() {
+        return default_;
     }
 
     /**
@@ -169,7 +177,7 @@ public final class ConfigurablePropBoolean {
     }
 
     private boolean equalTo(ConfigurablePropBoolean other) {
-        return type.equals(other.type)
+        return default_.equals(other.default_)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -185,7 +193,7 @@ public final class ConfigurablePropBoolean {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.type,
+                this.default_,
                 this.name,
                 this.label,
                 this.description,
@@ -219,9 +227,12 @@ public final class ConfigurablePropBoolean {
     public interface _FinalStage {
         ConfigurablePropBoolean build();
 
-        _FinalStage type(Optional<String> type);
+        /**
+         * <p>The default value for this prop</p>
+         */
+        _FinalStage default_(Optional<Boolean> default_);
 
-        _FinalStage type(String type);
+        _FinalStage default_(Boolean default_);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -309,7 +320,7 @@ public final class ConfigurablePropBoolean {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
+        private Optional<Boolean> default_ = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -318,7 +329,7 @@ public final class ConfigurablePropBoolean {
 
         @java.lang.Override
         public Builder from(ConfigurablePropBoolean other) {
-            type(other.getType());
+            default_(other.getDefault());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -524,23 +535,30 @@ public final class ConfigurablePropBoolean {
             return this;
         }
 
+        /**
+         * <p>The default value for this prop</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage type(String type) {
-            this.type = Optional.ofNullable(type);
+        public _FinalStage default_(Boolean default_) {
+            this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
+        /**
+         * <p>The default value for this prop</p>
+         */
         @java.lang.Override
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public _FinalStage type(Optional<String> type) {
-            this.type = type;
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<Boolean> default_) {
+            this.default_ = default_;
             return this;
         }
 
         @java.lang.Override
         public ConfigurablePropBoolean build() {
             return new ConfigurablePropBoolean(
-                    type,
+                    default_,
                     name,
                     label,
                     description,
