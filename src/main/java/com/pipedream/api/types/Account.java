@@ -81,6 +81,9 @@ public final class Account {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The unique ID of the account.
+     */
     @JsonProperty("id")
     public String getId() {
         return id;
@@ -234,6 +237,9 @@ public final class Account {
     }
 
     public interface IdStage {
+        /**
+         * <p>The unique ID of the account.</p>
+         */
         _FinalStage id(@NotNull String id);
 
         Builder from(Account other);
@@ -375,6 +381,11 @@ public final class Account {
             return this;
         }
 
+        /**
+         * <p>The unique ID of the account.</p>
+         * <p>The unique ID of the account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("id")
         public _FinalStage id(@NotNull String id) {

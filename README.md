@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -162,32 +162,6 @@ client.actions().run(
     RequestOptions
         .builder()
         .timeout(10)
-        .build()
-);
-```
-
-### Custom Headers
-
-The SDK allows you to add custom headers to requests. You can configure headers at the client level or at the request level.
-
-```java
-import com.pipedream.api.BaseClient;
-import com.pipedream.api.core.RequestOptions;
-
-// Client level
-BaseClient client = BaseClient
-    .builder()
-    .addHeader("X-Custom-Header", "custom-value")
-    .addHeader("X-Request-Id", "abc-123")
-    .build();
-;
-
-// Request level
-client.actions().run(
-    ...,
-    RequestOptions
-        .builder()
-        .addHeader("X-Request-Header", "request-value")
         .build()
 );
 ```

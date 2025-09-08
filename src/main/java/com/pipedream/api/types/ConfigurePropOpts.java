@@ -29,7 +29,7 @@ public final class ConfigurePropOpts {
 
     private final Optional<Boolean> blocking;
 
-    private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
+    private final Optional<Map<String, Object>> configuredProps;
 
     private final Optional<String> dynamicPropsId;
 
@@ -46,7 +46,7 @@ public final class ConfigurePropOpts {
             String externalUserId,
             String propName,
             Optional<Boolean> blocking,
-            Optional<Map<String, ConfiguredPropValue>> configuredProps,
+            Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
             Optional<Double> page,
             Optional<Map<String, Object>> prevContext,
@@ -96,8 +96,11 @@ public final class ConfigurePropOpts {
         return blocking;
     }
 
+    /**
+     * @return The configured properties for the component
+     */
     @JsonProperty("configured_props")
-    public Optional<Map<String, ConfiguredPropValue>> getConfiguredProps() {
+    public Optional<Map<String, Object>> getConfiguredProps() {
         return configuredProps;
     }
 
@@ -212,9 +215,12 @@ public final class ConfigurePropOpts {
 
         _FinalStage blocking(Boolean blocking);
 
-        _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
+        /**
+         * <p>The configured properties for the component</p>
+         */
+        _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps);
 
-        _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
+        _FinalStage configuredProps(Map<String, Object> configuredProps);
 
         /**
          * <p>The ID for dynamic props</p>
@@ -261,7 +267,7 @@ public final class ConfigurePropOpts {
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
-        private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
+        private Optional<Map<String, Object>> configuredProps = Optional.empty();
 
         private Optional<Boolean> blocking = Optional.empty();
 
@@ -400,15 +406,22 @@ public final class ConfigurePropOpts {
             return this;
         }
 
+        /**
+         * <p>The configured properties for the component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
+        public _FinalStage configuredProps(Map<String, Object> configuredProps) {
             this.configuredProps = Optional.ofNullable(configuredProps);
             return this;
         }
 
+        /**
+         * <p>The configured properties for the component</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
+        public _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps) {
             this.configuredProps = configuredProps;
             return this;
         }

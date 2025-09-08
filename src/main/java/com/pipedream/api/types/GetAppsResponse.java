@@ -116,9 +116,7 @@ public final class GetAppsResponse {
 
         @java.lang.Override
         public _FinalStage addAllData(List<App> data) {
-            if (data != null) {
-                this.data.addAll(data);
-            }
+            this.data.addAll(data);
             return this;
         }
 
