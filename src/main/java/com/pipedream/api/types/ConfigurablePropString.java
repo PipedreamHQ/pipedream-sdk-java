@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropString.Builder.class)
 public final class ConfigurablePropString {
-    private final Optional<String> default_;
+    private final Optional<String> type;
 
     private final Optional<Boolean> secret;
 
@@ -48,7 +48,7 @@ public final class ConfigurablePropString {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropString(
-            Optional<String> default_,
+            Optional<String> type,
             Optional<Boolean> secret,
             String name,
             Optional<String> label,
@@ -61,7 +61,7 @@ public final class ConfigurablePropString {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.default_ = default_;
+        this.type = type;
         this.secret = secret;
         this.name = name;
         this.label = label;
@@ -77,16 +77,8 @@ public final class ConfigurablePropString {
     }
 
     @JsonProperty("type")
-    public String getType() {
-        return "string";
-    }
-
-    /**
-     * @return The default value for this prop
-     */
-    @JsonProperty("default")
-    public Optional<String> getDefault() {
-        return default_;
+    public Optional<String> getType() {
+        return type;
     }
 
     /**
@@ -189,7 +181,7 @@ public final class ConfigurablePropString {
     }
 
     private boolean equalTo(ConfigurablePropString other) {
-        return default_.equals(other.default_)
+        return type.equals(other.type)
                 && secret.equals(other.secret)
                 && name.equals(other.name)
                 && label.equals(other.label)
@@ -206,7 +198,7 @@ public final class ConfigurablePropString {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.default_,
+                this.type,
                 this.secret,
                 this.name,
                 this.label,
@@ -241,12 +233,9 @@ public final class ConfigurablePropString {
     public interface _FinalStage {
         ConfigurablePropString build();
 
-        /**
-         * <p>The default value for this prop</p>
-         */
-        _FinalStage default_(Optional<String> default_);
+        _FinalStage type(Optional<String> type);
 
-        _FinalStage default_(String default_);
+        _FinalStage type(String type);
 
         /**
          * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
@@ -343,7 +332,7 @@ public final class ConfigurablePropString {
 
         private Optional<Boolean> secret = Optional.empty();
 
-        private Optional<String> default_ = Optional.empty();
+        private Optional<String> type = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -352,7 +341,7 @@ public final class ConfigurablePropString {
 
         @java.lang.Override
         public Builder from(ConfigurablePropString other) {
-            default_(other.getDefault());
+            type(other.getType());
             secret(other.getSecret());
             name(other.getName());
             label(other.getLabel());
@@ -579,30 +568,23 @@ public final class ConfigurablePropString {
             return this;
         }
 
-        /**
-         * <p>The default value for this prop</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage default_(String default_) {
-            this.default_ = Optional.ofNullable(default_);
+        public _FinalStage type(String type) {
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
-        /**
-         * <p>The default value for this prop</p>
-         */
         @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<String> default_) {
-            this.default_ = default_;
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public _FinalStage type(Optional<String> type) {
+            this.type = type;
             return this;
         }
 
         @java.lang.Override
         public ConfigurablePropString build() {
             return new ConfigurablePropString(
-                    default_,
+                    type,
                     secret,
                     name,
                     label,

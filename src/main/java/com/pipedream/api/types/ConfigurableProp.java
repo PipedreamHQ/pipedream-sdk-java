@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurableProp {
     private final String name;
 
-    private final ConfigurablePropType type;
+    private final Optional<String> type;
 
     private final Optional<String> label;
 
@@ -47,7 +47,7 @@ public final class ConfigurableProp {
 
     private ConfigurableProp(
             String name,
-            ConfigurablePropType type,
+            Optional<String> type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -81,7 +81,7 @@ public final class ConfigurableProp {
     }
 
     @JsonProperty("type")
-    public ConfigurablePropType getType() {
+    public Optional<String> getType() {
         return type;
     }
 
@@ -211,17 +211,17 @@ public final class ConfigurableProp {
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        TypeStage name(@NotNull String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(ConfigurableProp other);
     }
 
-    public interface TypeStage {
-        _FinalStage type(@NotNull ConfigurablePropType type);
-    }
-
     public interface _FinalStage {
         ConfigurableProp build();
+
+        _FinalStage type(Optional<String> type);
+
+        _FinalStage type(String type);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -288,10 +288,8 @@ public final class ConfigurableProp {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, TypeStage, _FinalStage {
+    public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private ConfigurablePropType type;
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -310,6 +308,8 @@ public final class ConfigurableProp {
         private Optional<String> description = Optional.empty();
 
         private Optional<String> label = Optional.empty();
+
+        private Optional<String> type = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -339,15 +339,8 @@ public final class ConfigurableProp {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public TypeStage name(@NotNull String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("type")
-        public _FinalStage type(@NotNull ConfigurablePropType type) {
-            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -528,6 +521,19 @@ public final class ConfigurableProp {
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public _FinalStage label(Optional<String> label) {
             this.label = label;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage type(String type) {
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public _FinalStage type(Optional<String> type) {
+            this.type = type;
             return this;
         }
 

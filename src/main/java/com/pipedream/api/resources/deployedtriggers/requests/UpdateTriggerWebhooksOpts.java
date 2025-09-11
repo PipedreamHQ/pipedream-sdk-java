@@ -138,9 +138,7 @@ public final class UpdateTriggerWebhooksOpts {
          */
         @java.lang.Override
         public _FinalStage addAllWebhookUrls(List<String> webhookUrls) {
-            if (webhookUrls != null) {
-                this.webhookUrls.addAll(webhookUrls);
-            }
+            this.webhookUrls.addAll(webhookUrls);
             return this;
         }
 
