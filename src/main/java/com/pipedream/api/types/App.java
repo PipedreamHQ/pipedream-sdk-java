@@ -343,9 +343,7 @@ public final class App {
          */
         @java.lang.Override
         public _FinalStage addAllCategories(List<String> categories) {
-            if (categories != null) {
-                this.categories.addAll(categories);
-            }
+            this.categories.addAll(categories);
             return this;
         }
 

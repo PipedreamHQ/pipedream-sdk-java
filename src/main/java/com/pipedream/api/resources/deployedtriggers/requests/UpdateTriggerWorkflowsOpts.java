@@ -138,9 +138,7 @@ public final class UpdateTriggerWorkflowsOpts {
          */
         @java.lang.Override
         public _FinalStage addAllWorkflowIds(List<String> workflowIds) {
-            if (workflowIds != null) {
-                this.workflowIds.addAll(workflowIds);
-            }
+            this.workflowIds.addAll(workflowIds);
             return this;
         }
 

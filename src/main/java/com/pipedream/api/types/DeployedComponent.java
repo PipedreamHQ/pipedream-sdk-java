@@ -32,7 +32,7 @@ public final class DeployedComponent {
 
     private final List<ConfigurableProp> configurableProps;
 
-    private final Map<String, ConfiguredPropValue> configuredProps;
+    private final Map<String, Object> configuredProps;
 
     private final boolean active;
 
@@ -53,7 +53,7 @@ public final class DeployedComponent {
             String ownerId,
             String componentId,
             List<ConfigurableProp> configurableProps,
-            Map<String, ConfiguredPropValue> configuredProps,
+            Map<String, Object> configuredProps,
             boolean active,
             int createdAt,
             int updatedAt,
@@ -107,8 +107,11 @@ public final class DeployedComponent {
         return configurableProps;
     }
 
+    /**
+     * @return The configured properties of the component
+     */
     @JsonProperty("configured_props")
-    public Map<String, ConfiguredPropValue> getConfiguredProps() {
+    public Map<String, Object> getConfiguredProps() {
         return configuredProps;
     }
 
@@ -277,11 +280,14 @@ public final class DeployedComponent {
 
         _FinalStage addAllConfigurableProps(List<ConfigurableProp> configurableProps);
 
-        _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
+        /**
+         * <p>The configured properties of the component</p>
+         */
+        _FinalStage configuredProps(Map<String, Object> configuredProps);
 
-        _FinalStage putAllConfiguredProps(Map<String, ConfiguredPropValue> configuredProps);
+        _FinalStage putAllConfiguredProps(Map<String, Object> configuredProps);
 
-        _FinalStage configuredProps(String key, ConfiguredPropValue value);
+        _FinalStage configuredProps(String key, Object value);
 
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
@@ -317,7 +323,7 @@ public final class DeployedComponent {
 
         private Optional<Object> callbackObservations = Optional.empty();
 
-        private Map<String, ConfiguredPropValue> configuredProps = new LinkedHashMap<>();
+        private Map<String, Object> configuredProps = new LinkedHashMap<>();
 
         private List<ConfigurableProp> configurableProps = new ArrayList<>();
 
@@ -451,23 +457,32 @@ public final class DeployedComponent {
             return this;
         }
 
+        /**
+         * <p>The configured properties of the component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage configuredProps(String key, ConfiguredPropValue value) {
+        public _FinalStage configuredProps(String key, Object value) {
             this.configuredProps.put(key, value);
             return this;
         }
 
+        /**
+         * <p>The configured properties of the component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage putAllConfiguredProps(Map<String, ConfiguredPropValue> configuredProps) {
-            if (configuredProps != null) {
-                this.configuredProps.putAll(configuredProps);
-            }
+        public _FinalStage putAllConfiguredProps(Map<String, Object> configuredProps) {
+            this.configuredProps.putAll(configuredProps);
             return this;
         }
 
+        /**
+         * <p>The configured properties of the component</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
+        public _FinalStage configuredProps(Map<String, Object> configuredProps) {
             this.configuredProps.clear();
             this.configuredProps.putAll(configuredProps);
             return this;
@@ -479,9 +494,7 @@ public final class DeployedComponent {
          */
         @java.lang.Override
         public _FinalStage addAllConfigurableProps(List<ConfigurableProp> configurableProps) {
-            if (configurableProps != null) {
-                this.configurableProps.addAll(configurableProps);
-            }
+            this.configurableProps.addAll(configurableProps);
             return this;
         }
 
