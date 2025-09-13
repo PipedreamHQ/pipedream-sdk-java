@@ -212,9 +212,7 @@ public final class EmittedEvent {
          */
         @java.lang.Override
         public _FinalStage putAllE(Map<String, Object> e) {
-            if (e != null) {
-                this.e.putAll(e);
-            }
+            this.e.putAll(e);
             return this;
         }
 
