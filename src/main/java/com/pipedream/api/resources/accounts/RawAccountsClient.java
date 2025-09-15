@@ -3,6 +3,7 @@
  */
 package com.pipedream.api.resources.accounts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -12,6 +13,7 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
@@ -120,6 +122,14 @@ public class RawAccountsClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -190,6 +200,14 @@ public class RawAccountsClient {
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -249,6 +267,14 @@ public class RawAccountsClient {
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -281,6 +307,7 @@ public class RawAccountsClient {
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
                 .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -292,6 +319,14 @@ public class RawAccountsClient {
                 return new BaseClientHttpResponse<>(null, response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -325,6 +360,7 @@ public class RawAccountsClient {
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
                 .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -336,6 +372,14 @@ public class RawAccountsClient {
                 return new BaseClientHttpResponse<>(null, response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),

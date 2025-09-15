@@ -48,7 +48,7 @@ java {
 
 group = 'com.pipedream'
 
-version = '1.0.3'
+version = '1.0.4'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -79,7 +79,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.pipedream'
             artifactId = 'pipedream'
-            version = '1.0.3'
+            version = '1.0.4'
             from components.java
             pom {
                 name = 'pipedream'

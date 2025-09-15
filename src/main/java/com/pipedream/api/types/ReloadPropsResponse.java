@@ -21,7 +21,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ReloadPropsResponse.Builder.class)
 public final class ReloadPropsResponse {
-    private final Optional<List<Observation>> observations;
+    private final Optional<Map<String, Object>> observations;
 
     private final Optional<List<String>> errors;
 
@@ -30,7 +30,7 @@ public final class ReloadPropsResponse {
     private final Map<String, Object> additionalProperties;
 
     private ReloadPropsResponse(
-            Optional<List<Observation>> observations,
+            Optional<Map<String, Object>> observations,
             Optional<List<String>> errors,
             Optional<DynamicProps> dynamicProps,
             Map<String, Object> additionalProperties) {
@@ -40,8 +40,11 @@ public final class ReloadPropsResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Any logs produced during the configuration of the prop
+     */
     @JsonProperty("observations")
-    public Optional<List<Observation>> getObservations() {
+    public Optional<Map<String, Object>> getObservations() {
         return observations;
     }
 
@@ -91,7 +94,7 @@ public final class ReloadPropsResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<Observation>> observations = Optional.empty();
+        private Optional<Map<String, Object>> observations = Optional.empty();
 
         private Optional<List<String>> errors = Optional.empty();
 
@@ -109,13 +112,16 @@ public final class ReloadPropsResponse {
             return this;
         }
 
+        /**
+         * <p>Any logs produced during the configuration of the prop</p>
+         */
         @JsonSetter(value = "observations", nulls = Nulls.SKIP)
-        public Builder observations(Optional<List<Observation>> observations) {
+        public Builder observations(Optional<Map<String, Object>> observations) {
             this.observations = observations;
             return this;
         }
 
-        public Builder observations(List<Observation> observations) {
+        public Builder observations(Map<String, Object> observations) {
             this.observations = Optional.ofNullable(observations);
             return this;
         }

@@ -9,34 +9,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = PropOptionNested.Builder.class)
-public final class PropOptionNested {
-    private final PropOption lv;
+@JsonDeserialize(builder = TooManyRequestsErrorBody.Builder.class)
+public final class TooManyRequestsErrorBody {
+    private final Optional<String> error;
 
     private final Map<String, Object> additionalProperties;
 
-    private PropOptionNested(PropOption lv, Map<String, Object> additionalProperties) {
-        this.lv = lv;
+    private TooManyRequestsErrorBody(Optional<String> error, Map<String, Object> additionalProperties) {
+        this.error = error;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("__lv")
-    public PropOption getLv() {
-        return lv;
+    @JsonProperty("error")
+    public Optional<String> getError() {
+        return error;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof PropOptionNested && equalTo((PropOptionNested) other);
+        return other instanceof TooManyRequestsErrorBody && equalTo((TooManyRequestsErrorBody) other);
     }
 
     @JsonAnyGetter
@@ -44,13 +45,13 @@ public final class PropOptionNested {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(PropOptionNested other) {
-        return lv.equals(other.lv);
+    private boolean equalTo(TooManyRequestsErrorBody other) {
+        return error.equals(other.error);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.lv);
+        return Objects.hash(this.error);
     }
 
     @java.lang.Override
@@ -58,45 +59,37 @@ public final class PropOptionNested {
         return ObjectMappers.stringify(this);
     }
 
-    public static LvStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface LvStage {
-        _FinalStage lv(@NotNull PropOption lv);
-
-        Builder from(PropOptionNested other);
-    }
-
-    public interface _FinalStage {
-        PropOptionNested build();
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements LvStage, _FinalStage {
-        private PropOption lv;
+    public static final class Builder {
+        private Optional<String> error = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
-        public Builder from(PropOptionNested other) {
-            lv(other.getLv());
+        public Builder from(TooManyRequestsErrorBody other) {
+            error(other.getError());
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter("__lv")
-        public _FinalStage lv(@NotNull PropOption lv) {
-            this.lv = Objects.requireNonNull(lv, "lv must not be null");
+        @JsonSetter(value = "error", nulls = Nulls.SKIP)
+        public Builder error(Optional<String> error) {
+            this.error = error;
             return this;
         }
 
-        @java.lang.Override
-        public PropOptionNested build() {
-            return new PropOptionNested(lv, additionalProperties);
+        public Builder error(String error) {
+            this.error = Optional.ofNullable(error);
+            return this;
+        }
+
+        public TooManyRequestsErrorBody build() {
+            return new TooManyRequestsErrorBody(error, additionalProperties);
         }
     }
 }
