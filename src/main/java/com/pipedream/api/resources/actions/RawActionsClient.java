@@ -13,6 +13,7 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.actions.requests.ActionsListRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
@@ -111,6 +112,14 @@ public class RawActionsClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -157,6 +166,14 @@ public class RawActionsClient {
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -211,6 +228,14 @@ public class RawActionsClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -265,6 +290,14 @@ public class RawActionsClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -317,6 +350,14 @@ public class RawActionsClient {
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), RunActionResponse.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),

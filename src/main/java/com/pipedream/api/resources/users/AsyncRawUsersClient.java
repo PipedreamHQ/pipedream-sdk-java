@@ -3,12 +3,14 @@
  */
 package com.pipedream.api.resources.users;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.TooManyRequestsError;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
@@ -51,6 +53,7 @@ public class AsyncRawUsersClient {
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
                 .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -66,6 +69,15 @@ public class AsyncRawUsersClient {
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    try {
+                        if (response.code() == 429) {
+                            future.completeExceptionally(new TooManyRequestsError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
+                            return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
                     future.completeExceptionally(new BaseClientApiException(
                             "Error with status code " + response.code(),
                             response.code(),

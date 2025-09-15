@@ -3,12 +3,14 @@
  */
 package com.pipedream.api.resources.projects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -60,6 +62,14 @@ public class RawProjectsClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
