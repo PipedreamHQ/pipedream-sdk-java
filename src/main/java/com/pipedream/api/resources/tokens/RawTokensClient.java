@@ -12,6 +12,7 @@ import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
 import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
 import com.pipedream.api.types.CreateTokenResponse;
@@ -75,6 +76,14 @@ public class RawTokensClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
@@ -125,6 +134,14 @@ public class RawTokensClient {
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
