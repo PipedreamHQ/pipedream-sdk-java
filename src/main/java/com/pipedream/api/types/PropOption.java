@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public final class PropOption {
     private final String label;
 
-    private final Object value;
+    private final PropOptionValue value;
 
     private final Map<String, Object> additionalProperties;
 
-    private PropOption(String label, Object value, Map<String, Object> additionalProperties) {
+    private PropOption(String label, PropOptionValue value, Map<String, Object> additionalProperties) {
         this.label = label;
         this.value = value;
         this.additionalProperties = additionalProperties;
@@ -39,8 +39,11 @@ public final class PropOption {
         return label;
     }
 
+    /**
+     * @return The value of the option
+     */
     @JsonProperty("value")
-    public Object getValue() {
+    public PropOptionValue getValue() {
         return value;
     }
 
@@ -83,7 +86,10 @@ public final class PropOption {
     }
 
     public interface ValueStage {
-        _FinalStage value(Object value);
+        /**
+         * <p>The value of the option</p>
+         */
+        _FinalStage value(@NotNull PropOptionValue value);
     }
 
     public interface _FinalStage {
@@ -94,7 +100,7 @@ public final class PropOption {
     public static final class Builder implements LabelStage, ValueStage, _FinalStage {
         private String label;
 
-        private Object value;
+        private PropOptionValue value;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -120,10 +126,15 @@ public final class PropOption {
             return this;
         }
 
+        /**
+         * <p>The value of the option</p>
+         * <p>The value of the option</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("value")
-        public _FinalStage value(Object value) {
-            this.value = value;
+        public _FinalStage value(@NotNull PropOptionValue value) {
+            this.value = Objects.requireNonNull(value, "value must not be null");
             return this;
         }
 
