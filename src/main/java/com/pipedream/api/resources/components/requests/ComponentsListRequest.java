@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.types.ComponentType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,8 +30,6 @@ public final class ComponentsListRequest {
 
     private final Optional<String> app;
 
-    private final Optional<ComponentType> componentType;
-
     private final Map<String, Object> additionalProperties;
 
     private ComponentsListRequest(
@@ -41,14 +38,12 @@ public final class ComponentsListRequest {
             Optional<Integer> limit,
             Optional<String> q,
             Optional<String> app,
-            Optional<ComponentType> componentType,
             Map<String, Object> additionalProperties) {
         this.after = after;
         this.before = before;
         this.limit = limit;
         this.q = q;
         this.app = app;
-        this.componentType = componentType;
         this.additionalProperties = additionalProperties;
     }
 
@@ -92,14 +87,6 @@ public final class ComponentsListRequest {
         return app;
     }
 
-    /**
-     * @return The type of the component to filter the components
-     */
-    @JsonProperty("component_type")
-    public Optional<ComponentType> getComponentType() {
-        return componentType;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -116,13 +103,12 @@ public final class ComponentsListRequest {
                 && before.equals(other.before)
                 && limit.equals(other.limit)
                 && q.equals(other.q)
-                && app.equals(other.app)
-                && componentType.equals(other.componentType);
+                && app.equals(other.app);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.after, this.before, this.limit, this.q, this.app, this.componentType);
+        return Objects.hash(this.after, this.before, this.limit, this.q, this.app);
     }
 
     @java.lang.Override
@@ -146,8 +132,6 @@ public final class ComponentsListRequest {
 
         private Optional<String> app = Optional.empty();
 
-        private Optional<ComponentType> componentType = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -159,7 +143,6 @@ public final class ComponentsListRequest {
             limit(other.getLimit());
             q(other.getQ());
             app(other.getApp());
-            componentType(other.getComponentType());
             return this;
         }
 
@@ -233,22 +216,8 @@ public final class ComponentsListRequest {
             return this;
         }
 
-        /**
-         * <p>The type of the component to filter the components</p>
-         */
-        @JsonSetter(value = "component_type", nulls = Nulls.SKIP)
-        public Builder componentType(Optional<ComponentType> componentType) {
-            this.componentType = componentType;
-            return this;
-        }
-
-        public Builder componentType(ComponentType componentType) {
-            this.componentType = Optional.ofNullable(componentType);
-            return this;
-        }
-
         public ComponentsListRequest build() {
-            return new ComponentsListRequest(after, before, limit, q, app, componentType, additionalProperties);
+            return new ComponentsListRequest(after, before, limit, q, app, additionalProperties);
         }
     }
 }
