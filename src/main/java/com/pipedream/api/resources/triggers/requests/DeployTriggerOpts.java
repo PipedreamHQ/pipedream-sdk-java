@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.types.ConfiguredPropValue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public final class DeployTriggerOpts {
 
     private final String externalUserId;
 
-    private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
+    private final Optional<Map<String, Object>> configuredProps;
 
     private final Optional<String> dynamicPropsId;
 
@@ -37,7 +36,7 @@ public final class DeployTriggerOpts {
     private DeployTriggerOpts(
             String id,
             String externalUserId,
-            Optional<Map<String, ConfiguredPropValue>> configuredProps,
+            Optional<Map<String, Object>> configuredProps,
             Optional<String> dynamicPropsId,
             Optional<String> webhookUrl,
             Map<String, Object> additionalProperties) {
@@ -65,8 +64,11 @@ public final class DeployTriggerOpts {
         return externalUserId;
     }
 
+    /**
+     * @return The configured properties for the trigger
+     */
     @JsonProperty("configured_props")
-    public Optional<Map<String, ConfiguredPropValue>> getConfiguredProps() {
+    public Optional<Map<String, Object>> getConfiguredProps() {
         return configuredProps;
     }
 
@@ -138,9 +140,12 @@ public final class DeployTriggerOpts {
     public interface _FinalStage {
         DeployTriggerOpts build();
 
-        _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
+        /**
+         * <p>The configured properties for the trigger</p>
+         */
+        _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps);
 
-        _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
+        _FinalStage configuredProps(Map<String, Object> configuredProps);
 
         /**
          * <p>The ID for dynamic props</p>
@@ -167,7 +172,7 @@ public final class DeployTriggerOpts {
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
-        private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
+        private Optional<Map<String, Object>> configuredProps = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -248,15 +253,22 @@ public final class DeployTriggerOpts {
             return this;
         }
 
+        /**
+         * <p>The configured properties for the trigger</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
+        public _FinalStage configuredProps(Map<String, Object> configuredProps) {
             this.configuredProps = Optional.ofNullable(configuredProps);
             return this;
         }
 
+        /**
+         * <p>The configured properties for the trigger</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
+        public _FinalStage configuredProps(Optional<Map<String, Object>> configuredProps) {
             this.configuredProps = configuredProps;
             return this;
         }

@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropInteger.Builder.class)
 public final class ConfigurablePropInteger {
+    private final Optional<String> type;
+
     private final Optional<Integer> min;
 
     private final Optional<Integer> max;
@@ -53,6 +55,7 @@ public final class ConfigurablePropInteger {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropInteger(
+            Optional<String> type,
             Optional<Integer> min,
             Optional<Integer> max,
             Optional<Integer> default_,
@@ -68,6 +71,7 @@ public final class ConfigurablePropInteger {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
+        this.type = type;
         this.min = min;
         this.max = max;
         this.default_ = default_;
@@ -86,8 +90,8 @@ public final class ConfigurablePropInteger {
     }
 
     @JsonProperty("type")
-    public String getType() {
-        return "integer";
+    public Optional<String> getType() {
+        return type;
     }
 
     /**
@@ -214,7 +218,8 @@ public final class ConfigurablePropInteger {
     }
 
     private boolean equalTo(ConfigurablePropInteger other) {
-        return min.equals(other.min)
+        return type.equals(other.type)
+                && min.equals(other.min)
                 && max.equals(other.max)
                 && default_.equals(other.default_)
                 && options.equals(other.options)
@@ -233,6 +238,7 @@ public final class ConfigurablePropInteger {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.type,
                 this.min,
                 this.max,
                 this.default_,
@@ -269,6 +275,10 @@ public final class ConfigurablePropInteger {
 
     public interface _FinalStage {
         ConfigurablePropInteger build();
+
+        _FinalStage type(Optional<String> type);
+
+        _FinalStage type(String type);
 
         /**
          * <p>The minimum value for this integer prop.</p>
@@ -392,6 +402,8 @@ public final class ConfigurablePropInteger {
 
         private Optional<Integer> min = Optional.empty();
 
+        private Optional<String> type = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -399,6 +411,7 @@ public final class ConfigurablePropInteger {
 
         @java.lang.Override
         public Builder from(ConfigurablePropInteger other) {
+            type(other.getType());
             min(other.getMin());
             max(other.getMax());
             default_(other.getDefault());
@@ -689,8 +702,22 @@ public final class ConfigurablePropInteger {
         }
 
         @java.lang.Override
+        public _FinalStage type(String type) {
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public _FinalStage type(Optional<String> type) {
+            this.type = type;
+            return this;
+        }
+
+        @java.lang.Override
         public ConfigurablePropInteger build() {
             return new ConfigurablePropInteger(
+                    type,
                     min,
                     max,
                     default_,

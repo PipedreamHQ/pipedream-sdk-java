@@ -68,9 +68,8 @@ public class AsyncRawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -183,9 +182,8 @@ public class AsyncRawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
