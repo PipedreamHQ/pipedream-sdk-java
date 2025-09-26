@@ -9,13 +9,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -23,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public final class PropOption {
     private final String label;
 
-    private final Optional<PropOptionValue> value;
+    private final Object value;
 
     private final Map<String, Object> additionalProperties;
 
-    private PropOption(String label, Optional<PropOptionValue> value, Map<String, Object> additionalProperties) {
+    private PropOption(String label, Object value, Map<String, Object> additionalProperties) {
         this.label = label;
         this.value = value;
         this.additionalProperties = additionalProperties;
@@ -42,7 +40,7 @@ public final class PropOption {
     }
 
     @JsonProperty("value")
-    public Optional<PropOptionValue> getValue() {
+    public Object getValue() {
         return value;
     }
 
@@ -79,24 +77,24 @@ public final class PropOption {
         /**
          * <p>The human-readable label for the option</p>
          */
-        _FinalStage label(@NotNull String label);
+        ValueStage label(@NotNull String label);
 
         Builder from(PropOption other);
     }
 
+    public interface ValueStage {
+        _FinalStage value(Object value);
+    }
+
     public interface _FinalStage {
         PropOption build();
-
-        _FinalStage value(Optional<PropOptionValue> value);
-
-        _FinalStage value(PropOptionValue value);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements LabelStage, _FinalStage {
+    public static final class Builder implements LabelStage, ValueStage, _FinalStage {
         private String label;
 
-        private Optional<PropOptionValue> value = Optional.empty();
+        private Object value;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -117,20 +115,14 @@ public final class PropOption {
          */
         @java.lang.Override
         @JsonSetter("label")
-        public _FinalStage label(@NotNull String label) {
+        public ValueStage label(@NotNull String label) {
             this.label = Objects.requireNonNull(label, "label must not be null");
             return this;
         }
 
         @java.lang.Override
-        public _FinalStage value(PropOptionValue value) {
-            this.value = Optional.ofNullable(value);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "value", nulls = Nulls.SKIP)
-        public _FinalStage value(Optional<PropOptionValue> value) {
+        @JsonSetter("value")
+        public _FinalStage value(Object value) {
             this.value = value;
             return this;
         }
