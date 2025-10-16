@@ -15,13 +15,13 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonDeserialize(using = RunActionOptsStashId.Deserializer.class)
-public final class RunActionOptsStashId {
+@JsonDeserialize(using = ConfigurablePropAnyOptionsItem.Deserializer.class)
+public final class ConfigurablePropAnyOptionsItem {
     private final Object value;
 
     private final int type;
 
-    private RunActionOptsStashId(Object value, int type) {
+    private ConfigurablePropAnyOptionsItem(Object value, int type) {
         this.value = value;
         this.type = type;
     }
@@ -34,11 +34,11 @@ public final class RunActionOptsStashId {
     @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
-            return visitor.visit((Optional<String>) this.value);
+            return visitor.visit((PropOption) this.value);
         } else if (this.type == 1) {
-            return visitor.visit2((String) this.value);
+            return visitor.visit((PropOptionNested) this.value);
         } else if (this.type == 2) {
-            return visitor.visit((boolean) this.value);
+            return visitor.visit((Optional<PropOptionValue>) this.value);
         }
         throw new IllegalStateException("Failed to visit value. This should never happen.");
     }
@@ -46,10 +46,10 @@ public final class RunActionOptsStashId {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof RunActionOptsStashId && equalTo((RunActionOptsStashId) other);
+        return other instanceof ConfigurablePropAnyOptionsItem && equalTo((ConfigurablePropAnyOptionsItem) other);
     }
 
-    private boolean equalTo(RunActionOptsStashId other) {
+    private boolean equalTo(ConfigurablePropAnyOptionsItem other) {
         return value.equals(other.value);
     }
 
@@ -63,56 +63,47 @@ public final class RunActionOptsStashId {
         return this.value.toString();
     }
 
-    public static RunActionOptsStashId of(Optional<String> value) {
-        return new RunActionOptsStashId(value, 0);
+    public static ConfigurablePropAnyOptionsItem of(PropOption value) {
+        return new ConfigurablePropAnyOptionsItem(value, 0);
     }
 
-    /**
-     * @param value must be one of the following:
-     * <ul>
-     * <li>"NEW"</li>
-     * </ul>
-     */
-    public static RunActionOptsStashId of2(String value) {
-        return new RunActionOptsStashId(value, 1);
+    public static ConfigurablePropAnyOptionsItem of(PropOptionNested value) {
+        return new ConfigurablePropAnyOptionsItem(value, 1);
     }
 
-    public static RunActionOptsStashId of(boolean value) {
-        return new RunActionOptsStashId(value, 2);
+    public static ConfigurablePropAnyOptionsItem of(Optional<PropOptionValue> value) {
+        return new ConfigurablePropAnyOptionsItem(value, 2);
     }
 
     public interface Visitor<T> {
-        T visit(Optional<String> value);
+        T visit(PropOption value);
 
-        /**
-         * @param value must be one of the following:
-         * <ul>
-         * <li>"NEW"</li>
-         * </ul>
-         */
-        T visit2(String value);
+        T visit(PropOptionNested value);
 
-        T visit(boolean value);
+        T visit(Optional<PropOptionValue> value);
     }
 
-    static final class Deserializer extends StdDeserializer<RunActionOptsStashId> {
+    static final class Deserializer extends StdDeserializer<ConfigurablePropAnyOptionsItem> {
         Deserializer() {
-            super(RunActionOptsStashId.class);
+            super(ConfigurablePropAnyOptionsItem.class);
         }
 
         @java.lang.Override
-        public RunActionOptsStashId deserialize(JsonParser p, DeserializationContext context) throws IOException {
+        public ConfigurablePropAnyOptionsItem deserialize(JsonParser p, DeserializationContext context)
+                throws IOException {
             Object value = p.readValueAs(Object.class);
             try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Optional<String>>() {}));
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOption.class));
             } catch (RuntimeException e) {
             }
             try {
-                return of2(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOptionNested.class));
             } catch (RuntimeException e) {
             }
-            if (value instanceof Boolean) {
-                return of((Boolean) value);
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(
+                        value, new TypeReference<Optional<PropOptionValue>>() {}));
+            } catch (RuntimeException e) {
             }
             throw new JsonParseException(p, "Failed to deserialize");
         }
