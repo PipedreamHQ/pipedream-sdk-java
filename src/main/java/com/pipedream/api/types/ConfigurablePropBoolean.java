@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonDeserialize(builder = ConfigurablePropBoolean.Builder.class)
 public final class ConfigurablePropBoolean {
     private final Optional<Boolean> default_;
+
+    private final Optional<List<ConfigurablePropBooleanOptionsItem>> options;
 
     private final String name;
 
@@ -47,6 +50,7 @@ public final class ConfigurablePropBoolean {
 
     private ConfigurablePropBoolean(
             Optional<Boolean> default_,
+            Optional<List<ConfigurablePropBooleanOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -59,6 +63,7 @@ public final class ConfigurablePropBoolean {
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
         this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -77,12 +82,14 @@ public final class ConfigurablePropBoolean {
         return "boolean";
     }
 
-    /**
-     * @return The default value for this prop
-     */
     @JsonProperty("default")
     public Optional<Boolean> getDefault() {
         return default_;
+    }
+
+    @JsonProperty("options")
+    public Optional<List<ConfigurablePropBooleanOptionsItem>> getOptions() {
+        return options;
     }
 
     /**
@@ -178,6 +185,7 @@ public final class ConfigurablePropBoolean {
 
     private boolean equalTo(ConfigurablePropBoolean other) {
         return default_.equals(other.default_)
+                && options.equals(other.options)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -194,6 +202,7 @@ public final class ConfigurablePropBoolean {
     public int hashCode() {
         return Objects.hash(
                 this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -227,12 +236,13 @@ public final class ConfigurablePropBoolean {
     public interface _FinalStage {
         ConfigurablePropBoolean build();
 
-        /**
-         * <p>The default value for this prop</p>
-         */
         _FinalStage default_(Optional<Boolean> default_);
 
         _FinalStage default_(Boolean default_);
+
+        _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options);
+
+        _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -320,6 +330,8 @@ public final class ConfigurablePropBoolean {
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<List<ConfigurablePropBooleanOptionsItem>> options = Optional.empty();
+
         private Optional<Boolean> default_ = Optional.empty();
 
         @JsonAnySetter
@@ -330,6 +342,7 @@ public final class ConfigurablePropBoolean {
         @java.lang.Override
         public Builder from(ConfigurablePropBoolean other) {
             default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -535,19 +548,25 @@ public final class ConfigurablePropBoolean {
             return this;
         }
 
-        /**
-         * <p>The default value for this prop</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
+        @java.lang.Override
+        public _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage default_(Boolean default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
-        /**
-         * <p>The default value for this prop</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
         public _FinalStage default_(Optional<Boolean> default_) {
@@ -559,6 +578,7 @@ public final class ConfigurablePropBoolean {
         public ConfigurablePropBoolean build() {
             return new ConfigurablePropBoolean(
                     default_,
+                    options,
                     name,
                     label,
                     description,

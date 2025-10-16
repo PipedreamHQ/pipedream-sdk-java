@@ -152,6 +152,9 @@ public final class DeployedComponent {
         return nameSlug;
     }
 
+    /**
+     * @return Callback observations for the deployed component
+     */
     @JsonProperty("callback_observations")
     public Optional<Object> getCallbackObservations() {
         return callbackObservations;
@@ -283,6 +286,9 @@ public final class DeployedComponent {
 
         _FinalStage configuredProps(String key, ConfiguredPropValue value);
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         */
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
         _FinalStage callbackObservations(Object callbackObservations);
@@ -438,12 +444,19 @@ public final class DeployedComponent {
             return this;
         }
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage callbackObservations(Object callbackObservations) {
             this.callbackObservations = Optional.ofNullable(callbackObservations);
             return this;
         }
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "callback_observations", nulls = Nulls.SKIP)
         public _FinalStage callbackObservations(Optional<Object> callbackObservations) {
@@ -469,7 +482,9 @@ public final class DeployedComponent {
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
         public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
             this.configuredProps.clear();
-            this.configuredProps.putAll(configuredProps);
+            if (configuredProps != null) {
+                this.configuredProps.putAll(configuredProps);
+            }
             return this;
         }
 
@@ -502,7 +517,9 @@ public final class DeployedComponent {
         @JsonSetter(value = "configurable_props", nulls = Nulls.SKIP)
         public _FinalStage configurableProps(List<ConfigurableProp> configurableProps) {
             this.configurableProps.clear();
-            this.configurableProps.addAll(configurableProps);
+            if (configurableProps != null) {
+                this.configurableProps.addAll(configurableProps);
+            }
             return this;
         }
 

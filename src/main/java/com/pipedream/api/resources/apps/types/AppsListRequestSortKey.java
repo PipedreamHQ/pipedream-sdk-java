@@ -3,24 +3,93 @@
  */
 package com.pipedream.api.resources.apps.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum AppsListRequestSortKey {
-    NAME("name"),
+public final class AppsListRequestSortKey {
+    public static final AppsListRequestSortKey NAME_SLUG = new AppsListRequestSortKey(Value.NAME_SLUG, "name_slug");
 
-    NAME_SLUG("name_slug"),
+    public static final AppsListRequestSortKey FEATURED_WEIGHT =
+            new AppsListRequestSortKey(Value.FEATURED_WEIGHT, "featured_weight");
 
-    FEATURED_WEIGHT("featured_weight");
+    public static final AppsListRequestSortKey NAME = new AppsListRequestSortKey(Value.NAME, "name");
 
-    private final String value;
+    private final Value value;
 
-    AppsListRequestSortKey(String value) {
+    private final String string;
+
+    AppsListRequestSortKey(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other)
+                || (other instanceof AppsListRequestSortKey
+                        && this.string.equals(((AppsListRequestSortKey) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case NAME_SLUG:
+                return visitor.visitNameSlug();
+            case FEATURED_WEIGHT:
+                return visitor.visitFeaturedWeight();
+            case NAME:
+                return visitor.visitName();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static AppsListRequestSortKey valueOf(String value) {
+        switch (value) {
+            case "name_slug":
+                return NAME_SLUG;
+            case "featured_weight":
+                return FEATURED_WEIGHT;
+            case "name":
+                return NAME;
+            default:
+                return new AppsListRequestSortKey(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        NAME,
+
+        NAME_SLUG,
+
+        FEATURED_WEIGHT,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitName();
+
+        T visitNameSlug();
+
+        T visitFeaturedWeight();
+
+        T visitUnknown(String unknownType);
     }
 }

@@ -103,7 +103,8 @@ public class RawDeployedTriggersClient {
                 List<DeployedComponent> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
                         new SyncPagingIterable<DeployedComponent>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
+                                startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                                nextRequest, requestOptions)
                                         .body()),
                         response);
             }

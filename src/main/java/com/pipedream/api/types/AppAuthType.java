@@ -3,24 +3,90 @@
  */
 package com.pipedream.api.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum AppAuthType {
-    KEYS("keys"),
+public final class AppAuthType {
+    public static final AppAuthType KEYS = new AppAuthType(Value.KEYS, "keys");
 
-    OAUTH("oauth"),
+    public static final AppAuthType OAUTH = new AppAuthType(Value.OAUTH, "oauth");
 
-    NONE("none");
+    public static final AppAuthType NONE = new AppAuthType(Value.NONE, "none");
 
-    private final String value;
+    private final Value value;
 
-    AppAuthType(String value) {
+    private final String string;
+
+    AppAuthType(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other) || (other instanceof AppAuthType && this.string.equals(((AppAuthType) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case KEYS:
+                return visitor.visitKeys();
+            case OAUTH:
+                return visitor.visitOauth();
+            case NONE:
+                return visitor.visitNone();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static AppAuthType valueOf(String value) {
+        switch (value) {
+            case "keys":
+                return KEYS;
+            case "oauth":
+                return OAUTH;
+            case "none":
+                return NONE;
+            default:
+                return new AppAuthType(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        KEYS,
+
+        OAUTH,
+
+        NONE,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitKeys();
+
+        T visitOauth();
+
+        T visitNone();
+
+        T visitUnknown(String unknownType);
     }
 }
