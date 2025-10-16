@@ -19,17 +19,17 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetTriggerResponse.Builder.class)
 public final class GetTriggerResponse {
-    private final DeployedComponent data;
+    private final GetTriggerResponseData data;
 
     private final Map<String, Object> additionalProperties;
 
-    private GetTriggerResponse(DeployedComponent data, Map<String, Object> additionalProperties) {
+    private GetTriggerResponse(GetTriggerResponseData data, Map<String, Object> additionalProperties) {
         this.data = data;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public DeployedComponent getData() {
+    public GetTriggerResponseData getData() {
         return data;
     }
 
@@ -63,7 +63,7 @@ public final class GetTriggerResponse {
     }
 
     public interface DataStage {
-        _FinalStage data(@NotNull DeployedComponent data);
+        _FinalStage data(@NotNull GetTriggerResponseData data);
 
         Builder from(GetTriggerResponse other);
     }
@@ -74,7 +74,7 @@ public final class GetTriggerResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements DataStage, _FinalStage {
-        private DeployedComponent data;
+        private GetTriggerResponseData data;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -89,7 +89,7 @@ public final class GetTriggerResponse {
 
         @java.lang.Override
         @JsonSetter("data")
-        public _FinalStage data(@NotNull DeployedComponent data) {
+        public _FinalStage data(@NotNull GetTriggerResponseData data) {
             this.data = Objects.requireNonNull(data, "data must not be null");
             return this;
         }
