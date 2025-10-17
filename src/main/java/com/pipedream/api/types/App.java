@@ -366,7 +366,9 @@ public final class App {
         @JsonSetter(value = "categories", nulls = Nulls.SKIP)
         public _FinalStage categories(List<String> categories) {
             this.categories.clear();
-            this.categories.addAll(categories);
+            if (categories != null) {
+                this.categories.addAll(categories);
+            }
             return this;
         }
 
