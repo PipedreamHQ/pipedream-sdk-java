@@ -25,6 +25,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhoo
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
 import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerEventsResponse;
 import com.pipedream.api.types.GetTriggerResponse;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
@@ -53,14 +54,14 @@ public class RawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -100,11 +101,11 @@ public class RawDeployedTriggersClient {
                         .from(request)
                         .after(startingAfter)
                         .build();
-                List<DeployedComponent> result = parsedResponse.getData();
+                List<Emitter> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<DeployedComponent>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Emitter>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";

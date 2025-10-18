@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateAccountOpts.Builder.class)
 public final class CreateAccountOpts {
-    private final Optional<String> appId;
-
     private final Optional<String> externalUserId;
 
     private final Optional<String> oauthAppId;
@@ -38,7 +36,6 @@ public final class CreateAccountOpts {
     private final Map<String, Object> additionalProperties;
 
     private CreateAccountOpts(
-            Optional<String> appId,
             Optional<String> externalUserId,
             Optional<String> oauthAppId,
             String appSlug,
@@ -46,7 +43,6 @@ public final class CreateAccountOpts {
             String connectToken,
             Optional<String> name,
             Map<String, Object> additionalProperties) {
-        this.appId = appId;
         this.externalUserId = externalUserId;
         this.oauthAppId = oauthAppId;
         this.appSlug = appSlug;
@@ -54,14 +50,6 @@ public final class CreateAccountOpts {
         this.connectToken = connectToken;
         this.name = name;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The app slug or ID to filter accounts by.
-     */
-    @JsonProperty("app_id")
-    public Optional<String> getAppId() {
-        return appId;
     }
 
     @JsonProperty("external_user_id")
@@ -121,8 +109,7 @@ public final class CreateAccountOpts {
     }
 
     private boolean equalTo(CreateAccountOpts other) {
-        return appId.equals(other.appId)
-                && externalUserId.equals(other.externalUserId)
+        return externalUserId.equals(other.externalUserId)
                 && oauthAppId.equals(other.oauthAppId)
                 && appSlug.equals(other.appSlug)
                 && cfmapJson.equals(other.cfmapJson)
@@ -133,13 +120,7 @@ public final class CreateAccountOpts {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.appId,
-                this.externalUserId,
-                this.oauthAppId,
-                this.appSlug,
-                this.cfmapJson,
-                this.connectToken,
-                this.name);
+                this.externalUserId, this.oauthAppId, this.appSlug, this.cfmapJson, this.connectToken, this.name);
     }
 
     @java.lang.Override
@@ -177,13 +158,6 @@ public final class CreateAccountOpts {
     public interface _FinalStage {
         CreateAccountOpts build();
 
-        /**
-         * <p>The app slug or ID to filter accounts by.</p>
-         */
-        _FinalStage appId(Optional<String> appId);
-
-        _FinalStage appId(String appId);
-
         _FinalStage externalUserId(Optional<String> externalUserId);
 
         _FinalStage externalUserId(String externalUserId);
@@ -217,8 +191,6 @@ public final class CreateAccountOpts {
 
         private Optional<String> externalUserId = Optional.empty();
 
-        private Optional<String> appId = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -226,7 +198,6 @@ public final class CreateAccountOpts {
 
         @java.lang.Override
         public Builder from(CreateAccountOpts other) {
-            appId(other.getAppId());
             externalUserId(other.getExternalUserId());
             oauthAppId(other.getOauthAppId());
             appSlug(other.getAppSlug());
@@ -325,30 +296,10 @@ public final class CreateAccountOpts {
             return this;
         }
 
-        /**
-         * <p>The app slug or ID to filter accounts by.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appId(String appId) {
-            this.appId = Optional.ofNullable(appId);
-            return this;
-        }
-
-        /**
-         * <p>The app slug or ID to filter accounts by.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
-        public _FinalStage appId(Optional<String> appId) {
-            this.appId = appId;
-            return this;
-        }
-
         @java.lang.Override
         public CreateAccountOpts build() {
             return new CreateAccountOpts(
-                    appId, externalUserId, oauthAppId, appSlug, cfmapJson, connectToken, name, additionalProperties);
+                    externalUserId, oauthAppId, appSlug, cfmapJson, connectToken, name, additionalProperties);
         }
     }
 }

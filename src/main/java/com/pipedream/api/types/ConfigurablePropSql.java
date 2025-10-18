@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropSql {
     private final Optional<ConfigurablePropSqlAuth> auth;
 
-    private final Optional<String> default_;
+    private final Optional<ConfiguredPropValueSql> default_;
+
+    private final Optional<List<ConfigurablePropSqlOptionsItem>> options;
 
     private final String name;
 
@@ -49,7 +52,8 @@ public final class ConfigurablePropSql {
 
     private ConfigurablePropSql(
             Optional<ConfigurablePropSqlAuth> auth,
-            Optional<String> default_,
+            Optional<ConfiguredPropValueSql> default_,
+            Optional<List<ConfigurablePropSqlOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -63,6 +67,7 @@ public final class ConfigurablePropSql {
             Map<String, Object> additionalProperties) {
         this.auth = auth;
         this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -86,12 +91,14 @@ public final class ConfigurablePropSql {
         return auth;
     }
 
-    /**
-     * @return Default SQL query
-     */
     @JsonProperty("default")
-    public Optional<String> getDefault() {
+    public Optional<ConfiguredPropValueSql> getDefault() {
         return default_;
+    }
+
+    @JsonProperty("options")
+    public Optional<List<ConfigurablePropSqlOptionsItem>> getOptions() {
+        return options;
     }
 
     /**
@@ -188,6 +195,7 @@ public final class ConfigurablePropSql {
     private boolean equalTo(ConfigurablePropSql other) {
         return auth.equals(other.auth)
                 && default_.equals(other.default_)
+                && options.equals(other.options)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -205,6 +213,7 @@ public final class ConfigurablePropSql {
         return Objects.hash(
                 this.auth,
                 this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -242,12 +251,13 @@ public final class ConfigurablePropSql {
 
         _FinalStage auth(ConfigurablePropSqlAuth auth);
 
-        /**
-         * <p>Default SQL query</p>
-         */
-        _FinalStage default_(Optional<String> default_);
+        _FinalStage default_(Optional<ConfiguredPropValueSql> default_);
 
-        _FinalStage default_(String default_);
+        _FinalStage default_(ConfiguredPropValueSql default_);
+
+        _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options);
+
+        _FinalStage options(List<ConfigurablePropSqlOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -335,7 +345,9 @@ public final class ConfigurablePropSql {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<String> default_ = Optional.empty();
+        private Optional<List<ConfigurablePropSqlOptionsItem>> options = Optional.empty();
+
+        private Optional<ConfiguredPropValueSql> default_ = Optional.empty();
 
         private Optional<ConfigurablePropSqlAuth> auth = Optional.empty();
 
@@ -348,6 +360,7 @@ public final class ConfigurablePropSql {
         public Builder from(ConfigurablePropSql other) {
             auth(other.getAuth());
             default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -553,22 +566,28 @@ public final class ConfigurablePropSql {
             return this;
         }
 
-        /**
-         * <p>Default SQL query</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage default_(String default_) {
+        public _FinalStage options(List<ConfigurablePropSqlOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage default_(ConfiguredPropValueSql default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
-        /**
-         * <p>Default SQL query</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<String> default_) {
+        public _FinalStage default_(Optional<ConfiguredPropValueSql> default_) {
             this.default_ = default_;
             return this;
         }
@@ -591,6 +610,7 @@ public final class ConfigurablePropSql {
             return new ConfigurablePropSql(
                     auth,
                     default_,
+                    options,
                     name,
                     label,
                     description,

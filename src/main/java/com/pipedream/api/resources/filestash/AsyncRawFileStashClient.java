@@ -11,9 +11,11 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,14 +37,14 @@ public class AsyncRawFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public CompletableFuture<BaseClientHttpResponse<Void>> downloadFile(FileStashDownloadFileRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<InputStream>> downloadFile(FileStashDownloadFileRequest request) {
         return downloadFile(request, null);
     }
 
     /**
      * Download a file from File Stash
      */
-    public CompletableFuture<BaseClientHttpResponse<Void>> downloadFile(
+    public CompletableFuture<BaseClientHttpResponse<InputStream>> downloadFile(
             FileStashDownloadFileRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -60,13 +62,14 @@ public class AsyncRawFileStashClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Void>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<InputStream>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(null, response));
+                        future.complete(new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response));
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
