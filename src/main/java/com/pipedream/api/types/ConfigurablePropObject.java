@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,6 +22,10 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropObject.Builder.class)
 public final class ConfigurablePropObject {
+    private final Optional<Map<String, Object>> default_;
+
+    private final Optional<List<ConfigurablePropObjectOptionsItem>> options;
+
     private final String name;
 
     private final Optional<String> label;
@@ -44,6 +49,8 @@ public final class ConfigurablePropObject {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropObject(
+            Optional<Map<String, Object>> default_,
+            Optional<List<ConfigurablePropObjectOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -55,6 +62,8 @@ public final class ConfigurablePropObject {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
+        this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -71,6 +80,16 @@ public final class ConfigurablePropObject {
     @JsonProperty("type")
     public String getType() {
         return "object";
+    }
+
+    @JsonProperty("default")
+    public Optional<Map<String, Object>> getDefault() {
+        return default_;
+    }
+
+    @JsonProperty("options")
+    public Optional<List<ConfigurablePropObjectOptionsItem>> getOptions() {
+        return options;
     }
 
     /**
@@ -165,7 +184,9 @@ public final class ConfigurablePropObject {
     }
 
     private boolean equalTo(ConfigurablePropObject other) {
-        return name.equals(other.name)
+        return default_.equals(other.default_)
+                && options.equals(other.options)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -180,6 +201,8 @@ public final class ConfigurablePropObject {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -212,6 +235,14 @@ public final class ConfigurablePropObject {
 
     public interface _FinalStage {
         ConfigurablePropObject build();
+
+        _FinalStage default_(Optional<Map<String, Object>> default_);
+
+        _FinalStage default_(Map<String, Object> default_);
+
+        _FinalStage options(Optional<List<ConfigurablePropObjectOptionsItem>> options);
+
+        _FinalStage options(List<ConfigurablePropObjectOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -299,6 +330,10 @@ public final class ConfigurablePropObject {
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<List<ConfigurablePropObjectOptionsItem>> options = Optional.empty();
+
+        private Optional<Map<String, Object>> default_ = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -306,6 +341,8 @@ public final class ConfigurablePropObject {
 
         @java.lang.Override
         public Builder from(ConfigurablePropObject other) {
+            default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -512,8 +549,36 @@ public final class ConfigurablePropObject {
         }
 
         @java.lang.Override
+        public _FinalStage options(List<ConfigurablePropObjectOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropObjectOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage default_(Map<String, Object> default_) {
+            this.default_ = Optional.ofNullable(default_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<Map<String, Object>> default_) {
+            this.default_ = default_;
+            return this;
+        }
+
+        @java.lang.Override
         public ConfigurablePropObject build() {
             return new ConfigurablePropObject(
+                    default_,
+                    options,
                     name,
                     label,
                     description,
