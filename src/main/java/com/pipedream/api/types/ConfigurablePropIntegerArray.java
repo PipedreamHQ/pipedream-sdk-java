@@ -26,9 +26,9 @@ public final class ConfigurablePropIntegerArray {
 
     private final Optional<Integer> max;
 
-    private final Optional<List<Integer>> default_;
+    private final Optional<List<Double>> default_;
 
-    private final Optional<List<Integer>> options;
+    private final Optional<List<ConfigurablePropIntegerArrayOptionsItem>> options;
 
     private final String name;
 
@@ -55,8 +55,8 @@ public final class ConfigurablePropIntegerArray {
     private ConfigurablePropIntegerArray(
             Optional<Integer> min,
             Optional<Integer> max,
-            Optional<List<Integer>> default_,
-            Optional<List<Integer>> options,
+            Optional<List<Double>> default_,
+            Optional<List<ConfigurablePropIntegerArrayOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -110,7 +110,7 @@ public final class ConfigurablePropIntegerArray {
      * @return Default array of integers
      */
     @JsonProperty("default")
-    public Optional<List<Integer>> getDefault() {
+    public Optional<List<Double>> getDefault() {
         return default_;
     }
 
@@ -118,7 +118,7 @@ public final class ConfigurablePropIntegerArray {
      * @return Available options for the integer array
      */
     @JsonProperty("options")
-    public Optional<List<Integer>> getOptions() {
+    public Optional<List<ConfigurablePropIntegerArrayOptionsItem>> getOptions() {
         return options;
     }
 
@@ -287,16 +287,16 @@ public final class ConfigurablePropIntegerArray {
         /**
          * <p>Default array of integers</p>
          */
-        _FinalStage default_(Optional<List<Integer>> default_);
+        _FinalStage default_(Optional<List<Double>> default_);
 
-        _FinalStage default_(List<Integer> default_);
+        _FinalStage default_(List<Double> default_);
 
         /**
          * <p>Available options for the integer array</p>
          */
-        _FinalStage options(Optional<List<Integer>> options);
+        _FinalStage options(Optional<List<ConfigurablePropIntegerArrayOptionsItem>> options);
 
-        _FinalStage options(List<Integer> options);
+        _FinalStage options(List<ConfigurablePropIntegerArrayOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -384,9 +384,9 @@ public final class ConfigurablePropIntegerArray {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<List<Integer>> options = Optional.empty();
+        private Optional<List<ConfigurablePropIntegerArrayOptionsItem>> options = Optional.empty();
 
-        private Optional<List<Integer>> default_ = Optional.empty();
+        private Optional<List<Double>> default_ = Optional.empty();
 
         private Optional<Integer> max = Optional.empty();
 
@@ -613,7 +613,7 @@ public final class ConfigurablePropIntegerArray {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage options(List<Integer> options) {
+        public _FinalStage options(List<ConfigurablePropIntegerArrayOptionsItem> options) {
             this.options = Optional.ofNullable(options);
             return this;
         }
@@ -623,7 +623,7 @@ public final class ConfigurablePropIntegerArray {
          */
         @java.lang.Override
         @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<Integer>> options) {
+        public _FinalStage options(Optional<List<ConfigurablePropIntegerArrayOptionsItem>> options) {
             this.options = options;
             return this;
         }
@@ -633,7 +633,7 @@ public final class ConfigurablePropIntegerArray {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage default_(List<Integer> default_) {
+        public _FinalStage default_(List<Double> default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
@@ -643,7 +643,7 @@ public final class ConfigurablePropIntegerArray {
          */
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<List<Integer>> default_) {
+        public _FinalStage default_(Optional<List<Double>> default_) {
             this.default_ = default_;
             return this;
         }

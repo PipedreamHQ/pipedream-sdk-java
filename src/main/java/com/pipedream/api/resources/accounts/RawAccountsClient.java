@@ -63,10 +63,6 @@ public class RawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);
@@ -86,6 +82,9 @@ public class RawAccountsClient {
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
         if (request.getIncludeCredentials().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -116,9 +115,9 @@ public class RawAccountsClient {
                         .build();
                 List<Account> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Account>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Account>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -156,10 +155,6 @@ public class RawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);
