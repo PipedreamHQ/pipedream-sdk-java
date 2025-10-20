@@ -22,9 +22,11 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropStringArray.Builder.class)
 public final class ConfigurablePropStringArray {
+    private final Optional<Boolean> secret;
+
     private final Optional<List<String>> default_;
 
-    private final Optional<Boolean> secret;
+    private final Optional<List<ConfigurablePropStringArrayOptionsItem>> options;
 
     private final String name;
 
@@ -49,8 +51,9 @@ public final class ConfigurablePropStringArray {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropStringArray(
-            Optional<List<String>> default_,
             Optional<Boolean> secret,
+            Optional<List<String>> default_,
+            Optional<List<ConfigurablePropStringArrayOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -62,8 +65,9 @@ public final class ConfigurablePropStringArray {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.default_ = default_;
         this.secret = secret;
+        this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -83,6 +87,14 @@ public final class ConfigurablePropStringArray {
     }
 
     /**
+     * @return If true, this prop is a secret and should not be displayed in plain text.
+     */
+    @JsonProperty("secret")
+    public Optional<Boolean> getSecret() {
+        return secret;
+    }
+
+    /**
      * @return The default value for this prop
      */
     @JsonProperty("default")
@@ -90,12 +102,9 @@ public final class ConfigurablePropStringArray {
         return default_;
     }
 
-    /**
-     * @return If true, this prop is a secret and should not be displayed in plain text.
-     */
-    @JsonProperty("secret")
-    public Optional<Boolean> getSecret() {
-        return secret;
+    @JsonProperty("options")
+    public Optional<List<ConfigurablePropStringArrayOptionsItem>> getOptions() {
+        return options;
     }
 
     /**
@@ -190,8 +199,9 @@ public final class ConfigurablePropStringArray {
     }
 
     private boolean equalTo(ConfigurablePropStringArray other) {
-        return default_.equals(other.default_)
-                && secret.equals(other.secret)
+        return secret.equals(other.secret)
+                && default_.equals(other.default_)
+                && options.equals(other.options)
                 && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -207,8 +217,9 @@ public final class ConfigurablePropStringArray {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.default_,
                 this.secret,
+                this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -243,18 +254,22 @@ public final class ConfigurablePropStringArray {
         ConfigurablePropStringArray build();
 
         /**
+         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
+         */
+        _FinalStage secret(Optional<Boolean> secret);
+
+        _FinalStage secret(Boolean secret);
+
+        /**
          * <p>The default value for this prop</p>
          */
         _FinalStage default_(Optional<List<String>> default_);
 
         _FinalStage default_(List<String> default_);
 
-        /**
-         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
-         */
-        _FinalStage secret(Optional<Boolean> secret);
+        _FinalStage options(Optional<List<ConfigurablePropStringArrayOptionsItem>> options);
 
-        _FinalStage secret(Boolean secret);
+        _FinalStage options(List<ConfigurablePropStringArrayOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -342,9 +357,11 @@ public final class ConfigurablePropStringArray {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<Boolean> secret = Optional.empty();
+        private Optional<List<ConfigurablePropStringArrayOptionsItem>> options = Optional.empty();
 
         private Optional<List<String>> default_ = Optional.empty();
+
+        private Optional<Boolean> secret = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -353,8 +370,9 @@ public final class ConfigurablePropStringArray {
 
         @java.lang.Override
         public Builder from(ConfigurablePropStringArray other) {
-            default_(other.getDefault());
             secret(other.getSecret());
+            default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -560,23 +578,16 @@ public final class ConfigurablePropStringArray {
             return this;
         }
 
-        /**
-         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage secret(Boolean secret) {
-            this.secret = Optional.ofNullable(secret);
+        public _FinalStage options(List<ConfigurablePropStringArrayOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
             return this;
         }
 
-        /**
-         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
-         */
         @java.lang.Override
-        @JsonSetter(value = "secret", nulls = Nulls.SKIP)
-        public _FinalStage secret(Optional<Boolean> secret) {
-            this.secret = secret;
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropStringArrayOptionsItem>> options) {
+            this.options = options;
             return this;
         }
 
@@ -600,11 +611,32 @@ public final class ConfigurablePropStringArray {
             return this;
         }
 
+        /**
+         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage secret(Boolean secret) {
+            this.secret = Optional.ofNullable(secret);
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop is a secret and should not be displayed in plain text.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "secret", nulls = Nulls.SKIP)
+        public _FinalStage secret(Optional<Boolean> secret) {
+            this.secret = secret;
+            return this;
+        }
+
         @java.lang.Override
         public ConfigurablePropStringArray build() {
             return new ConfigurablePropStringArray(
-                    default_,
                     secret,
+                    default_,
+                    options,
                     name,
                     label,
                     description,
