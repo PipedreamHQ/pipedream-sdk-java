@@ -26,9 +26,9 @@ public final class ConfigurablePropInteger {
 
     private final Optional<Integer> max;
 
-    private final Optional<Integer> default_;
+    private final Optional<Double> default_;
 
-    private final Optional<List<Integer>> options;
+    private final Optional<List<ConfigurablePropIntegerOptionsItem>> options;
 
     private final String name;
 
@@ -55,8 +55,8 @@ public final class ConfigurablePropInteger {
     private ConfigurablePropInteger(
             Optional<Integer> min,
             Optional<Integer> max,
-            Optional<Integer> default_,
-            Optional<List<Integer>> options,
+            Optional<Double> default_,
+            Optional<List<ConfigurablePropIntegerOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -106,11 +106,8 @@ public final class ConfigurablePropInteger {
         return max;
     }
 
-    /**
-     * @return Default integer value
-     */
     @JsonProperty("default")
-    public Optional<Integer> getDefault() {
+    public Optional<Double> getDefault() {
         return default_;
     }
 
@@ -118,7 +115,7 @@ public final class ConfigurablePropInteger {
      * @return Available integer options
      */
     @JsonProperty("options")
-    public Optional<List<Integer>> getOptions() {
+    public Optional<List<ConfigurablePropIntegerOptionsItem>> getOptions() {
         return options;
     }
 
@@ -284,19 +281,16 @@ public final class ConfigurablePropInteger {
 
         _FinalStage max(Integer max);
 
-        /**
-         * <p>Default integer value</p>
-         */
-        _FinalStage default_(Optional<Integer> default_);
+        _FinalStage default_(Optional<Double> default_);
 
-        _FinalStage default_(Integer default_);
+        _FinalStage default_(Double default_);
 
         /**
          * <p>Available integer options</p>
          */
-        _FinalStage options(Optional<List<Integer>> options);
+        _FinalStage options(Optional<List<ConfigurablePropIntegerOptionsItem>> options);
 
-        _FinalStage options(List<Integer> options);
+        _FinalStage options(List<ConfigurablePropIntegerOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -384,9 +378,9 @@ public final class ConfigurablePropInteger {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<List<Integer>> options = Optional.empty();
+        private Optional<List<ConfigurablePropIntegerOptionsItem>> options = Optional.empty();
 
-        private Optional<Integer> default_ = Optional.empty();
+        private Optional<Double> default_ = Optional.empty();
 
         private Optional<Integer> max = Optional.empty();
 
@@ -613,7 +607,7 @@ public final class ConfigurablePropInteger {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage options(List<Integer> options) {
+        public _FinalStage options(List<ConfigurablePropIntegerOptionsItem> options) {
             this.options = Optional.ofNullable(options);
             return this;
         }
@@ -623,27 +617,20 @@ public final class ConfigurablePropInteger {
          */
         @java.lang.Override
         @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<Integer>> options) {
+        public _FinalStage options(Optional<List<ConfigurablePropIntegerOptionsItem>> options) {
             this.options = options;
             return this;
         }
 
-        /**
-         * <p>Default integer value</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
-        public _FinalStage default_(Integer default_) {
+        public _FinalStage default_(Double default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
-        /**
-         * <p>Default integer value</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<Integer> default_) {
+        public _FinalStage default_(Optional<Double> default_) {
             this.default_ = default_;
             return this;
         }

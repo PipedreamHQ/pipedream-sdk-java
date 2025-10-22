@@ -37,6 +37,8 @@ public final class Component {
 
     private final Optional<ComponentStash> stash;
 
+    private final Optional<ToolAnnotations> annotations;
+
     private final Map<String, Object> additionalProperties;
 
     private Component(
@@ -47,6 +49,7 @@ public final class Component {
             Optional<String> description,
             Optional<String> componentType,
             Optional<ComponentStash> stash,
+            Optional<ToolAnnotations> annotations,
             Map<String, Object> additionalProperties) {
         this.key = key;
         this.name = name;
@@ -55,6 +58,7 @@ public final class Component {
         this.description = description;
         this.componentType = componentType;
         this.stash = stash;
+        this.annotations = annotations;
         this.additionalProperties = additionalProperties;
     }
 
@@ -108,6 +112,11 @@ public final class Component {
         return stash;
     }
 
+    @JsonProperty("annotations")
+    public Optional<ToolAnnotations> getAnnotations() {
+        return annotations;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -126,7 +135,8 @@ public final class Component {
                 && configurableProps.equals(other.configurableProps)
                 && description.equals(other.description)
                 && componentType.equals(other.componentType)
-                && stash.equals(other.stash);
+                && stash.equals(other.stash)
+                && annotations.equals(other.annotations);
     }
 
     @java.lang.Override
@@ -138,7 +148,8 @@ public final class Component {
                 this.configurableProps,
                 this.description,
                 this.componentType,
-                this.stash);
+                this.stash,
+                this.annotations);
     }
 
     @java.lang.Override
@@ -199,6 +210,10 @@ public final class Component {
         _FinalStage stash(Optional<ComponentStash> stash);
 
         _FinalStage stash(ComponentStash stash);
+
+        _FinalStage annotations(Optional<ToolAnnotations> annotations);
+
+        _FinalStage annotations(ToolAnnotations annotations);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -208,6 +223,8 @@ public final class Component {
         private String name;
 
         private String version;
+
+        private Optional<ToolAnnotations> annotations = Optional.empty();
 
         private Optional<ComponentStash> stash = Optional.empty();
 
@@ -231,6 +248,7 @@ public final class Component {
             description(other.getDescription());
             componentType(other.getComponentType());
             stash(other.getStash());
+            annotations(other.getAnnotations());
             return this;
         }
 
@@ -267,6 +285,19 @@ public final class Component {
         @JsonSetter("version")
         public _FinalStage version(@NotNull String version) {
             this.version = Objects.requireNonNull(version, "version must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage annotations(ToolAnnotations annotations) {
+            this.annotations = Optional.ofNullable(annotations);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "annotations", nulls = Nulls.SKIP)
+        public _FinalStage annotations(Optional<ToolAnnotations> annotations) {
+            this.annotations = annotations;
             return this;
         }
 
@@ -341,14 +372,24 @@ public final class Component {
         @JsonSetter(value = "configurable_props", nulls = Nulls.SKIP)
         public _FinalStage configurableProps(List<ConfigurableProp> configurableProps) {
             this.configurableProps.clear();
-            this.configurableProps.addAll(configurableProps);
+            if (configurableProps != null) {
+                this.configurableProps.addAll(configurableProps);
+            }
             return this;
         }
 
         @java.lang.Override
         public Component build() {
             return new Component(
-                    key, name, version, configurableProps, description, componentType, stash, additionalProperties);
+                    key,
+                    name,
+                    version,
+                    configurableProps,
+                    description,
+                    componentType,
+                    stash,
+                    annotations,
+                    additionalProperties);
         }
     }
 }

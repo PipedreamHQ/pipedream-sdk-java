@@ -161,7 +161,9 @@ public final class UpdateTriggerWebhooksOpts {
         @JsonSetter(value = "webhook_urls", nulls = Nulls.SKIP)
         public _FinalStage webhookUrls(List<String> webhookUrls) {
             this.webhookUrls.clear();
-            this.webhookUrls.addAll(webhookUrls);
+            if (webhookUrls != null) {
+                this.webhookUrls.addAll(webhookUrls);
+            }
             return this;
         }
 
