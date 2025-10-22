@@ -185,7 +185,9 @@ public final class ProxyPostRequest {
          */
         @java.lang.Override
         public _FinalStage putAllBody(Map<String, Object> body) {
-            this.body.putAll(body);
+            if (body != null) {
+                this.body.putAll(body);
+            }
             return this;
         }
 
@@ -196,7 +198,9 @@ public final class ProxyPostRequest {
         @JsonSetter(value = "body", nulls = Nulls.SKIP)
         public _FinalStage body(Map<String, Object> body) {
             this.body.clear();
-            this.body.putAll(body);
+            if (body != null) {
+                this.body.putAll(body);
+            }
             return this;
         }
 
