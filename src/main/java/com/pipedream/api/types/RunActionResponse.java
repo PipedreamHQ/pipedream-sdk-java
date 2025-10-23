@@ -43,16 +43,25 @@ public final class RunActionResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The key-value pairs resulting from calls to <code>$.export</code>
+     */
     @JsonProperty("exports")
     public Optional<Object> getExports() {
         return exports;
     }
 
+    /**
+     * @return Any logs produced during the execution of the action
+     */
     @JsonProperty("os")
     public Optional<Object> getOs() {
         return os;
     }
 
+    /**
+     * @return The value returned by the action
+     */
     @JsonProperty("ret")
     public Optional<Object> getRet() {
         return ret;
@@ -118,6 +127,9 @@ public final class RunActionResponse {
             return this;
         }
 
+        /**
+         * <p>The key-value pairs resulting from calls to <code>$.export</code></p>
+         */
         @JsonSetter(value = "exports", nulls = Nulls.SKIP)
         public Builder exports(Optional<Object> exports) {
             this.exports = exports;
@@ -129,6 +141,9 @@ public final class RunActionResponse {
             return this;
         }
 
+        /**
+         * <p>Any logs produced during the execution of the action</p>
+         */
         @JsonSetter(value = "os", nulls = Nulls.SKIP)
         public Builder os(Optional<Object> os) {
             this.os = os;
@@ -140,6 +155,9 @@ public final class RunActionResponse {
             return this;
         }
 
+        /**
+         * <p>The value returned by the action</p>
+         */
         @JsonSetter(value = "ret", nulls = Nulls.SKIP)
         public Builder ret(Optional<Object> ret) {
             this.ret = ret;

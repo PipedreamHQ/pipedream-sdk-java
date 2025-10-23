@@ -25,6 +25,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhoo
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
 import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerEventsResponse;
 import com.pipedream.api.types.GetTriggerResponse;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
@@ -58,7 +59,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> list(
             DeployedTriggersListRequest request) {
         return list(request, null);
     }
@@ -66,7 +67,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -86,6 +87,10 @@ public class AsyncRawDeployedTriggersClient {
                     httpUrl, "limit", request.getLimit().get(), false);
         }
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (request.getEmitterType().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "emitter_type", request.getEmitterType().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -96,8 +101,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> future =
-                new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -111,17 +115,18 @@ public class AsyncRawDeployedTriggersClient {
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
-                        List<DeployedComponent> result = parsedResponse.getData();
+                        List<Emitter> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<DeployedComponent>(startingAfter.isPresent(), result, () -> {
-                                    try {
-                                        return list(nextRequest, requestOptions)
-                                                .get()
-                                                .body();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                                new SyncPagingIterable<Emitter>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
                                 response));
                         return;
                     }
