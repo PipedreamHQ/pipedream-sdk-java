@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.resources.deployedtriggers.types.DeployedTriggersListRequestEmitterType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +30,8 @@ public final class DeployedTriggersListRequest {
 
     private final String externalUserId;
 
+    private final Optional<DeployedTriggersListRequestEmitterType> emitterType;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployedTriggersListRequest(
@@ -36,11 +39,13 @@ public final class DeployedTriggersListRequest {
             Optional<String> before,
             Optional<Integer> limit,
             String externalUserId,
+            Optional<DeployedTriggersListRequestEmitterType> emitterType,
             Map<String, Object> additionalProperties) {
         this.after = after;
         this.before = before;
         this.limit = limit;
         this.externalUserId = externalUserId;
+        this.emitterType = emitterType;
         this.additionalProperties = additionalProperties;
     }
 
@@ -76,6 +81,14 @@ public final class DeployedTriggersListRequest {
         return externalUserId;
     }
 
+    /**
+     * @return Filter deployed triggers by emitter type (defaults to 'source' if not provided)
+     */
+    @JsonProperty("emitter_type")
+    public Optional<DeployedTriggersListRequestEmitterType> getEmitterType() {
+        return emitterType;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -91,12 +104,13 @@ public final class DeployedTriggersListRequest {
         return after.equals(other.after)
                 && before.equals(other.before)
                 && limit.equals(other.limit)
-                && externalUserId.equals(other.externalUserId);
+                && externalUserId.equals(other.externalUserId)
+                && emitterType.equals(other.emitterType);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.after, this.before, this.limit, this.externalUserId);
+        return Objects.hash(this.after, this.before, this.limit, this.externalUserId, this.emitterType);
     }
 
     @java.lang.Override
@@ -140,11 +154,20 @@ public final class DeployedTriggersListRequest {
         _FinalStage limit(Optional<Integer> limit);
 
         _FinalStage limit(Integer limit);
+
+        /**
+         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         */
+        _FinalStage emitterType(Optional<DeployedTriggersListRequestEmitterType> emitterType);
+
+        _FinalStage emitterType(DeployedTriggersListRequestEmitterType emitterType);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
+
+        private Optional<DeployedTriggersListRequestEmitterType> emitterType = Optional.empty();
 
         private Optional<Integer> limit = Optional.empty();
 
@@ -163,6 +186,7 @@ public final class DeployedTriggersListRequest {
             before(other.getBefore());
             limit(other.getLimit());
             externalUserId(other.getExternalUserId());
+            emitterType(other.getEmitterType());
             return this;
         }
 
@@ -175,6 +199,26 @@ public final class DeployedTriggersListRequest {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitterType(DeployedTriggersListRequestEmitterType emitterType) {
+            this.emitterType = Optional.ofNullable(emitterType);
+            return this;
+        }
+
+        /**
+         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emitter_type", nulls = Nulls.SKIP)
+        public _FinalStage emitterType(Optional<DeployedTriggersListRequestEmitterType> emitterType) {
+            this.emitterType = emitterType;
             return this;
         }
 
@@ -240,7 +284,8 @@ public final class DeployedTriggersListRequest {
 
         @java.lang.Override
         public DeployedTriggersListRequest build() {
-            return new DeployedTriggersListRequest(after, before, limit, externalUserId, additionalProperties);
+            return new DeployedTriggersListRequest(
+                    after, before, limit, externalUserId, emitterType, additionalProperties);
         }
     }
 }

@@ -30,6 +30,8 @@ public final class DeployTriggerOpts {
 
     private final Optional<String> dynamicPropsId;
 
+    private final Optional<String> workflowId;
+
     private final Optional<String> webhookUrl;
 
     private final Map<String, Object> additionalProperties;
@@ -39,12 +41,14 @@ public final class DeployTriggerOpts {
             String externalUserId,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
+            Optional<String> workflowId,
             Optional<String> webhookUrl,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
+        this.workflowId = workflowId;
         this.webhookUrl = webhookUrl;
         this.additionalProperties = additionalProperties;
     }
@@ -79,6 +83,14 @@ public final class DeployTriggerOpts {
     }
 
     /**
+     * @return Optional ID of a workflow to receive trigger events
+     */
+    @JsonProperty("workflow_id")
+    public Optional<String> getWorkflowId() {
+        return workflowId;
+    }
+
+    /**
      * @return Optional webhook URL to receive trigger events
      */
     @JsonProperty("webhook_url")
@@ -102,12 +114,19 @@ public final class DeployTriggerOpts {
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
+                && workflowId.equals(other.workflowId)
                 && webhookUrl.equals(other.webhookUrl);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.webhookUrl);
+        return Objects.hash(
+                this.id,
+                this.externalUserId,
+                this.configuredProps,
+                this.dynamicPropsId,
+                this.workflowId,
+                this.webhookUrl);
     }
 
     @java.lang.Override
@@ -150,6 +169,13 @@ public final class DeployTriggerOpts {
         _FinalStage dynamicPropsId(String dynamicPropsId);
 
         /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         */
+        _FinalStage workflowId(Optional<String> workflowId);
+
+        _FinalStage workflowId(String workflowId);
+
+        /**
          * <p>Optional webhook URL to receive trigger events</p>
          */
         _FinalStage webhookUrl(Optional<String> webhookUrl);
@@ -164,6 +190,8 @@ public final class DeployTriggerOpts {
         private String externalUserId;
 
         private Optional<String> webhookUrl = Optional.empty();
+
+        private Optional<String> workflowId = Optional.empty();
 
         private Optional<String> dynamicPropsId = Optional.empty();
 
@@ -180,6 +208,7 @@ public final class DeployTriggerOpts {
             externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
+            workflowId(other.getWorkflowId());
             webhookUrl(other.getWebhookUrl());
             return this;
         }
@@ -229,6 +258,26 @@ public final class DeployTriggerOpts {
         }
 
         /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage workflowId(String workflowId) {
+            this.workflowId = Optional.ofNullable(workflowId);
+            return this;
+        }
+
+        /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "workflow_id", nulls = Nulls.SKIP)
+        public _FinalStage workflowId(Optional<String> workflowId) {
+            this.workflowId = workflowId;
+            return this;
+        }
+
+        /**
          * <p>The ID for dynamic props</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -264,7 +313,7 @@ public final class DeployTriggerOpts {
         @java.lang.Override
         public DeployTriggerOpts build() {
             return new DeployTriggerOpts(
-                    id, externalUserId, configuredProps, dynamicPropsId, webhookUrl, additionalProperties);
+                    id, externalUserId, configuredProps, dynamicPropsId, workflowId, webhookUrl, additionalProperties);
         }
     }
 }

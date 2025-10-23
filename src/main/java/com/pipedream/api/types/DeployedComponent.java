@@ -30,6 +30,8 @@ public final class DeployedComponent {
 
     private final String componentId;
 
+    private final Optional<String> componentKey;
+
     private final List<ConfigurableProp> configurableProps;
 
     private final Map<String, ConfiguredPropValue> configuredProps;
@@ -52,6 +54,7 @@ public final class DeployedComponent {
             String id,
             String ownerId,
             String componentId,
+            Optional<String> componentKey,
             List<ConfigurableProp> configurableProps,
             Map<String, ConfiguredPropValue> configuredProps,
             boolean active,
@@ -64,6 +67,7 @@ public final class DeployedComponent {
         this.id = id;
         this.ownerId = ownerId;
         this.componentId = componentId;
+        this.componentKey = componentKey;
         this.configurableProps = configurableProps;
         this.configuredProps = configuredProps;
         this.active = active;
@@ -97,6 +101,14 @@ public final class DeployedComponent {
     @JsonProperty("component_id")
     public String getComponentId() {
         return componentId;
+    }
+
+    /**
+     * @return The component key (name) that was deployed
+     */
+    @JsonProperty("component_key")
+    public Optional<String> getComponentKey() {
+        return componentKey;
     }
 
     /**
@@ -152,6 +164,9 @@ public final class DeployedComponent {
         return nameSlug;
     }
 
+    /**
+     * @return Callback observations for the deployed component
+     */
     @JsonProperty("callback_observations")
     public Optional<Object> getCallbackObservations() {
         return callbackObservations;
@@ -172,6 +187,7 @@ public final class DeployedComponent {
         return id.equals(other.id)
                 && ownerId.equals(other.ownerId)
                 && componentId.equals(other.componentId)
+                && componentKey.equals(other.componentKey)
                 && configurableProps.equals(other.configurableProps)
                 && configuredProps.equals(other.configuredProps)
                 && active == other.active
@@ -188,6 +204,7 @@ public final class DeployedComponent {
                 this.id,
                 this.ownerId,
                 this.componentId,
+                this.componentKey,
                 this.configurableProps,
                 this.configuredProps,
                 this.active,
@@ -269,6 +286,13 @@ public final class DeployedComponent {
         DeployedComponent build();
 
         /**
+         * <p>The component key (name) that was deployed</p>
+         */
+        _FinalStage componentKey(Optional<String> componentKey);
+
+        _FinalStage componentKey(String componentKey);
+
+        /**
          * <p>The configurable properties of the component</p>
          */
         _FinalStage configurableProps(List<ConfigurableProp> configurableProps);
@@ -283,6 +307,9 @@ public final class DeployedComponent {
 
         _FinalStage configuredProps(String key, ConfiguredPropValue value);
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         */
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
         _FinalStage callbackObservations(Object callbackObservations);
@@ -321,6 +348,8 @@ public final class DeployedComponent {
 
         private List<ConfigurableProp> configurableProps = new ArrayList<>();
 
+        private Optional<String> componentKey = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -331,6 +360,7 @@ public final class DeployedComponent {
             id(other.getId());
             ownerId(other.getOwnerId());
             componentId(other.getComponentId());
+            componentKey(other.getComponentKey());
             configurableProps(other.getConfigurableProps());
             configuredProps(other.getConfiguredProps());
             active(other.getActive());
@@ -438,12 +468,19 @@ public final class DeployedComponent {
             return this;
         }
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage callbackObservations(Object callbackObservations) {
             this.callbackObservations = Optional.ofNullable(callbackObservations);
             return this;
         }
 
+        /**
+         * <p>Callback observations for the deployed component</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "callback_observations", nulls = Nulls.SKIP)
         public _FinalStage callbackObservations(Optional<Object> callbackObservations) {
@@ -469,7 +506,9 @@ public final class DeployedComponent {
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
         public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
             this.configuredProps.clear();
-            this.configuredProps.putAll(configuredProps);
+            if (configuredProps != null) {
+                this.configuredProps.putAll(configuredProps);
+            }
             return this;
         }
 
@@ -502,7 +541,29 @@ public final class DeployedComponent {
         @JsonSetter(value = "configurable_props", nulls = Nulls.SKIP)
         public _FinalStage configurableProps(List<ConfigurableProp> configurableProps) {
             this.configurableProps.clear();
-            this.configurableProps.addAll(configurableProps);
+            if (configurableProps != null) {
+                this.configurableProps.addAll(configurableProps);
+            }
+            return this;
+        }
+
+        /**
+         * <p>The component key (name) that was deployed</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage componentKey(String componentKey) {
+            this.componentKey = Optional.ofNullable(componentKey);
+            return this;
+        }
+
+        /**
+         * <p>The component key (name) that was deployed</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "component_key", nulls = Nulls.SKIP)
+        public _FinalStage componentKey(Optional<String> componentKey) {
+            this.componentKey = componentKey;
             return this;
         }
 
@@ -512,6 +573,7 @@ public final class DeployedComponent {
                     id,
                     ownerId,
                     componentId,
+                    componentKey,
                     configurableProps,
                     configuredProps,
                     active,

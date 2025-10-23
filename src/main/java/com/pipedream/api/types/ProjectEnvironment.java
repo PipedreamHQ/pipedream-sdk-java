@@ -3,22 +3,81 @@
  */
 package com.pipedream.api.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ProjectEnvironment {
-    DEVELOPMENT("development"),
+public final class ProjectEnvironment {
+    public static final ProjectEnvironment DEVELOPMENT = new ProjectEnvironment(Value.DEVELOPMENT, "development");
 
-    PRODUCTION("production");
+    public static final ProjectEnvironment PRODUCTION = new ProjectEnvironment(Value.PRODUCTION, "production");
 
-    private final String value;
+    private final Value value;
 
-    ProjectEnvironment(String value) {
+    private final String string;
+
+    ProjectEnvironment(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other)
+                || (other instanceof ProjectEnvironment && this.string.equals(((ProjectEnvironment) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case DEVELOPMENT:
+                return visitor.visitDevelopment();
+            case PRODUCTION:
+                return visitor.visitProduction();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static ProjectEnvironment valueOf(String value) {
+        switch (value) {
+            case "development":
+                return DEVELOPMENT;
+            case "production":
+                return PRODUCTION;
+            default:
+                return new ProjectEnvironment(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        DEVELOPMENT,
+
+        PRODUCTION,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitDevelopment();
+
+        T visitProduction();
+
+        T visitUnknown(String unknownType);
     }
 }
