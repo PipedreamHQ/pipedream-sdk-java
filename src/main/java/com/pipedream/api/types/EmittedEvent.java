@@ -225,7 +225,9 @@ public final class EmittedEvent {
         @JsonSetter(value = "e", nulls = Nulls.SKIP)
         public _FinalStage e(Map<String, Object> e) {
             this.e.clear();
-            this.e.putAll(e);
+            if (e != null) {
+                this.e.putAll(e);
+            }
             return this;
         }
 

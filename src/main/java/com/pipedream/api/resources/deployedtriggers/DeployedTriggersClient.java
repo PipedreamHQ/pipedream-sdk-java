@@ -17,6 +17,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhoo
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
 import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import java.util.List;
@@ -41,15 +42,14 @@ public class DeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<DeployedComponent> list(DeployedTriggersListRequest request) {
+    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<DeployedComponent> list(
-            DeployedTriggersListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
