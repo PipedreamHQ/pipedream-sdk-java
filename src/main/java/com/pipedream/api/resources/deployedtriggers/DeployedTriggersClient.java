@@ -15,8 +15,8 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRet
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
-import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import java.util.List;
@@ -41,44 +41,42 @@ public class DeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<DeployedComponent> list(DeployedTriggersListRequest request) {
+    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<DeployedComponent> list(
-            DeployedTriggersListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public DeployedComponent retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
+    public Emitter retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return this.rawClient.retrieve(triggerId, request).body();
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public DeployedComponent retrieve(
-            String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
+    public Emitter retrieve(String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).body();
     }
 
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public DeployedComponent update(String triggerId, UpdateTriggerOpts request) {
+    public Emitter update(String triggerId, UpdateTriggerOpts request) {
         return this.rawClient.update(triggerId, request).body();
     }
 
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public DeployedComponent update(String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
+    public Emitter update(String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.update(triggerId, request, requestOptions).body();
     }
 

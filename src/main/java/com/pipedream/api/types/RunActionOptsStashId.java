@@ -36,7 +36,7 @@ public final class RunActionOptsStashId {
         if (this.type == 0) {
             return visitor.visit((Optional<String>) this.value);
         } else if (this.type == 1) {
-            return visitor.visit((String) this.value);
+            return visitor.visit2((String) this.value);
         } else if (this.type == 2) {
             return visitor.visit((boolean) this.value);
         }
@@ -73,7 +73,7 @@ public final class RunActionOptsStashId {
      * <li>"NEW"</li>
      * </ul>
      */
-    public static RunActionOptsStashId of(String value) {
+    public static RunActionOptsStashId of2(String value) {
         return new RunActionOptsStashId(value, 1);
     }
 
@@ -90,7 +90,7 @@ public final class RunActionOptsStashId {
          * <li>"NEW"</li>
          * </ul>
          */
-        T visit(String value);
+        T visit2(String value);
 
         T visit(boolean value);
     }
@@ -108,7 +108,7 @@ public final class RunActionOptsStashId {
             } catch (RuntimeException e) {
             }
             try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
+                return of2(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
             } catch (RuntimeException e) {
             }
             if (value instanceof Boolean) {
