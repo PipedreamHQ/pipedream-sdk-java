@@ -3,22 +3,82 @@
  */
 package com.pipedream.api.resources.apps.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum AppsListRequestSortDirection {
-    ASC("asc"),
+public final class AppsListRequestSortDirection {
+    public static final AppsListRequestSortDirection ASC = new AppsListRequestSortDirection(Value.ASC, "asc");
 
-    DESC("desc");
+    public static final AppsListRequestSortDirection DESC = new AppsListRequestSortDirection(Value.DESC, "desc");
 
-    private final String value;
+    private final Value value;
 
-    AppsListRequestSortDirection(String value) {
+    private final String string;
+
+    AppsListRequestSortDirection(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other)
+                || (other instanceof AppsListRequestSortDirection
+                        && this.string.equals(((AppsListRequestSortDirection) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case ASC:
+                return visitor.visitAsc();
+            case DESC:
+                return visitor.visitDesc();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static AppsListRequestSortDirection valueOf(String value) {
+        switch (value) {
+            case "asc":
+                return ASC;
+            case "desc":
+                return DESC;
+            default:
+                return new AppsListRequestSortDirection(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        ASC,
+
+        DESC,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitAsc();
+
+        T visitDesc();
+
+        T visitUnknown(String unknownType);
     }
 }

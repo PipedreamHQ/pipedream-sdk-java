@@ -26,16 +26,20 @@ public final class BackendClientOpts {
 
     private final Optional<String> apiUrl;
 
+    private final Optional<String> scope;
+
     private final Map<String, Object> additionalProperties;
 
     private BackendClientOpts(
             Optional<String> clientId,
             Optional<String> clientSecret,
             Optional<String> apiUrl,
+            Optional<String> scope,
             Map<String, Object> additionalProperties) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.apiUrl = apiUrl;
+        this.scope = scope;
         this.additionalProperties = additionalProperties;
     }
 
@@ -63,6 +67,14 @@ public final class BackendClientOpts {
         return apiUrl;
     }
 
+    /**
+     * @return Optional space-separated scopes for the access token. Defaults to '*'.
+     */
+    @JsonProperty("scope")
+    public Optional<String> getScope() {
+        return scope;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -77,12 +89,13 @@ public final class BackendClientOpts {
     private boolean equalTo(BackendClientOpts other) {
         return clientId.equals(other.clientId)
                 && clientSecret.equals(other.clientSecret)
-                && apiUrl.equals(other.apiUrl);
+                && apiUrl.equals(other.apiUrl)
+                && scope.equals(other.scope);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.clientId, this.clientSecret, this.apiUrl);
+        return Objects.hash(this.clientId, this.clientSecret, this.apiUrl, this.scope);
     }
 
     @java.lang.Override
@@ -102,6 +115,8 @@ public final class BackendClientOpts {
 
         private Optional<String> apiUrl = Optional.empty();
 
+        private Optional<String> scope = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -111,6 +126,7 @@ public final class BackendClientOpts {
             clientId(other.getClientId());
             clientSecret(other.getClientSecret());
             apiUrl(other.getApiUrl());
+            scope(other.getScope());
             return this;
         }
 
@@ -156,8 +172,22 @@ public final class BackendClientOpts {
             return this;
         }
 
+        /**
+         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         */
+        @JsonSetter(value = "scope", nulls = Nulls.SKIP)
+        public Builder scope(Optional<String> scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public Builder scope(String scope) {
+            this.scope = Optional.ofNullable(scope);
+            return this;
+        }
+
         public BackendClientOpts build() {
-            return new BackendClientOpts(clientId, clientSecret, apiUrl, additionalProperties);
+            return new BackendClientOpts(clientId, clientSecret, apiUrl, scope, additionalProperties);
         }
     }
 }

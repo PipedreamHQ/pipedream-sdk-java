@@ -108,9 +108,9 @@ public class RawComponentsClient {
                         .build();
                 List<Component> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Component>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Component>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";

@@ -81,7 +81,9 @@ public final class GetTriggerWorkflowsResponse {
         @JsonSetter(value = "workflow_ids", nulls = Nulls.SKIP)
         public Builder workflowIds(List<String> workflowIds) {
             this.workflowIds.clear();
-            this.workflowIds.addAll(workflowIds);
+            if (workflowIds != null) {
+                this.workflowIds.addAll(workflowIds);
+            }
             return this;
         }
 

@@ -68,10 +68,6 @@ public class AsyncRawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);
@@ -91,6 +87,9 @@ public class AsyncRawAccountsClient {
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
         if (request.getIncludeCredentials().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -125,15 +124,16 @@ public class AsyncRawAccountsClient {
                                 .build();
                         List<Account> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<Account>(startingAfter.isPresent(), result, () -> {
-                                    try {
-                                        return list(nextRequest, requestOptions)
-                                                .get()
-                                                .body();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                                new SyncPagingIterable<Account>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
                                 response));
                         return;
                     }
@@ -183,10 +183,6 @@ public class AsyncRawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);

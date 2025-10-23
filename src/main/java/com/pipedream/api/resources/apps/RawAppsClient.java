@@ -103,9 +103,9 @@ public class RawAppsClient {
                         .build();
                 List<App> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<App>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<App>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
