@@ -7,13 +7,17 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
 
-public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
+public class AsyncBaseClientBuilder {
     private Optional<Integer> timeout = Optional.empty();
 
     private Optional<Integer> maxRetries = Optional.empty();
+
+    private final Map<String, String> customHeaders = new HashMap<>();
 
     private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
 
@@ -25,72 +29,84 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
 
     private OkHttpClient httpClient;
 
+    private String projectId;
+
     /**
      * Sets clientId.
      * Defaults to the PIPEDREAM_CLIENT_ID environment variable.
      */
-    @SuppressWarnings("unchecked")
-    public T clientId(String clientId) {
+    public AsyncBaseClientBuilder clientId(String clientId) {
         this.clientId = clientId;
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets clientSecret.
      * Defaults to the PIPEDREAM_CLIENT_SECRET environment variable.
      */
-    @SuppressWarnings("unchecked")
-    public T clientSecret(String clientSecret) {
+    public AsyncBaseClientBuilder clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets projectEnvironment
      */
-    @SuppressWarnings("unchecked")
-    public T projectEnvironment(String projectEnvironment) {
+    public AsyncBaseClientBuilder projectEnvironment(String projectEnvironment) {
         this.projectEnvironment = projectEnvironment;
-        return (T) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public T environment(Environment environment) {
+    public AsyncBaseClientBuilder environment(Environment environment) {
         this.environment = environment;
-        return (T) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public T url(String url) {
+    public AsyncBaseClientBuilder url(String url) {
         this.environment = Environment.custom(url);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
-    @SuppressWarnings("unchecked")
-    public T timeout(int timeout) {
+    public AsyncBaseClientBuilder timeout(int timeout) {
         this.timeout = Optional.of(timeout);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
-    @SuppressWarnings("unchecked")
-    public T maxRetries(int maxRetries) {
+    public AsyncBaseClientBuilder maxRetries(int maxRetries) {
         this.maxRetries = Optional.of(maxRetries);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the underlying OkHttp client
      */
-    @SuppressWarnings("unchecked")
-    public T httpClient(OkHttpClient httpClient) {
+    public AsyncBaseClientBuilder httpClient(OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        return (T) this;
+        return this;
+    }
+
+    /**
+     * Add a custom header to be sent with all requests.
+     * For headers that need to be computed dynamically or conditionally, use the setAdditional() method override instead.
+     *
+     * @param name The header name
+     * @param value The header value
+     * @return This builder for method chaining
+     */
+    public AsyncBaseClientBuilder addHeader(String name, String value) {
+        this.customHeaders.put(name, value);
+        return this;
+    }
+
+    public AsyncBaseClientBuilder projectId(String projectId) {
+        this.projectId = projectId;
+        return this;
     }
 
     protected ClientOptions buildClientOptions() {
@@ -102,6 +118,9 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
         setHttpClient(builder);
         setTimeouts(builder);
         setRetries(builder);
+        for (Map.Entry<String, String> header : this.customHeaders.entrySet()) {
+            builder.addHeader(header.getKey(), header.getValue());
+        }
         setAdditional(builder);
         return builder.build();
     }
@@ -124,7 +143,7 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAuthentication(ClientOptions.Builder builder) {
      *     super.setAuthentication(builder); // Keep existing auth
      *     builder.addHeader("X-API-Key", this.apiKey);
@@ -133,8 +152,12 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      */
     protected void setAuthentication(ClientOptions.Builder builder) {
         if (this.clientId != null && this.clientSecret != null) {
-            OauthTokensClient authClient = new OauthTokensClient(
-                    ClientOptions.builder().environment(this.environment).build());
+            ClientOptions.Builder authClientOptionsBuilder =
+                    ClientOptions.builder().environment(this.environment);
+            if (this.projectId != null) {
+                authClientOptionsBuilder.projectId(this.projectId);
+            }
+            OauthTokensClient authClient = new OauthTokensClient(authClientOptionsBuilder.build());
             OAuthTokenSupplier oAuthTokenSupplier =
                     new OAuthTokenSupplier(this.clientId, this.clientSecret, authClient);
             builder.addHeader("Authorization", oAuthTokenSupplier);
@@ -149,7 +172,7 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setCustomHeaders(ClientOptions.Builder builder) {
      *     super.setCustomHeaders(builder); // Keep existing headers
      *     builder.addHeader("X-Trace-ID", generateTraceId());
@@ -168,7 +191,11 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      *
      * @param builder The ClientOptions.Builder to configure
      */
-    protected void setVariables(ClientOptions.Builder builder) {}
+    protected void setVariables(ClientOptions.Builder builder) {
+        if (this.projectId != null) {
+            builder.projectId(this.projectId);
+        }
+    }
 
     /**
      * Sets the request timeout configuration.
@@ -215,9 +242,9 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAdditional(ClientOptions.Builder builder) {
-     *     builder.addHeader("X-Request-ID", () -> UUID.randomUUID().toString());
+     *     builder.addHeader("X-Request-ID", () -&gt; UUID.randomUUID().toString());
      *     builder.addHeader("X-Client-Version", "1.0.0");
      * }
      * }</pre>
@@ -231,7 +258,7 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void validateConfiguration() {
      *     super.validateConfiguration(); // Run parent validations
      *     if (tenantId == null || tenantId.isEmpty()) {

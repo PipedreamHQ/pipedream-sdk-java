@@ -17,6 +17,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhoo
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
 import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import java.util.List;
@@ -42,14 +43,14 @@ public class AsyncDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
+    public CompletableFuture<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(
+    public CompletableFuture<SyncPagingIterable<Emitter>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
