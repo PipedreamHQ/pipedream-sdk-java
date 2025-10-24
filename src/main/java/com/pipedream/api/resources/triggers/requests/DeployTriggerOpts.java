@@ -24,11 +24,15 @@ import org.jetbrains.annotations.NotNull;
 public final class DeployTriggerOpts {
     private final String id;
 
+    private final Optional<String> version;
+
     private final String externalUserId;
 
     private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
 
     private final Optional<String> dynamicPropsId;
+
+    private final Optional<String> workflowId;
 
     private final Optional<String> webhookUrl;
 
@@ -36,15 +40,19 @@ public final class DeployTriggerOpts {
 
     private DeployTriggerOpts(
             String id,
+            Optional<String> version,
             String externalUserId,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
+            Optional<String> workflowId,
             Optional<String> webhookUrl,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.version = version;
         this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
+        this.workflowId = workflowId;
         this.webhookUrl = webhookUrl;
         this.additionalProperties = additionalProperties;
     }
@@ -55,6 +63,14 @@ public final class DeployTriggerOpts {
     @JsonProperty("id")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     /**
@@ -79,6 +95,14 @@ public final class DeployTriggerOpts {
     }
 
     /**
+     * @return Optional ID of a workflow to receive trigger events
+     */
+    @JsonProperty("workflow_id")
+    public Optional<String> getWorkflowId() {
+        return workflowId;
+    }
+
+    /**
      * @return Optional webhook URL to receive trigger events
      */
     @JsonProperty("webhook_url")
@@ -99,15 +123,24 @@ public final class DeployTriggerOpts {
 
     private boolean equalTo(DeployTriggerOpts other) {
         return id.equals(other.id)
+                && version.equals(other.version)
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
+                && workflowId.equals(other.workflowId)
                 && webhookUrl.equals(other.webhookUrl);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.webhookUrl);
+        return Objects.hash(
+                this.id,
+                this.version,
+                this.externalUserId,
+                this.configuredProps,
+                this.dynamicPropsId,
+                this.workflowId,
+                this.webhookUrl);
     }
 
     @java.lang.Override
@@ -138,6 +171,13 @@ public final class DeployTriggerOpts {
     public interface _FinalStage {
         DeployTriggerOpts build();
 
+        /**
+         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
+
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
         _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
@@ -148,6 +188,13 @@ public final class DeployTriggerOpts {
         _FinalStage dynamicPropsId(Optional<String> dynamicPropsId);
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
+
+        /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         */
+        _FinalStage workflowId(Optional<String> workflowId);
+
+        _FinalStage workflowId(String workflowId);
 
         /**
          * <p>Optional webhook URL to receive trigger events</p>
@@ -165,9 +212,13 @@ public final class DeployTriggerOpts {
 
         private Optional<String> webhookUrl = Optional.empty();
 
+        private Optional<String> workflowId = Optional.empty();
+
         private Optional<String> dynamicPropsId = Optional.empty();
 
         private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
+
+        private Optional<String> version = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -177,9 +228,11 @@ public final class DeployTriggerOpts {
         @java.lang.Override
         public Builder from(DeployTriggerOpts other) {
             id(other.getId());
+            version(other.getVersion());
             externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
+            workflowId(other.getWorkflowId());
             webhookUrl(other.getWebhookUrl());
             return this;
         }
@@ -229,6 +282,26 @@ public final class DeployTriggerOpts {
         }
 
         /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage workflowId(String workflowId) {
+            this.workflowId = Optional.ofNullable(workflowId);
+            return this;
+        }
+
+        /**
+         * <p>Optional ID of a workflow to receive trigger events</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "workflow_id", nulls = Nulls.SKIP)
+        public _FinalStage workflowId(Optional<String> workflowId) {
+            this.workflowId = workflowId;
+            return this;
+        }
+
+        /**
          * <p>The ID for dynamic props</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -261,10 +334,37 @@ public final class DeployTriggerOpts {
             return this;
         }
 
+        /**
+         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
+        /**
+         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public _FinalStage version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
         @java.lang.Override
         public DeployTriggerOpts build() {
             return new DeployTriggerOpts(
-                    id, externalUserId, configuredProps, dynamicPropsId, webhookUrl, additionalProperties);
+                    id,
+                    version,
+                    externalUserId,
+                    configuredProps,
+                    dynamicPropsId,
+                    workflowId,
+                    webhookUrl,
+                    additionalProperties);
         }
     }
 }

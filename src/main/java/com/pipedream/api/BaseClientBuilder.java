@@ -7,6 +7,8 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
 
@@ -14,6 +16,8 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
     private Optional<Integer> timeout = Optional.empty();
 
     private Optional<Integer> maxRetries = Optional.empty();
+
+    private final Map<String, String> customHeaders = new HashMap<>();
 
     private String clientId = System.getenv("PIPEDREAM_CLIENT_ID");
 
@@ -24,6 +28,8 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
     private Environment environment = Environment.PROD;
 
     private OkHttpClient httpClient;
+
+    private String projectId;
 
     /**
      * Sets clientId.
@@ -93,6 +99,26 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
         return (T) this;
     }
 
+    /**
+     * Add a custom header to be sent with all requests.
+     * For headers that need to be computed dynamically or conditionally, use the setAdditional() method override instead.
+     *
+     * @param name The header name
+     * @param value The header value
+     * @return This builder for method chaining
+     */
+    @SuppressWarnings("unchecked")
+    public T addHeader(String name, String value) {
+        this.customHeaders.put(name, value);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T projectId(String projectId) {
+        this.projectId = projectId;
+        return (T) this;
+    }
+
     protected ClientOptions buildClientOptions() {
         ClientOptions.Builder builder = ClientOptions.builder();
         setEnvironment(builder);
@@ -102,6 +128,9 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
         setHttpClient(builder);
         setTimeouts(builder);
         setRetries(builder);
+        for (Map.Entry<String, String> header : this.customHeaders.entrySet()) {
+            builder.addHeader(header.getKey(), header.getValue());
+        }
         setAdditional(builder);
         return builder.build();
     }
@@ -124,7 +153,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAuthentication(ClientOptions.Builder builder) {
      *     super.setAuthentication(builder); // Keep existing auth
      *     builder.addHeader("X-API-Key", this.apiKey);
@@ -133,8 +162,12 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      */
     protected void setAuthentication(ClientOptions.Builder builder) {
         if (this.clientId != null && this.clientSecret != null) {
-            OauthTokensClient authClient = new OauthTokensClient(
-                    ClientOptions.builder().environment(this.environment).build());
+            ClientOptions.Builder authClientOptionsBuilder =
+                    ClientOptions.builder().environment(this.environment);
+            if (this.projectId != null) {
+                authClientOptionsBuilder.projectId(this.projectId);
+            }
+            OauthTokensClient authClient = new OauthTokensClient(authClientOptionsBuilder.build());
             OAuthTokenSupplier oAuthTokenSupplier =
                     new OAuthTokenSupplier(this.clientId, this.clientSecret, authClient);
             builder.addHeader("Authorization", oAuthTokenSupplier);
@@ -149,7 +182,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setCustomHeaders(ClientOptions.Builder builder) {
      *     super.setCustomHeaders(builder); // Keep existing headers
      *     builder.addHeader("X-Trace-ID", generateTraceId());
@@ -168,7 +201,11 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * @param builder The ClientOptions.Builder to configure
      */
-    protected void setVariables(ClientOptions.Builder builder) {}
+    protected void setVariables(ClientOptions.Builder builder) {
+        if (this.projectId != null) {
+            builder.projectId(this.projectId);
+        }
+    }
 
     /**
      * Sets the request timeout configuration.
@@ -215,9 +252,9 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void setAdditional(ClientOptions.Builder builder) {
-     *     builder.addHeader("X-Request-ID", () -> UUID.randomUUID().toString());
+     *     builder.addHeader("X-Request-ID", () -&gt; UUID.randomUUID().toString());
      *     builder.addHeader("X-Client-Version", "1.0.0");
      * }
      * }</pre>
@@ -231,7 +268,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
      *
      * Example:
      * <pre>{@code
-     * @Override
+     * &#64;Override
      * protected void validateConfiguration() {
      *     super.validateConfiguration(); // Run parent validations
      *     if (tenantId == null || tenantId.isEmpty()) {

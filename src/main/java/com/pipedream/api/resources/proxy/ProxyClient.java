@@ -22,6 +22,10 @@ public class ProxyClient {
         this.rawClient = new RawProxyClient(clientOptions);
     }
 
+    private String encodeUrl(String url) {
+        return Base64.getUrlEncoder().encodeToString(url.getBytes());
+    }
+
     /**
      * Get responses with HTTP metadata like headers
      */
@@ -29,55 +33,81 @@ public class ProxyClient {
         return this.rawClient;
     }
 
-    private String encodeUrl(String url) {
-        return Base64.getUrlEncoder().encodeToString(url.getBytes());
-    }
-
+    /**
+     * Forward an authenticated GET request to an external API using an external user's account credentials
+     */
     public Object get(String url, ProxyGetRequest request) {
         final String url64 = encodeUrl(url);
         return this.rawClient.get(url64, request).body();
     }
 
+    /**
+     * Forward an authenticated GET request to an external API using an external user's account credentials
+     */
     public Object get(String url, ProxyGetRequest request, RequestOptions requestOptions) {
         final String url64 = encodeUrl(url);
         return this.rawClient.get(url64, request, requestOptions).body();
     }
 
+    /**
+     * Forward an authenticated POST request to an external API using an external user's account credentials
+     */
     public Object post(String url, ProxyPostRequest request) {
         final String url64 = encodeUrl(url);
         return this.rawClient.post(url64, request).body();
     }
 
+    /**
+     * Forward an authenticated POST request to an external API using an external user's account credentials
+     */
     public Object post(String url, ProxyPostRequest request, RequestOptions requestOptions) {
         final String url64 = encodeUrl(url);
         return this.rawClient.post(url64, request, requestOptions).body();
     }
 
+    /**
+     * Forward an authenticated PUT request to an external API using an external user's account credentials
+     */
     public Object put(String url, ProxyPutRequest request) {
         final String url64 = encodeUrl(url);
         return this.rawClient.put(url64, request).body();
     }
 
+    /**
+     * Forward an authenticated PUT request to an external API using an external user's account credentials
+     */
     public Object put(String url, ProxyPutRequest request, RequestOptions requestOptions) {
         final String url64 = encodeUrl(url);
         return this.rawClient.put(url64, request, requestOptions).body();
     }
 
+    /**
+     * Forward an authenticated DELETE request to an external API using an external user's account credentials
+     */
     public Object delete(String url, ProxyDeleteRequest request) {
         final String url64 = encodeUrl(url);
         return this.rawClient.delete(url64, request).body();
     }
 
+    /**
+     * Forward an authenticated DELETE request to an external API using an external user's account credentials
+     */
     public Object delete(String url, ProxyDeleteRequest request, RequestOptions requestOptions) {
         final String url64 = encodeUrl(url);
         return this.rawClient.delete(url64, request, requestOptions).body();
     }
 
+    /**
+     * Forward an authenticated PATCH request to an external API using an external user's account credentials
+     */
     public Object patch(String url, ProxyPatchRequest request) {
         final String url64 = encodeUrl(url);
         return this.rawClient.patch(url64, request).body();
     }
 
+    /**
+     * Forward an authenticated PATCH request to an external API using an external user's account credentials
+     */
     public Object patch(String url, ProxyPatchRequest request, RequestOptions requestOptions) {
         final String url64 = encodeUrl(url);
         return this.rawClient.patch(url64, request, requestOptions).body();

@@ -23,17 +23,15 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRet
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
-import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerEventsResponse;
 import com.pipedream.api.types.GetTriggerResponse;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import com.pipedream.api.types.GetTriggersResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -53,14 +51,14 @@ public class RawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>> list(
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -80,6 +78,10 @@ public class RawDeployedTriggersClient {
                     httpUrl, "limit", request.getLimit().get(), false);
         }
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (request.getEmitterType().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "emitter_type", request.getEmitterType().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -100,11 +102,11 @@ public class RawDeployedTriggersClient {
                         .from(request)
                         .after(startingAfter)
                         .build();
-                List<DeployedComponent> result = parsedResponse.getData();
+                List<Emitter> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<DeployedComponent>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Emitter>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -129,15 +131,14 @@ public class RawDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public BaseClientHttpResponse<DeployedComponent> retrieve(
-            String triggerId, DeployedTriggersRetrieveRequest request) {
+    public BaseClientHttpResponse<Emitter> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public BaseClientHttpResponse<DeployedComponent> retrieve(
+    public BaseClientHttpResponse<Emitter> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -185,14 +186,14 @@ public class RawDeployedTriggersClient {
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public BaseClientHttpResponse<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
+    public BaseClientHttpResponse<Emitter> update(String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public BaseClientHttpResponse<DeployedComponent> update(
+    public BaseClientHttpResponse<Emitter> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -201,20 +202,10 @@ public class RawDeployedTriggersClient {
                 .addPathSegments("deployed-triggers")
                 .addPathSegment(triggerId);
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        if (request.getActive().isPresent()) {
-            properties.put("active", request.getActive());
-        }
-        if (request.getConfiguredProps().isPresent()) {
-            properties.put("configured_props", request.getConfiguredProps());
-        }
-        if (request.getName().isPresent()) {
-            properties.put("name", request.getName());
-        }
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -450,12 +441,10 @@ public class RawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("pipelines");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("workflow_ids", request.getWorkflowIds());
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -574,12 +563,10 @@ public class RawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("webhooks");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("webhook_urls", request.getWebhookUrls());
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

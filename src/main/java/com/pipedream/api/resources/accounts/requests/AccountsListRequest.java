@@ -20,8 +20,6 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = AccountsListRequest.Builder.class)
 public final class AccountsListRequest {
-    private final Optional<String> appId;
-
     private final Optional<String> externalUserId;
 
     private final Optional<String> oauthAppId;
@@ -32,35 +30,29 @@ public final class AccountsListRequest {
 
     private final Optional<Integer> limit;
 
+    private final Optional<String> app;
+
     private final Optional<Boolean> includeCredentials;
 
     private final Map<String, Object> additionalProperties;
 
     private AccountsListRequest(
-            Optional<String> appId,
             Optional<String> externalUserId,
             Optional<String> oauthAppId,
             Optional<String> after,
             Optional<String> before,
             Optional<Integer> limit,
+            Optional<String> app,
             Optional<Boolean> includeCredentials,
             Map<String, Object> additionalProperties) {
-        this.appId = appId;
         this.externalUserId = externalUserId;
         this.oauthAppId = oauthAppId;
         this.after = after;
         this.before = before;
         this.limit = limit;
+        this.app = app;
         this.includeCredentials = includeCredentials;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The app slug or ID to filter accounts by.
-     */
-    @JsonProperty("app_id")
-    public Optional<String> getAppId() {
-        return appId;
     }
 
     @JsonProperty("external_user_id")
@@ -101,6 +93,14 @@ public final class AccountsListRequest {
     }
 
     /**
+     * @return The app slug or ID to filter accounts by.
+     */
+    @JsonProperty("app")
+    public Optional<String> getApp() {
+        return app;
+    }
+
+    /**
      * @return Whether to retrieve the account's credentials or not
      */
     @JsonProperty("include_credentials")
@@ -120,24 +120,24 @@ public final class AccountsListRequest {
     }
 
     private boolean equalTo(AccountsListRequest other) {
-        return appId.equals(other.appId)
-                && externalUserId.equals(other.externalUserId)
+        return externalUserId.equals(other.externalUserId)
                 && oauthAppId.equals(other.oauthAppId)
                 && after.equals(other.after)
                 && before.equals(other.before)
                 && limit.equals(other.limit)
+                && app.equals(other.app)
                 && includeCredentials.equals(other.includeCredentials);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.appId,
                 this.externalUserId,
                 this.oauthAppId,
                 this.after,
                 this.before,
                 this.limit,
+                this.app,
                 this.includeCredentials);
     }
 
@@ -152,8 +152,6 @@ public final class AccountsListRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<String> appId = Optional.empty();
-
         private Optional<String> externalUserId = Optional.empty();
 
         private Optional<String> oauthAppId = Optional.empty();
@@ -164,6 +162,8 @@ public final class AccountsListRequest {
 
         private Optional<Integer> limit = Optional.empty();
 
+        private Optional<String> app = Optional.empty();
+
         private Optional<Boolean> includeCredentials = Optional.empty();
 
         @JsonAnySetter
@@ -172,27 +172,13 @@ public final class AccountsListRequest {
         private Builder() {}
 
         public Builder from(AccountsListRequest other) {
-            appId(other.getAppId());
             externalUserId(other.getExternalUserId());
             oauthAppId(other.getOauthAppId());
             after(other.getAfter());
             before(other.getBefore());
             limit(other.getLimit());
+            app(other.getApp());
             includeCredentials(other.getIncludeCredentials());
-            return this;
-        }
-
-        /**
-         * <p>The app slug or ID to filter accounts by.</p>
-         */
-        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
-        public Builder appId(Optional<String> appId) {
-            this.appId = appId;
-            return this;
-        }
-
-        public Builder appId(String appId) {
-            this.appId = Optional.ofNullable(appId);
             return this;
         }
 
@@ -264,6 +250,20 @@ public final class AccountsListRequest {
         }
 
         /**
+         * <p>The app slug or ID to filter accounts by.</p>
+         */
+        @JsonSetter(value = "app", nulls = Nulls.SKIP)
+        public Builder app(Optional<String> app) {
+            this.app = app;
+            return this;
+        }
+
+        public Builder app(String app) {
+            this.app = Optional.ofNullable(app);
+            return this;
+        }
+
+        /**
          * <p>Whether to retrieve the account's credentials or not</p>
          */
         @JsonSetter(value = "include_credentials", nulls = Nulls.SKIP)
@@ -279,7 +279,7 @@ public final class AccountsListRequest {
 
         public AccountsListRequest build() {
             return new AccountsListRequest(
-                    appId, externalUserId, oauthAppId, after, before, limit, includeCredentials, additionalProperties);
+                    externalUserId, oauthAppId, after, before, limit, app, includeCredentials, additionalProperties);
         }
     }
 }

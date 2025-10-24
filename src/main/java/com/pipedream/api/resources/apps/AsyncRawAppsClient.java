@@ -112,7 +112,7 @@ public class AsyncRawAppsClient {
                                 .build();
                         List<App> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<App>(startingAfter.isPresent(), result, () -> {
+                                new SyncPagingIterable<App>(startingAfter.isPresent(), result, parsedResponse, () -> {
                                     try {
                                         return list(nextRequest, requestOptions)
                                                 .get()
