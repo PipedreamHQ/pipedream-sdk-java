@@ -15,6 +15,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.components.requests.ComponentsListRequest;
+import com.pipedream.api.resources.components.requests.ComponentsRetrieveRequest;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
@@ -118,15 +119,16 @@ public class AsyncRawComponentsClient {
                                 .build();
                         List<Component> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<Component>(startingAfter.isPresent(), result, () -> {
-                                    try {
-                                        return list(nextRequest, requestOptions)
-                                                .get()
-                                                .body();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                                new SyncPagingIterable<Component>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
                                 response));
                         return;
                     }
@@ -163,27 +165,38 @@ public class AsyncRawComponentsClient {
      * Get detailed configuration for a specific component by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, null);
+        return retrieve(componentId, ComponentsRetrieveRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific component by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+            String componentId, ComponentsRetrieveRequest request) {
+        return retrieve(componentId, request, null);
+    }
+
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, ComponentsRetrieveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("components")
-                .addPathSegment(componentId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(componentId);
+        if (request.getVersion().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "version", request.getVersion().get(), false);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

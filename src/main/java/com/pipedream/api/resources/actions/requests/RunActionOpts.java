@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 public final class RunActionOpts {
     private final String id;
 
+    private final Optional<String> version;
+
     private final String externalUserId;
 
     private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
@@ -37,12 +39,14 @@ public final class RunActionOpts {
 
     private RunActionOpts(
             String id,
+            Optional<String> version,
             String externalUserId,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
             Optional<RunActionOptsStashId> stashId,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.version = version;
         this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
@@ -56,6 +60,14 @@ public final class RunActionOpts {
     @JsonProperty("id")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     /**
@@ -97,6 +109,7 @@ public final class RunActionOpts {
 
     private boolean equalTo(RunActionOpts other) {
         return id.equals(other.id)
+                && version.equals(other.version)
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
@@ -105,7 +118,8 @@ public final class RunActionOpts {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.stashId);
+        return Objects.hash(
+                this.id, this.version, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.stashId);
     }
 
     @java.lang.Override
@@ -136,6 +150,13 @@ public final class RunActionOpts {
     public interface _FinalStage {
         RunActionOpts build();
 
+        /**
+         * <p>Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
+
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
         _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
@@ -164,6 +185,8 @@ public final class RunActionOpts {
 
         private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
 
+        private Optional<String> version = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -172,6 +195,7 @@ public final class RunActionOpts {
         @java.lang.Override
         public Builder from(RunActionOpts other) {
             id(other.getId());
+            version(other.getVersion());
             externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
@@ -249,10 +273,30 @@ public final class RunActionOpts {
             return this;
         }
 
+        /**
+         * <p>Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
+        /**
+         * <p>Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public _FinalStage version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
         @java.lang.Override
         public RunActionOpts build() {
             return new RunActionOpts(
-                    id, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
+                    id, version, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
         }
     }
 }

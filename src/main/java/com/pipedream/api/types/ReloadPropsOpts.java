@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ReloadPropsOpts {
     private final String id;
 
+    private final Optional<String> version;
+
     private final String externalUserId;
 
     private final Optional<Boolean> blocking;
@@ -35,12 +37,14 @@ public final class ReloadPropsOpts {
 
     private ReloadPropsOpts(
             String id,
+            Optional<String> version,
             String externalUserId,
             Optional<Boolean> blocking,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.version = version;
         this.externalUserId = externalUserId;
         this.blocking = blocking;
         this.configuredProps = configuredProps;
@@ -54,6 +58,14 @@ public final class ReloadPropsOpts {
     @JsonProperty("id")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return Optional component version (in SemVer format, for example '1.0.0'), defaults to latest
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     /**
@@ -98,6 +110,7 @@ public final class ReloadPropsOpts {
 
     private boolean equalTo(ReloadPropsOpts other) {
         return id.equals(other.id)
+                && version.equals(other.version)
                 && externalUserId.equals(other.externalUserId)
                 && blocking.equals(other.blocking)
                 && configuredProps.equals(other.configuredProps)
@@ -106,7 +119,8 @@ public final class ReloadPropsOpts {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.externalUserId, this.blocking, this.configuredProps, this.dynamicPropsId);
+        return Objects.hash(
+                this.id, this.version, this.externalUserId, this.blocking, this.configuredProps, this.dynamicPropsId);
     }
 
     @java.lang.Override
@@ -136,6 +150,13 @@ public final class ReloadPropsOpts {
 
     public interface _FinalStage {
         ReloadPropsOpts build();
+
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
 
         /**
          * <p>Whether this operation should block until completion</p>
@@ -168,6 +189,8 @@ public final class ReloadPropsOpts {
 
         private Optional<Boolean> blocking = Optional.empty();
 
+        private Optional<String> version = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -176,6 +199,7 @@ public final class ReloadPropsOpts {
         @java.lang.Override
         public Builder from(ReloadPropsOpts other) {
             id(other.getId());
+            version(other.getVersion());
             externalUserId(other.getExternalUserId());
             blocking(other.getBlocking());
             configuredProps(other.getConfiguredProps());
@@ -260,10 +284,30 @@ public final class ReloadPropsOpts {
             return this;
         }
 
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public _FinalStage version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
         @java.lang.Override
         public ReloadPropsOpts build() {
             return new ReloadPropsOpts(
-                    id, externalUserId, blocking, configuredProps, dynamicPropsId, additionalProperties);
+                    id, version, externalUserId, blocking, configuredProps, dynamicPropsId, additionalProperties);
         }
     }
 }

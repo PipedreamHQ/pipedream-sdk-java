@@ -15,8 +15,8 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRet
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
-import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import java.util.List;
@@ -42,14 +42,14 @@ public class AsyncDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(DeployedTriggersListRequest request) {
+    public CompletableFuture<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<SyncPagingIterable<DeployedComponent>> list(
+    public CompletableFuture<SyncPagingIterable<Emitter>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
@@ -57,14 +57,14 @@ public class AsyncDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public CompletableFuture<DeployedComponent> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
+    public CompletableFuture<Emitter> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return this.rawClient.retrieve(triggerId, request).thenApply(response -> response.body());
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public CompletableFuture<DeployedComponent> retrieve(
+    public CompletableFuture<Emitter> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
@@ -72,14 +72,14 @@ public class AsyncDeployedTriggersClient {
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public CompletableFuture<DeployedComponent> update(String triggerId, UpdateTriggerOpts request) {
+    public CompletableFuture<Emitter> update(String triggerId, UpdateTriggerOpts request) {
         return this.rawClient.update(triggerId, request).thenApply(response -> response.body());
     }
 
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public CompletableFuture<DeployedComponent> update(
+    public CompletableFuture<Emitter> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.update(triggerId, request, requestOptions).thenApply(response -> response.body());
     }

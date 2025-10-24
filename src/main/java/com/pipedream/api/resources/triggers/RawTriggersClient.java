@@ -16,11 +16,12 @@ import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
-import com.pipedream.api.types.DeployedComponent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
 import com.pipedream.api.types.ReloadPropsOpts;
@@ -107,9 +108,9 @@ public class RawTriggersClient {
                         .build();
                 List<Component> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Component>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Component>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -135,26 +136,37 @@ public class RawTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
-        return retrieve(componentId, null);
+        return retrieve(componentId, TriggersRetrieveRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific trigger by its key
      */
-    public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public BaseClientHttpResponse<Component> retrieve(String componentId, TriggersRetrieveRequest request) {
+        return retrieve(componentId, request, null);
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public BaseClientHttpResponse<Component> retrieve(
+            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("triggers")
-                .addPathSegment(componentId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(componentId);
+        if (request.getVersion().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "version", request.getVersion().get(), false);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -312,14 +324,14 @@ public class RawTriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public BaseClientHttpResponse<DeployedComponent> deploy(DeployTriggerOpts request) {
+    public BaseClientHttpResponse<Emitter> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public BaseClientHttpResponse<DeployedComponent> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Emitter> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
