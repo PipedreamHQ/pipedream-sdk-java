@@ -3,22 +3,81 @@
  */
 package com.pipedream.api.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ComponentStash {
-    OPTIONAL("optional"),
+public final class ComponentStash {
+    public static final ComponentStash REQUIRED = new ComponentStash(Value.REQUIRED, "required");
 
-    REQUIRED("required");
+    public static final ComponentStash OPTIONAL = new ComponentStash(Value.OPTIONAL, "optional");
 
-    private final String value;
+    private final Value value;
 
-    ComponentStash(String value) {
+    private final String string;
+
+    ComponentStash(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other)
+                || (other instanceof ComponentStash && this.string.equals(((ComponentStash) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case REQUIRED:
+                return visitor.visitRequired();
+            case OPTIONAL:
+                return visitor.visitOptional();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static ComponentStash valueOf(String value) {
+        switch (value) {
+            case "required":
+                return REQUIRED;
+            case "optional":
+                return OPTIONAL;
+            default:
+                return new ComponentStash(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        OPTIONAL,
+
+        REQUIRED,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitOptional();
+
+        T visitRequired();
+
+        T visitUnknown(String unknownType);
     }
 }

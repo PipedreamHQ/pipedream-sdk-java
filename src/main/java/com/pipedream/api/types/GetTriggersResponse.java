@@ -22,21 +22,20 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetTriggersResponse.Builder.class)
 public final class GetTriggersResponse {
-    private final List<DeployedComponent> data;
+    private final List<Emitter> data;
 
     private final PageInfo pageInfo;
 
     private final Map<String, Object> additionalProperties;
 
-    private GetTriggersResponse(
-            List<DeployedComponent> data, PageInfo pageInfo, Map<String, Object> additionalProperties) {
+    private GetTriggersResponse(List<Emitter> data, PageInfo pageInfo, Map<String, Object> additionalProperties) {
         this.data = data;
         this.pageInfo = pageInfo;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public List<DeployedComponent> getData() {
+    public List<Emitter> getData() {
         return data;
     }
 
@@ -83,18 +82,18 @@ public final class GetTriggersResponse {
     public interface _FinalStage {
         GetTriggersResponse build();
 
-        _FinalStage data(List<DeployedComponent> data);
+        _FinalStage data(List<Emitter> data);
 
-        _FinalStage addData(DeployedComponent data);
+        _FinalStage addData(Emitter data);
 
-        _FinalStage addAllData(List<DeployedComponent> data);
+        _FinalStage addAllData(List<Emitter> data);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements PageInfoStage, _FinalStage {
         private PageInfo pageInfo;
 
-        private List<DeployedComponent> data = new ArrayList<>();
+        private List<Emitter> data = new ArrayList<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -116,7 +115,7 @@ public final class GetTriggersResponse {
         }
 
         @java.lang.Override
-        public _FinalStage addAllData(List<DeployedComponent> data) {
+        public _FinalStage addAllData(List<Emitter> data) {
             if (data != null) {
                 this.data.addAll(data);
             }
@@ -124,16 +123,18 @@ public final class GetTriggersResponse {
         }
 
         @java.lang.Override
-        public _FinalStage addData(DeployedComponent data) {
+        public _FinalStage addData(Emitter data) {
             this.data.add(data);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
-        public _FinalStage data(List<DeployedComponent> data) {
+        public _FinalStage data(List<Emitter> data) {
             this.data.clear();
-            this.data.addAll(data);
+            if (data != null) {
+                this.data.addAll(data);
+            }
             return this;
         }
 

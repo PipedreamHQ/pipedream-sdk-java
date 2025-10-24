@@ -11,6 +11,7 @@ import com.pipedream.api.resources.appcategories.AsyncAppCategoriesClient;
 import com.pipedream.api.resources.apps.AsyncAppsClient;
 import com.pipedream.api.resources.components.AsyncComponentsClient;
 import com.pipedream.api.resources.deployedtriggers.AsyncDeployedTriggersClient;
+import com.pipedream.api.resources.filestash.AsyncFileStashClient;
 import com.pipedream.api.resources.oauthtokens.AsyncOauthTokensClient;
 import com.pipedream.api.resources.projects.AsyncProjectsClient;
 import com.pipedream.api.resources.proxy.AsyncProxyClient;
@@ -40,6 +41,8 @@ public class AsyncBaseClient {
 
     protected final Supplier<AsyncProjectsClient> projectsClient;
 
+    protected final Supplier<AsyncFileStashClient> fileStashClient;
+
     protected final Supplier<AsyncProxyClient> proxyClient;
 
     protected final Supplier<AsyncTokensClient> tokensClient;
@@ -57,6 +60,7 @@ public class AsyncBaseClient {
         this.triggersClient = Suppliers.memoize(() -> new AsyncTriggersClient(clientOptions));
         this.deployedTriggersClient = Suppliers.memoize(() -> new AsyncDeployedTriggersClient(clientOptions));
         this.projectsClient = Suppliers.memoize(() -> new AsyncProjectsClient(clientOptions));
+        this.fileStashClient = Suppliers.memoize(() -> new AsyncFileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new AsyncProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new AsyncTokensClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new AsyncOauthTokensClient(clientOptions));
@@ -96,6 +100,10 @@ public class AsyncBaseClient {
 
     public AsyncProjectsClient projects() {
         return this.projectsClient.get();
+    }
+
+    public AsyncFileStashClient fileStash() {
+        return this.fileStashClient.get();
     }
 
     public AsyncProxyClient proxy() {

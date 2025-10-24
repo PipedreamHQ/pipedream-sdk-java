@@ -11,7 +11,7 @@ import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
-import com.pipedream.api.types.DeployedComponent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import java.util.concurrent.CompletableFuture;
@@ -101,14 +101,14 @@ public class AsyncTriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<DeployedComponent> deploy(DeployTriggerOpts request) {
+    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request) {
         return this.rawClient.deploy(request).thenApply(response -> response.body());
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<DeployedComponent> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.deploy(request, requestOptions).thenApply(response -> response.body());
     }
 }
