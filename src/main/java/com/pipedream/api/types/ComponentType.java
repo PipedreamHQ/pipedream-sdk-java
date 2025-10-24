@@ -3,22 +3,81 @@
  */
 package com.pipedream.api.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ComponentType {
-    TRIGGER("trigger"),
+public final class ComponentType {
+    public static final ComponentType TRIGGER = new ComponentType(Value.TRIGGER, "trigger");
 
-    ACTION("action");
+    public static final ComponentType ACTION = new ComponentType(Value.ACTION, "action");
 
-    private final String value;
+    private final Value value;
 
-    ComponentType(String value) {
+    private final String string;
+
+    ComponentType(Value value, String string) {
         this.value = value;
+        this.string = string;
     }
 
-    @JsonValue
+    public Value getEnumValue() {
+        return value;
+    }
+
     @java.lang.Override
+    @JsonValue
     public String toString() {
-        return this.value;
+        return this.string;
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        return (this == other)
+                || (other instanceof ComponentType && this.string.equals(((ComponentType) other).string));
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return this.string.hashCode();
+    }
+
+    public <T> T visit(Visitor<T> visitor) {
+        switch (value) {
+            case TRIGGER:
+                return visitor.visitTrigger();
+            case ACTION:
+                return visitor.visitAction();
+            case UNKNOWN:
+            default:
+                return visitor.visitUnknown(string);
+        }
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static ComponentType valueOf(String value) {
+        switch (value) {
+            case "trigger":
+                return TRIGGER;
+            case "action":
+                return ACTION;
+            default:
+                return new ComponentType(Value.UNKNOWN, value);
+        }
+    }
+
+    public enum Value {
+        TRIGGER,
+
+        ACTION,
+
+        UNKNOWN
+    }
+
+    public interface Visitor<T> {
+        T visitTrigger();
+
+        T visitAction();
+
+        T visitUnknown(String unknownType);
     }
 }
