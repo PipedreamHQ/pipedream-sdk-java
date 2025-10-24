@@ -10,7 +10,6 @@ import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
-
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
