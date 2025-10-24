@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -23,11 +25,15 @@ public final class CreateOAuthTokenOpts {
 
     private final String clientSecret;
 
+    private final Optional<String> scope;
+
     private final Map<String, Object> additionalProperties;
 
-    private CreateOAuthTokenOpts(String clientId, String clientSecret, Map<String, Object> additionalProperties) {
+    private CreateOAuthTokenOpts(
+            String clientId, String clientSecret, Optional<String> scope, Map<String, Object> additionalProperties) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.scope = scope;
         this.additionalProperties = additionalProperties;
     }
 
@@ -46,6 +52,14 @@ public final class CreateOAuthTokenOpts {
         return clientSecret;
     }
 
+    /**
+     * @return Optional space-separated scopes for the access token. Defaults to '*'.
+     */
+    @JsonProperty("scope")
+    public Optional<String> getScope() {
+        return scope;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -58,12 +72,12 @@ public final class CreateOAuthTokenOpts {
     }
 
     private boolean equalTo(CreateOAuthTokenOpts other) {
-        return clientId.equals(other.clientId) && clientSecret.equals(other.clientSecret);
+        return clientId.equals(other.clientId) && clientSecret.equals(other.clientSecret) && scope.equals(other.scope);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.clientId, this.clientSecret);
+        return Objects.hash(this.clientId, this.clientSecret, this.scope);
     }
 
     @java.lang.Override
@@ -87,6 +101,13 @@ public final class CreateOAuthTokenOpts {
 
     public interface _FinalStage {
         CreateOAuthTokenOpts build();
+
+        /**
+         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         */
+        _FinalStage scope(Optional<String> scope);
+
+        _FinalStage scope(String scope);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -94,6 +115,8 @@ public final class CreateOAuthTokenOpts {
         private String clientId;
 
         private String clientSecret;
+
+        private Optional<String> scope = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -104,6 +127,7 @@ public final class CreateOAuthTokenOpts {
         public Builder from(CreateOAuthTokenOpts other) {
             clientId(other.getClientId());
             clientSecret(other.getClientSecret());
+            scope(other.getScope());
             return this;
         }
 
@@ -121,9 +145,29 @@ public final class CreateOAuthTokenOpts {
             return this;
         }
 
+        /**
+         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scope(String scope) {
+            this.scope = Optional.ofNullable(scope);
+            return this;
+        }
+
+        /**
+         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scope", nulls = Nulls.SKIP)
+        public _FinalStage scope(Optional<String> scope) {
+            this.scope = scope;
+            return this;
+        }
+
         @java.lang.Override
         public CreateOAuthTokenOpts build() {
-            return new CreateOAuthTokenOpts(clientId, clientSecret, additionalProperties);
+            return new CreateOAuthTokenOpts(clientId, clientSecret, scope, additionalProperties);
         }
     }
 }

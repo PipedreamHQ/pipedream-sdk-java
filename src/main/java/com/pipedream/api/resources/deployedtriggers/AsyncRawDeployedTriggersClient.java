@@ -23,17 +23,15 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRet
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
-import com.pipedream.api.types.DeployedComponent;
 import com.pipedream.api.types.EmittedEvent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerEventsResponse;
 import com.pipedream.api.types.GetTriggerResponse;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
 import com.pipedream.api.types.GetTriggersResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -58,7 +56,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> list(
             DeployedTriggersListRequest request) {
         return list(request, null);
     }
@@ -66,7 +64,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> list(
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> list(
             DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -86,6 +84,10 @@ public class AsyncRawDeployedTriggersClient {
                     httpUrl, "limit", request.getLimit().get(), false);
         }
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (request.getEmitterType().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "emitter_type", request.getEmitterType().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -96,8 +98,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<DeployedComponent>>> future =
-                new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Emitter>>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -111,17 +112,18 @@ public class AsyncRawDeployedTriggersClient {
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
-                        List<DeployedComponent> result = parsedResponse.getData();
+                        List<Emitter> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<DeployedComponent>(startingAfter.isPresent(), result, () -> {
-                                    try {
-                                        return list(nextRequest, requestOptions)
-                                                .get()
-                                                .body();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                                new SyncPagingIterable<Emitter>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
                                 response));
                         return;
                     }
@@ -157,7 +159,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
@@ -165,7 +167,7 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> retrieve(
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> retrieve(
             String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -184,7 +186,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Emitter>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -227,15 +229,14 @@ public class AsyncRawDeployedTriggersClient {
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
-            String triggerId, UpdateTriggerOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> update(String triggerId, UpdateTriggerOpts request) {
         return update(triggerId, request, null);
     }
 
     /**
      * Modify the configuration of a deployed trigger, including active status
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> update(
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> update(
             String triggerId, UpdateTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -244,20 +245,10 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegments("deployed-triggers")
                 .addPathSegment(triggerId);
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        if (request.getActive().isPresent()) {
-            properties.put("active", request.getActive());
-        }
-        if (request.getConfiguredProps().isPresent()) {
-            properties.put("configured_props", request.getConfiguredProps());
-        }
-        if (request.getName().isPresent()) {
-            properties.put("name", request.getName());
-        }
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -272,7 +263,7 @@ public class AsyncRawDeployedTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Emitter>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -551,12 +542,10 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("pipelines");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("workflow_ids", request.getWorkflowIds());
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -705,12 +694,10 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("webhooks");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("webhook_urls", request.getWebhookUrls());
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -3,6 +3,7 @@
  */
 package com.pipedream.api.resources.proxy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -11,6 +12,7 @@ import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.proxy.requests.ProxyDeleteRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
@@ -32,21 +34,16 @@ public class RawProxyClient {
         this.clientOptions = clientOptions;
     }
 
-    private Object parseResponse(String responseBodyString) {
-        if (responseBodyString == null || responseBodyString.trim().isEmpty()) {
-            return null;
-        }
-        try {
-            return ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
-        } catch (Exception jsonException) {
-            return responseBodyString;
-        }
-    }
-
+    /**
+     * Forward an authenticated GET request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
+    /**
+     * Forward an authenticated GET request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -69,25 +66,38 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
+    /**
+     * Forward an authenticated POST request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
+    /**
+     * Forward an authenticated POST request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -118,25 +128,38 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
+    /**
+     * Forward an authenticated PUT request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
+    /**
+     * Forward an authenticated PUT request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -167,25 +190,38 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
+    /**
+     * Forward an authenticated DELETE request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
+    /**
+     * Forward an authenticated DELETE request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> delete(
             String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -209,25 +245,38 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
     }
 
+    /**
+     * Forward an authenticated PATCH request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
+    /**
+     * Forward an authenticated PATCH request to an external API using an external user's account credentials
+     */
     public BaseClientHttpResponse<Object> patch(
             String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -259,15 +308,22 @@ public class RawProxyClient {
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                String responseBodyString = responseBody != null ? responseBody.string() : null;
-                Object parsedResponse = parseResponse(responseBodyString);
-                return new BaseClientHttpResponse<>(parsedResponse, response);
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
             throw new BaseClientApiException(
                     "Error with status code " + response.code(),
                     response.code(),
-                    parseResponse(responseBodyString),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                     response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);

@@ -81,7 +81,9 @@ public final class ProjectInfoResponse {
         @JsonSetter(value = "apps", nulls = Nulls.SKIP)
         public Builder apps(List<ProjectInfoResponseApp> apps) {
             this.apps.clear();
-            this.apps.addAll(apps);
+            if (apps != null) {
+                this.apps.addAll(apps);
+            }
             return this;
         }
 

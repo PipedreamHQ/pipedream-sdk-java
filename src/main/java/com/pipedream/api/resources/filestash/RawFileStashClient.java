@@ -11,9 +11,11 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -31,14 +33,14 @@ public class RawFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public BaseClientHttpResponse<Void> downloadFile(FileStashDownloadFileRequest request) {
+    public BaseClientHttpResponse<InputStream> downloadFile(FileStashDownloadFileRequest request) {
         return downloadFile(request, null);
     }
 
     /**
      * Download a file from File Stash
      */
-    public BaseClientHttpResponse<Void> downloadFile(
+    public BaseClientHttpResponse<InputStream> downloadFile(
             FileStashDownloadFileRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -56,10 +58,11 @@ public class RawFileStashClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
+        try {
+            Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(null, response);
+                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
