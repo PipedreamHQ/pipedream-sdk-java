@@ -7,6 +7,7 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.actions.requests.ActionsListRequest;
+import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
@@ -65,8 +66,16 @@ public class AsyncActionsClient {
     /**
      * Get detailed configuration for a specific action by its key
      */
-    public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Component> retrieve(String componentId, ActionsRetrieveRequest request) {
+        return this.rawClient.retrieve(componentId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
+    public CompletableFuture<Component> retrieve(
+            String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

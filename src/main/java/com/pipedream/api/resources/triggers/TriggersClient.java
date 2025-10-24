@@ -8,10 +8,11 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
-import com.pipedream.api.types.DeployedComponent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 
@@ -63,8 +64,15 @@ public class TriggersClient {
     /**
      * Get detailed configuration for a specific trigger by its key
      */
-    public Component retrieve(String componentId, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(componentId, requestOptions).body();
+    public Component retrieve(String componentId, TriggersRetrieveRequest request) {
+        return this.rawClient.retrieve(componentId, request).body();
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public Component retrieve(String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, request, requestOptions).body();
     }
 
     /**
@@ -98,14 +106,14 @@ public class TriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public DeployedComponent deploy(DeployTriggerOpts request) {
+    public Emitter deploy(DeployTriggerOpts request) {
         return this.rawClient.deploy(request).body();
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public DeployedComponent deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+    public Emitter deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
         return this.rawClient.deploy(request, requestOptions).body();
     }
 }

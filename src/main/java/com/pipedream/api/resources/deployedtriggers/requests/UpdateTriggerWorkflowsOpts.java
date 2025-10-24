@@ -161,7 +161,9 @@ public final class UpdateTriggerWorkflowsOpts {
         @JsonSetter(value = "workflow_ids", nulls = Nulls.SKIP)
         public _FinalStage workflowIds(List<String> workflowIds) {
             this.workflowIds.clear();
-            this.workflowIds.addAll(workflowIds);
+            if (workflowIds != null) {
+                this.workflowIds.addAll(workflowIds);
+            }
             return this;
         }
 

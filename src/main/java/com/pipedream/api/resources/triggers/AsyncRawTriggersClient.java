@@ -16,11 +16,12 @@ import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
-import com.pipedream.api.types.DeployedComponent;
+import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
 import com.pipedream.api.types.ReloadPropsOpts;
@@ -116,15 +117,16 @@ public class AsyncRawTriggersClient {
                                 .build();
                         List<Component> result = parsedResponse.getData();
                         future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<Component>(startingAfter.isPresent(), result, () -> {
-                                    try {
-                                        return list(nextRequest, requestOptions)
-                                                .get()
-                                                .body();
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }),
+                                new SyncPagingIterable<Component>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
                                 response));
                         return;
                     }
@@ -161,27 +163,38 @@ public class AsyncRawTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, null);
+        return retrieve(componentId, TriggersRetrieveRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+            String componentId, TriggersRetrieveRequest request) {
+        return retrieve(componentId, request, null);
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("triggers")
-                .addPathSegment(componentId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(componentId);
+        if (request.getVersion().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "version", request.getVersion().get(), false);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -381,14 +394,14 @@ public class AsyncRawTriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> deploy(DeployTriggerOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<BaseClientHttpResponse<DeployedComponent>> deploy(
+    public CompletableFuture<BaseClientHttpResponse<Emitter>> deploy(
             DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -414,7 +427,7 @@ public class AsyncRawTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<DeployedComponent>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<Emitter>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {

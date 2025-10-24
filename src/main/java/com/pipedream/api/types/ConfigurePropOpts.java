@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurePropOpts {
     private final String id;
 
+    private final Optional<String> version;
+
     private final String externalUserId;
 
     private final String propName;
@@ -43,6 +45,7 @@ public final class ConfigurePropOpts {
 
     private ConfigurePropOpts(
             String id,
+            Optional<String> version,
             String externalUserId,
             String propName,
             Optional<Boolean> blocking,
@@ -53,6 +56,7 @@ public final class ConfigurePropOpts {
             Optional<String> query,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.version = version;
         this.externalUserId = externalUserId;
         this.propName = propName;
         this.blocking = blocking;
@@ -70,6 +74,14 @@ public final class ConfigurePropOpts {
     @JsonProperty("id")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return Optional component version (in SemVer format, for example '1.0.0'), defaults to latest
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     /**
@@ -146,6 +158,7 @@ public final class ConfigurePropOpts {
 
     private boolean equalTo(ConfigurePropOpts other) {
         return id.equals(other.id)
+                && version.equals(other.version)
                 && externalUserId.equals(other.externalUserId)
                 && propName.equals(other.propName)
                 && blocking.equals(other.blocking)
@@ -160,6 +173,7 @@ public final class ConfigurePropOpts {
     public int hashCode() {
         return Objects.hash(
                 this.id,
+                this.version,
                 this.externalUserId,
                 this.propName,
                 this.blocking,
@@ -204,6 +218,13 @@ public final class ConfigurePropOpts {
 
     public interface _FinalStage {
         ConfigurePropOpts build();
+
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
 
         /**
          * <p>Whether this operation should block until completion</p>
@@ -265,6 +286,8 @@ public final class ConfigurePropOpts {
 
         private Optional<Boolean> blocking = Optional.empty();
 
+        private Optional<String> version = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -273,6 +296,7 @@ public final class ConfigurePropOpts {
         @java.lang.Override
         public Builder from(ConfigurePropOpts other) {
             id(other.getId());
+            version(other.getVersion());
             externalUserId(other.getExternalUserId());
             propName(other.getPropName());
             blocking(other.getBlocking());
@@ -433,10 +457,31 @@ public final class ConfigurePropOpts {
             return this;
         }
 
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public _FinalStage version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
         @java.lang.Override
         public ConfigurePropOpts build() {
             return new ConfigurePropOpts(
                     id,
+                    version,
                     externalUserId,
                     propName,
                     blocking,

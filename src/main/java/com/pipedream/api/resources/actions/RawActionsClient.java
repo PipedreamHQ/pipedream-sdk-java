@@ -15,6 +15,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.actions.requests.ActionsListRequest;
+import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
@@ -106,9 +107,9 @@ public class RawActionsClient {
                         .build();
                 List<Component> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Component>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Component>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -134,26 +135,37 @@ public class RawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
-        return retrieve(componentId, null);
+        return retrieve(componentId, ActionsRetrieveRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific action by its key
      */
-    public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public BaseClientHttpResponse<Component> retrieve(String componentId, ActionsRetrieveRequest request) {
+        return retrieve(componentId, request, null);
+    }
+
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
+    public BaseClientHttpResponse<Component> retrieve(
+            String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("actions")
-                .addPathSegment(componentId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(componentId);
+        if (request.getVersion().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "version", request.getVersion().get(), false);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

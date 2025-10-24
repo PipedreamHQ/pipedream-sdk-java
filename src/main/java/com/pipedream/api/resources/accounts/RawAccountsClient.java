@@ -20,9 +20,7 @@ import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
 import com.pipedream.api.types.ListAccountsResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -63,10 +61,6 @@ public class RawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);
@@ -86,6 +80,9 @@ public class RawAccountsClient {
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
         if (request.getIncludeCredentials().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -116,9 +113,9 @@ public class RawAccountsClient {
                         .build();
                 List<Account> result = parsedResponse.getData();
                 return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Account>(
-                                startingAfter.isPresent(), result, () -> list(nextRequest, requestOptions)
-                                        .body()),
+                        new SyncPagingIterable<Account>(startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                        nextRequest, requestOptions)
+                                .body()),
                         response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -156,10 +153,6 @@ public class RawAccountsClient {
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts");
-        if (request.getAppId().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "app_id", request.getAppId().get(), false);
-        }
         if (request.getExternalUserId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "external_user_id", request.getExternalUserId().get(), false);
@@ -168,17 +161,10 @@ public class RawAccountsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "oauth_app_id", request.getOauthAppId().get(), false);
         }
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("app_slug", request.getAppSlug());
-        properties.put("cfmap_json", request.getCfmapJson());
-        properties.put("connect_token", request.getConnectToken());
-        if (request.getName().isPresent()) {
-            properties.put("name", request.getName());
-        }
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
