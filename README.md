@@ -25,7 +25,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 ```
 
@@ -45,10 +45,10 @@ public class Example {
             .builder()
             .clientId("<clientId>")
             .clientSecret("<clientSecret>")
+            .projectId("YOUR_PROJECT_ID")
             .build();
 
         client.actions().run(
-            "project_id",
             RunActionOpts
                 .builder()
                 .id("id")
@@ -93,9 +93,9 @@ When the API returns a non-success status code (4xx or 5xx response), an API exc
 ```java
 import com.pipedream.api.core.PipedreamApiApiException;
 
-try {
+try{
     client.actions().run(...);
-} catch (PipedreamApiApiException e) {
+} catch (PipedreamApiApiException e){
     // Do something with the API exception...
 }
 ```
