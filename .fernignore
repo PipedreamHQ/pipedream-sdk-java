@@ -14,6 +14,10 @@ src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
 src/main/java/com/pipedream/api/BaseClientBuilder.java
 
 # Custom Pipedream client files
+src/main/java/com/pipedream/api/AsyncPipedreamClient.java
+src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
+src/main/java/com/pipedream/api/PipedreamClient.java
+src/main/java/com/pipedream/api/PipedreamClientBuilder.java
 
 # Custom Proxy files
 
