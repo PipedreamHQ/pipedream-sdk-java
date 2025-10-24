@@ -10,6 +10,8 @@ import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
+
+import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncProxyClient {
@@ -22,6 +24,10 @@ public class AsyncProxyClient {
         this.rawClient = new AsyncRawProxyClient(clientOptions);
     }
 
+    private String encodeUrl(String url) {
+        return Base64.getUrlEncoder().encodeToString(url.getBytes());
+    }
+
     /**
      * Get responses with HTTP metadata like headers
      */
@@ -32,70 +38,80 @@ public class AsyncProxyClient {
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> get(String url64, ProxyGetRequest request) {
+    public CompletableFuture<Object> get(String url, ProxyGetRequest request) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.get(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> get(String url64, ProxyGetRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> get(String url, ProxyGetRequest request, RequestOptions requestOptions) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.get(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> post(String url64, ProxyPostRequest request) {
+    public CompletableFuture<Object> post(String url, ProxyPostRequest request) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.post(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> post(String url64, ProxyPostRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> post(String url, ProxyPostRequest request, RequestOptions requestOptions) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.post(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> put(String url64, ProxyPutRequest request) {
+    public CompletableFuture<Object> put(String url, ProxyPutRequest request) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.put(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> put(String url64, ProxyPutRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> put(String url, ProxyPutRequest request, RequestOptions requestOptions) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.put(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> delete(String url64, ProxyDeleteRequest request) {
+    public CompletableFuture<Object> delete(String url, ProxyDeleteRequest request) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.delete(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> delete(String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> delete(String url, ProxyDeleteRequest request, RequestOptions requestOptions) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.delete(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> patch(String url64, ProxyPatchRequest request) {
+    public CompletableFuture<Object> patch(String url, ProxyPatchRequest request) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.patch(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<Object> patch(String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<Object> patch(String url, ProxyPatchRequest request, RequestOptions requestOptions) {
+        final String url64 = encodeUrl(url);
         return this.rawClient.patch(url64, request, requestOptions).thenApply(response -> response.body());
     }
 }
