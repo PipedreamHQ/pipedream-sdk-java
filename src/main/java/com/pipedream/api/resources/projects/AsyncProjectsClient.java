@@ -5,6 +5,7 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,7 +36,15 @@ public class AsyncProjectsClient {
     /**
      * Retrieve project configuration and environment details
      */
-    public CompletableFuture<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
-        return this.rawClient.retrieveInfo(requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<ProjectInfoResponse> retrieveInfo(RetrieveInfoProjectsRequest request) {
+        return this.rawClient.retrieveInfo(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve project configuration and environment details
+     */
+    public CompletableFuture<ProjectInfoResponse> retrieveInfo(
+            RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieveInfo(request, requestOptions).thenApply(response -> response.body());
     }
 }

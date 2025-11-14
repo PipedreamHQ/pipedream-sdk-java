@@ -5,12 +5,15 @@ package com.pipedream.api.resources.triggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.types.ConfiguredPropValue;
 import java.util.HashMap;
@@ -68,8 +71,11 @@ public final class DeployTriggerOpts {
     /**
      * @return Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest
      */
-    @JsonProperty("version")
+    @JsonIgnore
     public Optional<String> getVersion() {
+        if (version == null) {
+            return Optional.empty();
+        }
         return version;
     }
 
@@ -108,6 +114,12 @@ public final class DeployTriggerOpts {
     @JsonProperty("webhook_url")
     public Optional<String> getWebhookUrl() {
         return webhookUrl;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("version")
+    private Optional<String> _getVersion() {
+        return version;
     }
 
     @java.lang.Override
@@ -177,6 +189,8 @@ public final class DeployTriggerOpts {
         _FinalStage version(Optional<String> version);
 
         _FinalStage version(String version);
+
+        _FinalStage version(Nullable<String> version);
 
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
@@ -331,6 +345,22 @@ public final class DeployTriggerOpts {
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
         public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
             this.configuredProps = configuredProps;
+            return this;
+        }
+
+        /**
+         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(Nullable<String> version) {
+            if (version.isNull()) {
+                this.version = null;
+            } else if (version.isEmpty()) {
+                this.version = Optional.empty();
+            } else {
+                this.version = Optional.of(version.get());
+            }
             return this;
         }
 

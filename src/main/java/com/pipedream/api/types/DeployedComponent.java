@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,8 +109,11 @@ public final class DeployedComponent {
     /**
      * @return The component key (name) that was deployed
      */
-    @JsonProperty("component_key")
+    @JsonIgnore
     public Optional<String> getComponentKey() {
+        if (componentKey == null) {
+            return Optional.empty();
+        }
         return componentKey;
     }
 
@@ -167,8 +173,23 @@ public final class DeployedComponent {
     /**
      * @return Callback observations for the deployed component
      */
-    @JsonProperty("callback_observations")
+    @JsonIgnore
     public Optional<Object> getCallbackObservations() {
+        if (callbackObservations == null) {
+            return Optional.empty();
+        }
+        return callbackObservations;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("component_key")
+    private Optional<String> _getComponentKey() {
+        return componentKey;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("callback_observations")
+    private Optional<Object> _getCallbackObservations() {
         return callbackObservations;
     }
 
@@ -292,6 +313,8 @@ public final class DeployedComponent {
 
         _FinalStage componentKey(String componentKey);
 
+        _FinalStage componentKey(Nullable<String> componentKey);
+
         /**
          * <p>The configurable properties of the component</p>
          */
@@ -313,6 +336,8 @@ public final class DeployedComponent {
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
         _FinalStage callbackObservations(Object callbackObservations);
+
+        _FinalStage callbackObservations(Nullable<Object> callbackObservations);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -473,6 +498,22 @@ public final class DeployedComponent {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage callbackObservations(Nullable<Object> callbackObservations) {
+            if (callbackObservations.isNull()) {
+                this.callbackObservations = null;
+            } else if (callbackObservations.isEmpty()) {
+                this.callbackObservations = Optional.empty();
+            } else {
+                this.callbackObservations = Optional.of(callbackObservations.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Callback observations for the deployed component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage callbackObservations(Object callbackObservations) {
             this.callbackObservations = Optional.ofNullable(callbackObservations);
             return this;
@@ -543,6 +584,22 @@ public final class DeployedComponent {
             this.configurableProps.clear();
             if (configurableProps != null) {
                 this.configurableProps.addAll(configurableProps);
+            }
+            return this;
+        }
+
+        /**
+         * <p>The component key (name) that was deployed</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage componentKey(Nullable<String> componentKey) {
+            if (componentKey.isNull()) {
+                this.componentKey = null;
+            } else if (componentKey.isEmpty()) {
+                this.componentKey = Optional.empty();
+            } else {
+                this.componentKey = Optional.of(componentKey.get());
             }
             return this;
         }

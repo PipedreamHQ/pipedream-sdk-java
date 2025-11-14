@@ -11,6 +11,7 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -35,25 +36,35 @@ public class AsyncRawProjectsClient {
      * Retrieve project configuration and environment details
      */
     public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo() {
-        return retrieveInfo(null);
+        return retrieveInfo(RetrieveInfoProjectsRequest.builder().build());
     }
 
     /**
      * Retrieve project configuration and environment details
      */
-    public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo(RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo(
+            RetrieveInfoProjectsRequest request) {
+        return retrieveInfo(request, null);
+    }
+
+    /**
+     * Retrieve project configuration and environment details
+     */
+    public CompletableFuture<BaseClientHttpResponse<ProjectInfoResponse>> retrieveInfo(
+            RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("projects/info")
+                .addPathSegments("projects")
+                .addPathSegments("info")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -63,13 +74,13 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ProjectInfoResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ProjectInfoResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -79,11 +90,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));

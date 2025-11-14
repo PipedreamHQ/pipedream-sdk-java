@@ -5,6 +5,7 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
 import com.pipedream.api.types.ProjectInfoResponse;
 
 public class ProjectsClient {
@@ -34,7 +35,14 @@ public class ProjectsClient {
     /**
      * Retrieve project configuration and environment details
      */
-    public ProjectInfoResponse retrieveInfo(RequestOptions requestOptions) {
-        return this.rawClient.retrieveInfo(requestOptions).body();
+    public ProjectInfoResponse retrieveInfo(RetrieveInfoProjectsRequest request) {
+        return this.rawClient.retrieveInfo(request).body();
+    }
+
+    /**
+     * Retrieve project configuration and environment details
+     */
+    public ProjectInfoResponse retrieveInfo(RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieveInfo(request, requestOptions).body();
     }
 }

@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,72 +99,153 @@ public final class ConfigurablePropAirtableBaseId {
     /**
      * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
      */
-    @JsonProperty("label")
+    @JsonIgnore
     public Optional<String> getLabel() {
+        if (label == null) {
+            return Optional.empty();
+        }
         return label;
     }
 
     /**
      * @return A description of the prop, shown to the user when configuring the component.
      */
-    @JsonProperty("description")
+    @JsonIgnore
     public Optional<String> getDescription() {
+        if (description == null) {
+            return Optional.empty();
+        }
         return description;
     }
 
     /**
      * @return If true, this prop does not need to be specified.
      */
-    @JsonProperty("optional")
+    @JsonIgnore
     public Optional<Boolean> getOptional() {
+        if (optional == null) {
+            return Optional.empty();
+        }
         return optional;
     }
 
     /**
      * @return If true, this prop will be ignored.
      */
-    @JsonProperty("disabled")
+    @JsonIgnore
     public Optional<Boolean> getDisabled() {
+        if (disabled == null) {
+            return Optional.empty();
+        }
         return disabled;
     }
 
     /**
      * @return If true, should not expose this prop to the user
      */
-    @JsonProperty("hidden")
+    @JsonIgnore
     public Optional<Boolean> getHidden() {
+        if (hidden == null) {
+            return Optional.empty();
+        }
         return hidden;
     }
 
     /**
      * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
      */
-    @JsonProperty("remoteOptions")
+    @JsonIgnore
     public Optional<Boolean> getRemoteOptions() {
+        if (remoteOptions == null) {
+            return Optional.empty();
+        }
         return remoteOptions;
     }
 
     /**
      * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
      */
-    @JsonProperty("useQuery")
+    @JsonIgnore
     public Optional<Boolean> getUseQuery() {
+        if (useQuery == null) {
+            return Optional.empty();
+        }
         return useQuery;
     }
 
     /**
      * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
-    @JsonProperty("reloadProps")
+    @JsonIgnore
     public Optional<Boolean> getReloadProps() {
+        if (reloadProps == null) {
+            return Optional.empty();
+        }
         return reloadProps;
     }
 
     /**
      * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
      */
-    @JsonProperty("withLabel")
+    @JsonIgnore
     public Optional<Boolean> getWithLabel() {
+        if (withLabel == null) {
+            return Optional.empty();
+        }
+        return withLabel;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("label")
+    private Optional<String> _getLabel() {
+        return label;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("description")
+    private Optional<String> _getDescription() {
+        return description;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("optional")
+    private Optional<Boolean> _getOptional() {
+        return optional;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("disabled")
+    private Optional<Boolean> _getDisabled() {
+        return disabled;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("hidden")
+    private Optional<Boolean> _getHidden() {
+        return hidden;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("remoteOptions")
+    private Optional<Boolean> _getRemoteOptions() {
+        return remoteOptions;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("useQuery")
+    private Optional<Boolean> _getUseQuery() {
+        return useQuery;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("reloadProps")
+    private Optional<Boolean> _getReloadProps() {
+        return reloadProps;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("withLabel")
+    private Optional<Boolean> _getWithLabel() {
         return withLabel;
     }
 
@@ -241,12 +325,16 @@ public final class ConfigurablePropAirtableBaseId {
 
         _FinalStage label(String label);
 
+        _FinalStage label(Nullable<String> label);
+
         /**
          * <p>A description of the prop, shown to the user when configuring the component.</p>
          */
         _FinalStage description(Optional<String> description);
 
         _FinalStage description(String description);
+
+        _FinalStage description(Nullable<String> description);
 
         /**
          * <p>If true, this prop does not need to be specified.</p>
@@ -255,12 +343,16 @@ public final class ConfigurablePropAirtableBaseId {
 
         _FinalStage optional(Boolean optional);
 
+        _FinalStage optional(Nullable<Boolean> optional);
+
         /**
          * <p>If true, this prop will be ignored.</p>
          */
         _FinalStage disabled(Optional<Boolean> disabled);
 
         _FinalStage disabled(Boolean disabled);
+
+        _FinalStage disabled(Nullable<Boolean> disabled);
 
         /**
          * <p>If true, should not expose this prop to the user</p>
@@ -269,12 +361,16 @@ public final class ConfigurablePropAirtableBaseId {
 
         _FinalStage hidden(Boolean hidden);
 
+        _FinalStage hidden(Nullable<Boolean> hidden);
+
         /**
          * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
          */
         _FinalStage remoteOptions(Optional<Boolean> remoteOptions);
 
         _FinalStage remoteOptions(Boolean remoteOptions);
+
+        _FinalStage remoteOptions(Nullable<Boolean> remoteOptions);
 
         /**
          * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
@@ -283,6 +379,8 @@ public final class ConfigurablePropAirtableBaseId {
 
         _FinalStage useQuery(Boolean useQuery);
 
+        _FinalStage useQuery(Nullable<Boolean> useQuery);
+
         /**
          * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
          */
@@ -290,12 +388,16 @@ public final class ConfigurablePropAirtableBaseId {
 
         _FinalStage reloadProps(Boolean reloadProps);
 
+        _FinalStage reloadProps(Nullable<Boolean> reloadProps);
+
         /**
          * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
          */
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
+
+        _FinalStage withLabel(Nullable<Boolean> withLabel);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -372,6 +474,22 @@ public final class ConfigurablePropAirtableBaseId {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage withLabel(Nullable<Boolean> withLabel) {
+            if (withLabel.isNull()) {
+                this.withLabel = null;
+            } else if (withLabel.isEmpty()) {
+                this.withLabel = Optional.empty();
+            } else {
+                this.withLabel = Optional.of(withLabel.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage withLabel(Boolean withLabel) {
             this.withLabel = Optional.ofNullable(withLabel);
             return this;
@@ -384,6 +502,22 @@ public final class ConfigurablePropAirtableBaseId {
         @JsonSetter(value = "withLabel", nulls = Nulls.SKIP)
         public _FinalStage withLabel(Optional<Boolean> withLabel) {
             this.withLabel = withLabel;
+            return this;
+        }
+
+        /**
+         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage reloadProps(Nullable<Boolean> reloadProps) {
+            if (reloadProps.isNull()) {
+                this.reloadProps = null;
+            } else if (reloadProps.isEmpty()) {
+                this.reloadProps = Optional.empty();
+            } else {
+                this.reloadProps = Optional.of(reloadProps.get());
+            }
             return this;
         }
 
@@ -412,6 +546,22 @@ public final class ConfigurablePropAirtableBaseId {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage useQuery(Nullable<Boolean> useQuery) {
+            if (useQuery.isNull()) {
+                this.useQuery = null;
+            } else if (useQuery.isEmpty()) {
+                this.useQuery = Optional.empty();
+            } else {
+                this.useQuery = Optional.of(useQuery.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage useQuery(Boolean useQuery) {
             this.useQuery = Optional.ofNullable(useQuery);
             return this;
@@ -424,6 +574,22 @@ public final class ConfigurablePropAirtableBaseId {
         @JsonSetter(value = "useQuery", nulls = Nulls.SKIP)
         public _FinalStage useQuery(Optional<Boolean> useQuery) {
             this.useQuery = useQuery;
+            return this;
+        }
+
+        /**
+         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage remoteOptions(Nullable<Boolean> remoteOptions) {
+            if (remoteOptions.isNull()) {
+                this.remoteOptions = null;
+            } else if (remoteOptions.isEmpty()) {
+                this.remoteOptions = Optional.empty();
+            } else {
+                this.remoteOptions = Optional.of(remoteOptions.get());
+            }
             return this;
         }
 
@@ -452,6 +618,22 @@ public final class ConfigurablePropAirtableBaseId {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage hidden(Nullable<Boolean> hidden) {
+            if (hidden.isNull()) {
+                this.hidden = null;
+            } else if (hidden.isEmpty()) {
+                this.hidden = Optional.empty();
+            } else {
+                this.hidden = Optional.of(hidden.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>If true, should not expose this prop to the user</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage hidden(Boolean hidden) {
             this.hidden = Optional.ofNullable(hidden);
             return this;
@@ -464,6 +646,22 @@ public final class ConfigurablePropAirtableBaseId {
         @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
         public _FinalStage hidden(Optional<Boolean> hidden) {
             this.hidden = hidden;
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop will be ignored.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage disabled(Nullable<Boolean> disabled) {
+            if (disabled.isNull()) {
+                this.disabled = null;
+            } else if (disabled.isEmpty()) {
+                this.disabled = Optional.empty();
+            } else {
+                this.disabled = Optional.of(disabled.get());
+            }
             return this;
         }
 
@@ -492,6 +690,22 @@ public final class ConfigurablePropAirtableBaseId {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage optional(Nullable<Boolean> optional) {
+            if (optional.isNull()) {
+                this.optional = null;
+            } else if (optional.isEmpty()) {
+                this.optional = Optional.empty();
+            } else {
+                this.optional = Optional.of(optional.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop does not need to be specified.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage optional(Boolean optional) {
             this.optional = Optional.ofNullable(optional);
             return this;
@@ -512,6 +726,22 @@ public final class ConfigurablePropAirtableBaseId {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage description(Nullable<String> description) {
+            if (description.isNull()) {
+                this.description = null;
+            } else if (description.isEmpty()) {
+                this.description = Optional.empty();
+            } else {
+                this.description = Optional.of(description.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>A description of the prop, shown to the user when configuring the component.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage description(String description) {
             this.description = Optional.ofNullable(description);
             return this;
@@ -524,6 +754,22 @@ public final class ConfigurablePropAirtableBaseId {
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public _FinalStage description(Optional<String> description) {
             this.description = description;
+            return this;
+        }
+
+        /**
+         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage label(Nullable<String> label) {
+            if (label.isNull()) {
+                this.label = null;
+            } else if (label.isEmpty()) {
+                this.label = Optional.empty();
+            } else {
+                this.label = Optional.of(label.get());
+            }
             return this;
         }
 

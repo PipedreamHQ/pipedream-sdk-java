@@ -11,6 +11,7 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -31,37 +32,45 @@ public class RawProjectsClient {
      * Retrieve project configuration and environment details
      */
     public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo() {
-        return retrieveInfo(null);
+        return retrieveInfo(RetrieveInfoProjectsRequest.builder().build());
     }
 
     /**
      * Retrieve project configuration and environment details
      */
-    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
+    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RetrieveInfoProjectsRequest request) {
+        return retrieveInfo(request, null);
+    }
+
+    /**
+     * Retrieve project configuration and environment details
+     */
+    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(
+            RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("projects/info")
+                .addPathSegments("projects")
+                .addPathSegments("info")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ProjectInfoResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ProjectInfoResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -70,11 +79,9 @@ public class RawProjectsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
