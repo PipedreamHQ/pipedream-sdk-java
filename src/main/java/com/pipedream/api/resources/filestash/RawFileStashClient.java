@@ -13,7 +13,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
+import com.pipedream.api.resources.filestash.requests.DownloadFileFileStashRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import okhttp3.Headers;
@@ -33,7 +33,7 @@ public class RawFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public BaseClientHttpResponse<InputStream> downloadFile(FileStashDownloadFileRequest request) {
+    public BaseClientHttpResponse<InputStream> downloadFile(DownloadFileFileStashRequest request) {
         return downloadFile(request, null);
     }
 
@@ -41,12 +41,13 @@ public class RawFileStashClient {
      * Download a file from File Stash
      */
     public BaseClientHttpResponse<InputStream> downloadFile(
-            FileStashDownloadFileRequest request, RequestOptions requestOptions) {
+            DownloadFileFileStashRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("file_stash/download");
+                .addPathSegments("file_stash")
+                .addPathSegments("download");
         QueryStringMapper.addQueryParameter(httpUrl, "s3_key", request.getS3Key(), false);
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
@@ -73,11 +74,9 @@ public class RawFileStashClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

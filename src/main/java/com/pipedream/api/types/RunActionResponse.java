@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +70,17 @@ public final class RunActionResponse {
         return ret;
     }
 
-    @JsonProperty("stash_id")
+    @JsonIgnore
     public Optional<String> getStashId() {
+        if (stashId == null) {
+            return Optional.empty();
+        }
+        return stashId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("stash_id")
+    private Optional<String> _getStashId() {
         return stashId;
     }
 
@@ -177,6 +189,17 @@ public final class RunActionResponse {
 
         public Builder stashId(String stashId) {
             this.stashId = Optional.ofNullable(stashId);
+            return this;
+        }
+
+        public Builder stashId(Nullable<String> stashId) {
+            if (stashId.isNull()) {
+                this.stashId = null;
+            } else if (stashId.isEmpty()) {
+                this.stashId = Optional.empty();
+            } else {
+                this.stashId = Optional.of(stashId.get());
+            }
             return this;
         }
 

@@ -6,12 +6,12 @@ package com.pipedream.api.resources.deployedtriggers;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersDeleteRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListEventsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeleteDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListEventsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWebhooksDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWorkflowsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.RetrieveDeployedTriggersRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -41,28 +41,28 @@ public class DeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request) {
+    public SyncPagingIterable<Emitter> list(ListDeployedTriggersRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public SyncPagingIterable<Emitter> list(DeployedTriggersListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Emitter> list(ListDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public Emitter retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
+    public Emitter retrieve(String triggerId, RetrieveDeployedTriggersRequest request) {
         return this.rawClient.retrieve(triggerId, request).body();
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public Emitter retrieve(String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
+    public Emitter retrieve(String triggerId, RetrieveDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).body();
     }
 
@@ -83,21 +83,21 @@ public class DeployedTriggersClient {
     /**
      * Remove a deployed trigger and stop receiving events
      */
-    public void delete(String triggerId, DeployedTriggersDeleteRequest request) {
+    public void delete(String triggerId, DeleteDeployedTriggersRequest request) {
         this.rawClient.delete(triggerId, request).body();
     }
 
     /**
      * Remove a deployed trigger and stop receiving events
      */
-    public void delete(String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
+    public void delete(String triggerId, DeleteDeployedTriggersRequest request, RequestOptions requestOptions) {
         this.rawClient.delete(triggerId, request, requestOptions).body();
     }
 
     /**
      * Retrieve recent events emitted by a deployed trigger
      */
-    public List<EmittedEvent> listEvents(String triggerId, DeployedTriggersListEventsRequest request) {
+    public List<EmittedEvent> listEvents(String triggerId, ListEventsDeployedTriggersRequest request) {
         return this.rawClient.listEvents(triggerId, request).body();
     }
 
@@ -105,14 +105,14 @@ public class DeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public List<EmittedEvent> listEvents(
-            String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListEventsDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listEvents(triggerId, request, requestOptions).body();
     }
 
     /**
      * Get workflows connected to receive events from this trigger
      */
-    public GetTriggerWorkflowsResponse listWorkflows(String triggerId, DeployedTriggersListWorkflowsRequest request) {
+    public GetTriggerWorkflowsResponse listWorkflows(String triggerId, ListWorkflowsDeployedTriggersRequest request) {
         return this.rawClient.listWorkflows(triggerId, request).body();
     }
 
@@ -120,7 +120,7 @@ public class DeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public GetTriggerWorkflowsResponse listWorkflows(
-            String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWorkflowsDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWorkflows(triggerId, request, requestOptions).body();
     }
 
@@ -144,7 +144,7 @@ public class DeployedTriggersClient {
     /**
      * Get webhook URLs configured to receive trigger events
      */
-    public GetTriggerWebhooksResponse listWebhooks(String triggerId, DeployedTriggersListWebhooksRequest request) {
+    public GetTriggerWebhooksResponse listWebhooks(String triggerId, ListWebhooksDeployedTriggersRequest request) {
         return this.rawClient.listWebhooks(triggerId, request).body();
     }
 
@@ -152,7 +152,7 @@ public class DeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public GetTriggerWebhooksResponse listWebhooks(
-            String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWebhooksDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWebhooks(triggerId, request, requestOptions).body();
     }
 

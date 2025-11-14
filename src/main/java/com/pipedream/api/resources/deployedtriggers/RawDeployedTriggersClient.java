@@ -14,12 +14,12 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersDeleteRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListEventsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeleteDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListEventsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWebhooksDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWorkflowsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.RetrieveDeployedTriggersRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -51,7 +51,7 @@ public class RawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(ListDeployedTriggersRequest request) {
         return list(request, null);
     }
 
@@ -59,7 +59,7 @@ public class RawDeployedTriggersClient {
      * Retrieve all deployed triggers for a specific external user
      */
     public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(
-            DeployedTriggersListRequest request, RequestOptions requestOptions) {
+            ListDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -94,11 +94,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetTriggersResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggersResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggersResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
-                DeployedTriggersListRequest nextRequest = DeployedTriggersListRequest.builder()
+                ListDeployedTriggersRequest nextRequest = ListDeployedTriggersRequest.builder()
                         .from(request)
                         .after(startingAfter)
                         .build();
@@ -109,7 +110,6 @@ public class RawDeployedTriggersClient {
                                 .body()),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -118,11 +118,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -131,7 +129,7 @@ public class RawDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public BaseClientHttpResponse<Emitter> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
+    public BaseClientHttpResponse<Emitter> retrieve(String triggerId, RetrieveDeployedTriggersRequest request) {
         return retrieve(triggerId, request, null);
     }
 
@@ -139,7 +137,7 @@ public class RawDeployedTriggersClient {
      * Get details of a specific deployed trigger by its ID
      */
     public BaseClientHttpResponse<Emitter> retrieve(
-            String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
+            String triggerId, RetrieveDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -159,12 +157,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetTriggerResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerResponse.class);
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -173,11 +171,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -222,12 +218,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetTriggerResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerResponse.class);
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -236,11 +232,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -249,7 +243,7 @@ public class RawDeployedTriggersClient {
     /**
      * Remove a deployed trigger and stop receiving events
      */
-    public BaseClientHttpResponse<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
+    public BaseClientHttpResponse<Void> delete(String triggerId, DeleteDeployedTriggersRequest request) {
         return delete(triggerId, request, null);
     }
 
@@ -257,7 +251,7 @@ public class RawDeployedTriggersClient {
      * Remove a deployed trigger and stop receiving events
      */
     public BaseClientHttpResponse<Void> delete(
-            String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
+            String triggerId, DeleteDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -293,11 +287,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -307,7 +299,7 @@ public class RawDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
-            String triggerId, DeployedTriggersListEventsRequest request) {
+            String triggerId, ListEventsDeployedTriggersRequest request) {
         return listEvents(triggerId, request, null);
     }
 
@@ -315,7 +307,7 @@ public class RawDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
-            String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListEventsDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -339,12 +331,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetTriggerEventsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerEventsResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerEventsResponse.class);
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -353,11 +345,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -367,7 +357,7 @@ public class RawDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, DeployedTriggersListWorkflowsRequest request) {
+            String triggerId, ListWorkflowsDeployedTriggersRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
@@ -375,7 +365,7 @@ public class RawDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWorkflowsDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -396,12 +386,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWorkflowsResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerWorkflowsResponse.class),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -410,11 +400,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -461,12 +449,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWorkflowsResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerWorkflowsResponse.class),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -475,11 +463,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -489,7 +475,7 @@ public class RawDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, DeployedTriggersListWebhooksRequest request) {
+            String triggerId, ListWebhooksDeployedTriggersRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
@@ -497,7 +483,7 @@ public class RawDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWebhooksDeployedTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -518,12 +504,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWebhooksResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerWebhooksResponse.class),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -532,11 +518,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -583,12 +567,12 @@ public class RawDeployedTriggersClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggerWebhooksResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetTriggerWebhooksResponse.class),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -597,11 +581,9 @@ public class RawDeployedTriggersClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
