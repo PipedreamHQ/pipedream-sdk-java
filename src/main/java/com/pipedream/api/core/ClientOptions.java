@@ -21,6 +21,8 @@ public final class ClientOptions {
 
     private final int timeout;
 
+    private final int maxRetries;
+
     private String projectId;
 
     private ClientOptions(
@@ -29,21 +31,23 @@ public final class ClientOptions {
             Map<String, Supplier<String>> headerSuppliers,
             OkHttpClient httpClient,
             int timeout,
+            int maxRetries,
             String projectId) {
         this.environment = environment;
         this.headers = new HashMap<>();
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "com.pipedream:pipedream/1.1.0");
+                put("User-Agent", "com.pipedream:pipedream/1.1.1");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.pipedream.fern:api-sdk");
-                put("X-Fern-SDK-Version", "1.1.0");
+                put("X-Fern-SDK-Version", "1.1.1");
             }
         });
         this.headerSuppliers = headerSuppliers;
         this.httpClient = httpClient;
         this.timeout = timeout;
+        this.maxRetries = maxRetries;
         this.projectId = projectId;
     }
 
@@ -84,6 +88,10 @@ public final class ClientOptions {
                 .writeTimeout(0, TimeUnit.SECONDS)
                 .readTimeout(0, TimeUnit.SECONDS)
                 .build();
+    }
+
+    public int maxRetries() {
+        return this.maxRetries;
     }
 
     public String projectId() {
@@ -181,7 +189,13 @@ public final class ClientOptions {
             this.timeout = Optional.of(httpClient.callTimeoutMillis() / 1000);
 
             return new ClientOptions(
-                    environment, headers, headerSuppliers, httpClient, this.timeout.get(), this.projectId);
+                    environment,
+                    headers,
+                    headerSuppliers,
+                    httpClient,
+                    this.timeout.get(),
+                    this.maxRetries,
+                    this.projectId);
         }
 
         /**

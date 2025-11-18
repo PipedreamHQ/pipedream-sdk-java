@@ -19,8 +19,8 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ConfigurablePropDiscordChannelArray.Builder.class)
-public final class ConfigurablePropDiscordChannelArray implements IConfigurablePropBase {
+@JsonDeserialize(builder = ConfigurablePropBase.Builder.class)
+public final class ConfigurablePropBase implements IConfigurablePropBase {
     private final String name;
 
     private final Optional<String> label;
@@ -41,11 +41,9 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<String> appProp;
-
     private final Map<String, Object> additionalProperties;
 
-    private ConfigurablePropDiscordChannelArray(
+    private ConfigurablePropBase(
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -56,7 +54,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<String> appProp,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.label = label;
@@ -68,7 +65,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
-        this.appProp = appProp;
         this.additionalProperties = additionalProperties;
     }
 
@@ -162,19 +158,10 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         return withLabel;
     }
 
-    /**
-     * @return The name of the app prop that provides Discord authentication
-     */
-    @JsonProperty("appProp")
-    public Optional<String> getAppProp() {
-        return appProp;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ConfigurablePropDiscordChannelArray
-                && equalTo((ConfigurablePropDiscordChannelArray) other);
+        return other instanceof ConfigurablePropBase && equalTo((ConfigurablePropBase) other);
     }
 
     @JsonAnyGetter
@@ -182,7 +169,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ConfigurablePropDiscordChannelArray other) {
+    private boolean equalTo(ConfigurablePropBase other) {
         return name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
@@ -192,8 +179,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel)
-                && appProp.equals(other.appProp);
+                && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
@@ -208,8 +194,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel,
-                this.appProp);
+                this.withLabel);
     }
 
     @java.lang.Override
@@ -227,11 +212,11 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
          */
         _FinalStage name(@NotNull String name);
 
-        Builder from(ConfigurablePropDiscordChannelArray other);
+        Builder from(ConfigurablePropBase other);
     }
 
     public interface _FinalStage {
-        ConfigurablePropDiscordChannelArray build();
+        ConfigurablePropBase build();
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -295,20 +280,11 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        _FinalStage appProp(Optional<String> appProp);
-
-        _FinalStage appProp(String appProp);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private Optional<String> appProp = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -334,7 +310,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(ConfigurablePropDiscordChannelArray other) {
+        public Builder from(ConfigurablePropBase other) {
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -345,7 +321,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
-            appProp(other.getAppProp());
             return this;
         }
 
@@ -358,26 +333,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appProp(String appProp) {
-            this.appProp = Optional.ofNullable(appProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
-        public _FinalStage appProp(Optional<String> appProp) {
-            this.appProp = appProp;
             return this;
         }
 
@@ -562,8 +517,8 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         }
 
         @java.lang.Override
-        public ConfigurablePropDiscordChannelArray build() {
-            return new ConfigurablePropDiscordChannelArray(
+        public ConfigurablePropBase build() {
+            return new ConfigurablePropBase(
                     name,
                     label,
                     description,
@@ -574,7 +529,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                     useQuery,
                     reloadProps,
                     withLabel,
-                    appProp,
                     additionalProperties);
         }
     }
