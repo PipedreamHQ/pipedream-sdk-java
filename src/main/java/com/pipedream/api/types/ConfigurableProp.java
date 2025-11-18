@@ -3,549 +3,1230 @@
  */
 package com.pipedream.api.types;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.ObjectMappers;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ConfigurableProp.Builder.class)
 public final class ConfigurableProp {
-    private final String name;
+    private final Value value;
 
-    private final ConfigurablePropType type;
-
-    private final Optional<String> label;
-
-    private final Optional<String> description;
-
-    private final Optional<Boolean> optional;
-
-    private final Optional<Boolean> disabled;
-
-    private final Optional<Boolean> hidden;
-
-    private final Optional<Boolean> remoteOptions;
-
-    private final Optional<Boolean> useQuery;
-
-    private final Optional<Boolean> reloadProps;
-
-    private final Optional<Boolean> withLabel;
-
-    private final Map<String, Object> additionalProperties;
-
-    private ConfigurableProp(
-            String name,
-            ConfigurablePropType type,
-            Optional<String> label,
-            Optional<String> description,
-            Optional<Boolean> optional,
-            Optional<Boolean> disabled,
-            Optional<Boolean> hidden,
-            Optional<Boolean> remoteOptions,
-            Optional<Boolean> useQuery,
-            Optional<Boolean> reloadProps,
-            Optional<Boolean> withLabel,
-            Map<String, Object> additionalProperties) {
-        this.name = name;
-        this.type = type;
-        this.label = label;
-        this.description = description;
-        this.optional = optional;
-        this.disabled = disabled;
-        this.hidden = hidden;
-        this.remoteOptions = remoteOptions;
-        this.useQuery = useQuery;
-        this.reloadProps = reloadProps;
-        this.withLabel = withLabel;
-        this.additionalProperties = additionalProperties;
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    private ConfigurableProp(Value value) {
+        this.value = value;
     }
 
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
+    public <T> T visit(Visitor<T> visitor) {
+        return value.visit(visitor);
     }
 
-    @JsonProperty("type")
-    public ConfigurablePropType getType() {
-        return type;
+    public static ConfigurableProp alert(ConfigurablePropAlert value) {
+        return new ConfigurableProp(new AlertValue(value));
     }
 
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    public Optional<String> getLabel() {
-        return label;
+    public static ConfigurableProp any(ConfigurablePropAny value) {
+        return new ConfigurableProp(new AnyValue(value));
     }
 
-    /**
-     * @return A description of the prop, shown to the user when configuring the component.
-     */
-    @JsonProperty("description")
-    public Optional<String> getDescription() {
-        return description;
+    public static ConfigurableProp app(ConfigurablePropApp value) {
+        return new ConfigurableProp(new AppValue(value));
     }
 
-    /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    public Optional<Boolean> getOptional() {
-        return optional;
+    public static ConfigurableProp boolean_(ConfigurablePropBoolean value) {
+        return new ConfigurableProp(new BooleanValue(value));
     }
 
-    /**
-     * @return If true, this prop will be ignored.
-     */
-    @JsonProperty("disabled")
-    public Optional<Boolean> getDisabled() {
-        return disabled;
+    public static ConfigurableProp interfaceTimer(ConfigurablePropTimer value) {
+        return new ConfigurableProp(new InterfaceTimerValue(value));
     }
 
-    /**
-     * @return If true, should not expose this prop to the user
-     */
-    @JsonProperty("hidden")
-    public Optional<Boolean> getHidden() {
-        return hidden;
+    public static ConfigurableProp interfaceApphook(ConfigurablePropApphook value) {
+        return new ConfigurableProp(new InterfaceApphookValue(value));
     }
 
-    /**
-     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
-     */
-    @JsonProperty("remoteOptions")
-    public Optional<Boolean> getRemoteOptions() {
-        return remoteOptions;
+    public static ConfigurableProp integer(ConfigurablePropIntegerArray value) {
+        return new ConfigurableProp(new IntegerValue(value));
     }
 
-    /**
-     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
-     */
-    @JsonProperty("useQuery")
-    public Optional<Boolean> getUseQuery() {
-        return useQuery;
+    public static ConfigurableProp interfaceHttp(ConfigurablePropHttp value) {
+        return new ConfigurableProp(new InterfaceHttpValue(value));
     }
 
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
+    public static ConfigurableProp serviceDb(ConfigurablePropDb value) {
+        return new ConfigurableProp(new ServiceDbValue(value));
     }
 
-    /**
-     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
-     */
-    @JsonProperty("withLabel")
-    public Optional<Boolean> getWithLabel() {
-        return withLabel;
+    public static ConfigurableProp sql(ConfigurablePropSql value) {
+        return new ConfigurableProp(new SqlValue(value));
     }
 
-    @java.lang.Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        return other instanceof ConfigurableProp && equalTo((ConfigurableProp) other);
+    public static ConfigurableProp airtableBaseId(ConfigurablePropAirtableBaseId value) {
+        return new ConfigurableProp(new AirtableBaseIdValue(value));
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public static ConfigurableProp airtableTableId(ConfigurablePropAirtableTableId value) {
+        return new ConfigurableProp(new AirtableTableIdValue(value));
     }
 
-    private boolean equalTo(ConfigurableProp other) {
-        return name.equals(other.name)
-                && type.equals(other.type)
-                && label.equals(other.label)
-                && description.equals(other.description)
-                && optional.equals(other.optional)
-                && disabled.equals(other.disabled)
-                && hidden.equals(other.hidden)
-                && remoteOptions.equals(other.remoteOptions)
-                && useQuery.equals(other.useQuery)
-                && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel);
+    public static ConfigurableProp airtableViewId(ConfigurablePropAirtableViewId value) {
+        return new ConfigurableProp(new AirtableViewIdValue(value));
     }
 
-    @java.lang.Override
-    public int hashCode() {
-        return Objects.hash(
-                this.name,
-                this.type,
-                this.label,
-                this.description,
-                this.optional,
-                this.disabled,
-                this.hidden,
-                this.remoteOptions,
-                this.useQuery,
-                this.reloadProps,
-                this.withLabel);
+    public static ConfigurableProp airtableFieldId(ConfigurablePropAirtableFieldId value) {
+        return new ConfigurableProp(new AirtableFieldIdValue(value));
     }
 
-    @java.lang.Override
-    public String toString() {
-        return ObjectMappers.stringify(this);
+    public static ConfigurableProp discordChannel(ConfigurablePropDiscordChannel value) {
+        return new ConfigurableProp(new DiscordChannelValue(value));
     }
 
-    public static NameStage builder() {
-        return new Builder();
+    public static ConfigurableProp discordChannel(ConfigurablePropDiscordChannelArray value) {
+        return new ConfigurableProp(new DiscordChannelValue(value));
     }
 
-    public interface NameStage {
-        /**
-         * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         */
-        TypeStage name(@NotNull String name);
-
-        Builder from(ConfigurableProp other);
+    public static ConfigurableProp integer(ConfigurablePropInteger value) {
+        return new ConfigurableProp(new IntegerValue(value));
     }
 
-    public interface TypeStage {
-        _FinalStage type(@NotNull ConfigurablePropType type);
+    public static ConfigurableProp object(ConfigurablePropObject value) {
+        return new ConfigurableProp(new ObjectValue(value));
     }
 
-    public interface _FinalStage {
-        ConfigurableProp build();
-
-        /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         */
-        _FinalStage label(Optional<String> label);
-
-        _FinalStage label(String label);
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         */
-        _FinalStage description(Optional<String> description);
-
-        _FinalStage description(String description);
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         */
-        _FinalStage optional(Optional<Boolean> optional);
-
-        _FinalStage optional(Boolean optional);
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         */
-        _FinalStage disabled(Optional<Boolean> disabled);
-
-        _FinalStage disabled(Boolean disabled);
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         */
-        _FinalStage hidden(Optional<Boolean> hidden);
-
-        _FinalStage hidden(Boolean hidden);
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         */
-        _FinalStage remoteOptions(Optional<Boolean> remoteOptions);
-
-        _FinalStage remoteOptions(Boolean remoteOptions);
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         */
-        _FinalStage useQuery(Optional<Boolean> useQuery);
-
-        _FinalStage useQuery(Boolean useQuery);
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        _FinalStage reloadProps(Optional<Boolean> reloadProps);
-
-        _FinalStage reloadProps(Boolean reloadProps);
-
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         */
-        _FinalStage withLabel(Optional<Boolean> withLabel);
-
-        _FinalStage withLabel(Boolean withLabel);
+    public static ConfigurableProp string(ConfigurablePropString value) {
+        return new ConfigurableProp(new StringValue(value));
     }
 
+    public static ConfigurableProp string(ConfigurablePropStringArray value) {
+        return new ConfigurableProp(new StringValue(value));
+    }
+
+    public boolean isAlert() {
+        return value instanceof AlertValue;
+    }
+
+    public boolean isAny() {
+        return value instanceof AnyValue;
+    }
+
+    public boolean isApp() {
+        return value instanceof AppValue;
+    }
+
+    public boolean isBoolean() {
+        return value instanceof BooleanValue;
+    }
+
+    public boolean isInterfaceTimer() {
+        return value instanceof InterfaceTimerValue;
+    }
+
+    public boolean isInterfaceApphook() {
+        return value instanceof InterfaceApphookValue;
+    }
+
+    public boolean isInteger() {
+        return value instanceof IntegerValue;
+    }
+
+    public boolean isInterfaceHttp() {
+        return value instanceof InterfaceHttpValue;
+    }
+
+    public boolean isServiceDb() {
+        return value instanceof ServiceDbValue;
+    }
+
+    public boolean isSql() {
+        return value instanceof SqlValue;
+    }
+
+    public boolean isAirtableBaseId() {
+        return value instanceof AirtableBaseIdValue;
+    }
+
+    public boolean isAirtableTableId() {
+        return value instanceof AirtableTableIdValue;
+    }
+
+    public boolean isAirtableViewId() {
+        return value instanceof AirtableViewIdValue;
+    }
+
+    public boolean isAirtableFieldId() {
+        return value instanceof AirtableFieldIdValue;
+    }
+
+    public boolean isDiscordChannel() {
+        return value instanceof DiscordChannelValue;
+    }
+
+    public boolean isDiscordChannel() {
+        return value instanceof DiscordChannelValue;
+    }
+
+    public boolean isInteger() {
+        return value instanceof IntegerValue;
+    }
+
+    public boolean isObject() {
+        return value instanceof ObjectValue;
+    }
+
+    public boolean isString() {
+        return value instanceof StringValue;
+    }
+
+    public boolean isString() {
+        return value instanceof StringValue;
+    }
+
+    public boolean _isUnknown() {
+        return value instanceof _UnknownValue;
+    }
+
+    public Optional<ConfigurablePropAlert> getAlert() {
+        if (isAlert()) {
+            return Optional.of(((AlertValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropAny> getAny() {
+        if (isAny()) {
+            return Optional.of(((AnyValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropApp> getApp() {
+        if (isApp()) {
+            return Optional.of(((AppValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropBoolean> getBoolean() {
+        if (isBoolean()) {
+            return Optional.of(((BooleanValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropTimer> getInterfaceTimer() {
+        if (isInterfaceTimer()) {
+            return Optional.of(((InterfaceTimerValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropApphook> getInterfaceApphook() {
+        if (isInterfaceApphook()) {
+            return Optional.of(((InterfaceApphookValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropIntegerArray> getInteger() {
+        if (isInteger()) {
+            return Optional.of(((IntegerValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropHttp> getInterfaceHttp() {
+        if (isInterfaceHttp()) {
+            return Optional.of(((InterfaceHttpValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropDb> getServiceDb() {
+        if (isServiceDb()) {
+            return Optional.of(((ServiceDbValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropSql> getSql() {
+        if (isSql()) {
+            return Optional.of(((SqlValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropAirtableBaseId> getAirtableBaseId() {
+        if (isAirtableBaseId()) {
+            return Optional.of(((AirtableBaseIdValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropAirtableTableId> getAirtableTableId() {
+        if (isAirtableTableId()) {
+            return Optional.of(((AirtableTableIdValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropAirtableViewId> getAirtableViewId() {
+        if (isAirtableViewId()) {
+            return Optional.of(((AirtableViewIdValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropAirtableFieldId> getAirtableFieldId() {
+        if (isAirtableFieldId()) {
+            return Optional.of(((AirtableFieldIdValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropDiscordChannel> getDiscordChannel() {
+        if (isDiscordChannel()) {
+            return Optional.of(((DiscordChannelValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropDiscordChannelArray> getDiscordChannel() {
+        if (isDiscordChannel()) {
+            return Optional.of(((DiscordChannelValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropInteger> getInteger() {
+        if (isInteger()) {
+            return Optional.of(((IntegerValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropObject> getObject() {
+        if (isObject()) {
+            return Optional.of(((ObjectValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropString> getString() {
+        if (isString()) {
+            return Optional.of(((StringValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<ConfigurablePropStringArray> getString() {
+        if (isString()) {
+            return Optional.of(((StringValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Object> _getUnknown() {
+        if (_isUnknown()) {
+            return Optional.of(((_UnknownValue) value).value);
+        }
+        return Optional.empty();
+    }
+
+    @JsonValue
+    private Value getValue() {
+        return this.value;
+    }
+
+    public interface Visitor<T> {
+        T visitAlert(ConfigurablePropAlert alert);
+
+        T visitAny(ConfigurablePropAny any);
+
+        T visitApp(ConfigurablePropApp app);
+
+        T visitBoolean(ConfigurablePropBoolean boolean_);
+
+        T visitInterfaceTimer(ConfigurablePropTimer interfaceTimer);
+
+        T visitInterfaceApphook(ConfigurablePropApphook interfaceApphook);
+
+        T visitInteger(ConfigurablePropIntegerArray integer);
+
+        T visitInterfaceHttp(ConfigurablePropHttp interfaceHttp);
+
+        T visitServiceDb(ConfigurablePropDb serviceDb);
+
+        T visitSql(ConfigurablePropSql sql);
+
+        T visitAirtableBaseId(ConfigurablePropAirtableBaseId airtableBaseId);
+
+        T visitAirtableTableId(ConfigurablePropAirtableTableId airtableTableId);
+
+        T visitAirtableViewId(ConfigurablePropAirtableViewId airtableViewId);
+
+        T visitAirtableFieldId(ConfigurablePropAirtableFieldId airtableFieldId);
+
+        T visitDiscordChannel(ConfigurablePropDiscordChannel discordChannel);
+
+        T visitDiscordChannel(ConfigurablePropDiscordChannelArray discordChannel);
+
+        T visitInteger(ConfigurablePropInteger integer);
+
+        T visitObject(ConfigurablePropObject object);
+
+        T visitString(ConfigurablePropString string);
+
+        T visitString(ConfigurablePropStringArray string);
+
+        T _visitUnknown(Object unknownType);
+    }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = _UnknownValue.class)
+    @JsonSubTypes({
+        @JsonSubTypes.Type(AlertValue.class),
+        @JsonSubTypes.Type(AnyValue.class),
+        @JsonSubTypes.Type(AppValue.class),
+        @JsonSubTypes.Type(BooleanValue.class),
+        @JsonSubTypes.Type(InterfaceTimerValue.class),
+        @JsonSubTypes.Type(InterfaceApphookValue.class),
+        @JsonSubTypes.Type(IntegerValue.class),
+        @JsonSubTypes.Type(InterfaceHttpValue.class),
+        @JsonSubTypes.Type(ServiceDbValue.class),
+        @JsonSubTypes.Type(SqlValue.class),
+        @JsonSubTypes.Type(AirtableBaseIdValue.class),
+        @JsonSubTypes.Type(AirtableTableIdValue.class),
+        @JsonSubTypes.Type(AirtableViewIdValue.class),
+        @JsonSubTypes.Type(AirtableFieldIdValue.class),
+        @JsonSubTypes.Type(DiscordChannelValue.class),
+        @JsonSubTypes.Type(DiscordChannelValue.class),
+        @JsonSubTypes.Type(IntegerValue.class),
+        @JsonSubTypes.Type(ObjectValue.class),
+        @JsonSubTypes.Type(StringValue.class),
+        @JsonSubTypes.Type(StringValue.class)
+    })
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, TypeStage, _FinalStage {
-        private String name;
+    private interface Value {
+        <T> T visit(Visitor<T> visitor);
+    }
 
-        private ConfigurablePropType type;
+    @JsonTypeName("alert")
+    @JsonIgnoreProperties("type")
+    private static final class AlertValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAlert value;
 
-        private Optional<Boolean> withLabel = Optional.empty();
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AlertValue() {}
 
-        private Optional<Boolean> reloadProps = Optional.empty();
-
-        private Optional<Boolean> useQuery = Optional.empty();
-
-        private Optional<Boolean> remoteOptions = Optional.empty();
-
-        private Optional<Boolean> hidden = Optional.empty();
-
-        private Optional<Boolean> disabled = Optional.empty();
-
-        private Optional<Boolean> optional = Optional.empty();
-
-        private Optional<String> description = Optional.empty();
-
-        private Optional<String> label = Optional.empty();
-
-        @JsonAnySetter
-        private Map<String, Object> additionalProperties = new HashMap<>();
-
-        private Builder() {}
-
-        @java.lang.Override
-        public Builder from(ConfigurableProp other) {
-            name(other.getName());
-            type(other.getType());
-            label(other.getLabel());
-            description(other.getDescription());
-            optional(other.getOptional());
-            disabled(other.getDisabled());
-            hidden(other.getHidden());
-            remoteOptions(other.getRemoteOptions());
-            useQuery(other.getUseQuery());
-            reloadProps(other.getReloadProps());
-            withLabel(other.getWithLabel());
-            return this;
-        }
-
-        /**
-         * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("name")
-        public TypeStage name(@NotNull String name) {
-            this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
+        private AlertValue(ConfigurablePropAlert value) {
+            this.value = value;
         }
 
         @java.lang.Override
-        @JsonSetter("type")
-        public _FinalStage type(@NotNull ConfigurablePropType type) {
-            this.type = Objects.requireNonNull(type, "type must not be null");
-            return this;
-        }
-
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage withLabel(Boolean withLabel) {
-            this.withLabel = Optional.ofNullable(withLabel);
-            return this;
-        }
-
-        /**
-         * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "withLabel", nulls = Nulls.SKIP)
-        public _FinalStage withLabel(Optional<Boolean> withLabel) {
-            this.withLabel = withLabel;
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage reloadProps(Boolean reloadProps) {
-            this.reloadProps = Optional.ofNullable(reloadProps);
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "reloadProps", nulls = Nulls.SKIP)
-        public _FinalStage reloadProps(Optional<Boolean> reloadProps) {
-            this.reloadProps = reloadProps;
-            return this;
-        }
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage useQuery(Boolean useQuery) {
-            this.useQuery = Optional.ofNullable(useQuery);
-            return this;
-        }
-
-        /**
-         * <p>If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "useQuery", nulls = Nulls.SKIP)
-        public _FinalStage useQuery(Optional<Boolean> useQuery) {
-            this.useQuery = useQuery;
-            return this;
-        }
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage remoteOptions(Boolean remoteOptions) {
-            this.remoteOptions = Optional.ofNullable(remoteOptions);
-            return this;
-        }
-
-        /**
-         * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "remoteOptions", nulls = Nulls.SKIP)
-        public _FinalStage remoteOptions(Optional<Boolean> remoteOptions) {
-            this.remoteOptions = remoteOptions;
-            return this;
-        }
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage hidden(Boolean hidden) {
-            this.hidden = Optional.ofNullable(hidden);
-            return this;
-        }
-
-        /**
-         * <p>If true, should not expose this prop to the user</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
-        public _FinalStage hidden(Optional<Boolean> hidden) {
-            this.hidden = hidden;
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage disabled(Boolean disabled) {
-            this.disabled = Optional.ofNullable(disabled);
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
-        public _FinalStage disabled(Optional<Boolean> disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage optional(Boolean optional) {
-            this.optional = Optional.ofNullable(optional);
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "optional", nulls = Nulls.SKIP)
-        public _FinalStage optional(Optional<Boolean> optional) {
-            this.optional = optional;
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(String description) {
-            this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "description", nulls = Nulls.SKIP)
-        public _FinalStage description(Optional<String> description) {
-            this.description = description;
-            return this;
-        }
-
-        /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage label(String label) {
-            this.label = Optional.ofNullable(label);
-            return this;
-        }
-
-        /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "label", nulls = Nulls.SKIP)
-        public _FinalStage label(Optional<String> label) {
-            this.label = label;
-            return this;
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAlert(value);
         }
 
         @java.lang.Override
-        public ConfigurableProp build() {
-            return new ConfigurableProp(
-                    name,
-                    type,
-                    label,
-                    description,
-                    optional,
-                    disabled,
-                    hidden,
-                    remoteOptions,
-                    useQuery,
-                    reloadProps,
-                    withLabel,
-                    additionalProperties);
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AlertValue && equalTo((AlertValue) other);
+        }
+
+        private boolean equalTo(AlertValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("any")
+    @JsonIgnoreProperties("type")
+    private static final class AnyValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAny value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AnyValue() {}
+
+        private AnyValue(ConfigurablePropAny value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAny(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AnyValue && equalTo((AnyValue) other);
+        }
+
+        private boolean equalTo(AnyValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("app")
+    @JsonIgnoreProperties("type")
+    private static final class AppValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropApp value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AppValue() {}
+
+        private AppValue(ConfigurablePropApp value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitApp(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AppValue && equalTo((AppValue) other);
+        }
+
+        private boolean equalTo(AppValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("boolean")
+    @JsonIgnoreProperties("type")
+    private static final class BooleanValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropBoolean value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private BooleanValue() {}
+
+        private BooleanValue(ConfigurablePropBoolean value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitBoolean(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof BooleanValue && equalTo((BooleanValue) other);
+        }
+
+        private boolean equalTo(BooleanValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.interface.timer")
+    @JsonIgnoreProperties("type")
+    private static final class InterfaceTimerValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropTimer value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private InterfaceTimerValue() {}
+
+        private InterfaceTimerValue(ConfigurablePropTimer value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitInterfaceTimer(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof InterfaceTimerValue && equalTo((InterfaceTimerValue) other);
+        }
+
+        private boolean equalTo(InterfaceTimerValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.interface.apphook")
+    @JsonIgnoreProperties("type")
+    private static final class InterfaceApphookValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropApphook value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private InterfaceApphookValue() {}
+
+        private InterfaceApphookValue(ConfigurablePropApphook value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitInterfaceApphook(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof InterfaceApphookValue && equalTo((InterfaceApphookValue) other);
+        }
+
+        private boolean equalTo(InterfaceApphookValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("integer[]")
+    @JsonIgnoreProperties("type")
+    private static final class IntegerValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropIntegerArray value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private IntegerValue() {}
+
+        private IntegerValue(ConfigurablePropIntegerArray value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitInteger(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof IntegerValue && equalTo((IntegerValue) other);
+        }
+
+        private boolean equalTo(IntegerValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.interface.http")
+    @JsonIgnoreProperties("type")
+    private static final class InterfaceHttpValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropHttp value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private InterfaceHttpValue() {}
+
+        private InterfaceHttpValue(ConfigurablePropHttp value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitInterfaceHttp(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof InterfaceHttpValue && equalTo((InterfaceHttpValue) other);
+        }
+
+        private boolean equalTo(InterfaceHttpValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.service.db")
+    @JsonIgnoreProperties("type")
+    private static final class ServiceDbValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropDb value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private ServiceDbValue() {}
+
+        private ServiceDbValue(ConfigurablePropDb value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitServiceDb(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof ServiceDbValue && equalTo((ServiceDbValue) other);
+        }
+
+        private boolean equalTo(ServiceDbValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("sql")
+    @JsonIgnoreProperties("type")
+    private static final class SqlValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropSql value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private SqlValue() {}
+
+        private SqlValue(ConfigurablePropSql value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitSql(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof SqlValue && equalTo((SqlValue) other);
+        }
+
+        private boolean equalTo(SqlValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.airtable.baseId")
+    @JsonIgnoreProperties("type")
+    private static final class AirtableBaseIdValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAirtableBaseId value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AirtableBaseIdValue() {}
+
+        private AirtableBaseIdValue(ConfigurablePropAirtableBaseId value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAirtableBaseId(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AirtableBaseIdValue && equalTo((AirtableBaseIdValue) other);
+        }
+
+        private boolean equalTo(AirtableBaseIdValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.airtable.tableId")
+    @JsonIgnoreProperties("type")
+    private static final class AirtableTableIdValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAirtableTableId value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AirtableTableIdValue() {}
+
+        private AirtableTableIdValue(ConfigurablePropAirtableTableId value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAirtableTableId(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AirtableTableIdValue && equalTo((AirtableTableIdValue) other);
+        }
+
+        private boolean equalTo(AirtableTableIdValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.airtable.viewId")
+    @JsonIgnoreProperties("type")
+    private static final class AirtableViewIdValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAirtableViewId value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AirtableViewIdValue() {}
+
+        private AirtableViewIdValue(ConfigurablePropAirtableViewId value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAirtableViewId(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AirtableViewIdValue && equalTo((AirtableViewIdValue) other);
+        }
+
+        private boolean equalTo(AirtableViewIdValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.airtable.fieldId")
+    @JsonIgnoreProperties("type")
+    private static final class AirtableFieldIdValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropAirtableFieldId value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private AirtableFieldIdValue() {}
+
+        private AirtableFieldIdValue(ConfigurablePropAirtableFieldId value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitAirtableFieldId(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof AirtableFieldIdValue && equalTo((AirtableFieldIdValue) other);
+        }
+
+        private boolean equalTo(AirtableFieldIdValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.discord.channel")
+    @JsonIgnoreProperties("type")
+    private static final class DiscordChannelValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropDiscordChannel value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private DiscordChannelValue() {}
+
+        private DiscordChannelValue(ConfigurablePropDiscordChannel value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitDiscordChannel(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof DiscordChannelValue && equalTo((DiscordChannelValue) other);
+        }
+
+        private boolean equalTo(DiscordChannelValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("$.discord.channel[]")
+    @JsonIgnoreProperties("type")
+    private static final class DiscordChannelValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropDiscordChannelArray value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private DiscordChannelValue() {}
+
+        private DiscordChannelValue(ConfigurablePropDiscordChannelArray value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitDiscordChannel(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof DiscordChannelValue && equalTo((DiscordChannelValue) other);
+        }
+
+        private boolean equalTo(DiscordChannelValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("integer")
+    @JsonIgnoreProperties("type")
+    private static final class IntegerValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropInteger value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private IntegerValue() {}
+
+        private IntegerValue(ConfigurablePropInteger value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitInteger(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof IntegerValue && equalTo((IntegerValue) other);
+        }
+
+        private boolean equalTo(IntegerValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("object")
+    @JsonIgnoreProperties("type")
+    private static final class ObjectValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropObject value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private ObjectValue() {}
+
+        private ObjectValue(ConfigurablePropObject value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitObject(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof ObjectValue && equalTo((ObjectValue) other);
+        }
+
+        private boolean equalTo(ObjectValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("string")
+    @JsonIgnoreProperties("type")
+    private static final class StringValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropString value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private StringValue() {}
+
+        private StringValue(ConfigurablePropString value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitString(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof StringValue && equalTo((StringValue) other);
+        }
+
+        private boolean equalTo(StringValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonTypeName("string[]")
+    @JsonIgnoreProperties("type")
+    private static final class StringValue implements Value {
+        @JsonUnwrapped
+        private ConfigurablePropStringArray value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private StringValue() {}
+
+        private StringValue(ConfigurablePropStringArray value) {
+            this.value = value;
+        }
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor.visitString(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof StringValue && equalTo((StringValue) other);
+        }
+
+        private boolean equalTo(StringValue other) {
+            return value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "value: " + value + "}";
+        }
+    }
+
+    @JsonIgnoreProperties("type")
+    private static final class _UnknownValue implements Value {
+        private String type;
+
+        @JsonValue
+        private Object value;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        private _UnknownValue(@JsonProperty("value") Object value) {}
+
+        @java.lang.Override
+        public <T> T visit(Visitor<T> visitor) {
+            return visitor._visitUnknown(value);
+        }
+
+        @java.lang.Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            return other instanceof _UnknownValue && equalTo((_UnknownValue) other);
+        }
+
+        private boolean equalTo(_UnknownValue other) {
+            return type.equals(other.type) && value.equals(other.value);
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            return Objects.hash(this.type, this.value);
+        }
+
+        @java.lang.Override
+        public String toString() {
+            return "ConfigurableProp{" + "type: " + type + ", value: " + value + "}";
         }
     }
 }

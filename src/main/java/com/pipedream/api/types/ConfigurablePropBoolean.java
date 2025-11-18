@@ -21,11 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropBoolean.Builder.class)
-public final class ConfigurablePropBoolean {
-    private final Optional<Boolean> default_;
-
-    private final Optional<List<ConfigurablePropBooleanOptionsItem>> options;
-
+public final class ConfigurablePropBoolean implements IConfigurablePropBase {
     private final String name;
 
     private final Optional<String> label;
@@ -46,11 +42,13 @@ public final class ConfigurablePropBoolean {
 
     private final Optional<Boolean> withLabel;
 
+    private final Optional<Boolean> default_;
+
+    private final Optional<List<ConfigurablePropBooleanOptionsItem>> options;
+
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropBoolean(
-            Optional<Boolean> default_,
-            Optional<List<ConfigurablePropBooleanOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -61,9 +59,9 @@ public final class ConfigurablePropBoolean {
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
+            Optional<Boolean> default_,
+            Optional<List<ConfigurablePropBooleanOptionsItem>> options,
             Map<String, Object> additionalProperties) {
-        this.default_ = default_;
-        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -74,12 +72,99 @@ public final class ConfigurablePropBoolean {
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
+        this.default_ = default_;
+        this.options = options;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("type")
-    public String getType() {
-        return "boolean";
+    /**
+     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
+     */
+    @JsonProperty("name")
+    @java.lang.Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
+     */
+    @JsonProperty("label")
+    @java.lang.Override
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @return A description of the prop, shown to the user when configuring the component.
+     */
+    @JsonProperty("description")
+    @java.lang.Override
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    /**
+     * @return If true, this prop does not need to be specified.
+     */
+    @JsonProperty("optional")
+    @java.lang.Override
+    public Optional<Boolean> getOptional() {
+        return optional;
+    }
+
+    /**
+     * @return If true, this prop will be ignored.
+     */
+    @JsonProperty("disabled")
+    @java.lang.Override
+    public Optional<Boolean> getDisabled() {
+        return disabled;
+    }
+
+    /**
+     * @return If true, should not expose this prop to the user
+     */
+    @JsonProperty("hidden")
+    @java.lang.Override
+    public Optional<Boolean> getHidden() {
+        return hidden;
+    }
+
+    /**
+     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
+     */
+    @JsonProperty("remoteOptions")
+    @java.lang.Override
+    public Optional<Boolean> getRemoteOptions() {
+        return remoteOptions;
+    }
+
+    /**
+     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
+     */
+    @JsonProperty("useQuery")
+    @java.lang.Override
+    public Optional<Boolean> getUseQuery() {
+        return useQuery;
+    }
+
+    /**
+     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
+     */
+    @JsonProperty("reloadProps")
+    @java.lang.Override
+    public Optional<Boolean> getReloadProps() {
+        return reloadProps;
+    }
+
+    /**
+     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
+     */
+    @JsonProperty("withLabel")
+    @java.lang.Override
+    public Optional<Boolean> getWithLabel() {
+        return withLabel;
     }
 
     @JsonProperty("default")
@@ -90,86 +175,6 @@ public final class ConfigurablePropBoolean {
     @JsonProperty("options")
     public Optional<List<ConfigurablePropBooleanOptionsItem>> getOptions() {
         return options;
-    }
-
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    public Optional<String> getLabel() {
-        return label;
-    }
-
-    /**
-     * @return A description of the prop, shown to the user when configuring the component.
-     */
-    @JsonProperty("description")
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    public Optional<Boolean> getOptional() {
-        return optional;
-    }
-
-    /**
-     * @return If true, this prop will be ignored.
-     */
-    @JsonProperty("disabled")
-    public Optional<Boolean> getDisabled() {
-        return disabled;
-    }
-
-    /**
-     * @return If true, should not expose this prop to the user
-     */
-    @JsonProperty("hidden")
-    public Optional<Boolean> getHidden() {
-        return hidden;
-    }
-
-    /**
-     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
-     */
-    @JsonProperty("remoteOptions")
-    public Optional<Boolean> getRemoteOptions() {
-        return remoteOptions;
-    }
-
-    /**
-     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
-     */
-    @JsonProperty("useQuery")
-    public Optional<Boolean> getUseQuery() {
-        return useQuery;
-    }
-
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
-    }
-
-    /**
-     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
-     */
-    @JsonProperty("withLabel")
-    public Optional<Boolean> getWithLabel() {
-        return withLabel;
     }
 
     @java.lang.Override
@@ -184,9 +189,7 @@ public final class ConfigurablePropBoolean {
     }
 
     private boolean equalTo(ConfigurablePropBoolean other) {
-        return default_.equals(other.default_)
-                && options.equals(other.options)
-                && name.equals(other.name)
+        return name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -195,14 +198,14 @@ public final class ConfigurablePropBoolean {
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel);
+                && withLabel.equals(other.withLabel)
+                && default_.equals(other.default_)
+                && options.equals(other.options);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.default_,
-                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -212,7 +215,9 @@ public final class ConfigurablePropBoolean {
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel);
+                this.withLabel,
+                this.default_,
+                this.options);
     }
 
     @java.lang.Override
@@ -235,14 +240,6 @@ public final class ConfigurablePropBoolean {
 
     public interface _FinalStage {
         ConfigurablePropBoolean build();
-
-        _FinalStage default_(Optional<Boolean> default_);
-
-        _FinalStage default_(Boolean default_);
-
-        _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options);
-
-        _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -306,11 +303,23 @@ public final class ConfigurablePropBoolean {
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
+
+        _FinalStage default_(Optional<Boolean> default_);
+
+        _FinalStage default_(Boolean default_);
+
+        _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options);
+
+        _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
+
+        private Optional<List<ConfigurablePropBooleanOptionsItem>> options = Optional.empty();
+
+        private Optional<Boolean> default_ = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -330,10 +339,6 @@ public final class ConfigurablePropBoolean {
 
         private Optional<String> label = Optional.empty();
 
-        private Optional<List<ConfigurablePropBooleanOptionsItem>> options = Optional.empty();
-
-        private Optional<Boolean> default_ = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -341,8 +346,6 @@ public final class ConfigurablePropBoolean {
 
         @java.lang.Override
         public Builder from(ConfigurablePropBoolean other) {
-            default_(other.getDefault());
-            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -353,6 +356,8 @@ public final class ConfigurablePropBoolean {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            default_(other.getDefault());
+            options(other.getOptions());
             return this;
         }
 
@@ -365,6 +370,32 @@ public final class ConfigurablePropBoolean {
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage default_(Boolean default_) {
+            this.default_ = Optional.ofNullable(default_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<Boolean> default_) {
+            this.default_ = default_;
             return this;
         }
 
@@ -549,36 +580,8 @@ public final class ConfigurablePropBoolean {
         }
 
         @java.lang.Override
-        public _FinalStage options(List<ConfigurablePropBooleanOptionsItem> options) {
-            this.options = Optional.ofNullable(options);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<ConfigurablePropBooleanOptionsItem>> options) {
-            this.options = options;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage default_(Boolean default_) {
-            this.default_ = Optional.ofNullable(default_);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<Boolean> default_) {
-            this.default_ = default_;
-            return this;
-        }
-
-        @java.lang.Override
         public ConfigurablePropBoolean build() {
             return new ConfigurablePropBoolean(
-                    default_,
-                    options,
                     name,
                     label,
                     description,
@@ -589,6 +592,8 @@ public final class ConfigurablePropBoolean {
                     useQuery,
                     reloadProps,
                     withLabel,
+                    default_,
+                    options,
                     additionalProperties);
         }
     }

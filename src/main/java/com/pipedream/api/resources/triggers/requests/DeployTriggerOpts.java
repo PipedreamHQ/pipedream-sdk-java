@@ -36,6 +36,8 @@ public final class DeployTriggerOpts {
 
     private final Optional<String> webhookUrl;
 
+    private final Optional<Boolean> emitOnDeploy;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployTriggerOpts(
@@ -46,6 +48,7 @@ public final class DeployTriggerOpts {
             Optional<String> dynamicPropsId,
             Optional<String> workflowId,
             Optional<String> webhookUrl,
+            Optional<Boolean> emitOnDeploy,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.version = version;
@@ -54,6 +57,7 @@ public final class DeployTriggerOpts {
         this.dynamicPropsId = dynamicPropsId;
         this.workflowId = workflowId;
         this.webhookUrl = webhookUrl;
+        this.emitOnDeploy = emitOnDeploy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -110,6 +114,14 @@ public final class DeployTriggerOpts {
         return webhookUrl;
     }
 
+    /**
+     * @return Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.
+     */
+    @JsonProperty("emit_on_deploy")
+    public Optional<Boolean> getEmitOnDeploy() {
+        return emitOnDeploy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -128,7 +140,8 @@ public final class DeployTriggerOpts {
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
                 && workflowId.equals(other.workflowId)
-                && webhookUrl.equals(other.webhookUrl);
+                && webhookUrl.equals(other.webhookUrl)
+                && emitOnDeploy.equals(other.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -140,7 +153,8 @@ public final class DeployTriggerOpts {
                 this.configuredProps,
                 this.dynamicPropsId,
                 this.workflowId,
-                this.webhookUrl);
+                this.webhookUrl,
+                this.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -202,6 +216,13 @@ public final class DeployTriggerOpts {
         _FinalStage webhookUrl(Optional<String> webhookUrl);
 
         _FinalStage webhookUrl(String webhookUrl);
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         */
+        _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Boolean emitOnDeploy);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -209,6 +230,8 @@ public final class DeployTriggerOpts {
         private String id;
 
         private String externalUserId;
+
+        private Optional<Boolean> emitOnDeploy = Optional.empty();
 
         private Optional<String> webhookUrl = Optional.empty();
 
@@ -234,6 +257,7 @@ public final class DeployTriggerOpts {
             dynamicPropsId(other.getDynamicPropsId());
             workflowId(other.getWorkflowId());
             webhookUrl(other.getWebhookUrl());
+            emitOnDeploy(other.getEmitOnDeploy());
             return this;
         }
 
@@ -258,6 +282,26 @@ public final class DeployTriggerOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Boolean emitOnDeploy) {
+            this.emitOnDeploy = Optional.ofNullable(emitOnDeploy);
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emit_on_deploy", nulls = Nulls.SKIP)
+        public _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy) {
+            this.emitOnDeploy = emitOnDeploy;
             return this;
         }
 
@@ -364,6 +408,7 @@ public final class DeployTriggerOpts {
                     dynamicPropsId,
                     workflowId,
                     webhookUrl,
+                    emitOnDeploy,
                     additionalProperties);
         }
     }
