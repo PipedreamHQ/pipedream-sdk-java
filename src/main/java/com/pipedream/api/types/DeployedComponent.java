@@ -48,6 +48,8 @@ public final class DeployedComponent {
 
     private final Optional<Object> callbackObservations;
 
+    private final Optional<Boolean> emitOnDeploy;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployedComponent(
@@ -63,6 +65,7 @@ public final class DeployedComponent {
             String name,
             String nameSlug,
             Optional<Object> callbackObservations,
+            Optional<Boolean> emitOnDeploy,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.ownerId = ownerId;
@@ -76,6 +79,7 @@ public final class DeployedComponent {
         this.name = name;
         this.nameSlug = nameSlug;
         this.callbackObservations = callbackObservations;
+        this.emitOnDeploy = emitOnDeploy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -172,6 +176,14 @@ public final class DeployedComponent {
         return callbackObservations;
     }
 
+    /**
+     * @return Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.
+     */
+    @JsonProperty("emit_on_deploy")
+    public Optional<Boolean> getEmitOnDeploy() {
+        return emitOnDeploy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -195,7 +207,8 @@ public final class DeployedComponent {
                 && updatedAt == other.updatedAt
                 && name.equals(other.name)
                 && nameSlug.equals(other.nameSlug)
-                && callbackObservations.equals(other.callbackObservations);
+                && callbackObservations.equals(other.callbackObservations)
+                && emitOnDeploy.equals(other.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -212,7 +225,8 @@ public final class DeployedComponent {
                 this.updatedAt,
                 this.name,
                 this.nameSlug,
-                this.callbackObservations);
+                this.callbackObservations,
+                this.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -313,6 +327,13 @@ public final class DeployedComponent {
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
         _FinalStage callbackObservations(Object callbackObservations);
+
+        /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         */
+        _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Boolean emitOnDeploy);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -342,6 +363,8 @@ public final class DeployedComponent {
 
         private String nameSlug;
 
+        private Optional<Boolean> emitOnDeploy = Optional.empty();
+
         private Optional<Object> callbackObservations = Optional.empty();
 
         private Map<String, ConfiguredPropValue> configuredProps = new LinkedHashMap<>();
@@ -369,6 +392,7 @@ public final class DeployedComponent {
             name(other.getName());
             nameSlug(other.getNameSlug());
             callbackObservations(other.getCallbackObservations());
+            emitOnDeploy(other.getEmitOnDeploy());
             return this;
         }
 
@@ -465,6 +489,26 @@ public final class DeployedComponent {
         @JsonSetter("name_slug")
         public _FinalStage nameSlug(@NotNull String nameSlug) {
             this.nameSlug = Objects.requireNonNull(nameSlug, "nameSlug must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Boolean emitOnDeploy) {
+            this.emitOnDeploy = Optional.ofNullable(emitOnDeploy);
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emit_on_deploy", nulls = Nulls.SKIP)
+        public _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy) {
+            this.emitOnDeploy = emitOnDeploy;
             return this;
         }
 
@@ -582,6 +626,7 @@ public final class DeployedComponent {
                     name,
                     nameSlug,
                     callbackObservations,
+                    emitOnDeploy,
                     additionalProperties);
         }
     }

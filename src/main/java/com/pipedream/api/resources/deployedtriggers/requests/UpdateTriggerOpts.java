@@ -30,6 +30,8 @@ public final class UpdateTriggerOpts {
 
     private final Optional<String> name;
 
+    private final Optional<Boolean> emitOnDeploy;
+
     private final Map<String, Object> additionalProperties;
 
     private UpdateTriggerOpts(
@@ -37,11 +39,13 @@ public final class UpdateTriggerOpts {
             Optional<Boolean> active,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> name,
+            Optional<Boolean> emitOnDeploy,
             Map<String, Object> additionalProperties) {
         this.externalUserId = externalUserId;
         this.active = active;
         this.configuredProps = configuredProps;
         this.name = name;
+        this.emitOnDeploy = emitOnDeploy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -74,6 +78,14 @@ public final class UpdateTriggerOpts {
         return name;
     }
 
+    /**
+     * @return Whether the trigger should emit events during deployment
+     */
+    @JsonProperty("emit_on_deploy")
+    public Optional<Boolean> getEmitOnDeploy() {
+        return emitOnDeploy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -89,12 +101,13 @@ public final class UpdateTriggerOpts {
         return externalUserId.equals(other.externalUserId)
                 && active.equals(other.active)
                 && configuredProps.equals(other.configuredProps)
-                && name.equals(other.name);
+                && name.equals(other.name)
+                && emitOnDeploy.equals(other.emitOnDeploy);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.externalUserId, this.active, this.configuredProps, this.name);
+        return Objects.hash(this.externalUserId, this.active, this.configuredProps, this.name, this.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -135,11 +148,20 @@ public final class UpdateTriggerOpts {
         _FinalStage name(Optional<String> name);
 
         _FinalStage name(String name);
+
+        /**
+         * <p>Whether the trigger should emit events during deployment</p>
+         */
+        _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Boolean emitOnDeploy);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
+
+        private Optional<Boolean> emitOnDeploy = Optional.empty();
 
         private Optional<String> name = Optional.empty();
 
@@ -158,6 +180,7 @@ public final class UpdateTriggerOpts {
             active(other.getActive());
             configuredProps(other.getConfiguredProps());
             name(other.getName());
+            emitOnDeploy(other.getEmitOnDeploy());
             return this;
         }
 
@@ -170,6 +193,26 @@ public final class UpdateTriggerOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during deployment</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Boolean emitOnDeploy) {
+            this.emitOnDeploy = Optional.ofNullable(emitOnDeploy);
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during deployment</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emit_on_deploy", nulls = Nulls.SKIP)
+        public _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy) {
+            this.emitOnDeploy = emitOnDeploy;
             return this;
         }
 
@@ -228,7 +271,8 @@ public final class UpdateTriggerOpts {
 
         @java.lang.Override
         public UpdateTriggerOpts build() {
-            return new UpdateTriggerOpts(externalUserId, active, configuredProps, name, additionalProperties);
+            return new UpdateTriggerOpts(
+                    externalUserId, active, configuredProps, name, emitOnDeploy, additionalProperties);
         }
     }
 }

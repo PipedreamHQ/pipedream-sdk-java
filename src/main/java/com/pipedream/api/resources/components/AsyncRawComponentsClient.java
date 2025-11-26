@@ -89,6 +89,10 @@ public class AsyncRawComponentsClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
         if (request.getComponentType().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "component_type", request.getComponentType().get(), false);
