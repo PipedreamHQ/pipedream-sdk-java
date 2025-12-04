@@ -10,7 +10,7 @@ import com.pipedream.api.resources.proxy.requests.GetProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PatchProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PostProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PutProxyRequest;
-import java.io.InputStream;
+import com.pipedream.api.resources.proxy.types.ProxyResponse;
 
 public class ProxyClient {
     protected final ClientOptions clientOptions;
@@ -32,70 +32,70 @@ public class ProxyClient {
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public InputStream get(String url64, GetProxyRequest request) {
+    public ProxyResponse get(String url64, GetProxyRequest request) {
         return this.rawClient.get(url64, request).body();
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public InputStream get(String url64, GetProxyRequest request, RequestOptions requestOptions) {
+    public ProxyResponse get(String url64, GetProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.get(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public InputStream post(String url64, PostProxyRequest request) {
+    public ProxyResponse post(String url64, PostProxyRequest request) {
         return this.rawClient.post(url64, request).body();
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public InputStream post(String url64, PostProxyRequest request, RequestOptions requestOptions) {
+    public ProxyResponse post(String url64, PostProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.post(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public InputStream put(String url64, PutProxyRequest request) {
+    public ProxyResponse put(String url64, PutProxyRequest request) {
         return this.rawClient.put(url64, request).body();
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public InputStream put(String url64, PutProxyRequest request, RequestOptions requestOptions) {
+    public ProxyResponse put(String url64, PutProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.put(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public InputStream delete(String url64, DeleteProxyRequest request) {
+    public ProxyResponse delete(String url64, DeleteProxyRequest request) {
         return this.rawClient.delete(url64, request).body();
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public InputStream delete(String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
+    public ProxyResponse delete(String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public InputStream patch(String url64, PatchProxyRequest request) {
+    public ProxyResponse patch(String url64, PatchProxyRequest request) {
         return this.rawClient.patch(url64, request).body();
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public InputStream patch(String url64, PatchProxyRequest request, RequestOptions requestOptions) {
+    public ProxyResponse patch(String url64, PatchProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.patch(url64, request, requestOptions).body();
     }
 }

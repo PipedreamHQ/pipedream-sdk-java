@@ -19,10 +19,11 @@ import com.pipedream.api.resources.proxy.requests.GetProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PatchProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PostProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PutProxyRequest;
+import com.pipedream.api.resources.proxy.types.ProxyResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -36,17 +37,43 @@ public class RawProxyClient {
         this.clientOptions = clientOptions;
     }
 
+    private static boolean isJsonContentType(MediaType contentType) {
+        if (contentType == null) {
+            return false;
+        }
+        return "application".equals(contentType.type()) && "json".equals(contentType.subtype());
+    }
+
+    private static ProxyResponse parseSuccessResponse(Response response, ResponseBody responseBody) throws IOException {
+        MediaType contentType = responseBody != null ? responseBody.contentType() : null;
+        String contentTypeString = contentType != null ? contentType.toString() : null;
+        if (isJsonContentType(contentType)) {
+            String responseBodyString = responseBody != null ? responseBody.string() : "null";
+            try {
+                Object parsed = ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
+                return ProxyResponse.json(parsed, contentTypeString);
+            } catch (JsonProcessingException e) {
+                throw new BaseClientException(
+                        "Response Content-Type was application/json but body is not valid JSON", e);
+            } finally {
+                response.close();
+            }
+        } else {
+            return ProxyResponse.stream(new ResponseBodyInputStream(response), contentTypeString);
+        }
+    }
+
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> get(String url64, GetProxyRequest request) {
+    public BaseClientHttpResponse<ProxyResponse> get(String url64, GetProxyRequest request) {
         return get(url64, request, null);
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> get(
+    public BaseClientHttpResponse<ProxyResponse> get(
             String url64, GetProxyRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -70,7 +97,7 @@ public class RawProxyClient {
             Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
+                return new BaseClientHttpResponse<>(parseSuccessResponse(response, responseBody), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
@@ -94,14 +121,14 @@ public class RawProxyClient {
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> post(String url64, PostProxyRequest request) {
+    public BaseClientHttpResponse<ProxyResponse> post(String url64, PostProxyRequest request) {
         return post(url64, request, null);
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> post(
+    public BaseClientHttpResponse<ProxyResponse> post(
             String url64, PostProxyRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -133,7 +160,7 @@ public class RawProxyClient {
             Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
+                return new BaseClientHttpResponse<>(parseSuccessResponse(response, responseBody), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
@@ -157,14 +184,14 @@ public class RawProxyClient {
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> put(String url64, PutProxyRequest request) {
+    public BaseClientHttpResponse<ProxyResponse> put(String url64, PutProxyRequest request) {
         return put(url64, request, null);
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> put(
+    public BaseClientHttpResponse<ProxyResponse> put(
             String url64, PutProxyRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -196,7 +223,7 @@ public class RawProxyClient {
             Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
+                return new BaseClientHttpResponse<>(parseSuccessResponse(response, responseBody), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
@@ -220,14 +247,14 @@ public class RawProxyClient {
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> delete(String url64, DeleteProxyRequest request) {
+    public BaseClientHttpResponse<ProxyResponse> delete(String url64, DeleteProxyRequest request) {
         return delete(url64, request, null);
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> delete(
+    public BaseClientHttpResponse<ProxyResponse> delete(
             String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -251,7 +278,7 @@ public class RawProxyClient {
             Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
+                return new BaseClientHttpResponse<>(parseSuccessResponse(response, responseBody), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
@@ -275,14 +302,14 @@ public class RawProxyClient {
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> patch(String url64, PatchProxyRequest request) {
+    public BaseClientHttpResponse<ProxyResponse> patch(String url64, PatchProxyRequest request) {
         return patch(url64, request, null);
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public BaseClientHttpResponse<InputStream> patch(
+    public BaseClientHttpResponse<ProxyResponse> patch(
             String url64, PatchProxyRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -314,7 +341,7 @@ public class RawProxyClient {
             Response response = client.newCall(okhttpRequest).execute();
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(new ResponseBodyInputStream(response), response);
+                return new BaseClientHttpResponse<>(parseSuccessResponse(response, responseBody), response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {

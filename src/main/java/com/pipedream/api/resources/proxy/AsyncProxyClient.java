@@ -10,7 +10,7 @@ import com.pipedream.api.resources.proxy.requests.GetProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PatchProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PostProxyRequest;
 import com.pipedream.api.resources.proxy.requests.PutProxyRequest;
-import java.io.InputStream;
+import com.pipedream.api.resources.proxy.types.ProxyResponse;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncProxyClient {
@@ -33,56 +33,57 @@ public class AsyncProxyClient {
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> get(String url64, GetProxyRequest request) {
+    public CompletableFuture<ProxyResponse> get(String url64, GetProxyRequest request) {
         return this.rawClient.get(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> get(String url64, GetProxyRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<ProxyResponse> get(String url64, GetProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.get(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> post(String url64, PostProxyRequest request) {
+    public CompletableFuture<ProxyResponse> post(String url64, PostProxyRequest request) {
         return this.rawClient.post(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> post(String url64, PostProxyRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<ProxyResponse> post(
+            String url64, PostProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.post(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> put(String url64, PutProxyRequest request) {
+    public CompletableFuture<ProxyResponse> put(String url64, PutProxyRequest request) {
         return this.rawClient.put(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> put(String url64, PutProxyRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<ProxyResponse> put(String url64, PutProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.put(url64, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> delete(String url64, DeleteProxyRequest request) {
+    public CompletableFuture<ProxyResponse> delete(String url64, DeleteProxyRequest request) {
         return this.rawClient.delete(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> delete(
+    public CompletableFuture<ProxyResponse> delete(
             String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(url64, request, requestOptions).thenApply(response -> response.body());
     }
@@ -90,14 +91,14 @@ public class AsyncProxyClient {
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> patch(String url64, PatchProxyRequest request) {
+    public CompletableFuture<ProxyResponse> patch(String url64, PatchProxyRequest request) {
         return this.rawClient.patch(url64, request).thenApply(response -> response.body());
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<InputStream> patch(
+    public CompletableFuture<ProxyResponse> patch(
             String url64, PatchProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.patch(url64, request, requestOptions).thenApply(response -> response.body());
     }
