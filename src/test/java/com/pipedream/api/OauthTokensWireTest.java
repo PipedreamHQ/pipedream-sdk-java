@@ -22,10 +22,7 @@ public class OauthTokensWireTest {
     public void setup() throws Exception {
         server = new MockWebServer();
         server.start();
-        client = BaseClient.builder()
-                .url(server.url("/").toString())
-                .token("oauth-test-token")
-                .build();
+        client = BaseClient.builder().url(server.url("/").toString()).build();
     }
 
     @AfterEach
@@ -40,7 +37,6 @@ public class OauthTokensWireTest {
                 .setBody("{\"access_token\":\"access_token\",\"token_type\":\"token_type\",\"expires_in\":1}"));
         CreateOAuthTokenResponse response = client.oauthTokens()
                 .create(CreateOAuthTokenOpts.builder()
-                        .grantType("client_credentials")
                         .clientId("client_id")
                         .clientSecret("client_secret")
                         .build());

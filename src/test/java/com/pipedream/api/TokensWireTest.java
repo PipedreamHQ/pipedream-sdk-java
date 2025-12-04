@@ -22,10 +22,7 @@ public class TokensWireTest {
     public void setup() throws Exception {
         server = new MockWebServer();
         server.start();
-        client = BaseClient.builder()
-                .url(server.url("/").toString())
-                .token("oauth-test-token")
-                .build();
+        client = BaseClient.builder().url(server.url("/").toString()).build();
     }
 
     @AfterEach
