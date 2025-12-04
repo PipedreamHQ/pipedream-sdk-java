@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -48,29 +51,41 @@ public final class ConfigurePropResponse {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("options")
+    @JsonIgnore
     public Optional<List<ConfigurePropOptionsItem>> getOptions() {
+        if (options == null) {
+            return Optional.empty();
+        }
         return options;
     }
 
     /**
      * @return Available options for the configured prop
      */
-    @JsonProperty("string_options")
+    @JsonIgnore
     public Optional<List<String>> getStringOptions() {
+        if (stringOptions == null) {
+            return Optional.empty();
+        }
         return stringOptions;
     }
 
-    @JsonProperty("observations")
+    @JsonIgnore
     public Optional<List<Observation>> getObservations() {
+        if (observations == null) {
+            return Optional.empty();
+        }
         return observations;
     }
 
     /**
      * @return New context after configuring the prop
      */
-    @JsonProperty("context")
+    @JsonIgnore
     public Optional<Map<String, Object>> getContext() {
+        if (context == null) {
+            return Optional.empty();
+        }
         return context;
     }
 
@@ -80,6 +95,30 @@ public final class ConfigurePropResponse {
     @JsonProperty("errors")
     public Optional<List<String>> getErrors() {
         return errors;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("options")
+    private Optional<List<ConfigurePropOptionsItem>> _getOptions() {
+        return options;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("string_options")
+    private Optional<List<String>> _getStringOptions() {
+        return stringOptions;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("observations")
+    private Optional<List<Observation>> _getObservations() {
+        return observations;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("context")
+    private Optional<Map<String, Object>> _getContext() {
+        return context;
     }
 
     @java.lang.Override
@@ -152,6 +191,17 @@ public final class ConfigurePropResponse {
             return this;
         }
 
+        public Builder options(Nullable<List<ConfigurePropOptionsItem>> options) {
+            if (options.isNull()) {
+                this.options = null;
+            } else if (options.isEmpty()) {
+                this.options = Optional.empty();
+            } else {
+                this.options = Optional.of(options.get());
+            }
+            return this;
+        }
+
         /**
          * <p>Available options for the configured prop</p>
          */
@@ -166,6 +216,17 @@ public final class ConfigurePropResponse {
             return this;
         }
 
+        public Builder stringOptions(Nullable<List<String>> stringOptions) {
+            if (stringOptions.isNull()) {
+                this.stringOptions = null;
+            } else if (stringOptions.isEmpty()) {
+                this.stringOptions = Optional.empty();
+            } else {
+                this.stringOptions = Optional.of(stringOptions.get());
+            }
+            return this;
+        }
+
         @JsonSetter(value = "observations", nulls = Nulls.SKIP)
         public Builder observations(Optional<List<Observation>> observations) {
             this.observations = observations;
@@ -174,6 +235,17 @@ public final class ConfigurePropResponse {
 
         public Builder observations(List<Observation> observations) {
             this.observations = Optional.ofNullable(observations);
+            return this;
+        }
+
+        public Builder observations(Nullable<List<Observation>> observations) {
+            if (observations.isNull()) {
+                this.observations = null;
+            } else if (observations.isEmpty()) {
+                this.observations = Optional.empty();
+            } else {
+                this.observations = Optional.of(observations.get());
+            }
             return this;
         }
 
@@ -188,6 +260,17 @@ public final class ConfigurePropResponse {
 
         public Builder context(Map<String, Object> context) {
             this.context = Optional.ofNullable(context);
+            return this;
+        }
+
+        public Builder context(Nullable<Map<String, Object>> context) {
+            if (context.isNull()) {
+                this.context = null;
+            } else if (context.isEmpty()) {
+                this.context = Optional.empty();
+            } else {
+                this.context = Optional.of(context.get());
+            }
             return this;
         }
 

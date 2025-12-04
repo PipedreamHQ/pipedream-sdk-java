@@ -6,7 +6,7 @@ package com.pipedream.api.resources.tokens;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
-import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
+import com.pipedream.api.resources.tokens.requests.ValidateTokensRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
 
@@ -44,14 +44,14 @@ public class TokensClient {
     /**
      * Confirm the validity of a Connect token
      */
-    public ValidateTokenResponse validate(String ctok, TokensValidateRequest request) {
+    public ValidateTokenResponse validate(String ctok, ValidateTokensRequest request) {
         return this.rawClient.validate(ctok, request).body();
     }
 
     /**
      * Confirm the validity of a Connect token
      */
-    public ValidateTokenResponse validate(String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
+    public ValidateTokenResponse validate(String ctok, ValidateTokensRequest request, RequestOptions requestOptions) {
         return this.rawClient.validate(ctok, request, requestOptions).body();
     }
 }

@@ -5,12 +5,12 @@ package com.pipedream.api.resources.proxy;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.proxy.requests.ProxyDeleteRequest;
-import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
-import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
-import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
-import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
-import java.util.Base64;
+import com.pipedream.api.resources.proxy.requests.DeleteProxyRequest;
+import com.pipedream.api.resources.proxy.requests.GetProxyRequest;
+import com.pipedream.api.resources.proxy.requests.PatchProxyRequest;
+import com.pipedream.api.resources.proxy.requests.PostProxyRequest;
+import com.pipedream.api.resources.proxy.requests.PutProxyRequest;
+import java.io.InputStream;
 
 public class ProxyClient {
     protected final ClientOptions clientOptions;
@@ -20,10 +20,6 @@ public class ProxyClient {
     public ProxyClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new RawProxyClient(clientOptions);
-    }
-
-    private String encodeUrl(String url) {
-        return Base64.getUrlEncoder().encodeToString(url.getBytes());
     }
 
     /**
@@ -36,80 +32,70 @@ public class ProxyClient {
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public Object get(String url, ProxyGetRequest request) {
-        final String url64 = encodeUrl(url);
+    public InputStream get(String url64, GetProxyRequest request) {
         return this.rawClient.get(url64, request).body();
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public Object get(String url, ProxyGetRequest request, RequestOptions requestOptions) {
-        final String url64 = encodeUrl(url);
+    public InputStream get(String url64, GetProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.get(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public Object post(String url, ProxyPostRequest request) {
-        final String url64 = encodeUrl(url);
+    public InputStream post(String url64, PostProxyRequest request) {
         return this.rawClient.post(url64, request).body();
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public Object post(String url, ProxyPostRequest request, RequestOptions requestOptions) {
-        final String url64 = encodeUrl(url);
+    public InputStream post(String url64, PostProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.post(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public Object put(String url, ProxyPutRequest request) {
-        final String url64 = encodeUrl(url);
+    public InputStream put(String url64, PutProxyRequest request) {
         return this.rawClient.put(url64, request).body();
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public Object put(String url, ProxyPutRequest request, RequestOptions requestOptions) {
-        final String url64 = encodeUrl(url);
+    public InputStream put(String url64, PutProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.put(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public Object delete(String url, ProxyDeleteRequest request) {
-        final String url64 = encodeUrl(url);
+    public InputStream delete(String url64, DeleteProxyRequest request) {
         return this.rawClient.delete(url64, request).body();
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public Object delete(String url, ProxyDeleteRequest request, RequestOptions requestOptions) {
-        final String url64 = encodeUrl(url);
+    public InputStream delete(String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(url64, request, requestOptions).body();
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public Object patch(String url, ProxyPatchRequest request) {
-        final String url64 = encodeUrl(url);
+    public InputStream patch(String url64, PatchProxyRequest request) {
         return this.rawClient.patch(url64, request).body();
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public Object patch(String url, ProxyPatchRequest request, RequestOptions requestOptions) {
-        final String url64 = encodeUrl(url);
+    public InputStream patch(String url64, PatchProxyRequest request, RequestOptions requestOptions) {
         return this.rawClient.patch(url64, request, requestOptions).body();
     }
 }

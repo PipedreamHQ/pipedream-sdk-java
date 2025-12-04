@@ -5,6 +5,7 @@ package com.pipedream.api.resources.appcategories;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.resources.appcategories.requests.RetrieveAppCategoriesRequest;
 import com.pipedream.api.types.AppCategory;
 import java.util.List;
 
@@ -49,7 +50,14 @@ public class AppCategoriesClient {
     /**
      * Get details of a specific app category by its ID
      */
-    public AppCategory retrieve(String id, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(id, requestOptions).body();
+    public AppCategory retrieve(String id, RetrieveAppCategoriesRequest request) {
+        return this.rawClient.retrieve(id, request).body();
+    }
+
+    /**
+     * Get details of a specific app category by its ID
+     */
+    public AppCategory retrieve(String id, RetrieveAppCategoriesRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(id, request, requestOptions).body();
     }
 }

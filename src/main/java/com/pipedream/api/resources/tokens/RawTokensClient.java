@@ -14,7 +14,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
-import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
+import com.pipedream.api.resources.tokens.requests.ValidateTokensRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
 import java.io.IOException;
@@ -70,12 +70,11 @@ public class RawTokensClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CreateTokenResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, CreateTokenResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -84,11 +83,9 @@ public class RawTokensClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -97,7 +94,7 @@ public class RawTokensClient {
     /**
      * Confirm the validity of a Connect token
      */
-    public BaseClientHttpResponse<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
+    public BaseClientHttpResponse<ValidateTokenResponse> validate(String ctok, ValidateTokensRequest request) {
         return validate(ctok, request, null);
     }
 
@@ -105,7 +102,7 @@ public class RawTokensClient {
      * Confirm the validity of a Connect token
      */
     public BaseClientHttpResponse<ValidateTokenResponse> validate(
-            String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
+            String ctok, ValidateTokensRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/tokens")
@@ -128,12 +125,11 @@ public class RawTokensClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ValidateTokenResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ValidateTokenResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -142,11 +138,9 @@ public class RawTokensClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

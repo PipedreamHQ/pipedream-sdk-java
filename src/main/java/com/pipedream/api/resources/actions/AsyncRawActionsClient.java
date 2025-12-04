@@ -13,16 +13,17 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.actions.requests.ActionsListRequest;
-import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
+import com.pipedream.api.resources.actions.requests.ConfigurePropActionsRequest;
+import com.pipedream.api.resources.actions.requests.ListActionsRequest;
+import com.pipedream.api.resources.actions.requests.ReloadPropsActionsRequest;
+import com.pipedream.api.resources.actions.requests.RetrieveActionsRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import com.pipedream.api.types.RunActionResponse;
 import java.io.IOException;
@@ -52,13 +53,13 @@ public class AsyncRawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
-        return list(ActionsListRequest.builder().build());
+        return list(ListActionsRequest.builder().build());
     }
 
     /**
      * Retrieve available actions with optional search and app filtering
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ActionsListRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ListActionsRequest request) {
         return list(request, null);
     }
 
@@ -66,7 +67,7 @@ public class AsyncRawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
-            ActionsListRequest request, RequestOptions requestOptions) {
+            ListActionsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -90,6 +91,10 @@ public class AsyncRawActionsClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -105,12 +110,13 @@ public class AsyncRawActionsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         GetComponentsResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
-                        ActionsListRequest nextRequest = ActionsListRequest.builder()
+                        ListActionsRequest nextRequest = ListActionsRequest.builder()
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
@@ -129,21 +135,25 @@ public class AsyncRawActionsClient {
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -162,14 +172,14 @@ public class AsyncRawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, ActionsRetrieveRequest.builder().build());
+        return retrieve(componentId, RetrieveActionsRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, ActionsRetrieveRequest request) {
+            String componentId, RetrieveActionsRequest request) {
         return retrieve(componentId, request, null);
     }
 
@@ -177,7 +187,7 @@ public class AsyncRawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
+            String componentId, RetrieveActionsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -203,13 +213,13 @@ public class AsyncRawActionsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         GetComponentResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
                         future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -219,11 +229,9 @@ public class AsyncRawActionsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -241,7 +249,8 @@ public class AsyncRawActionsClient {
     /**
      * Retrieve remote options for a given prop for a action
      */
-    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
+            ConfigurePropActionsRequest request) {
         return configureProp(request, null);
     }
 
@@ -249,17 +258,18 @@ public class AsyncRawActionsClient {
      * Retrieve remote options for a given prop for a action
      */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
+            ConfigurePropActionsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/configure")
+                .addPathSegments("actions")
+                .addPathSegments("configure")
                 .build();
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }
@@ -279,13 +289,13 @@ public class AsyncRawActionsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConfigurePropResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -295,11 +305,9 @@ public class AsyncRawActionsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -317,7 +325,8 @@ public class AsyncRawActionsClient {
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
+            ReloadPropsActionsRequest request) {
         return reloadProps(request, null);
     }
 
@@ -325,17 +334,18 @@ public class AsyncRawActionsClient {
      * Reload the prop definition based on the currently configured props
      */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
-            ReloadPropsOpts request, RequestOptions requestOptions) {
+            ReloadPropsActionsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/props")
+                .addPathSegments("actions")
+                .addPathSegments("props")
                 .build();
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }
@@ -355,13 +365,13 @@ public class AsyncRawActionsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ReloadPropsResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ReloadPropsResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -371,11 +381,9 @@ public class AsyncRawActionsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -406,7 +414,8 @@ public class AsyncRawActionsClient {
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/run")
+                .addPathSegments("actions")
+                .addPathSegments("run")
                 .build();
         RequestBody body;
         try {
@@ -431,13 +440,13 @@ public class AsyncRawActionsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), RunActionResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, RunActionResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -447,11 +456,9 @@ public class AsyncRawActionsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));

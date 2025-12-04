@@ -17,21 +17,30 @@ public final class OAuthTokenSupplier implements Supplier<String> {
 
     private final String clientSecret;
 
+    private final String grantType;
+
+    private final String scope;
+
     private final OauthTokensClient authClient;
 
     private String accessToken;
 
     private Instant expiresAt;
 
-    public OAuthTokenSupplier(String clientId, String clientSecret, OauthTokensClient authClient) {
+    public OAuthTokenSupplier(
+            String clientId, String clientSecret, String grantType, String scope, OauthTokensClient authClient) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.grantType = grantType;
+        this.scope = scope;
         this.authClient = authClient;
         this.expiresAt = Instant.now();
     }
 
     public CreateOAuthTokenResponse fetchToken() {
         CreateOAuthTokenOpts getTokenRequest = CreateOAuthTokenOpts.builder()
+                .grantType(grantType)
+                .scope(scope)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .build();

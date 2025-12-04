@@ -10,6 +10,7 @@ import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.resources.appcategories.requests.RetrieveAppCategoriesRequest;
 import com.pipedream.api.types.AppCategory;
 import java.io.IOException;
 import java.util.List;
@@ -54,18 +55,16 @@ public class RawAppCategoriesClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), new TypeReference<List<AppCategory>>() {}),
+                                responseBodyString, new TypeReference<List<AppCategory>>() {}),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -75,40 +74,46 @@ public class RawAppCategoriesClient {
      * Get details of a specific app category by its ID
      */
     public BaseClientHttpResponse<AppCategory> retrieve(String id) {
-        return retrieve(id, null);
+        return retrieve(id, RetrieveAppCategoriesRequest.builder().build());
     }
 
     /**
      * Get details of a specific app category by its ID
      */
-    public BaseClientHttpResponse<AppCategory> retrieve(String id, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<AppCategory> retrieve(String id, RetrieveAppCategoriesRequest request) {
+        return retrieve(id, request, null);
+    }
+
+    /**
+     * Get details of a specific app category by its ID
+     */
+    public BaseClientHttpResponse<AppCategory> retrieve(
+            String id, RetrieveAppCategoriesRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), AppCategory.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, AppCategory.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
