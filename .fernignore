@@ -20,8 +20,6 @@ src/main/java/com/pipedream/api/PipedreamClient.java
 src/main/java/com/pipedream/api/PipedreamClientBuilder.java
 
 # Custom Proxy files
-src/main/java/com/pipedream/api/resources/proxy/AsyncProxyClient.java
-src/main/java/com/pipedream/api/resources/proxy/ProxyClient.java
 
 # Custom Workflow files
 src/main/java/com/pipedream/api/resources/workflows/AsyncWorkflowsClient.java
