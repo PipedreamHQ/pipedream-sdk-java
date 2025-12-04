@@ -5,6 +5,21 @@
 
 The Pipedream Java library provides convenient access to the Pipedream APIs from Java.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Environments](#environments)
+- [Base Url](#base-url)
+- [Exception Handling](#exception-handling)
+- [Advanced](#advanced)
+  - [Custom Client](#custom-client)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+  - [Custom Headers](#custom-headers)
+- [Contributing](#contributing)
+- [Reference](#reference)
+
 ## Installation
 
 ### Gradle
@@ -25,7 +40,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 

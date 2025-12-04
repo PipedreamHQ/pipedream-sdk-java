@@ -3,7 +3,7 @@ package com.pipedream.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
+import com.pipedream.api.resources.tokens.requests.ValidateTokensRequest;
 import com.pipedream.api.types.ValidateTokenResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -22,7 +22,10 @@ public class TokensWireTest {
     public void setup() throws Exception {
         server = new MockWebServer();
         server.start();
-        client = BaseClient.builder().url(server.url("/").toString()).build();
+        client = BaseClient.builder()
+                .url(server.url("/").toString())
+                .token("oauth-test-token")
+                .build();
     }
 
     @AfterEach
@@ -39,11 +42,7 @@ public class TokensWireTest {
                                 "{\"app\":{\"id\":\"id\",\"name_slug\":\"name_slug\",\"name\":\"name\",\"auth_type\":\"keys\",\"description\":\"description\",\"img_src\":\"img_src\",\"custom_fields_json\":\"custom_fields_json\",\"categories\":[\"categories\"],\"featured_weight\":1.1},\"error\":\"error\",\"error_redirect_uri\":\"error_redirect_uri\",\"oauth_app_id\":\"oauth_app_id\",\"project_app_name\":\"project_app_name\",\"project_environment\":\"project_environment\",\"project_id\":\"project_id\",\"project_support_email\":\"project_support_email\",\"success\":true,\"success_redirect_uri\":\"success_redirect_uri\"}"));
         ValidateTokenResponse response = client.tokens()
                 .validate(
-                        "ctok",
-                        TokensValidateRequest.builder()
-                                .appId("app_id")
-                                .oauthAppId("oauth_app_id")
-                                .build());
+                        "ctok", ValidateTokensRequest.builder().appId("app_id").build());
         RecordedRequest request = server.takeRequest();
         Assertions.assertNotNull(request);
         Assertions.assertEquals("GET", request.getMethod());

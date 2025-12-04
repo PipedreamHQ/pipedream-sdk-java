@@ -6,12 +6,12 @@ package com.pipedream.api.resources.deployedtriggers;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersDeleteRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListEventsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeleteDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListEventsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWebhooksDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.ListWorkflowsDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.RetrieveDeployedTriggersRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -42,7 +42,7 @@ public class AsyncDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public CompletableFuture<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
+    public CompletableFuture<SyncPagingIterable<Emitter>> list(ListDeployedTriggersRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
@@ -50,14 +50,14 @@ public class AsyncDeployedTriggersClient {
      * Retrieve all deployed triggers for a specific external user
      */
     public CompletableFuture<SyncPagingIterable<Emitter>> list(
-            DeployedTriggersListRequest request, RequestOptions requestOptions) {
+            ListDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public CompletableFuture<Emitter> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
+    public CompletableFuture<Emitter> retrieve(String triggerId, RetrieveDeployedTriggersRequest request) {
         return this.rawClient.retrieve(triggerId, request).thenApply(response -> response.body());
     }
 
@@ -65,7 +65,7 @@ public class AsyncDeployedTriggersClient {
      * Get details of a specific deployed trigger by its ID
      */
     public CompletableFuture<Emitter> retrieve(
-            String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
+            String triggerId, RetrieveDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -87,7 +87,7 @@ public class AsyncDeployedTriggersClient {
     /**
      * Remove a deployed trigger and stop receiving events
      */
-    public CompletableFuture<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
+    public CompletableFuture<Void> delete(String triggerId, DeleteDeployedTriggersRequest request) {
         return this.rawClient.delete(triggerId, request).thenApply(response -> response.body());
     }
 
@@ -95,7 +95,7 @@ public class AsyncDeployedTriggersClient {
      * Remove a deployed trigger and stop receiving events
      */
     public CompletableFuture<Void> delete(
-            String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
+            String triggerId, DeleteDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.delete(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -103,7 +103,7 @@ public class AsyncDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public CompletableFuture<List<EmittedEvent>> listEvents(
-            String triggerId, DeployedTriggersListEventsRequest request) {
+            String triggerId, ListEventsDeployedTriggersRequest request) {
         return this.rawClient.listEvents(triggerId, request).thenApply(response -> response.body());
     }
 
@@ -111,7 +111,7 @@ public class AsyncDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public CompletableFuture<List<EmittedEvent>> listEvents(
-            String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListEventsDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listEvents(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -119,7 +119,7 @@ public class AsyncDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public CompletableFuture<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, DeployedTriggersListWorkflowsRequest request) {
+            String triggerId, ListWorkflowsDeployedTriggersRequest request) {
         return this.rawClient.listWorkflows(triggerId, request).thenApply(response -> response.body());
     }
 
@@ -127,7 +127,7 @@ public class AsyncDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public CompletableFuture<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWorkflowsDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWorkflows(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -153,7 +153,7 @@ public class AsyncDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public CompletableFuture<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, DeployedTriggersListWebhooksRequest request) {
+            String triggerId, ListWebhooksDeployedTriggersRequest request) {
         return this.rawClient.listWebhooks(triggerId, request).thenApply(response -> response.body());
     }
 
@@ -161,7 +161,7 @@ public class AsyncDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public CompletableFuture<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
+            String triggerId, ListWebhooksDeployedTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.listWebhooks(triggerId, request, requestOptions).thenApply(response -> response.body());
     }
 

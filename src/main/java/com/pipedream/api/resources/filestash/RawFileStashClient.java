@@ -13,7 +13,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
+import com.pipedream.api.resources.filestash.requests.DownloadFileFileStashRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import okhttp3.Headers;
@@ -33,7 +33,7 @@ public class RawFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public BaseClientHttpResponse<InputStream> downloadFile(FileStashDownloadFileRequest request) {
+    public BaseClientHttpResponse<InputStream> downloadFile(DownloadFileFileStashRequest request) {
         return downloadFile(request, null);
     }
 
@@ -41,7 +41,7 @@ public class RawFileStashClient {
      * Download a file from File Stash
      */
     public BaseClientHttpResponse<InputStream> downloadFile(
-            FileStashDownloadFileRequest request, RequestOptions requestOptions) {
+            DownloadFileFileStashRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

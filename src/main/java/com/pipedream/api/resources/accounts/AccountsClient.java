@@ -6,9 +6,11 @@ package com.pipedream.api.resources.accounts;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
-import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
+import com.pipedream.api.resources.accounts.requests.DeleteAccountsRequest;
+import com.pipedream.api.resources.accounts.requests.DeleteByAppAccountsRequest;
+import com.pipedream.api.resources.accounts.requests.ListAccountsRequest;
+import com.pipedream.api.resources.accounts.requests.RetrieveAccountsRequest;
 import com.pipedream.api.types.Account;
 
 public class AccountsClient {
@@ -38,14 +40,14 @@ public class AccountsClient {
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
-    public SyncPagingIterable<Account> list(AccountsListRequest request) {
+    public SyncPagingIterable<Account> list(ListAccountsRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
-    public SyncPagingIterable<Account> list(AccountsListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Account> list(ListAccountsRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
@@ -73,14 +75,14 @@ public class AccountsClient {
     /**
      * Get the details for a specific connected account
      */
-    public Account retrieve(String accountId, AccountsRetrieveRequest request) {
+    public Account retrieve(String accountId, RetrieveAccountsRequest request) {
         return this.rawClient.retrieve(accountId, request).body();
     }
 
     /**
      * Get the details for a specific connected account
      */
-    public Account retrieve(String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
+    public Account retrieve(String accountId, RetrieveAccountsRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(accountId, request, requestOptions).body();
     }
 
@@ -94,8 +96,15 @@ public class AccountsClient {
     /**
      * Remove a connected account and its associated credentials
      */
-    public void delete(String accountId, RequestOptions requestOptions) {
-        this.rawClient.delete(accountId, requestOptions).body();
+    public void delete(String accountId, DeleteAccountsRequest request) {
+        this.rawClient.delete(accountId, request).body();
+    }
+
+    /**
+     * Remove a connected account and its associated credentials
+     */
+    public void delete(String accountId, DeleteAccountsRequest request, RequestOptions requestOptions) {
+        this.rawClient.delete(accountId, request, requestOptions).body();
     }
 
     /**
@@ -108,7 +117,14 @@ public class AccountsClient {
     /**
      * Remove all connected accounts for a specific app
      */
-    public void deleteByApp(String appId, RequestOptions requestOptions) {
-        this.rawClient.deleteByApp(appId, requestOptions).body();
+    public void deleteByApp(String appId, DeleteByAppAccountsRequest request) {
+        this.rawClient.deleteByApp(appId, request).body();
+    }
+
+    /**
+     * Remove all connected accounts for a specific app
+     */
+    public void deleteByApp(String appId, DeleteByAppAccountsRequest request, RequestOptions requestOptions) {
+        this.rawClient.deleteByApp(appId, request, requestOptions).body();
     }
 }

@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,64 +70,88 @@ public final class ValidateTokenResponse {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("app")
+    @JsonIgnore
     public Optional<App> getApp() {
+        if (app == null) {
+            return Optional.empty();
+        }
         return app;
     }
 
     /**
      * @return Error message if validation failed
      */
-    @JsonProperty("error")
+    @JsonIgnore
     public Optional<String> getError() {
+        if (error == null) {
+            return Optional.empty();
+        }
         return error;
     }
 
     /**
      * @return URI to redirect to on error
      */
-    @JsonProperty("error_redirect_uri")
+    @JsonIgnore
     public Optional<String> getErrorRedirectUri() {
+        if (errorRedirectUri == null) {
+            return Optional.empty();
+        }
         return errorRedirectUri;
     }
 
     /**
      * @return OAuth app ID if applicable
      */
-    @JsonProperty("oauth_app_id")
+    @JsonIgnore
     public Optional<String> getOauthAppId() {
+        if (oauthAppId == null) {
+            return Optional.empty();
+        }
         return oauthAppId;
     }
 
     /**
      * @return Name of the project app
      */
-    @JsonProperty("project_app_name")
+    @JsonIgnore
     public Optional<String> getProjectAppName() {
+        if (projectAppName == null) {
+            return Optional.empty();
+        }
         return projectAppName;
     }
 
     /**
      * @return Environment of the project
      */
-    @JsonProperty("project_environment")
+    @JsonIgnore
     public Optional<String> getProjectEnvironment() {
+        if (projectEnvironment == null) {
+            return Optional.empty();
+        }
         return projectEnvironment;
     }
 
     /**
      * @return ID of the project
      */
-    @JsonProperty("project_id")
+    @JsonIgnore
     public Optional<String> getProjectId() {
+        if (projectId == null) {
+            return Optional.empty();
+        }
         return projectId;
     }
 
     /**
      * @return Support email for the project
      */
-    @JsonProperty("project_support_email")
+    @JsonIgnore
     public Optional<String> getProjectSupportEmail() {
+        if (projectSupportEmail == null) {
+            return Optional.empty();
+        }
         return projectSupportEmail;
     }
 
@@ -139,8 +166,65 @@ public final class ValidateTokenResponse {
     /**
      * @return URI to redirect to on success
      */
-    @JsonProperty("success_redirect_uri")
+    @JsonIgnore
     public Optional<String> getSuccessRedirectUri() {
+        if (successRedirectUri == null) {
+            return Optional.empty();
+        }
+        return successRedirectUri;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("app")
+    private Optional<App> _getApp() {
+        return app;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("error")
+    private Optional<String> _getError() {
+        return error;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("error_redirect_uri")
+    private Optional<String> _getErrorRedirectUri() {
+        return errorRedirectUri;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("oauth_app_id")
+    private Optional<String> _getOauthAppId() {
+        return oauthAppId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("project_app_name")
+    private Optional<String> _getProjectAppName() {
+        return projectAppName;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("project_environment")
+    private Optional<String> _getProjectEnvironment() {
+        return projectEnvironment;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("project_id")
+    private Optional<String> _getProjectId() {
+        return projectId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("project_support_email")
+    private Optional<String> _getProjectSupportEmail() {
+        return projectSupportEmail;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("success_redirect_uri")
+    private Optional<String> _getSuccessRedirectUri() {
         return successRedirectUri;
     }
 
@@ -208,12 +292,16 @@ public final class ValidateTokenResponse {
 
         _FinalStage app(App app);
 
+        _FinalStage app(Nullable<App> app);
+
         /**
          * <p>Error message if validation failed</p>
          */
         _FinalStage error(Optional<String> error);
 
         _FinalStage error(String error);
+
+        _FinalStage error(Nullable<String> error);
 
         /**
          * <p>URI to redirect to on error</p>
@@ -222,12 +310,16 @@ public final class ValidateTokenResponse {
 
         _FinalStage errorRedirectUri(String errorRedirectUri);
 
+        _FinalStage errorRedirectUri(Nullable<String> errorRedirectUri);
+
         /**
          * <p>OAuth app ID if applicable</p>
          */
         _FinalStage oauthAppId(Optional<String> oauthAppId);
 
         _FinalStage oauthAppId(String oauthAppId);
+
+        _FinalStage oauthAppId(Nullable<String> oauthAppId);
 
         /**
          * <p>Name of the project app</p>
@@ -236,12 +328,16 @@ public final class ValidateTokenResponse {
 
         _FinalStage projectAppName(String projectAppName);
 
+        _FinalStage projectAppName(Nullable<String> projectAppName);
+
         /**
          * <p>Environment of the project</p>
          */
         _FinalStage projectEnvironment(Optional<String> projectEnvironment);
 
         _FinalStage projectEnvironment(String projectEnvironment);
+
+        _FinalStage projectEnvironment(Nullable<String> projectEnvironment);
 
         /**
          * <p>ID of the project</p>
@@ -250,6 +346,8 @@ public final class ValidateTokenResponse {
 
         _FinalStage projectId(String projectId);
 
+        _FinalStage projectId(Nullable<String> projectId);
+
         /**
          * <p>Support email for the project</p>
          */
@@ -257,12 +355,16 @@ public final class ValidateTokenResponse {
 
         _FinalStage projectSupportEmail(String projectSupportEmail);
 
+        _FinalStage projectSupportEmail(Nullable<String> projectSupportEmail);
+
         /**
          * <p>URI to redirect to on success</p>
          */
         _FinalStage successRedirectUri(Optional<String> successRedirectUri);
 
         _FinalStage successRedirectUri(String successRedirectUri);
+
+        _FinalStage successRedirectUri(Nullable<String> successRedirectUri);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -324,6 +426,22 @@ public final class ValidateTokenResponse {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage successRedirectUri(Nullable<String> successRedirectUri) {
+            if (successRedirectUri.isNull()) {
+                this.successRedirectUri = null;
+            } else if (successRedirectUri.isEmpty()) {
+                this.successRedirectUri = Optional.empty();
+            } else {
+                this.successRedirectUri = Optional.of(successRedirectUri.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>URI to redirect to on success</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage successRedirectUri(String successRedirectUri) {
             this.successRedirectUri = Optional.ofNullable(successRedirectUri);
             return this;
@@ -336,6 +454,22 @@ public final class ValidateTokenResponse {
         @JsonSetter(value = "success_redirect_uri", nulls = Nulls.SKIP)
         public _FinalStage successRedirectUri(Optional<String> successRedirectUri) {
             this.successRedirectUri = successRedirectUri;
+            return this;
+        }
+
+        /**
+         * <p>Support email for the project</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectSupportEmail(Nullable<String> projectSupportEmail) {
+            if (projectSupportEmail.isNull()) {
+                this.projectSupportEmail = null;
+            } else if (projectSupportEmail.isEmpty()) {
+                this.projectSupportEmail = Optional.empty();
+            } else {
+                this.projectSupportEmail = Optional.of(projectSupportEmail.get());
+            }
             return this;
         }
 
@@ -364,6 +498,22 @@ public final class ValidateTokenResponse {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage projectId(Nullable<String> projectId) {
+            if (projectId.isNull()) {
+                this.projectId = null;
+            } else if (projectId.isEmpty()) {
+                this.projectId = Optional.empty();
+            } else {
+                this.projectId = Optional.of(projectId.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>ID of the project</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage projectId(String projectId) {
             this.projectId = Optional.ofNullable(projectId);
             return this;
@@ -376,6 +526,22 @@ public final class ValidateTokenResponse {
         @JsonSetter(value = "project_id", nulls = Nulls.SKIP)
         public _FinalStage projectId(Optional<String> projectId) {
             this.projectId = projectId;
+            return this;
+        }
+
+        /**
+         * <p>Environment of the project</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage projectEnvironment(Nullable<String> projectEnvironment) {
+            if (projectEnvironment.isNull()) {
+                this.projectEnvironment = null;
+            } else if (projectEnvironment.isEmpty()) {
+                this.projectEnvironment = Optional.empty();
+            } else {
+                this.projectEnvironment = Optional.of(projectEnvironment.get());
+            }
             return this;
         }
 
@@ -404,6 +570,22 @@ public final class ValidateTokenResponse {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage projectAppName(Nullable<String> projectAppName) {
+            if (projectAppName.isNull()) {
+                this.projectAppName = null;
+            } else if (projectAppName.isEmpty()) {
+                this.projectAppName = Optional.empty();
+            } else {
+                this.projectAppName = Optional.of(projectAppName.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Name of the project app</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage projectAppName(String projectAppName) {
             this.projectAppName = Optional.ofNullable(projectAppName);
             return this;
@@ -416,6 +598,22 @@ public final class ValidateTokenResponse {
         @JsonSetter(value = "project_app_name", nulls = Nulls.SKIP)
         public _FinalStage projectAppName(Optional<String> projectAppName) {
             this.projectAppName = projectAppName;
+            return this;
+        }
+
+        /**
+         * <p>OAuth app ID if applicable</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(Nullable<String> oauthAppId) {
+            if (oauthAppId.isNull()) {
+                this.oauthAppId = null;
+            } else if (oauthAppId.isEmpty()) {
+                this.oauthAppId = Optional.empty();
+            } else {
+                this.oauthAppId = Optional.of(oauthAppId.get());
+            }
             return this;
         }
 
@@ -444,6 +642,22 @@ public final class ValidateTokenResponse {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage errorRedirectUri(Nullable<String> errorRedirectUri) {
+            if (errorRedirectUri.isNull()) {
+                this.errorRedirectUri = null;
+            } else if (errorRedirectUri.isEmpty()) {
+                this.errorRedirectUri = Optional.empty();
+            } else {
+                this.errorRedirectUri = Optional.of(errorRedirectUri.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>URI to redirect to on error</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage errorRedirectUri(String errorRedirectUri) {
             this.errorRedirectUri = Optional.ofNullable(errorRedirectUri);
             return this;
@@ -464,6 +678,22 @@ public final class ValidateTokenResponse {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage error(Nullable<String> error) {
+            if (error.isNull()) {
+                this.error = null;
+            } else if (error.isEmpty()) {
+                this.error = Optional.empty();
+            } else {
+                this.error = Optional.of(error.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Error message if validation failed</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage error(String error) {
             this.error = Optional.ofNullable(error);
             return this;
@@ -476,6 +706,18 @@ public final class ValidateTokenResponse {
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public _FinalStage error(Optional<String> error) {
             this.error = error;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage app(Nullable<App> app) {
+            if (app.isNull()) {
+                this.app = null;
+            } else if (app.isEmpty()) {
+                this.app = Optional.empty();
+            } else {
+                this.app = Optional.of(app.get());
+            }
             return this;
         }
 

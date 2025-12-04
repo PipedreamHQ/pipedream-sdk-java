@@ -6,12 +6,12 @@ package com.pipedream.api.resources.components;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.components.requests.ComponentsListRequest;
-import com.pipedream.api.resources.components.requests.ComponentsRetrieveRequest;
+import com.pipedream.api.resources.components.requests.ConfigurePropComponentsRequest;
+import com.pipedream.api.resources.components.requests.ListComponentsRequest;
+import com.pipedream.api.resources.components.requests.ReloadPropsComponentsRequest;
+import com.pipedream.api.resources.components.requests.RetrieveComponentsRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 
 public class ComponentsClient {
@@ -41,14 +41,14 @@ public class ComponentsClient {
     /**
      * Retrieve available components with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(ComponentsListRequest request) {
+    public SyncPagingIterable<Component> list(ListComponentsRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve available components with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(ComponentsListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Component> list(ListComponentsRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
@@ -62,42 +62,42 @@ public class ComponentsClient {
     /**
      * Get detailed configuration for a specific component by its key
      */
-    public Component retrieve(String componentId, ComponentsRetrieveRequest request) {
+    public Component retrieve(String componentId, RetrieveComponentsRequest request) {
         return this.rawClient.retrieve(componentId, request).body();
     }
 
     /**
      * Get detailed configuration for a specific component by its key
      */
-    public Component retrieve(String componentId, ComponentsRetrieveRequest request, RequestOptions requestOptions) {
+    public Component retrieve(String componentId, RetrieveComponentsRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a component
      */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+    public ConfigurePropResponse configureProp(ConfigurePropComponentsRequest request) {
         return this.rawClient.configureProp(request).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a component
      */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+    public ConfigurePropResponse configureProp(ConfigurePropComponentsRequest request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+    public ReloadPropsResponse reloadProps(ReloadPropsComponentsRequest request) {
         return this.rawClient.reloadProps(request).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+    public ReloadPropsResponse reloadProps(ReloadPropsComponentsRequest request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 }

@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +66,11 @@ public final class ReloadPropsOpts {
     /**
      * @return Optional component version (in SemVer format, for example '1.0.0'), defaults to latest
      */
-    @JsonProperty("version")
+    @JsonIgnore
     public Optional<String> getVersion() {
+        if (version == null) {
+            return Optional.empty();
+        }
         return version;
     }
 
@@ -95,6 +101,12 @@ public final class ReloadPropsOpts {
     @JsonProperty("dynamic_props_id")
     public Optional<String> getDynamicPropsId() {
         return dynamicPropsId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("version")
+    private Optional<String> _getVersion() {
+        return version;
     }
 
     @java.lang.Override
@@ -157,6 +169,8 @@ public final class ReloadPropsOpts {
         _FinalStage version(Optional<String> version);
 
         _FinalStage version(String version);
+
+        _FinalStage version(Nullable<String> version);
 
         /**
          * <p>Whether this operation should block until completion</p>
@@ -281,6 +295,22 @@ public final class ReloadPropsOpts {
         @JsonSetter(value = "blocking", nulls = Nulls.SKIP)
         public _FinalStage blocking(Optional<Boolean> blocking) {
             this.blocking = blocking;
+            return this;
+        }
+
+        /**
+         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(Nullable<String> version) {
+            if (version.isNull()) {
+                this.version = null;
+            } else if (version.isEmpty()) {
+                this.version = Optional.empty();
+            } else {
+                this.version = Optional.of(version.get());
+            }
             return this;
         }
 
