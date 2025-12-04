@@ -57,7 +57,7 @@ public class AsyncRawProxyClient {
         ProxyResponse proxyBody;
         if (isJsonContentType(contentType)) {
             try {
-                String responseBodyString = responseBody != null ? responseBody.string() : "null";
+                String responseBodyString = responseBody.string();
                 Object parsed = ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
                 proxyBody = ProxyResponse.json(parsed, contentTypeString);
             } catch (JsonProcessingException e) {
@@ -75,6 +75,7 @@ public class AsyncRawProxyClient {
                 proxyBody = ProxyResponse.stream(new ResponseBodyInputStream(response), contentTypeString);
             } catch (IOException e) {
                 future.completeExceptionally(new BaseClientException("Error creating response stream", e));
+                response.close();
                 return;
             }
         }

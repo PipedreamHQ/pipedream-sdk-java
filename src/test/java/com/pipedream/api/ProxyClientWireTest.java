@@ -1,7 +1,15 @@
 package com.pipedream.api;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.types.ProxyResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -9,15 +17,6 @@ import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ProxyClientWireTest {
     private MockWebServer server;
@@ -84,25 +83,26 @@ public class ProxyClientWireTest {
                 .setHeader("Content-Type", "application/json")
                 .setBody(jsonBody));
 
-        ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest());
+        try (ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest())) {
 
-        // Verify response type
-        assertTrue(response.isJson(), "Response should be JSON");
-        assertFalse(response.isStream(), "Response should not be a stream");
+            // Verify response type
+            assertTrue(response.isJson(), "Response should be JSON");
+            assertFalse(response.isStream(), "Response should not be a stream");
 
-        // Verify parsed JSON content
-        Object json = response.json();
-        assertNotNull(json, "JSON body should not be null");
-        assertInstanceOf(Map.class, json, "JSON body should be a Map");
+            // Verify parsed JSON content
+            Object json = response.json();
+            assertNotNull(json, "JSON body should not be null");
+            assertInstanceOf(Map.class, json, "JSON body should be a Map");
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> jsonMap = (Map<String, Object>) json;
-        assertEquals("value", jsonMap.get("key"));
-        assertEquals(42, jsonMap.get("number"));
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) json;
+            assertEquals("value", jsonMap.get("key"));
+            assertEquals(42, jsonMap.get("number"));
 
-        // Verify content type is preserved
-        assertTrue(response.getContentType().isPresent());
-        assertEquals("application/json", response.getContentType().get());
+            // Verify content type is preserved
+            assertTrue(response.getContentType().isPresent());
+            assertEquals("application/json", response.getContentType().get());
+        }
 
         // Verify request was made correctly
         RecordedRequest request = server.takeRequest();
@@ -111,26 +111,27 @@ public class ProxyClientWireTest {
     }
 
     @Test
-    public void testGetJsonResponseWithCharset() {
+    public void testGetJsonResponseWithCharset() throws Exception {
         String jsonBody = "{\"message\":\"hello\"}";
         server.enqueue(new MockResponse()
                 .setResponseCode(200)
                 .setHeader("Content-Type", "application/json; charset=utf-8")
                 .setBody(jsonBody));
 
-        ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest());
+        try (ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest())) {
 
-        // Should still be detected as JSON even with charset parameter
-        assertTrue(response.isJson(), "Response should be JSON even with charset");
+            // Should still be detected as JSON even with charset parameter
+            assertTrue(response.isJson(), "Response should be JSON even with charset");
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> jsonMap = (Map<String, Object>) response.json();
-        assertEquals("hello", jsonMap.get("message"));
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals("hello", jsonMap.get("message"));
+        }
     }
 
     @Test
     public void testGetOctetStreamResponse() throws Exception {
-        byte[] binaryData = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05};
+        byte[] binaryData = new byte[] {0x00, 0x01, 0x02, 0x03, 0x04, 0x05};
         Buffer buffer = new Buffer();
         buffer.write(binaryData);
 
@@ -176,15 +177,16 @@ public class ProxyClientWireTest {
                 .setHeader("Content-Type", "application/json")
                 .setBody(jsonBody));
 
-        ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest());
+        try (ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest())) {
 
-        // Verify we got the final response (redirect was followed)
-        assertTrue(response.isJson(), "Response should be JSON after redirect");
+            // Verify we got the final response (redirect was followed)
+            assertTrue(response.isJson(), "Response should be JSON after redirect");
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> jsonMap = (Map<String, Object>) response.json();
-        assertEquals(true, jsonMap.get("redirected"));
-        assertEquals("success", jsonMap.get("status"));
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals(true, jsonMap.get("redirected"));
+            assertEquals("success", jsonMap.get("status"));
+        }
 
         // Verify both requests were made (original + redirect)
         RecordedRequest firstRequest = server.takeRequest();
@@ -209,17 +211,18 @@ public class ProxyClientWireTest {
                 .setBody(jsonBody));
 
         CompletableFuture<ProxyResponse> future = asyncClient.proxy().get(TEST_URL, createGetRequest());
-        ProxyResponse response = future.get(10, TimeUnit.SECONDS);
+        try (ProxyResponse response = future.get(10, TimeUnit.SECONDS)) {
 
-        // Verify response type
-        assertTrue(response.isJson(), "Response should be JSON");
-        assertFalse(response.isStream(), "Response should not be a stream");
+            // Verify response type
+            assertTrue(response.isJson(), "Response should be JSON");
+            assertFalse(response.isStream(), "Response should not be a stream");
 
-        // Verify parsed JSON content
-        @SuppressWarnings("unchecked")
-        Map<String, Object> jsonMap = (Map<String, Object>) response.json();
-        assertEquals(true, jsonMap.get("async"));
-        assertEquals("test", jsonMap.get("data"));
+            // Verify parsed JSON content
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals(true, jsonMap.get("async"));
+            assertEquals("test", jsonMap.get("data"));
+        }
 
         // Verify request was made correctly
         RecordedRequest request = server.takeRequest();
@@ -229,7 +232,7 @@ public class ProxyClientWireTest {
 
     @Test
     public void testAsyncGetOctetStreamResponse() throws Exception {
-        byte[] binaryData = new byte[]{(byte) 0xFF, (byte) 0xFE, (byte) 0xFD};
+        byte[] binaryData = new byte[] {(byte) 0xFF, (byte) 0xFE, (byte) 0xFD};
         Buffer buffer = new Buffer();
         buffer.write(binaryData);
 
@@ -273,14 +276,15 @@ public class ProxyClientWireTest {
                 .setBody(jsonBody));
 
         CompletableFuture<ProxyResponse> future = asyncClient.proxy().get(TEST_URL, createGetRequest());
-        ProxyResponse response = future.get(10, TimeUnit.SECONDS);
+        try (ProxyResponse response = future.get(10, TimeUnit.SECONDS)) {
 
-        // Verify we got the final response (redirect was followed)
-        assertTrue(response.isJson(), "Response should be JSON after redirect");
+            // Verify we got the final response (redirect was followed)
+            assertTrue(response.isJson(), "Response should be JSON after redirect");
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> jsonMap = (Map<String, Object>) response.json();
-        assertEquals(true, jsonMap.get("asyncRedirected"));
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals(true, jsonMap.get("asyncRedirected"));
+        }
 
         // Verify both requests were made (original + redirect)
         RecordedRequest firstRequest = server.takeRequest();

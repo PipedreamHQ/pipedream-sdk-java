@@ -48,7 +48,7 @@ public class RawProxyClient {
         MediaType contentType = responseBody != null ? responseBody.contentType() : null;
         String contentTypeString = contentType != null ? contentType.toString() : null;
         if (isJsonContentType(contentType)) {
-            String responseBodyString = responseBody != null ? responseBody.string() : "null";
+            String responseBodyString = responseBody.string();
             try {
                 Object parsed = ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
                 return ProxyResponse.json(parsed, contentTypeString);
