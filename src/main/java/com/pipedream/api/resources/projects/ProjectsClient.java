@@ -5,14 +5,6 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
-import com.pipedream.api.resources.projects.requests.DeleteProjectsRequest;
-import com.pipedream.api.resources.projects.requests.ListProjectsRequest;
-import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
-import com.pipedream.api.resources.projects.requests.RetrieveProjectsRequest;
-import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
-import com.pipedream.api.types.Project;
 import com.pipedream.api.types.ProjectInfoResponse;
 
 public class ProjectsClient {
@@ -33,97 +25,6 @@ public class ProjectsClient {
     }
 
     /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public SyncPagingIterable<Project> list() {
-        return this.rawClient.list().body();
-    }
-
-    /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public SyncPagingIterable<Project> list(ListProjectsRequest request) {
-        return this.rawClient.list(request).body();
-    }
-
-    /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public SyncPagingIterable<Project> list(ListProjectsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(request, requestOptions).body();
-    }
-
-    /**
-     * Create a new project for the authenticated workspace
-     */
-    public Project create(CreateProjectOpts request) {
-        return this.rawClient.create(request).body();
-    }
-
-    /**
-     * Create a new project for the authenticated workspace
-     */
-    public Project create(CreateProjectOpts request, RequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).body();
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public Project retrieve() {
-        return this.rawClient.retrieve().body();
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public Project retrieve(RetrieveProjectsRequest request) {
-        return this.rawClient.retrieve(request).body();
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public Project retrieve(RetrieveProjectsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(request, requestOptions).body();
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public void delete() {
-        this.rawClient.delete().body();
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public void delete(DeleteProjectsRequest request) {
-        this.rawClient.delete(request).body();
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public void delete(DeleteProjectsRequest request, RequestOptions requestOptions) {
-        this.rawClient.delete(request, requestOptions).body();
-    }
-
-    /**
-     * Upload or replace the project logo
-     */
-    public void update(UpdateProjectLogoOpts request) {
-        this.rawClient.update(request).body();
-    }
-
-    /**
-     * Upload or replace the project logo
-     */
-    public void update(UpdateProjectLogoOpts request, RequestOptions requestOptions) {
-        this.rawClient.update(request, requestOptions).body();
-    }
-
-    /**
      * Retrieve project configuration and environment details
      */
     public ProjectInfoResponse retrieveInfo() {
@@ -133,14 +34,7 @@ public class ProjectsClient {
     /**
      * Retrieve project configuration and environment details
      */
-    public ProjectInfoResponse retrieveInfo(RetrieveInfoProjectsRequest request) {
-        return this.rawClient.retrieveInfo(request).body();
-    }
-
-    /**
-     * Retrieve project configuration and environment details
-     */
-    public ProjectInfoResponse retrieveInfo(RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.retrieveInfo(request, requestOptions).body();
+    public ProjectInfoResponse retrieveInfo(RequestOptions requestOptions) {
+        return this.rawClient.retrieveInfo(requestOptions).body();
     }
 }

@@ -6,8 +6,7 @@ package com.pipedream.api.resources.apps;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.apps.requests.ListAppsRequest;
-import com.pipedream.api.resources.apps.requests.RetrieveAppsRequest;
+import com.pipedream.api.resources.apps.requests.AppsListRequest;
 import com.pipedream.api.types.App;
 import com.pipedream.api.types.GetAppResponse;
 
@@ -38,14 +37,14 @@ public class AppsClient {
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
-    public SyncPagingIterable<App> list(ListAppsRequest request) {
+    public SyncPagingIterable<App> list(AppsListRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
-    public SyncPagingIterable<App> list(ListAppsRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<App> list(AppsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
@@ -59,14 +58,7 @@ public class AppsClient {
     /**
      * Get detailed information about a specific app by ID or name slug
      */
-    public GetAppResponse retrieve(String appId, RetrieveAppsRequest request) {
-        return this.rawClient.retrieve(appId, request).body();
-    }
-
-    /**
-     * Get detailed information about a specific app by ID or name slug
-     */
-    public GetAppResponse retrieve(String appId, RetrieveAppsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(appId, request, requestOptions).body();
+    public GetAppResponse retrieve(String appId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(appId, requestOptions).body();
     }
 }

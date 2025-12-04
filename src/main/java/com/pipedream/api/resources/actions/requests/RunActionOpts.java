@@ -5,15 +5,12 @@ package com.pipedream.api.resources.actions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.types.ConfiguredPropValue;
 import com.pipedream.api.types.RunActionOptsStashId;
@@ -68,11 +65,8 @@ public final class RunActionOpts {
     /**
      * @return Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest
      */
-    @JsonIgnore
+    @JsonProperty("version")
     public Optional<String> getVersion() {
-        if (version == null) {
-            return Optional.empty();
-        }
         return version;
     }
 
@@ -97,23 +91,8 @@ public final class RunActionOpts {
         return dynamicPropsId;
     }
 
-    @JsonIgnore
-    public Optional<RunActionOptsStashId> getStashId() {
-        if (stashId == null) {
-            return Optional.empty();
-        }
-        return stashId;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("version")
-    private Optional<String> _getVersion() {
-        return version;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("stash_id")
-    private Optional<RunActionOptsStashId> _getStashId() {
+    public Optional<RunActionOptsStashId> getStashId() {
         return stashId;
     }
 
@@ -178,8 +157,6 @@ public final class RunActionOpts {
 
         _FinalStage version(String version);
 
-        _FinalStage version(Nullable<String> version);
-
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
         _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
@@ -194,8 +171,6 @@ public final class RunActionOpts {
         _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
 
         _FinalStage stashId(RunActionOptsStashId stashId);
-
-        _FinalStage stashId(Nullable<RunActionOptsStashId> stashId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -253,18 +228,6 @@ public final class RunActionOpts {
         }
 
         @java.lang.Override
-        public _FinalStage stashId(Nullable<RunActionOptsStashId> stashId) {
-            if (stashId.isNull()) {
-                this.stashId = null;
-            } else if (stashId.isEmpty()) {
-                this.stashId = Optional.empty();
-            } else {
-                this.stashId = Optional.of(stashId.get());
-            }
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage stashId(RunActionOptsStashId stashId) {
             this.stashId = Optional.ofNullable(stashId);
             return this;
@@ -307,22 +270,6 @@ public final class RunActionOpts {
         @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
         public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
             this.configuredProps = configuredProps;
-            return this;
-        }
-
-        /**
-         * <p>Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage version(Nullable<String> version) {
-            if (version.isNull()) {
-                this.version = null;
-            } else if (version.isEmpty()) {
-                this.version = Optional.empty();
-            } else {
-                this.version = Optional.of(version.get());
-            }
             return this;
         }
 

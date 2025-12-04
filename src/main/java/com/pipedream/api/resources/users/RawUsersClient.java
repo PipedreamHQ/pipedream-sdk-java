@@ -11,7 +11,6 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.users.requests.DeleteExternalUserUsersRequest;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -31,23 +30,13 @@ public class RawUsersClient {
      * Remove an external user and all their associated accounts and resources
      */
     public BaseClientHttpResponse<Void> deleteExternalUser(String externalUserId) {
-        return deleteExternalUser(
-                externalUserId, DeleteExternalUserUsersRequest.builder().build());
+        return deleteExternalUser(externalUserId, null);
     }
 
     /**
      * Remove an external user and all their associated accounts and resources
      */
-    public BaseClientHttpResponse<Void> deleteExternalUser(
-            String externalUserId, DeleteExternalUserUsersRequest request) {
-        return deleteExternalUser(externalUserId, request, null);
-    }
-
-    /**
-     * Remove an external user and all their associated accounts and resources
-     */
-    public BaseClientHttpResponse<Void> deleteExternalUser(
-            String externalUserId, DeleteExternalUserUsersRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<Void> deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -55,12 +44,12 @@ public class RawUsersClient {
                 .addPathSegments("users")
                 .addPathSegment(externalUserId)
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

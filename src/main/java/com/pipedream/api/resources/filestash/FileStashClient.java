@@ -5,7 +5,7 @@ package com.pipedream.api.resources.filestash;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.filestash.requests.DownloadFileFileStashRequest;
+import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
 import java.io.InputStream;
 
 public class FileStashClient {
@@ -28,14 +28,14 @@ public class FileStashClient {
     /**
      * Download a file from File Stash
      */
-    public InputStream downloadFile(DownloadFileFileStashRequest request) {
+    public InputStream downloadFile(FileStashDownloadFileRequest request) {
         return this.rawClient.downloadFile(request).body();
     }
 
     /**
      * Download a file from File Stash
      */
-    public InputStream downloadFile(DownloadFileFileStashRequest request, RequestOptions requestOptions) {
+    public InputStream downloadFile(FileStashDownloadFileRequest request, RequestOptions requestOptions) {
         return this.rawClient.downloadFile(request, requestOptions).body();
     }
 }

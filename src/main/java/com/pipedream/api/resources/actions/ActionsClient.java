@@ -6,13 +6,13 @@ package com.pipedream.api.resources.actions;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.actions.requests.ConfigurePropActionsRequest;
-import com.pipedream.api.resources.actions.requests.ListActionsRequest;
-import com.pipedream.api.resources.actions.requests.ReloadPropsActionsRequest;
-import com.pipedream.api.resources.actions.requests.RetrieveActionsRequest;
+import com.pipedream.api.resources.actions.requests.ActionsListRequest;
+import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
+import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
+import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import com.pipedream.api.types.RunActionResponse;
 
@@ -43,14 +43,14 @@ public class ActionsClient {
     /**
      * Retrieve available actions with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(ListActionsRequest request) {
+    public SyncPagingIterable<Component> list(ActionsListRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve available actions with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(ListActionsRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Component> list(ActionsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
@@ -64,42 +64,42 @@ public class ActionsClient {
     /**
      * Get detailed configuration for a specific action by its key
      */
-    public Component retrieve(String componentId, RetrieveActionsRequest request) {
+    public Component retrieve(String componentId, ActionsRetrieveRequest request) {
         return this.rawClient.retrieve(componentId, request).body();
     }
 
     /**
      * Get detailed configuration for a specific action by its key
      */
-    public Component retrieve(String componentId, RetrieveActionsRequest request, RequestOptions requestOptions) {
+    public Component retrieve(String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a action
      */
-    public ConfigurePropResponse configureProp(ConfigurePropActionsRequest request) {
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a action
      */
-    public ConfigurePropResponse configureProp(ConfigurePropActionsRequest request, RequestOptions requestOptions) {
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsActionsRequest request) {
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsActionsRequest request, RequestOptions requestOptions) {
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 

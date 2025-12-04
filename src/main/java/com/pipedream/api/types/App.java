@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,11 +69,8 @@ public final class App {
     /**
      * @return ID of the app. Only applies for OAuth apps.
      */
-    @JsonIgnore
+    @JsonProperty("id")
     public Optional<String> getId() {
-        if (id == null) {
-            return Optional.empty();
-        }
         return id;
     }
 
@@ -96,22 +90,16 @@ public final class App {
         return name;
     }
 
-    @JsonIgnore
+    @JsonProperty("auth_type")
     public Optional<AppAuthType> getAuthType() {
-        if (authType == null) {
-            return Optional.empty();
-        }
         return authType;
     }
 
     /**
      * @return A short description of the app
      */
-    @JsonIgnore
+    @JsonProperty("description")
     public Optional<String> getDescription() {
-        if (description == null) {
-            return Optional.empty();
-        }
         return description;
     }
 
@@ -126,11 +114,8 @@ public final class App {
     /**
      * @return A JSON string representing the custom fields for the app
      */
-    @JsonIgnore
+    @JsonProperty("custom_fields_json")
     public Optional<String> getCustomFieldsJson() {
-        if (customFieldsJson == null) {
-            return Optional.empty();
-        }
         return customFieldsJson;
     }
 
@@ -148,30 +133,6 @@ public final class App {
     @JsonProperty("featured_weight")
     public double getFeaturedWeight() {
         return featuredWeight;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("id")
-    private Optional<String> _getId() {
-        return id;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("auth_type")
-    private Optional<AppAuthType> _getAuthType() {
-        return authType;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("description")
-    private Optional<String> _getDescription() {
-        return description;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("custom_fields_json")
-    private Optional<String> _getCustomFieldsJson() {
-        return customFieldsJson;
     }
 
     @java.lang.Override
@@ -260,13 +221,9 @@ public final class App {
 
         _FinalStage id(String id);
 
-        _FinalStage id(Nullable<String> id);
-
         _FinalStage authType(Optional<AppAuthType> authType);
 
         _FinalStage authType(AppAuthType authType);
-
-        _FinalStage authType(Nullable<AppAuthType> authType);
 
         /**
          * <p>A short description of the app</p>
@@ -275,16 +232,12 @@ public final class App {
 
         _FinalStage description(String description);
 
-        _FinalStage description(Nullable<String> description);
-
         /**
          * <p>A JSON string representing the custom fields for the app</p>
          */
         _FinalStage customFieldsJson(Optional<String> customFieldsJson);
 
         _FinalStage customFieldsJson(String customFieldsJson);
-
-        _FinalStage customFieldsJson(Nullable<String> customFieldsJson);
 
         /**
          * <p>Categories associated with the app</p>
@@ -424,22 +377,6 @@ public final class App {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage customFieldsJson(Nullable<String> customFieldsJson) {
-            if (customFieldsJson.isNull()) {
-                this.customFieldsJson = null;
-            } else if (customFieldsJson.isEmpty()) {
-                this.customFieldsJson = Optional.empty();
-            } else {
-                this.customFieldsJson = Optional.of(customFieldsJson.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>A JSON string representing the custom fields for the app</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
         public _FinalStage customFieldsJson(String customFieldsJson) {
             this.customFieldsJson = Optional.ofNullable(customFieldsJson);
             return this;
@@ -452,22 +389,6 @@ public final class App {
         @JsonSetter(value = "custom_fields_json", nulls = Nulls.SKIP)
         public _FinalStage customFieldsJson(Optional<String> customFieldsJson) {
             this.customFieldsJson = customFieldsJson;
-            return this;
-        }
-
-        /**
-         * <p>A short description of the app</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(Nullable<String> description) {
-            if (description.isNull()) {
-                this.description = null;
-            } else if (description.isEmpty()) {
-                this.description = Optional.empty();
-            } else {
-                this.description = Optional.of(description.get());
-            }
             return this;
         }
 
@@ -492,18 +413,6 @@ public final class App {
         }
 
         @java.lang.Override
-        public _FinalStage authType(Nullable<AppAuthType> authType) {
-            if (authType.isNull()) {
-                this.authType = null;
-            } else if (authType.isEmpty()) {
-                this.authType = Optional.empty();
-            } else {
-                this.authType = Optional.of(authType.get());
-            }
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage authType(AppAuthType authType) {
             this.authType = Optional.ofNullable(authType);
             return this;
@@ -513,22 +422,6 @@ public final class App {
         @JsonSetter(value = "auth_type", nulls = Nulls.SKIP)
         public _FinalStage authType(Optional<AppAuthType> authType) {
             this.authType = authType;
-            return this;
-        }
-
-        /**
-         * <p>ID of the app. Only applies for OAuth apps.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage id(Nullable<String> id) {
-            if (id.isNull()) {
-                this.id = null;
-            } else if (id.isEmpty()) {
-                this.id = Optional.empty();
-            } else {
-                this.id = Optional.of(id.get());
-            }
             return this;
         }
 

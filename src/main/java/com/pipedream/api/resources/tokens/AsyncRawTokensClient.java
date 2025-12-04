@@ -14,7 +14,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.tokens.requests.CreateTokenOpts;
-import com.pipedream.api.resources.tokens.requests.ValidateTokensRequest;
+import com.pipedream.api.resources.tokens.requests.TokensValidateRequest;
 import com.pipedream.api.types.CreateTokenResponse;
 import com.pipedream.api.types.ValidateTokenResponse;
 import java.io.IOException;
@@ -117,7 +117,7 @@ public class AsyncRawTokensClient {
      * Confirm the validity of a Connect token
      */
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
-            String ctok, ValidateTokensRequest request) {
+            String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
     }
 
@@ -125,7 +125,7 @@ public class AsyncRawTokensClient {
      * Confirm the validity of a Connect token
      */
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
-            String ctok, ValidateTokensRequest request, RequestOptions requestOptions) {
+            String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/tokens")

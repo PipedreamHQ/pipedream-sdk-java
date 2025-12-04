@@ -8,31 +8,15 @@ import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
-import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
-import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.errors.BadRequestError;
-import com.pipedream.api.errors.NotFoundError;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
-import com.pipedream.api.resources.projects.requests.DeleteProjectsRequest;
-import com.pipedream.api.resources.projects.requests.ListProjectsRequest;
-import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
-import com.pipedream.api.resources.projects.requests.RetrieveProjectsRequest;
-import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
-import com.pipedream.api.types.ListProjectsResponse;
-import com.pipedream.api.types.Project;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -44,359 +28,28 @@ public class RawProjectsClient {
     }
 
     /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public BaseClientHttpResponse<SyncPagingIterable<Project>> list() {
-        return list(ListProjectsRequest.builder().build());
-    }
-
-    /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public BaseClientHttpResponse<SyncPagingIterable<Project>> list(ListProjectsRequest request) {
-        return list(request, null);
-    }
-
-    /**
-     * List the projects that are available to the authenticated Connect client
-     */
-    public BaseClientHttpResponse<SyncPagingIterable<Project>> list(
-            ListProjectsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect/projects");
-        if (request.getAfter().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "after", request.getAfter().get(), false);
-        }
-        if (request.getBefore().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "before", request.getBefore().get(), false);
-        }
-        if (request.getLimit().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "limit", request.getLimit().get(), false);
-        }
-        if (request.getQ().isPresent()) {
-            QueryStringMapper.addQueryParameter(httpUrl, "q", request.getQ().get(), false);
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                ListProjectsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListProjectsResponse.class);
-                Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
-                ListProjectsRequest nextRequest = ListProjectsRequest.builder()
-                        .from(request)
-                        .after(startingAfter)
-                        .build();
-                List<Project> result = parsedResponse.getData();
-                return new BaseClientHttpResponse<>(
-                        new SyncPagingIterable<Project>(startingAfter.isPresent(), result, parsedResponse, () -> list(
-                                        nextRequest, requestOptions)
-                                .body()),
-                        response);
-            }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            try {
-                switch (response.code()) {
-                    case 404:
-                        throw new NotFoundError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                    case 429:
-                        throw new TooManyRequestsError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
-        } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Create a new project for the authenticated workspace
-     */
-    public BaseClientHttpResponse<Project> create(CreateProjectOpts request) {
-        return create(request, null);
-    }
-
-    /**
-     * Create a new project for the authenticated workspace
-     */
-    public BaseClientHttpResponse<Project> create(CreateProjectOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect/projects")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new BaseClientException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Project.class), response);
-            }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
-        } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public BaseClientHttpResponse<Project> retrieve() {
-        return retrieve(RetrieveProjectsRequest.builder().build());
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public BaseClientHttpResponse<Project> retrieve(RetrieveProjectsRequest request) {
-        return retrieve(request, null);
-    }
-
-    /**
-     * Get the project details for a specific project
-     */
-    public BaseClientHttpResponse<Project> retrieve(RetrieveProjectsRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect/projects")
-                .addPathSegment(clientOptions.projectId())
-                .build();
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Project.class), response);
-            }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
-        } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public BaseClientHttpResponse<Void> delete() {
-        return delete(DeleteProjectsRequest.builder().build());
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public BaseClientHttpResponse<Void> delete(DeleteProjectsRequest request) {
-        return delete(request, null);
-    }
-
-    /**
-     * Delete a project owned by the authenticated workspace
-     */
-    public BaseClientHttpResponse<Void> delete(DeleteProjectsRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect/projects")
-                .addPathSegment(clientOptions.projectId())
-                .build();
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(null, response);
-            }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
-        } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
-     * Upload or replace the project logo
-     */
-    public BaseClientHttpResponse<Void> update(UpdateProjectLogoOpts request) {
-        return update(request, null);
-    }
-
-    /**
-     * Upload or replace the project logo
-     */
-    public BaseClientHttpResponse<Void> update(UpdateProjectLogoOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect/projects")
-                .addPathSegment(clientOptions.projectId())
-                .addPathSegments("logo")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new BaseClientException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        try (Response response = client.newCall(okhttpRequest).execute()) {
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return new BaseClientHttpResponse<>(null, response);
-            }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-            try {
-                switch (response.code()) {
-                    case 400:
-                        throw new BadRequestError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                    case 429:
-                        throw new TooManyRequestsError(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
-                }
-            } catch (JsonProcessingException ignored) {
-                // unable to map error response, throwing generic error
-            }
-            throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
-        } catch (IOException e) {
-            throw new BaseClientException("Network error executing HTTP request", e);
-        }
-    }
-
-    /**
      * Retrieve project configuration and environment details
      */
     public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo() {
-        return retrieveInfo(RetrieveInfoProjectsRequest.builder().build());
+        return retrieveInfo(null);
     }
 
     /**
      * Retrieve project configuration and environment details
      */
-    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RetrieveInfoProjectsRequest request) {
-        return retrieveInfo(request, null);
-    }
-
-    /**
-     * Retrieve project configuration and environment details
-     */
-    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(
-            RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("projects/info")
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

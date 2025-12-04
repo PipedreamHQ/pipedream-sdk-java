@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -92,11 +89,8 @@ public final class Account {
     /**
      * @return The custom name of the account if set.
      */
-    @JsonIgnore
+    @JsonProperty("name")
     public Optional<String> getName() {
-        if (name == null) {
-            return Optional.empty();
-        }
         return name;
     }
 
@@ -119,11 +113,8 @@ public final class Account {
     /**
      * @return Indicates if the account is no longer active
      */
-    @JsonIgnore
+    @JsonProperty("dead")
     public Optional<Boolean> getDead() {
-        if (dead == null) {
-            return Optional.empty();
-        }
         return dead;
     }
 
@@ -151,11 +142,8 @@ public final class Account {
     /**
      * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request
      */
-    @JsonIgnore
+    @JsonProperty("credentials")
     public Optional<Map<String, Object>> getCredentials() {
-        if (credentials == null) {
-            return Optional.empty();
-        }
         return credentials;
     }
 
@@ -170,11 +158,8 @@ public final class Account {
     /**
      * @return The error message if the account is unhealthy or dead, null otherwise
      */
-    @JsonIgnore
+    @JsonProperty("error")
     public Optional<String> getError() {
-        if (error == null) {
-            return Optional.empty();
-        }
         return error;
     }
 
@@ -189,41 +174,8 @@ public final class Account {
     /**
      * @return The date and time the account will next be refreshed, an ISO 8601 formatted string
      */
-    @JsonIgnore
-    public Optional<OffsetDateTime> getNextRefreshAt() {
-        if (nextRefreshAt == null) {
-            return Optional.empty();
-        }
-        return nextRefreshAt;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("name")
-    private Optional<String> _getName() {
-        return name;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("dead")
-    private Optional<Boolean> _getDead() {
-        return dead;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("credentials")
-    private Optional<Map<String, Object>> _getCredentials() {
-        return credentials;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("error")
-    private Optional<String> _getError() {
-        return error;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("next_refresh_at")
-    private Optional<OffsetDateTime> _getNextRefreshAt() {
+    public Optional<OffsetDateTime> getNextRefreshAt() {
         return nextRefreshAt;
     }
 
@@ -297,8 +249,6 @@ public final class Account {
 
         _FinalStage name(String name);
 
-        _FinalStage name(Nullable<String> name);
-
         /**
          * <p>The external ID associated with the account.</p>
          */
@@ -319,8 +269,6 @@ public final class Account {
         _FinalStage dead(Optional<Boolean> dead);
 
         _FinalStage dead(Boolean dead);
-
-        _FinalStage dead(Nullable<Boolean> dead);
 
         _FinalStage app(Optional<App> app);
 
@@ -347,8 +295,6 @@ public final class Account {
 
         _FinalStage credentials(Map<String, Object> credentials);
 
-        _FinalStage credentials(Nullable<Map<String, Object>> credentials);
-
         /**
          * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
          */
@@ -363,8 +309,6 @@ public final class Account {
 
         _FinalStage error(String error);
 
-        _FinalStage error(Nullable<String> error);
-
         /**
          * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
          */
@@ -378,8 +322,6 @@ public final class Account {
         _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt);
 
         _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt);
-
-        _FinalStage nextRefreshAt(Nullable<OffsetDateTime> nextRefreshAt);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -445,22 +387,6 @@ public final class Account {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage nextRefreshAt(Nullable<OffsetDateTime> nextRefreshAt) {
-            if (nextRefreshAt.isNull()) {
-                this.nextRefreshAt = null;
-            } else if (nextRefreshAt.isEmpty()) {
-                this.nextRefreshAt = Optional.empty();
-            } else {
-                this.nextRefreshAt = Optional.of(nextRefreshAt.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
         public _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt) {
             this.nextRefreshAt = Optional.ofNullable(nextRefreshAt);
             return this;
@@ -501,22 +427,6 @@ public final class Account {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage error(Nullable<String> error) {
-            if (error.isNull()) {
-                this.error = null;
-            } else if (error.isEmpty()) {
-                this.error = Optional.empty();
-            } else {
-                this.error = Optional.of(error.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
         public _FinalStage error(String error) {
             this.error = Optional.ofNullable(error);
             return this;
@@ -549,22 +459,6 @@ public final class Account {
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt) {
             this.expiresAt = expiresAt;
-            return this;
-        }
-
-        /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage credentials(Nullable<Map<String, Object>> credentials) {
-            if (credentials.isNull()) {
-                this.credentials = null;
-            } else if (credentials.isEmpty()) {
-                this.credentials = Optional.empty();
-            } else {
-                this.credentials = Optional.of(credentials.get());
-            }
             return this;
         }
 
@@ -646,22 +540,6 @@ public final class Account {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage dead(Nullable<Boolean> dead) {
-            if (dead.isNull()) {
-                this.dead = null;
-            } else if (dead.isEmpty()) {
-                this.dead = Optional.empty();
-            } else {
-                this.dead = Optional.of(dead.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>Indicates if the account is no longer active</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
         public _FinalStage dead(Boolean dead) {
             this.dead = Optional.ofNullable(dead);
             return this;
@@ -714,22 +592,6 @@ public final class Account {
         @JsonSetter(value = "external_id", nulls = Nulls.SKIP)
         public _FinalStage externalId(Optional<String> externalId) {
             this.externalId = externalId;
-            return this;
-        }
-
-        /**
-         * <p>The custom name of the account if set.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage name(Nullable<String> name) {
-            if (name.isNull()) {
-                this.name = null;
-            } else if (name.isEmpty()) {
-                this.name = Optional.empty();
-            } else {
-                this.name = Optional.of(name.get());
-            }
             return this;
         }
 

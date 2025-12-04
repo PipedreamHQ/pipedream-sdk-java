@@ -10,7 +10,6 @@ import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.appcategories.requests.RetrieveAppCategoriesRequest;
 import com.pipedream.api.types.AppCategory;
 import java.io.IOException;
 import java.util.List;
@@ -93,33 +92,24 @@ public class AsyncRawAppCategoriesClient {
      * Get details of a specific app category by its ID
      */
     public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(String id) {
-        return retrieve(id, RetrieveAppCategoriesRequest.builder().build());
+        return retrieve(id, null);
     }
 
     /**
      * Get details of a specific app category by its ID
      */
-    public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(
-            String id, RetrieveAppCategoriesRequest request) {
-        return retrieve(id, request, null);
-    }
-
-    /**
-     * Get details of a specific app category by its ID
-     */
-    public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(
-            String id, RetrieveAppCategoriesRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<AppCategory>> retrieve(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/app_categories")
                 .addPathSegment(id)
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

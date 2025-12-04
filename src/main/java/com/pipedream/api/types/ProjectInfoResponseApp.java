@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +36,8 @@ public final class ProjectInfoResponseApp {
     /**
      * @return ID of the app. Only applies for OAuth apps.
      */
-    @JsonIgnore
+    @JsonProperty("id")
     public Optional<String> getId() {
-        if (id == null) {
-            return Optional.empty();
-        }
         return id;
     }
 
@@ -53,12 +47,6 @@ public final class ProjectInfoResponseApp {
     @JsonProperty("name_slug")
     public Optional<String> getNameSlug() {
         return nameSlug;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("id")
-    private Optional<String> _getId() {
-        return id;
     }
 
     @java.lang.Override
@@ -118,17 +106,6 @@ public final class ProjectInfoResponseApp {
 
         public Builder id(String id) {
             this.id = Optional.ofNullable(id);
-            return this;
-        }
-
-        public Builder id(Nullable<String> id) {
-            if (id.isNull()) {
-                this.id = null;
-            } else if (id.isEmpty()) {
-                this.id = Optional.empty();
-            } else {
-                this.id = Optional.of(id.get());
-            }
             return this;
         }
 

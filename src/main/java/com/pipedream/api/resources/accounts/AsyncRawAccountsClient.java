@@ -14,11 +14,9 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
+import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
-import com.pipedream.api.resources.accounts.requests.DeleteAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.DeleteByAppAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.ListAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.RetrieveAccountsRequest;
 import com.pipedream.api.types.Account;
 import com.pipedream.api.types.ListAccountsResponse;
 import java.io.IOException;
@@ -48,13 +46,13 @@ public class AsyncRawAccountsClient {
      * Retrieve all connected accounts for the project with optional filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list() {
-        return list(ListAccountsRequest.builder().build());
+        return list(AccountsListRequest.builder().build());
     }
 
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(ListAccountsRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(AccountsListRequest request) {
         return list(request, null);
     }
 
@@ -62,7 +60,7 @@ public class AsyncRawAccountsClient {
      * Retrieve all connected accounts for the project with optional filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Account>>> list(
-            ListAccountsRequest request, RequestOptions requestOptions) {
+            AccountsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -118,7 +116,7 @@ public class AsyncRawAccountsClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListAccountsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
-                        ListAccountsRequest nextRequest = ListAccountsRequest.builder()
+                        AccountsListRequest nextRequest = AccountsListRequest.builder()
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
@@ -252,14 +250,14 @@ public class AsyncRawAccountsClient {
      * Get the details for a specific connected account
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(String accountId) {
-        return retrieve(accountId, RetrieveAccountsRequest.builder().build());
+        return retrieve(accountId, AccountsRetrieveRequest.builder().build());
     }
 
     /**
      * Get the details for a specific connected account
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
-            String accountId, RetrieveAccountsRequest request) {
+            String accountId, AccountsRetrieveRequest request) {
         return retrieve(accountId, request, null);
     }
 
@@ -267,7 +265,7 @@ public class AsyncRawAccountsClient {
      * Get the details for a specific connected account
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> retrieve(
-            String accountId, RetrieveAccountsRequest request, RequestOptions requestOptions) {
+            String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -334,21 +332,13 @@ public class AsyncRawAccountsClient {
      * Remove a connected account and its associated credentials
      */
     public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId) {
-        return delete(accountId, DeleteAccountsRequest.builder().build());
+        return delete(accountId, null);
     }
 
     /**
      * Remove a connected account and its associated credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId, DeleteAccountsRequest request) {
-        return delete(accountId, request, null);
-    }
-
-    /**
-     * Remove a connected account and its associated credentials
-     */
-    public CompletableFuture<BaseClientHttpResponse<Void>> delete(
-            String accountId, DeleteAccountsRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> delete(String accountId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -356,12 +346,12 @@ public class AsyncRawAccountsClient {
                 .addPathSegments("accounts")
                 .addPathSegment(accountId)
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -408,22 +398,13 @@ public class AsyncRawAccountsClient {
      * Remove all connected accounts for a specific app
      */
     public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId) {
-        return deleteByApp(appId, DeleteByAppAccountsRequest.builder().build());
+        return deleteByApp(appId, null);
     }
 
     /**
      * Remove all connected accounts for a specific app
      */
-    public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(
-            String appId, DeleteByAppAccountsRequest request) {
-        return deleteByApp(appId, request, null);
-    }
-
-    /**
-     * Remove all connected accounts for a specific app
-     */
-    public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(
-            String appId, DeleteByAppAccountsRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<BaseClientHttpResponse<Void>> deleteByApp(String appId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -432,12 +413,12 @@ public class AsyncRawAccountsClient {
                 .addPathSegment(appId)
                 .addPathSegments("accounts")
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Accept", "application/json")
+                .build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

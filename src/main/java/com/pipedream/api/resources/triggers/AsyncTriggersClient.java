@@ -6,14 +6,14 @@ package com.pipedream.api.resources.triggers;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.triggers.requests.ConfigurePropTriggersRequest;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
-import com.pipedream.api.resources.triggers.requests.ListTriggersRequest;
-import com.pipedream.api.resources.triggers.requests.ReloadPropsTriggersRequest;
-import com.pipedream.api.resources.triggers.requests.RetrieveTriggersRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
+import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
 import com.pipedream.api.types.Component;
+import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.Emitter;
+import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,7 +44,7 @@ public class AsyncTriggersClient {
     /**
      * Retrieve available triggers with optional search and app filtering
      */
-    public CompletableFuture<SyncPagingIterable<Component>> list(ListTriggersRequest request) {
+    public CompletableFuture<SyncPagingIterable<Component>> list(TriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
@@ -52,7 +52,7 @@ public class AsyncTriggersClient {
      * Retrieve available triggers with optional search and app filtering
      */
     public CompletableFuture<SyncPagingIterable<Component>> list(
-            ListTriggersRequest request, RequestOptions requestOptions) {
+            TriggersListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -66,7 +66,7 @@ public class AsyncTriggersClient {
     /**
      * Get detailed configuration for a specific trigger by its key
      */
-    public CompletableFuture<Component> retrieve(String componentId, RetrieveTriggersRequest request) {
+    public CompletableFuture<Component> retrieve(String componentId, TriggersRetrieveRequest request) {
         return this.rawClient.retrieve(componentId, request).thenApply(response -> response.body());
     }
 
@@ -74,14 +74,14 @@ public class AsyncTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<Component> retrieve(
-            String componentId, RetrieveTriggersRequest request, RequestOptions requestOptions) {
+            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Retrieve remote options for a given prop for a trigger
      */
-    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropTriggersRequest request) {
+    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
         return this.rawClient.configureProp(request).thenApply(response -> response.body());
     }
 
@@ -89,22 +89,21 @@ public class AsyncTriggersClient {
      * Retrieve remote options for a given prop for a trigger
      */
     public CompletableFuture<ConfigurePropResponse> configureProp(
-            ConfigurePropTriggersRequest request, RequestOptions requestOptions) {
+            ConfigurePropOpts request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsTriggersRequest request) {
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
         return this.rawClient.reloadProps(request).thenApply(response -> response.body());
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(
-            ReloadPropsTriggersRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
     }
 

@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,62 +94,26 @@ public final class Component {
     /**
      * @return A description of the component
      */
-    @JsonIgnore
+    @JsonProperty("description")
     public Optional<String> getDescription() {
-        if (description == null) {
-            return Optional.empty();
-        }
         return description;
     }
 
     /**
      * @return The type of component (trigger or action)
      */
-    @JsonIgnore
-    public Optional<String> getComponentType() {
-        if (componentType == null) {
-            return Optional.empty();
-        }
-        return componentType;
-    }
-
-    @JsonIgnore
-    public Optional<ComponentStash> getStash() {
-        if (stash == null) {
-            return Optional.empty();
-        }
-        return stash;
-    }
-
-    @JsonIgnore
-    public Optional<ToolAnnotations> getAnnotations() {
-        if (annotations == null) {
-            return Optional.empty();
-        }
-        return annotations;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("description")
-    private Optional<String> _getDescription() {
-        return description;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("component_type")
-    private Optional<String> _getComponentType() {
+    public Optional<String> getComponentType() {
         return componentType;
     }
 
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("stash")
-    private Optional<ComponentStash> _getStash() {
+    public Optional<ComponentStash> getStash() {
         return stash;
     }
 
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("annotations")
-    private Optional<ToolAnnotations> _getAnnotations() {
+    public Optional<ToolAnnotations> getAnnotations() {
         return annotations;
     }
 
@@ -239,8 +200,6 @@ public final class Component {
 
         _FinalStage description(String description);
 
-        _FinalStage description(Nullable<String> description);
-
         /**
          * <p>The type of component (trigger or action)</p>
          */
@@ -248,19 +207,13 @@ public final class Component {
 
         _FinalStage componentType(String componentType);
 
-        _FinalStage componentType(Nullable<String> componentType);
-
         _FinalStage stash(Optional<ComponentStash> stash);
 
         _FinalStage stash(ComponentStash stash);
 
-        _FinalStage stash(Nullable<ComponentStash> stash);
-
         _FinalStage annotations(Optional<ToolAnnotations> annotations);
 
         _FinalStage annotations(ToolAnnotations annotations);
-
-        _FinalStage annotations(Nullable<ToolAnnotations> annotations);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -336,18 +289,6 @@ public final class Component {
         }
 
         @java.lang.Override
-        public _FinalStage annotations(Nullable<ToolAnnotations> annotations) {
-            if (annotations.isNull()) {
-                this.annotations = null;
-            } else if (annotations.isEmpty()) {
-                this.annotations = Optional.empty();
-            } else {
-                this.annotations = Optional.of(annotations.get());
-            }
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage annotations(ToolAnnotations annotations) {
             this.annotations = Optional.ofNullable(annotations);
             return this;
@@ -357,18 +298,6 @@ public final class Component {
         @JsonSetter(value = "annotations", nulls = Nulls.SKIP)
         public _FinalStage annotations(Optional<ToolAnnotations> annotations) {
             this.annotations = annotations;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage stash(Nullable<ComponentStash> stash) {
-            if (stash.isNull()) {
-                this.stash = null;
-            } else if (stash.isEmpty()) {
-                this.stash = Optional.empty();
-            } else {
-                this.stash = Optional.of(stash.get());
-            }
             return this;
         }
 
@@ -390,22 +319,6 @@ public final class Component {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage componentType(Nullable<String> componentType) {
-            if (componentType.isNull()) {
-                this.componentType = null;
-            } else if (componentType.isEmpty()) {
-                this.componentType = Optional.empty();
-            } else {
-                this.componentType = Optional.of(componentType.get());
-            }
-            return this;
-        }
-
-        /**
-         * <p>The type of component (trigger or action)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
         public _FinalStage componentType(String componentType) {
             this.componentType = Optional.ofNullable(componentType);
             return this;
@@ -418,22 +331,6 @@ public final class Component {
         @JsonSetter(value = "component_type", nulls = Nulls.SKIP)
         public _FinalStage componentType(Optional<String> componentType) {
             this.componentType = componentType;
-            return this;
-        }
-
-        /**
-         * <p>A description of the component</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(Nullable<String> description) {
-            if (description.isNull()) {
-                this.description = null;
-            } else if (description.isEmpty()) {
-                this.description = Optional.empty();
-            } else {
-                this.description = Optional.of(description.get());
-            }
             return this;
         }
 

@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,85 +50,40 @@ public final class ToolAnnotations {
     /**
      * @return If true, the component may perform destructive updates to its environment. If false, the component performs only additive updates.
      */
-    @JsonIgnore
+    @JsonProperty("destructiveHint")
     public Optional<Boolean> getDestructiveHint() {
-        if (destructiveHint == null) {
-            return Optional.empty();
-        }
         return destructiveHint;
     }
 
     /**
      * @return If true, calling the component repeatedly with the same arguments will have no additional effect on the its environment.
      */
-    @JsonIgnore
+    @JsonProperty("idempotentHint")
     public Optional<Boolean> getIdempotentHint() {
-        if (idempotentHint == null) {
-            return Optional.empty();
-        }
         return idempotentHint;
     }
 
     /**
      * @return If true, this component may interact with an “open world” of external entities. If false, the component's domain of interaction is closed. For example, the world of a web search component is open, whereas that of a memory component is not.
      */
-    @JsonIgnore
+    @JsonProperty("openWorldHint")
     public Optional<Boolean> getOpenWorldHint() {
-        if (openWorldHint == null) {
-            return Optional.empty();
-        }
         return openWorldHint;
     }
 
     /**
      * @return If true, the component does not modify its environment.
      */
-    @JsonIgnore
+    @JsonProperty("readOnlyHint")
     public Optional<Boolean> getReadOnlyHint() {
-        if (readOnlyHint == null) {
-            return Optional.empty();
-        }
         return readOnlyHint;
     }
 
     /**
      * @return A human-readable title for the component.
      */
-    @JsonIgnore
-    public Optional<String> getTitle() {
-        if (title == null) {
-            return Optional.empty();
-        }
-        return title;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("destructiveHint")
-    private Optional<Boolean> _getDestructiveHint() {
-        return destructiveHint;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("idempotentHint")
-    private Optional<Boolean> _getIdempotentHint() {
-        return idempotentHint;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("openWorldHint")
-    private Optional<Boolean> _getOpenWorldHint() {
-        return openWorldHint;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
-    @JsonProperty("readOnlyHint")
-    private Optional<Boolean> _getReadOnlyHint() {
-        return readOnlyHint;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("title")
-    private Optional<String> _getTitle() {
+    public Optional<String> getTitle() {
         return title;
     }
 
@@ -209,17 +161,6 @@ public final class ToolAnnotations {
             return this;
         }
 
-        public Builder destructiveHint(Nullable<Boolean> destructiveHint) {
-            if (destructiveHint.isNull()) {
-                this.destructiveHint = null;
-            } else if (destructiveHint.isEmpty()) {
-                this.destructiveHint = Optional.empty();
-            } else {
-                this.destructiveHint = Optional.of(destructiveHint.get());
-            }
-            return this;
-        }
-
         /**
          * <p>If true, calling the component repeatedly with the same arguments will have no additional effect on the its environment.</p>
          */
@@ -231,17 +172,6 @@ public final class ToolAnnotations {
 
         public Builder idempotentHint(Boolean idempotentHint) {
             this.idempotentHint = Optional.ofNullable(idempotentHint);
-            return this;
-        }
-
-        public Builder idempotentHint(Nullable<Boolean> idempotentHint) {
-            if (idempotentHint.isNull()) {
-                this.idempotentHint = null;
-            } else if (idempotentHint.isEmpty()) {
-                this.idempotentHint = Optional.empty();
-            } else {
-                this.idempotentHint = Optional.of(idempotentHint.get());
-            }
             return this;
         }
 
@@ -259,17 +189,6 @@ public final class ToolAnnotations {
             return this;
         }
 
-        public Builder openWorldHint(Nullable<Boolean> openWorldHint) {
-            if (openWorldHint.isNull()) {
-                this.openWorldHint = null;
-            } else if (openWorldHint.isEmpty()) {
-                this.openWorldHint = Optional.empty();
-            } else {
-                this.openWorldHint = Optional.of(openWorldHint.get());
-            }
-            return this;
-        }
-
         /**
          * <p>If true, the component does not modify its environment.</p>
          */
@@ -284,17 +203,6 @@ public final class ToolAnnotations {
             return this;
         }
 
-        public Builder readOnlyHint(Nullable<Boolean> readOnlyHint) {
-            if (readOnlyHint.isNull()) {
-                this.readOnlyHint = null;
-            } else if (readOnlyHint.isEmpty()) {
-                this.readOnlyHint = Optional.empty();
-            } else {
-                this.readOnlyHint = Optional.of(readOnlyHint.get());
-            }
-            return this;
-        }
-
         /**
          * <p>A human-readable title for the component.</p>
          */
@@ -306,17 +214,6 @@ public final class ToolAnnotations {
 
         public Builder title(String title) {
             this.title = Optional.ofNullable(title);
-            return this;
-        }
-
-        public Builder title(Nullable<String> title) {
-            if (title.isNull()) {
-                this.title = null;
-            } else if (title.isEmpty()) {
-                this.title = Optional.empty();
-            } else {
-                this.title = Optional.of(title.get());
-            }
             return this;
         }
 

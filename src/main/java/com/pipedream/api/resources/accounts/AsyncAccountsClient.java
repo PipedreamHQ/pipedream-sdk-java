@@ -6,11 +6,9 @@ package com.pipedream.api.resources.accounts;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
+import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
-import com.pipedream.api.resources.accounts.requests.DeleteAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.DeleteByAppAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.ListAccountsRequest;
-import com.pipedream.api.resources.accounts.requests.RetrieveAccountsRequest;
 import com.pipedream.api.types.Account;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,7 +39,7 @@ public class AsyncAccountsClient {
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
-    public CompletableFuture<SyncPagingIterable<Account>> list(ListAccountsRequest request) {
+    public CompletableFuture<SyncPagingIterable<Account>> list(AccountsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
@@ -49,7 +47,7 @@ public class AsyncAccountsClient {
      * Retrieve all connected accounts for the project with optional filtering
      */
     public CompletableFuture<SyncPagingIterable<Account>> list(
-            ListAccountsRequest request, RequestOptions requestOptions) {
+            AccountsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -77,7 +75,7 @@ public class AsyncAccountsClient {
     /**
      * Get the details for a specific connected account
      */
-    public CompletableFuture<Account> retrieve(String accountId, RetrieveAccountsRequest request) {
+    public CompletableFuture<Account> retrieve(String accountId, AccountsRetrieveRequest request) {
         return this.rawClient.retrieve(accountId, request).thenApply(response -> response.body());
     }
 
@@ -85,7 +83,7 @@ public class AsyncAccountsClient {
      * Get the details for a specific connected account
      */
     public CompletableFuture<Account> retrieve(
-            String accountId, RetrieveAccountsRequest request, RequestOptions requestOptions) {
+            String accountId, AccountsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(accountId, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -99,16 +97,8 @@ public class AsyncAccountsClient {
     /**
      * Remove a connected account and its associated credentials
      */
-    public CompletableFuture<Void> delete(String accountId, DeleteAccountsRequest request) {
-        return this.rawClient.delete(accountId, request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Remove a connected account and its associated credentials
-     */
-    public CompletableFuture<Void> delete(
-            String accountId, DeleteAccountsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.delete(accountId, request, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String accountId, RequestOptions requestOptions) {
+        return this.rawClient.delete(accountId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -121,15 +111,7 @@ public class AsyncAccountsClient {
     /**
      * Remove all connected accounts for a specific app
      */
-    public CompletableFuture<Void> deleteByApp(String appId, DeleteByAppAccountsRequest request) {
-        return this.rawClient.deleteByApp(appId, request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Remove all connected accounts for a specific app
-     */
-    public CompletableFuture<Void> deleteByApp(
-            String appId, DeleteByAppAccountsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.deleteByApp(appId, request, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> deleteByApp(String appId, RequestOptions requestOptions) {
+        return this.rawClient.deleteByApp(appId, requestOptions).thenApply(response -> response.body());
     }
 }

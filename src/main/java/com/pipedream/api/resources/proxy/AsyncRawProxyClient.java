@@ -14,11 +14,11 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.proxy.requests.DeleteProxyRequest;
-import com.pipedream.api.resources.proxy.requests.GetProxyRequest;
-import com.pipedream.api.resources.proxy.requests.PatchProxyRequest;
-import com.pipedream.api.resources.proxy.requests.PostProxyRequest;
-import com.pipedream.api.resources.proxy.requests.PutProxyRequest;
+import com.pipedream.api.resources.proxy.requests.ProxyDeleteRequest;
+import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
+import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
+import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
+import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
 import com.pipedream.api.resources.proxy.types.ProxyResponse;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -84,7 +84,7 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> get(String url64, GetProxyRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
@@ -92,7 +92,7 @@ public class AsyncRawProxyClient {
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
     public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> get(
-            String url64, GetProxyRequest request, RequestOptions requestOptions) {
+            String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -153,7 +153,7 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> post(String url64, PostProxyRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
@@ -161,7 +161,7 @@ public class AsyncRawProxyClient {
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
     public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> post(
-            String url64, PostProxyRequest request, RequestOptions requestOptions) {
+            String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -230,7 +230,7 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> put(String url64, PutProxyRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
@@ -238,7 +238,7 @@ public class AsyncRawProxyClient {
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
     public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> put(
-            String url64, PutProxyRequest request, RequestOptions requestOptions) {
+            String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -307,7 +307,7 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> delete(String url64, DeleteProxyRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
@@ -315,7 +315,7 @@ public class AsyncRawProxyClient {
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
     public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> delete(
-            String url64, DeleteProxyRequest request, RequestOptions requestOptions) {
+            String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -376,7 +376,7 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> patch(String url64, PatchProxyRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
@@ -384,7 +384,7 @@ public class AsyncRawProxyClient {
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
     public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> patch(
-            String url64, PatchProxyRequest request, RequestOptions requestOptions) {
+            String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

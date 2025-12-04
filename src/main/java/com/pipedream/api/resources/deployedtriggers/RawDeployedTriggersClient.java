@@ -14,12 +14,12 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.deployedtriggers.requests.DeleteDeployedTriggersRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.ListDeployedTriggersRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.ListEventsDeployedTriggersRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.ListWebhooksDeployedTriggersRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.ListWorkflowsDeployedTriggersRequest;
-import com.pipedream.api.resources.deployedtriggers.requests.RetrieveDeployedTriggersRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersDeleteRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListEventsRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -51,7 +51,7 @@ public class RawDeployedTriggersClient {
     /**
      * Retrieve all deployed triggers for a specific external user
      */
-    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(ListDeployedTriggersRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(DeployedTriggersListRequest request) {
         return list(request, null);
     }
 
@@ -59,7 +59,7 @@ public class RawDeployedTriggersClient {
      * Retrieve all deployed triggers for a specific external user
      */
     public BaseClientHttpResponse<SyncPagingIterable<Emitter>> list(
-            ListDeployedTriggersRequest request, RequestOptions requestOptions) {
+            DeployedTriggersListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -98,7 +98,7 @@ public class RawDeployedTriggersClient {
                 GetTriggersResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetTriggersResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
-                ListDeployedTriggersRequest nextRequest = ListDeployedTriggersRequest.builder()
+                DeployedTriggersListRequest nextRequest = DeployedTriggersListRequest.builder()
                         .from(request)
                         .after(startingAfter)
                         .build();
@@ -131,7 +131,7 @@ public class RawDeployedTriggersClient {
     /**
      * Get details of a specific deployed trigger by its ID
      */
-    public BaseClientHttpResponse<Emitter> retrieve(String triggerId, RetrieveDeployedTriggersRequest request) {
+    public BaseClientHttpResponse<Emitter> retrieve(String triggerId, DeployedTriggersRetrieveRequest request) {
         return retrieve(triggerId, request, null);
     }
 
@@ -139,7 +139,7 @@ public class RawDeployedTriggersClient {
      * Get details of a specific deployed trigger by its ID
      */
     public BaseClientHttpResponse<Emitter> retrieve(
-            String triggerId, RetrieveDeployedTriggersRequest request, RequestOptions requestOptions) {
+            String triggerId, DeployedTriggersRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -249,7 +249,7 @@ public class RawDeployedTriggersClient {
     /**
      * Remove a deployed trigger and stop receiving events
      */
-    public BaseClientHttpResponse<Void> delete(String triggerId, DeleteDeployedTriggersRequest request) {
+    public BaseClientHttpResponse<Void> delete(String triggerId, DeployedTriggersDeleteRequest request) {
         return delete(triggerId, request, null);
     }
 
@@ -257,7 +257,7 @@ public class RawDeployedTriggersClient {
      * Remove a deployed trigger and stop receiving events
      */
     public BaseClientHttpResponse<Void> delete(
-            String triggerId, DeleteDeployedTriggersRequest request, RequestOptions requestOptions) {
+            String triggerId, DeployedTriggersDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -307,7 +307,7 @@ public class RawDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
-            String triggerId, ListEventsDeployedTriggersRequest request) {
+            String triggerId, DeployedTriggersListEventsRequest request) {
         return listEvents(triggerId, request, null);
     }
 
@@ -315,7 +315,7 @@ public class RawDeployedTriggersClient {
      * Retrieve recent events emitted by a deployed trigger
      */
     public BaseClientHttpResponse<List<EmittedEvent>> listEvents(
-            String triggerId, ListEventsDeployedTriggersRequest request, RequestOptions requestOptions) {
+            String triggerId, DeployedTriggersListEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -367,7 +367,7 @@ public class RawDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, ListWorkflowsDeployedTriggersRequest request) {
+            String triggerId, DeployedTriggersListWorkflowsRequest request) {
         return listWorkflows(triggerId, request, null);
     }
 
@@ -375,7 +375,7 @@ public class RawDeployedTriggersClient {
      * Get workflows connected to receive events from this trigger
      */
     public BaseClientHttpResponse<GetTriggerWorkflowsResponse> listWorkflows(
-            String triggerId, ListWorkflowsDeployedTriggersRequest request, RequestOptions requestOptions) {
+            String triggerId, DeployedTriggersListWorkflowsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -489,7 +489,7 @@ public class RawDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, ListWebhooksDeployedTriggersRequest request) {
+            String triggerId, DeployedTriggersListWebhooksRequest request) {
         return listWebhooks(triggerId, request, null);
     }
 
@@ -497,7 +497,7 @@ public class RawDeployedTriggersClient {
      * Get webhook URLs configured to receive trigger events
      */
     public BaseClientHttpResponse<GetTriggerWebhooksResponse> listWebhooks(
-            String triggerId, ListWebhooksDeployedTriggersRequest request, RequestOptions requestOptions) {
+            String triggerId, DeployedTriggersListWebhooksRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

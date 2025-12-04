@@ -5,15 +5,12 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.pipedream.api.core.Nullable;
-import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,17 +58,8 @@ public final class AppCategory {
     /**
      * @return A short description of the app category
      */
-    @JsonIgnore
-    public Optional<String> getDescription() {
-        if (description == null) {
-            return Optional.empty();
-        }
-        return description;
-    }
-
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
     @JsonProperty("description")
-    private Optional<String> _getDescription() {
+    public Optional<String> getDescription() {
         return description;
     }
 
@@ -163,17 +151,6 @@ public final class AppCategory {
 
         public Builder description(String description) {
             this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        public Builder description(Nullable<String> description) {
-            if (description.isNull()) {
-                this.description = null;
-            } else if (description.isEmpty()) {
-                this.description = Optional.empty();
-            } else {
-                this.description = Optional.of(description.get());
-            }
             return this;
         }
 

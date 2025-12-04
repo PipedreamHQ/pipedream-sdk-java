@@ -13,17 +13,16 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.actions.requests.ConfigurePropActionsRequest;
-import com.pipedream.api.resources.actions.requests.ListActionsRequest;
-import com.pipedream.api.resources.actions.requests.ReloadPropsActionsRequest;
-import com.pipedream.api.resources.actions.requests.RetrieveActionsRequest;
+import com.pipedream.api.resources.actions.requests.ActionsListRequest;
+import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
+import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
+import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import com.pipedream.api.types.RunActionResponse;
 import java.io.IOException;
@@ -53,13 +52,13 @@ public class AsyncRawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
-        return list(ListActionsRequest.builder().build());
+        return list(ActionsListRequest.builder().build());
     }
 
     /**
      * Retrieve available actions with optional search and app filtering
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ListActionsRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ActionsListRequest request) {
         return list(request, null);
     }
 
@@ -67,7 +66,7 @@ public class AsyncRawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
-            ListActionsRequest request, RequestOptions requestOptions) {
+            ActionsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -91,10 +90,6 @@ public class AsyncRawActionsClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
-        if (request.getRegistry().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "registry", request.getRegistry().get(), false);
-        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -115,7 +110,7 @@ public class AsyncRawActionsClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
-                        ListActionsRequest nextRequest = ListActionsRequest.builder()
+                        ActionsListRequest nextRequest = ActionsListRequest.builder()
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
@@ -136,17 +131,10 @@ public class AsyncRawActionsClient {
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
-                        switch (response.code()) {
-                            case 400:
-                                future.completeExceptionally(new BadRequestError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                                        response));
-                                return;
-                            case 429:
-                                future.completeExceptionally(new TooManyRequestsError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                                        response));
-                                return;
+                        if (response.code() == 429) {
+                            future.completeExceptionally(new TooManyRequestsError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
+                            return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -174,14 +162,14 @@ public class AsyncRawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, RetrieveActionsRequest.builder().build());
+        return retrieve(componentId, ActionsRetrieveRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, RetrieveActionsRequest request) {
+            String componentId, ActionsRetrieveRequest request) {
         return retrieve(componentId, request, null);
     }
 
@@ -189,7 +177,7 @@ public class AsyncRawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, RetrieveActionsRequest request, RequestOptions requestOptions) {
+            String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -253,8 +241,7 @@ public class AsyncRawActionsClient {
     /**
      * Retrieve remote options for a given prop for a action
      */
-    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
-            ConfigurePropActionsRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
         return configureProp(request, null);
     }
 
@@ -262,7 +249,7 @@ public class AsyncRawActionsClient {
      * Retrieve remote options for a given prop for a action
      */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
-            ConfigurePropActionsRequest request, RequestOptions requestOptions) {
+            ConfigurePropOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -272,7 +259,7 @@ public class AsyncRawActionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }
@@ -330,8 +317,7 @@ public class AsyncRawActionsClient {
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
-            ReloadPropsActionsRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
         return reloadProps(request, null);
     }
 
@@ -339,7 +325,7 @@ public class AsyncRawActionsClient {
      * Reload the prop definition based on the currently configured props
      */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
-            ReloadPropsActionsRequest request, RequestOptions requestOptions) {
+            ReloadPropsOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -349,7 +335,7 @@ public class AsyncRawActionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }

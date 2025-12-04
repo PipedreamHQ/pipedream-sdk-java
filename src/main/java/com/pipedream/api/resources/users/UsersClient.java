@@ -5,7 +5,6 @@ package com.pipedream.api.resources.users;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.users.requests.DeleteExternalUserUsersRequest;
 
 public class UsersClient {
     protected final ClientOptions clientOptions;
@@ -34,17 +33,7 @@ public class UsersClient {
     /**
      * Remove an external user and all their associated accounts and resources
      */
-    public void deleteExternalUser(String externalUserId, DeleteExternalUserUsersRequest request) {
-        this.rawClient.deleteExternalUser(externalUserId, request).body();
-    }
-
-    /**
-     * Remove an external user and all their associated accounts and resources
-     */
-    public void deleteExternalUser(
-            String externalUserId, DeleteExternalUserUsersRequest request, RequestOptions requestOptions) {
-        this.rawClient
-                .deleteExternalUser(externalUserId, request, requestOptions)
-                .body();
+    public void deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
+        this.rawClient.deleteExternalUser(externalUserId, requestOptions).body();
     }
 }

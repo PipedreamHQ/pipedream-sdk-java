@@ -5,7 +5,7 @@ package com.pipedream.api.resources.filestash;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
-import com.pipedream.api.resources.filestash.requests.DownloadFileFileStashRequest;
+import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,7 +29,7 @@ public class AsyncFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public CompletableFuture<InputStream> downloadFile(DownloadFileFileStashRequest request) {
+    public CompletableFuture<InputStream> downloadFile(FileStashDownloadFileRequest request) {
         return this.rawClient.downloadFile(request).thenApply(response -> response.body());
     }
 
@@ -37,7 +37,7 @@ public class AsyncFileStashClient {
      * Download a file from File Stash
      */
     public CompletableFuture<InputStream> downloadFile(
-            DownloadFileFileStashRequest request, RequestOptions requestOptions) {
+            FileStashDownloadFileRequest request, RequestOptions requestOptions) {
         return this.rawClient.downloadFile(request, requestOptions).thenApply(response -> response.body());
     }
 }
