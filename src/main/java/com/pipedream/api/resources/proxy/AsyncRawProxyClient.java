@@ -12,18 +12,21 @@ import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.proxy.requests.ProxyDeleteRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPatchRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPostRequest;
 import com.pipedream.api.resources.proxy.requests.ProxyPutRequest;
+import com.pipedream.api.resources.proxy.types.ProxyResponse;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -38,17 +41,58 @@ public class AsyncRawProxyClient {
         this.clientOptions = clientOptions;
     }
 
+    private static boolean isJsonContentType(MediaType contentType) {
+        if (contentType == null) {
+            return false;
+        }
+        return "application".equals(contentType.type()) && "json".equals(contentType.subtype());
+    }
+
+    private static void handleSuccessResponse(
+            Response response,
+            ResponseBody responseBody,
+            CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future) {
+        MediaType contentType = responseBody != null ? responseBody.contentType() : null;
+        String contentTypeString = contentType != null ? contentType.toString() : null;
+        ProxyResponse proxyBody;
+        if (isJsonContentType(contentType)) {
+            try {
+                String responseBodyString = responseBody.string();
+                Object parsed = ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class);
+                proxyBody = ProxyResponse.json(parsed, contentTypeString);
+            } catch (JsonProcessingException e) {
+                future.completeExceptionally(new BaseClientException(
+                        "Response Content-Type was application/json but body is not valid JSON", e));
+                return;
+            } catch (IOException e) {
+                future.completeExceptionally(new BaseClientException("Error reading response body", e));
+                return;
+            } finally {
+                response.close();
+            }
+        } else {
+            try {
+                proxyBody = ProxyResponse.stream(new ResponseBodyInputStream(response), contentTypeString);
+            } catch (IOException e) {
+                future.completeExceptionally(new BaseClientException("Error creating response stream", e));
+                response.close();
+                return;
+            }
+        }
+        future.complete(new BaseClientHttpResponse<>(proxyBody, response));
+    }
+
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> get(String url64, ProxyGetRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> get(String url64, ProxyGetRequest request) {
         return get(url64, request, null);
     }
 
     /**
      * Forward an authenticated GET request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> get(
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> get(
             String url64, ProxyGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -68,14 +112,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
+                        handleSuccessResponse(response, responseBody, future);
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -110,14 +154,14 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> post(String url64, ProxyPostRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> post(String url64, ProxyPostRequest request) {
         return post(url64, request, null);
     }
 
     /**
      * Forward an authenticated POST request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> post(
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> post(
             String url64, ProxyPostRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -145,14 +189,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
+                        handleSuccessResponse(response, responseBody, future);
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -187,14 +231,14 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> put(String url64, ProxyPutRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> put(String url64, ProxyPutRequest request) {
         return put(url64, request, null);
     }
 
     /**
      * Forward an authenticated PUT request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> put(
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> put(
             String url64, ProxyPutRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -222,14 +266,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
+                        handleSuccessResponse(response, responseBody, future);
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -264,14 +308,14 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> delete(String url64, ProxyDeleteRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> delete(String url64, ProxyDeleteRequest request) {
         return delete(url64, request, null);
     }
 
     /**
      * Forward an authenticated DELETE request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> delete(
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> delete(
             String url64, ProxyDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -291,14 +335,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
+                        handleSuccessResponse(response, responseBody, future);
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -333,14 +377,14 @@ public class AsyncRawProxyClient {
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> patch(String url64, ProxyPatchRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> patch(String url64, ProxyPatchRequest request) {
         return patch(url64, request, null);
     }
 
     /**
      * Forward an authenticated PATCH request to an external API using an external user's account credentials
      */
-    public CompletableFuture<BaseClientHttpResponse<Object>> patch(
+    public CompletableFuture<BaseClientHttpResponse<ProxyResponse>> patch(
             String url64, ProxyPatchRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -368,14 +412,14 @@ public class AsyncRawProxyClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Object>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<ProxyResponse>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
+                try {
+                    ResponseBody responseBody = response.body();
                     if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Object.class), response));
+                        handleSuccessResponse(response, responseBody, future);
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
