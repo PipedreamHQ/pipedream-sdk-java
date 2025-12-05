@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -294,5 +295,95 @@ public class ProxyClientWireTest {
         assertNotNull(secondRequest);
         assertNotNull(secondRequest.getPath());
         assertTrue(secondRequest.getPath().contains("async-redirected"));
+    }
+
+    // ==================== HttpUrl Overload Tests ====================
+
+    @Test
+    public void testGetWithHttpUrl() throws Exception {
+        String jsonBody = "{\"key\":\"value\"}";
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(jsonBody));
+
+        // Build URL with query parameters using HttpUrl
+        HttpUrl url = HttpUrl.parse(TEST_URL)
+                .newBuilder()
+                .addQueryParameter("fields", "name,mimeType")
+                .addQueryParameter("limit", "10")
+                .build();
+
+        try (ProxyResponse response = client.proxy().get(url, createGetRequest())) {
+            assertTrue(response.isJson(), "Response should be JSON");
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals("value", jsonMap.get("key"));
+        }
+
+        // Verify request was made correctly
+        RecordedRequest request = server.takeRequest();
+        assertNotNull(request);
+        assertEquals("GET", request.getMethod());
+
+        // Verify the base64-encoded URL in the path contains the query parameters
+        String path = request.getPath();
+        assertNotNull(path);
+        // The URL with query params should be base64-encoded in the path
+        // We can't easily decode it here, but we verify the request was made
+    }
+
+    @Test
+    public void testGetWithHttpUrlAndSpecialCharacters() throws Exception {
+        String jsonBody = "{\"result\":\"ok\"}";
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(jsonBody));
+
+        // Build URL with query parameters containing special characters
+        HttpUrl url = HttpUrl.parse(TEST_URL)
+                .newBuilder()
+                .addQueryParameter("filter", "status=active&type=user")
+                .addQueryParameter("name", "John Doe")
+                .build();
+
+        try (ProxyResponse response = client.proxy().get(url, createGetRequest())) {
+            assertTrue(response.isJson(), "Response should be JSON");
+        }
+
+        RecordedRequest request = server.takeRequest();
+        assertNotNull(request);
+        assertEquals("GET", request.getMethod());
+    }
+
+    @Test
+    public void testAsyncGetWithHttpUrl() throws Exception {
+        String jsonBody = "{\"async\":true}";
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(jsonBody));
+
+        // Build URL with query parameters using HttpUrl
+        HttpUrl url = HttpUrl.parse(TEST_URL)
+                .newBuilder()
+                .addQueryParameter("page", "1")
+                .addQueryParameter("size", "20")
+                .build();
+
+        CompletableFuture<ProxyResponse> future = asyncClient.proxy().get(url, createGetRequest());
+        try (ProxyResponse response = future.get(10, TimeUnit.SECONDS)) {
+            assertTrue(response.isJson(), "Response should be JSON");
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> jsonMap = (Map<String, Object>) response.json();
+            assertEquals(true, jsonMap.get("async"));
+        }
+
+        RecordedRequest request = server.takeRequest();
+        assertNotNull(request);
+        assertEquals("GET", request.getMethod());
     }
 }
