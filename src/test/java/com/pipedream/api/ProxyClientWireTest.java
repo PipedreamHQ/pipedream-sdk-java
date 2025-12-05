@@ -141,22 +141,20 @@ public class ProxyClientWireTest {
                 .setHeader("Content-Type", "application/octet-stream")
                 .setBody(buffer));
 
-        ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest());
+        try (ProxyResponse response = client.proxy().get(TEST_URL, createGetRequest())) {
 
-        // Verify response type
-        assertTrue(response.isStream(), "Response should be a stream");
-        assertFalse(response.isJson(), "Response should not be JSON");
+            // Verify response type
+            assertTrue(response.isStream(), "Response should be a stream");
+            assertFalse(response.isJson(), "Response should not be JSON");
 
-        // Verify binary content
-        byte[] actualData = readAllBytes(response.stream());
-        assertArrayEquals(binaryData, actualData, "Binary data should match");
+            // Verify binary content
+            byte[] actualData = readAllBytes(response.stream());
+            assertArrayEquals(binaryData, actualData, "Binary data should match");
 
-        // Verify content type is preserved
-        assertTrue(response.getContentType().isPresent());
-        assertEquals("application/octet-stream", response.getContentType().get());
-
-        // Clean up
-        response.close();
+            // Verify content type is preserved
+            assertTrue(response.getContentType().isPresent());
+            assertEquals("application/octet-stream", response.getContentType().get());
+        }
 
         // Verify request was made correctly
         RecordedRequest request = server.takeRequest();
@@ -243,18 +241,16 @@ public class ProxyClientWireTest {
                 .setBody(buffer));
 
         CompletableFuture<ProxyResponse> future = asyncClient.proxy().get(TEST_URL, createGetRequest());
-        ProxyResponse response = future.get(10, TimeUnit.SECONDS);
+        try (ProxyResponse response = future.get(10, TimeUnit.SECONDS)) {
 
-        // Verify response type
-        assertTrue(response.isStream(), "Response should be a stream");
-        assertFalse(response.isJson(), "Response should not be JSON");
+            // Verify response type
+            assertTrue(response.isStream(), "Response should be a stream");
+            assertFalse(response.isJson(), "Response should not be JSON");
 
-        // Verify binary content
-        byte[] actualData = readAllBytes(response.stream());
-        assertArrayEquals(binaryData, actualData, "Binary data should match");
-
-        // Clean up
-        response.close();
+            // Verify binary content
+            byte[] actualData = readAllBytes(response.stream());
+            assertArrayEquals(binaryData, actualData, "Binary data should match");
+        }
 
         // Verify request was made correctly
         RecordedRequest request = server.takeRequest();
