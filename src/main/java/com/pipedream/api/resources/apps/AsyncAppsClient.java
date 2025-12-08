@@ -6,7 +6,8 @@ package com.pipedream.api.resources.apps;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.apps.requests.AppsListRequest;
+import com.pipedream.api.resources.apps.requests.ListAppsRequest;
+import com.pipedream.api.resources.apps.requests.RetrieveAppsRequest;
 import com.pipedream.api.types.App;
 import com.pipedream.api.types.GetAppResponse;
 import java.util.concurrent.CompletableFuture;
@@ -38,14 +39,14 @@ public class AsyncAppsClient {
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
-    public CompletableFuture<SyncPagingIterable<App>> list(AppsListRequest request) {
+    public CompletableFuture<SyncPagingIterable<App>> list(ListAppsRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
 
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
-    public CompletableFuture<SyncPagingIterable<App>> list(AppsListRequest request, RequestOptions requestOptions) {
+    public CompletableFuture<SyncPagingIterable<App>> list(ListAppsRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -59,7 +60,15 @@ public class AsyncAppsClient {
     /**
      * Get detailed information about a specific app by ID or name slug
      */
-    public CompletableFuture<GetAppResponse> retrieve(String appId, RequestOptions requestOptions) {
-        return this.rawClient.retrieve(appId, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<GetAppResponse> retrieve(String appId, RetrieveAppsRequest request) {
+        return this.rawClient.retrieve(appId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
+    public CompletableFuture<GetAppResponse> retrieve(
+            String appId, RetrieveAppsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(appId, request, requestOptions).thenApply(response -> response.body());
     }
 }

@@ -13,18 +13,19 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.triggers.requests.ConfigurePropTriggersRequest;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
-import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
-import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
+import com.pipedream.api.resources.triggers.requests.ListTriggersRequest;
+import com.pipedream.api.resources.triggers.requests.ReloadPropsTriggersRequest;
+import com.pipedream.api.resources.triggers.requests.RetrieveTriggersRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
 import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import java.io.IOException;
 import java.util.List;
@@ -53,13 +54,13 @@ public class AsyncRawTriggersClient {
      * Retrieve available triggers with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
-        return list(TriggersListRequest.builder().build());
+        return list(ListTriggersRequest.builder().build());
     }
 
     /**
      * Retrieve available triggers with optional search and app filtering
      */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(TriggersListRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(ListTriggersRequest request) {
         return list(request, null);
     }
 
@@ -67,7 +68,7 @@ public class AsyncRawTriggersClient {
      * Retrieve available triggers with optional search and app filtering
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
-            TriggersListRequest request, RequestOptions requestOptions) {
+            ListTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -91,6 +92,10 @@ public class AsyncRawTriggersClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -111,7 +116,7 @@ public class AsyncRawTriggersClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
-                        TriggersListRequest nextRequest = TriggersListRequest.builder()
+                        ListTriggersRequest nextRequest = ListTriggersRequest.builder()
                                 .from(request)
                                 .after(startingAfter)
                                 .build();
@@ -132,10 +137,17 @@ public class AsyncRawTriggersClient {
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -163,14 +175,14 @@ public class AsyncRawTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, TriggersRetrieveRequest.builder().build());
+        return retrieve(componentId, RetrieveTriggersRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, TriggersRetrieveRequest request) {
+            String componentId, RetrieveTriggersRequest request) {
         return retrieve(componentId, request, null);
     }
 
@@ -178,7 +190,7 @@ public class AsyncRawTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+            String componentId, RetrieveTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -242,7 +254,8 @@ public class AsyncRawTriggersClient {
     /**
      * Retrieve remote options for a given prop for a trigger
      */
-    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
+            ConfigurePropTriggersRequest request) {
         return configureProp(request, null);
     }
 
@@ -250,7 +263,7 @@ public class AsyncRawTriggersClient {
      * Retrieve remote options for a given prop for a trigger
      */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
+            ConfigurePropTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -260,7 +273,7 @@ public class AsyncRawTriggersClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }
@@ -318,7 +331,8 @@ public class AsyncRawTriggersClient {
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(ReloadPropsOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
+            ReloadPropsTriggersRequest request) {
         return reloadProps(request, null);
     }
 
@@ -326,7 +340,7 @@ public class AsyncRawTriggersClient {
      * Reload the prop definition based on the currently configured props
      */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
-            ReloadPropsOpts request, RequestOptions requestOptions) {
+            ReloadPropsTriggersRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -336,7 +350,7 @@ public class AsyncRawTriggersClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }

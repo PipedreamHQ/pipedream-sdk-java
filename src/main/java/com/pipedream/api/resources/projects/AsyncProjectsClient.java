@@ -5,6 +5,14 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
+import com.pipedream.api.resources.projects.requests.DeleteProjectsRequest;
+import com.pipedream.api.resources.projects.requests.ListProjectsRequest;
+import com.pipedream.api.resources.projects.requests.RetrieveInfoProjectsRequest;
+import com.pipedream.api.resources.projects.requests.RetrieveProjectsRequest;
+import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
+import com.pipedream.api.types.Project;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,6 +34,98 @@ public class AsyncProjectsClient {
     }
 
     /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list() {
+        return this.rawClient.list().thenApply(response -> response.body());
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list(ListProjectsRequest request) {
+        return this.rawClient.list(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list(
+            ListProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public CompletableFuture<Project> create(CreateProjectOpts request) {
+        return this.rawClient.create(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public CompletableFuture<Project> create(CreateProjectOpts request, RequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public CompletableFuture<Project> retrieve() {
+        return this.rawClient.retrieve().thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public CompletableFuture<Project> retrieve(RetrieveProjectsRequest request) {
+        return this.rawClient.retrieve(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public CompletableFuture<Project> retrieve(RetrieveProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public CompletableFuture<Void> delete() {
+        return this.rawClient.delete().thenApply(response -> response.body());
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public CompletableFuture<Void> delete(DeleteProjectsRequest request) {
+        return this.rawClient.delete(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public CompletableFuture<Void> delete(DeleteProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.delete(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public CompletableFuture<Void> update(UpdateProjectLogoOpts request) {
+        return this.rawClient.update(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public CompletableFuture<Void> update(UpdateProjectLogoOpts request, RequestOptions requestOptions) {
+        return this.rawClient.update(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Retrieve project configuration and environment details
      */
     public CompletableFuture<ProjectInfoResponse> retrieveInfo() {
@@ -35,7 +135,15 @@ public class AsyncProjectsClient {
     /**
      * Retrieve project configuration and environment details
      */
-    public CompletableFuture<ProjectInfoResponse> retrieveInfo(RequestOptions requestOptions) {
-        return this.rawClient.retrieveInfo(requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<ProjectInfoResponse> retrieveInfo(RetrieveInfoProjectsRequest request) {
+        return this.rawClient.retrieveInfo(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve project configuration and environment details
+     */
+    public CompletableFuture<ProjectInfoResponse> retrieveInfo(
+            RetrieveInfoProjectsRequest request, RequestOptions requestOptions) {
+        return this.rawClient.retrieveInfo(request, requestOptions).thenApply(response -> response.body());
     }
 }

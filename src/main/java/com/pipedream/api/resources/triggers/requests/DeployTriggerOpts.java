@@ -5,12 +5,15 @@ package com.pipedream.api.resources.triggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.types.ConfiguredPropValue;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ public final class DeployTriggerOpts {
 
     private final Optional<String> webhookUrl;
 
+    private final Optional<Boolean> emitOnDeploy;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployTriggerOpts(
@@ -46,6 +51,7 @@ public final class DeployTriggerOpts {
             Optional<String> dynamicPropsId,
             Optional<String> workflowId,
             Optional<String> webhookUrl,
+            Optional<Boolean> emitOnDeploy,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.version = version;
@@ -54,6 +60,7 @@ public final class DeployTriggerOpts {
         this.dynamicPropsId = dynamicPropsId;
         this.workflowId = workflowId;
         this.webhookUrl = webhookUrl;
+        this.emitOnDeploy = emitOnDeploy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -68,8 +75,11 @@ public final class DeployTriggerOpts {
     /**
      * @return Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest
      */
-    @JsonProperty("version")
+    @JsonIgnore
     public Optional<String> getVersion() {
+        if (version == null) {
+            return Optional.empty();
+        }
         return version;
     }
 
@@ -110,6 +120,29 @@ public final class DeployTriggerOpts {
         return webhookUrl;
     }
 
+    /**
+     * @return Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.
+     */
+    @JsonIgnore
+    public Optional<Boolean> getEmitOnDeploy() {
+        if (emitOnDeploy == null) {
+            return Optional.empty();
+        }
+        return emitOnDeploy;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("version")
+    private Optional<String> _getVersion() {
+        return version;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("emit_on_deploy")
+    private Optional<Boolean> _getEmitOnDeploy() {
+        return emitOnDeploy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -128,7 +161,8 @@ public final class DeployTriggerOpts {
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
                 && workflowId.equals(other.workflowId)
-                && webhookUrl.equals(other.webhookUrl);
+                && webhookUrl.equals(other.webhookUrl)
+                && emitOnDeploy.equals(other.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -140,7 +174,8 @@ public final class DeployTriggerOpts {
                 this.configuredProps,
                 this.dynamicPropsId,
                 this.workflowId,
-                this.webhookUrl);
+                this.webhookUrl,
+                this.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -178,6 +213,8 @@ public final class DeployTriggerOpts {
 
         _FinalStage version(String version);
 
+        _FinalStage version(Nullable<String> version);
+
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
         _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
@@ -202,6 +239,15 @@ public final class DeployTriggerOpts {
         _FinalStage webhookUrl(Optional<String> webhookUrl);
 
         _FinalStage webhookUrl(String webhookUrl);
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         */
+        _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Boolean emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Nullable<Boolean> emitOnDeploy);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -209,6 +255,8 @@ public final class DeployTriggerOpts {
         private String id;
 
         private String externalUserId;
+
+        private Optional<Boolean> emitOnDeploy = Optional.empty();
 
         private Optional<String> webhookUrl = Optional.empty();
 
@@ -234,6 +282,7 @@ public final class DeployTriggerOpts {
             dynamicPropsId(other.getDynamicPropsId());
             workflowId(other.getWorkflowId());
             webhookUrl(other.getWebhookUrl());
+            emitOnDeploy(other.getEmitOnDeploy());
             return this;
         }
 
@@ -258,6 +307,42 @@ public final class DeployTriggerOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Nullable<Boolean> emitOnDeploy) {
+            if (emitOnDeploy.isNull()) {
+                this.emitOnDeploy = null;
+            } else if (emitOnDeploy.isEmpty()) {
+                this.emitOnDeploy = Optional.empty();
+            } else {
+                this.emitOnDeploy = Optional.of(emitOnDeploy.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Boolean emitOnDeploy) {
+            this.emitOnDeploy = Optional.ofNullable(emitOnDeploy);
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emit_on_deploy", nulls = Nulls.SKIP)
+        public _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy) {
+            this.emitOnDeploy = emitOnDeploy;
             return this;
         }
 
@@ -339,6 +424,22 @@ public final class DeployTriggerOpts {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage version(Nullable<String> version) {
+            if (version.isNull()) {
+                this.version = null;
+            } else if (version.isEmpty()) {
+                this.version = Optional.empty();
+            } else {
+                this.version = Optional.of(version.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage version(String version) {
             this.version = Optional.ofNullable(version);
             return this;
@@ -364,6 +465,7 @@ public final class DeployTriggerOpts {
                     dynamicPropsId,
                     workflowId,
                     webhookUrl,
+                    emitOnDeploy,
                     additionalProperties);
         }
     }

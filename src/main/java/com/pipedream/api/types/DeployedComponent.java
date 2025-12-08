@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +51,8 @@ public final class DeployedComponent {
 
     private final Optional<Object> callbackObservations;
 
+    private final Optional<Boolean> emitOnDeploy;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployedComponent(
@@ -63,6 +68,7 @@ public final class DeployedComponent {
             String name,
             String nameSlug,
             Optional<Object> callbackObservations,
+            Optional<Boolean> emitOnDeploy,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.ownerId = ownerId;
@@ -76,6 +82,7 @@ public final class DeployedComponent {
         this.name = name;
         this.nameSlug = nameSlug;
         this.callbackObservations = callbackObservations;
+        this.emitOnDeploy = emitOnDeploy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -106,8 +113,11 @@ public final class DeployedComponent {
     /**
      * @return The component key (name) that was deployed
      */
-    @JsonProperty("component_key")
+    @JsonIgnore
     public Optional<String> getComponentKey() {
+        if (componentKey == null) {
+            return Optional.empty();
+        }
         return componentKey;
     }
 
@@ -167,8 +177,31 @@ public final class DeployedComponent {
     /**
      * @return Callback observations for the deployed component
      */
-    @JsonProperty("callback_observations")
+    @JsonIgnore
     public Optional<Object> getCallbackObservations() {
+        if (callbackObservations == null) {
+            return Optional.empty();
+        }
+        return callbackObservations;
+    }
+
+    /**
+     * @return Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.
+     */
+    @JsonProperty("emit_on_deploy")
+    public Optional<Boolean> getEmitOnDeploy() {
+        return emitOnDeploy;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("component_key")
+    private Optional<String> _getComponentKey() {
+        return componentKey;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("callback_observations")
+    private Optional<Object> _getCallbackObservations() {
         return callbackObservations;
     }
 
@@ -195,7 +228,8 @@ public final class DeployedComponent {
                 && updatedAt == other.updatedAt
                 && name.equals(other.name)
                 && nameSlug.equals(other.nameSlug)
-                && callbackObservations.equals(other.callbackObservations);
+                && callbackObservations.equals(other.callbackObservations)
+                && emitOnDeploy.equals(other.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -212,7 +246,8 @@ public final class DeployedComponent {
                 this.updatedAt,
                 this.name,
                 this.nameSlug,
-                this.callbackObservations);
+                this.callbackObservations,
+                this.emitOnDeploy);
     }
 
     @java.lang.Override
@@ -292,6 +327,8 @@ public final class DeployedComponent {
 
         _FinalStage componentKey(String componentKey);
 
+        _FinalStage componentKey(Nullable<String> componentKey);
+
         /**
          * <p>The configurable properties of the component</p>
          */
@@ -313,6 +350,15 @@ public final class DeployedComponent {
         _FinalStage callbackObservations(Optional<Object> callbackObservations);
 
         _FinalStage callbackObservations(Object callbackObservations);
+
+        _FinalStage callbackObservations(Nullable<Object> callbackObservations);
+
+        /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         */
+        _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
+
+        _FinalStage emitOnDeploy(Boolean emitOnDeploy);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -342,6 +388,8 @@ public final class DeployedComponent {
 
         private String nameSlug;
 
+        private Optional<Boolean> emitOnDeploy = Optional.empty();
+
         private Optional<Object> callbackObservations = Optional.empty();
 
         private Map<String, ConfiguredPropValue> configuredProps = new LinkedHashMap<>();
@@ -369,6 +417,7 @@ public final class DeployedComponent {
             name(other.getName());
             nameSlug(other.getNameSlug());
             callbackObservations(other.getCallbackObservations());
+            emitOnDeploy(other.getEmitOnDeploy());
             return this;
         }
 
@@ -469,6 +518,42 @@ public final class DeployedComponent {
         }
 
         /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage emitOnDeploy(Boolean emitOnDeploy) {
+            this.emitOnDeploy = Optional.ofNullable(emitOnDeploy);
+            return this;
+        }
+
+        /**
+         * <p>Whether the trigger emits events during the deploy hook execution. When false, the $emit function is disabled during deploy hook execution. Defaults to true.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "emit_on_deploy", nulls = Nulls.SKIP)
+        public _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy) {
+            this.emitOnDeploy = emitOnDeploy;
+            return this;
+        }
+
+        /**
+         * <p>Callback observations for the deployed component</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage callbackObservations(Nullable<Object> callbackObservations) {
+            if (callbackObservations.isNull()) {
+                this.callbackObservations = null;
+            } else if (callbackObservations.isEmpty()) {
+                this.callbackObservations = Optional.empty();
+            } else {
+                this.callbackObservations = Optional.of(callbackObservations.get());
+            }
+            return this;
+        }
+
+        /**
          * <p>Callback observations for the deployed component</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -552,6 +637,22 @@ public final class DeployedComponent {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
+        public _FinalStage componentKey(Nullable<String> componentKey) {
+            if (componentKey.isNull()) {
+                this.componentKey = null;
+            } else if (componentKey.isEmpty()) {
+                this.componentKey = Optional.empty();
+            } else {
+                this.componentKey = Optional.of(componentKey.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>The component key (name) that was deployed</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage componentKey(String componentKey) {
             this.componentKey = Optional.ofNullable(componentKey);
             return this;
@@ -582,6 +683,7 @@ public final class DeployedComponent {
                     name,
                     nameSlug,
                     callbackObservations,
+                    emitOnDeploy,
                     additionalProperties);
         }
     }

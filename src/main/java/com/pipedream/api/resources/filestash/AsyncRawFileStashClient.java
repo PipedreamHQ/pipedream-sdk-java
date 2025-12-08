@@ -13,7 +13,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.ResponseBodyInputStream;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.filestash.requests.FileStashDownloadFileRequest;
+import com.pipedream.api.resources.filestash.requests.DownloadFileFileStashRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
@@ -37,7 +37,7 @@ public class AsyncRawFileStashClient {
     /**
      * Download a file from File Stash
      */
-    public CompletableFuture<BaseClientHttpResponse<InputStream>> downloadFile(FileStashDownloadFileRequest request) {
+    public CompletableFuture<BaseClientHttpResponse<InputStream>> downloadFile(DownloadFileFileStashRequest request) {
         return downloadFile(request, null);
     }
 
@@ -45,7 +45,7 @@ public class AsyncRawFileStashClient {
      * Download a file from File Stash
      */
     public CompletableFuture<BaseClientHttpResponse<InputStream>> downloadFile(
-            FileStashDownloadFileRequest request, RequestOptions requestOptions) {
+            DownloadFileFileStashRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

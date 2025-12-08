@@ -5,12 +5,15 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pipedream.api.core.Nullable;
+import com.pipedream.api.core.NullableNonemptyFilter;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +44,17 @@ public final class PropOption {
         return label;
     }
 
-    @JsonProperty("value")
+    @JsonIgnore
     public Optional<PropOptionValue> getValue() {
+        if (value == null) {
+            return Optional.empty();
+        }
+        return value;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("value")
+    private Optional<PropOptionValue> _getValue() {
         return value;
     }
 
@@ -90,6 +102,8 @@ public final class PropOption {
         _FinalStage value(Optional<PropOptionValue> value);
 
         _FinalStage value(PropOptionValue value);
+
+        _FinalStage value(Nullable<PropOptionValue> value);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -119,6 +133,18 @@ public final class PropOption {
         @JsonSetter("label")
         public _FinalStage label(@NotNull String label) {
             this.label = Objects.requireNonNull(label, "label must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage value(Nullable<PropOptionValue> value) {
+            if (value.isNull()) {
+                this.value = null;
+            } else if (value.isEmpty()) {
+                this.value = Optional.empty();
+            } else {
+                this.value = Optional.of(value.get());
+            }
             return this;
         }
 

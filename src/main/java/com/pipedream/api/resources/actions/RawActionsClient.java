@@ -13,16 +13,17 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
-import com.pipedream.api.resources.actions.requests.ActionsListRequest;
-import com.pipedream.api.resources.actions.requests.ActionsRetrieveRequest;
+import com.pipedream.api.resources.actions.requests.ConfigurePropActionsRequest;
+import com.pipedream.api.resources.actions.requests.ListActionsRequest;
+import com.pipedream.api.resources.actions.requests.ReloadPropsActionsRequest;
+import com.pipedream.api.resources.actions.requests.RetrieveActionsRequest;
 import com.pipedream.api.resources.actions.requests.RunActionOpts;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 import com.pipedream.api.types.RunActionResponse;
 import java.io.IOException;
@@ -47,13 +48,13 @@ public class RawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list() {
-        return list(ActionsListRequest.builder().build());
+        return list(ListActionsRequest.builder().build());
     }
 
     /**
      * Retrieve available actions with optional search and app filtering
      */
-    public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ActionsListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ListActionsRequest request) {
         return list(request, null);
     }
 
@@ -61,7 +62,7 @@ public class RawActionsClient {
      * Retrieve available actions with optional search and app filtering
      */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(
-            ActionsListRequest request, RequestOptions requestOptions) {
+            ListActionsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -85,6 +86,10 @@ public class RawActionsClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -101,7 +106,7 @@ public class RawActionsClient {
                 GetComponentsResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
-                ActionsListRequest nextRequest = ActionsListRequest.builder()
+                ListActionsRequest nextRequest = ListActionsRequest.builder()
                         .from(request)
                         .after(startingAfter)
                         .build();
@@ -114,9 +119,13 @@ public class RawActionsClient {
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 429:
+                        throw new TooManyRequestsError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
@@ -135,13 +144,13 @@ public class RawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
-        return retrieve(componentId, ActionsRetrieveRequest.builder().build());
+        return retrieve(componentId, RetrieveActionsRequest.builder().build());
     }
 
     /**
      * Get detailed configuration for a specific action by its key
      */
-    public BaseClientHttpResponse<Component> retrieve(String componentId, ActionsRetrieveRequest request) {
+    public BaseClientHttpResponse<Component> retrieve(String componentId, RetrieveActionsRequest request) {
         return retrieve(componentId, request, null);
     }
 
@@ -149,7 +158,7 @@ public class RawActionsClient {
      * Get detailed configuration for a specific action by its key
      */
     public BaseClientHttpResponse<Component> retrieve(
-            String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
+            String componentId, RetrieveActionsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -199,7 +208,7 @@ public class RawActionsClient {
     /**
      * Retrieve remote options for a given prop for a action
      */
-    public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
+    public BaseClientHttpResponse<ConfigurePropResponse> configureProp(ConfigurePropActionsRequest request) {
         return configureProp(request, null);
     }
 
@@ -207,7 +216,7 @@ public class RawActionsClient {
      * Retrieve remote options for a given prop for a action
      */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
+            ConfigurePropActionsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -217,7 +226,7 @@ public class RawActionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }
@@ -261,7 +270,7 @@ public class RawActionsClient {
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
+    public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(ReloadPropsActionsRequest request) {
         return reloadProps(request, null);
     }
 
@@ -269,7 +278,7 @@ public class RawActionsClient {
      * Reload the prop definition based on the currently configured props
      */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
-            ReloadPropsOpts request, RequestOptions requestOptions) {
+            ReloadPropsActionsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
@@ -279,7 +288,7 @@ public class RawActionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new BaseClientException("Failed to serialize request", e);
         }

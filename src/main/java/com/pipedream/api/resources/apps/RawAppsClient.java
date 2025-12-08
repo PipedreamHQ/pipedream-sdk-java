@@ -11,7 +11,8 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
-import com.pipedream.api.resources.apps.requests.AppsListRequest;
+import com.pipedream.api.resources.apps.requests.ListAppsRequest;
+import com.pipedream.api.resources.apps.requests.RetrieveAppsRequest;
 import com.pipedream.api.types.App;
 import com.pipedream.api.types.GetAppResponse;
 import com.pipedream.api.types.ListAppsResponse;
@@ -36,13 +37,13 @@ public class RawAppsClient {
      * Retrieve all available apps with optional filtering and sorting
      */
     public BaseClientHttpResponse<SyncPagingIterable<App>> list() {
-        return list(AppsListRequest.builder().build());
+        return list(ListAppsRequest.builder().build());
     }
 
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
-    public BaseClientHttpResponse<SyncPagingIterable<App>> list(AppsListRequest request) {
+    public BaseClientHttpResponse<SyncPagingIterable<App>> list(ListAppsRequest request) {
         return list(request, null);
     }
 
@@ -50,7 +51,7 @@ public class RawAppsClient {
      * Retrieve all available apps with optional filtering and sorting
      */
     public BaseClientHttpResponse<SyncPagingIterable<App>> list(
-            AppsListRequest request, RequestOptions requestOptions) {
+            ListAppsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/apps");
@@ -97,7 +98,7 @@ public class RawAppsClient {
                 ListAppsResponse parsedResponse =
                         ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListAppsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
-                AppsListRequest nextRequest = AppsListRequest.builder()
+                ListAppsRequest nextRequest = ListAppsRequest.builder()
                         .from(request)
                         .after(startingAfter)
                         .build();
@@ -123,24 +124,32 @@ public class RawAppsClient {
      * Get detailed information about a specific app by ID or name slug
      */
     public BaseClientHttpResponse<GetAppResponse> retrieve(String appId) {
-        return retrieve(appId, null);
+        return retrieve(appId, RetrieveAppsRequest.builder().build());
     }
 
     /**
      * Get detailed information about a specific app by ID or name slug
      */
-    public BaseClientHttpResponse<GetAppResponse> retrieve(String appId, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<GetAppResponse> retrieve(String appId, RetrieveAppsRequest request) {
+        return retrieve(appId, request, null);
+    }
+
+    /**
+     * Get detailed information about a specific app by ID or name slug
+     */
+    public BaseClientHttpResponse<GetAppResponse> retrieve(
+            String appId, RetrieveAppsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect/apps")
                 .addPathSegment(appId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);

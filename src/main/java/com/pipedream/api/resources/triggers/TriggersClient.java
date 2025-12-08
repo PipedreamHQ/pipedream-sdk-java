@@ -6,14 +6,14 @@ package com.pipedream.api.resources.triggers;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.triggers.requests.ConfigurePropTriggersRequest;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
-import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
-import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
+import com.pipedream.api.resources.triggers.requests.ListTriggersRequest;
+import com.pipedream.api.resources.triggers.requests.ReloadPropsTriggersRequest;
+import com.pipedream.api.resources.triggers.requests.RetrieveTriggersRequest;
 import com.pipedream.api.types.Component;
-import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.Emitter;
-import com.pipedream.api.types.ReloadPropsOpts;
 import com.pipedream.api.types.ReloadPropsResponse;
 
 public class TriggersClient {
@@ -43,14 +43,14 @@ public class TriggersClient {
     /**
      * Retrieve available triggers with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(TriggersListRequest request) {
+    public SyncPagingIterable<Component> list(ListTriggersRequest request) {
         return this.rawClient.list(request).body();
     }
 
     /**
      * Retrieve available triggers with optional search and app filtering
      */
-    public SyncPagingIterable<Component> list(TriggersListRequest request, RequestOptions requestOptions) {
+    public SyncPagingIterable<Component> list(ListTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
     }
 
@@ -64,42 +64,42 @@ public class TriggersClient {
     /**
      * Get detailed configuration for a specific trigger by its key
      */
-    public Component retrieve(String componentId, TriggersRetrieveRequest request) {
+    public Component retrieve(String componentId, RetrieveTriggersRequest request) {
         return this.rawClient.retrieve(componentId, request).body();
     }
 
     /**
      * Get detailed configuration for a specific trigger by its key
      */
-    public Component retrieve(String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+    public Component retrieve(String componentId, RetrieveTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a trigger
      */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+    public ConfigurePropResponse configureProp(ConfigurePropTriggersRequest request) {
         return this.rawClient.configureProp(request).body();
     }
 
     /**
      * Retrieve remote options for a given prop for a trigger
      */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+    public ConfigurePropResponse configureProp(ConfigurePropTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.configureProp(request, requestOptions).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+    public ReloadPropsResponse reloadProps(ReloadPropsTriggersRequest request) {
         return this.rawClient.reloadProps(request).body();
     }
 
     /**
      * Reload the prop definition based on the currently configured props
      */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+    public ReloadPropsResponse reloadProps(ReloadPropsTriggersRequest request, RequestOptions requestOptions) {
         return this.rawClient.reloadProps(request, requestOptions).body();
     }
 

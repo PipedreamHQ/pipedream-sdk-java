@@ -5,6 +5,7 @@ package com.pipedream.api.resources.users;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.resources.users.requests.DeleteExternalUserUsersRequest;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncUsersClient {
@@ -34,7 +35,17 @@ public class AsyncUsersClient {
     /**
      * Remove an external user and all their associated accounts and resources
      */
-    public CompletableFuture<Void> deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
-        return this.rawClient.deleteExternalUser(externalUserId, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> deleteExternalUser(String externalUserId, DeleteExternalUserUsersRequest request) {
+        return this.rawClient.deleteExternalUser(externalUserId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Remove an external user and all their associated accounts and resources
+     */
+    public CompletableFuture<Void> deleteExternalUser(
+            String externalUserId, DeleteExternalUserUsersRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .deleteExternalUser(externalUserId, request, requestOptions)
+                .thenApply(response -> response.body());
     }
 }
