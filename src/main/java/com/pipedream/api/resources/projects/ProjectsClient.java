@@ -5,6 +5,11 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
+import com.pipedream.api.resources.projects.requests.ProjectsListRequest;
+import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
+import com.pipedream.api.types.Project;
 import com.pipedream.api.types.ProjectInfoResponse;
 
 public class ProjectsClient {
@@ -22,6 +27,83 @@ public class ProjectsClient {
      */
     public RawProjectsClient withRawResponse() {
         return this.rawClient;
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public SyncPagingIterable<Project> list() {
+        return this.rawClient.list().body();
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public SyncPagingIterable<Project> list(ProjectsListRequest request) {
+        return this.rawClient.list(request).body();
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public SyncPagingIterable<Project> list(ProjectsListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).body();
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public Project create(CreateProjectOpts request) {
+        return this.rawClient.create(request).body();
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public Project create(CreateProjectOpts request, RequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).body();
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public Project retrieve() {
+        return this.rawClient.retrieve().body();
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public Project retrieve(RequestOptions requestOptions) {
+        return this.rawClient.retrieve(requestOptions).body();
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public void delete() {
+        this.rawClient.delete().body();
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public void delete(RequestOptions requestOptions) {
+        this.rawClient.delete(requestOptions).body();
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public void update(UpdateProjectLogoOpts request) {
+        this.rawClient.update(request).body();
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public void update(UpdateProjectLogoOpts request, RequestOptions requestOptions) {
+        this.rawClient.update(request, requestOptions).body();
     }
 
     /**

@@ -17,6 +17,7 @@ The Pipedream Java library provides convenient access to the Pipedream APIs from
   - [Retries](#retries)
   - [Timeouts](#timeouts)
   - [Custom Headers](#custom-headers)
+  - [Access Raw Response Data](#access-raw-response-data)
 - [Contributing](#contributing)
 - [Reference](#reference)
 
@@ -40,7 +41,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 </dependency>
 ```
 
@@ -119,7 +120,7 @@ try{
 
 ### Custom Client
 
-This SDK is built to work with any instance of `OkHttpClient`. By default, if no client is provided, the SDK will construct one. 
+This SDK is built to work with any instance of `OkHttpClient`. By default, if no client is provided, the SDK will construct one.
 However, you can pass your own client like so:
 
 ```java
@@ -138,7 +139,9 @@ BaseClient client = BaseClient
 
 The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
 as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
-retry limit (default: 2).
+retry limit (default: 2). Before defaulting to exponential backoff, the SDK will first attempt to respect
+the `Retry-After` header (as either in seconds or as an HTTP date), and then the `X-RateLimit-Reset` header
+(as a Unix timestamp in epoch seconds); failing both of those, it will fall back to exponential backoff.
 
 A request is deemed retryable when any of the following HTTP status codes is returned:
 
@@ -205,6 +208,19 @@ client.actions().run(
         .addHeader("X-Request-Header", "request-value")
         .build()
 );
+```
+
+### Access Raw Response Data
+
+The SDK provides access to raw response data, including headers, through the `withRawResponse()` method.
+The `withRawResponse()` method returns a raw client that wraps all responses with `body()` and `headers()` methods.
+(A normal client's `response` is identical to a raw client's `response.body()`.)
+
+```java
+RunHttpResponse response = client.actions().withRawResponse().run(...);
+
+System.out.println(response.body());
+System.out.println(response.headers().get("X-My-Header"));
 ```
 
 ## Contributing
