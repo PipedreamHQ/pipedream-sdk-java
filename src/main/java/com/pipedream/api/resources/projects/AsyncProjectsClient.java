@@ -5,6 +5,12 @@ package com.pipedream.api.resources.projects;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
+import com.pipedream.api.resources.projects.requests.ProjectsListRequest;
+import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
+import com.pipedream.api.resources.projects.requests.UpdateProjectOpts;
+import com.pipedream.api.types.Project;
 import com.pipedream.api.types.ProjectInfoResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,6 +29,105 @@ public class AsyncProjectsClient {
      */
     public AsyncRawProjectsClient withRawResponse() {
         return this.rawClient;
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list() {
+        return this.rawClient.list().thenApply(response -> response.body());
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list(ProjectsListRequest request) {
+        return this.rawClient.list(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
+    public CompletableFuture<SyncPagingIterable<Project>> list(
+            ProjectsListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public CompletableFuture<Project> create(CreateProjectOpts request) {
+        return this.rawClient.create(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Create a new project for the authenticated workspace
+     */
+    public CompletableFuture<Project> create(CreateProjectOpts request, RequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public CompletableFuture<Project> retrieve() {
+        return this.rawClient.retrieve().thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the project details for a specific project
+     */
+    public CompletableFuture<Project> retrieve(RequestOptions requestOptions) {
+        return this.rawClient.retrieve(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public CompletableFuture<Void> delete() {
+        return this.rawClient.delete().thenApply(response -> response.body());
+    }
+
+    /**
+     * Delete a project owned by the authenticated workspace
+     */
+    public CompletableFuture<Void> delete(RequestOptions requestOptions) {
+        return this.rawClient.delete(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Update project details or application information
+     */
+    public CompletableFuture<Project> update() {
+        return this.rawClient.update().thenApply(response -> response.body());
+    }
+
+    /**
+     * Update project details or application information
+     */
+    public CompletableFuture<Project> update(UpdateProjectOpts request) {
+        return this.rawClient.update(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Update project details or application information
+     */
+    public CompletableFuture<Project> update(UpdateProjectOpts request, RequestOptions requestOptions) {
+        return this.rawClient.update(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public CompletableFuture<Void> updateLogo(UpdateProjectLogoOpts request) {
+        return this.rawClient.updateLogo(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Upload or replace the project logo
+     */
+    public CompletableFuture<Void> updateLogo(UpdateProjectLogoOpts request, RequestOptions requestOptions) {
+        return this.rawClient.updateLogo(request, requestOptions).thenApply(response -> response.body());
     }
 
     /**
