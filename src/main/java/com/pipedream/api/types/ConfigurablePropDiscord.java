@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscord.Builder.class)
-public final class ConfigurablePropDiscord {
+public final class ConfigurablePropDiscord implements IConfigurablePropBase {
     private final String name;
 
     private final Optional<String> label;
@@ -68,15 +68,11 @@ public final class ConfigurablePropDiscord {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("type")
-    public String getType() {
-        return "$.discord.channel";
-    }
-
     /**
      * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
      */
     @JsonProperty("name")
+    @java.lang.Override
     public String getName() {
         return name;
     }
@@ -85,6 +81,7 @@ public final class ConfigurablePropDiscord {
      * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
      */
     @JsonProperty("label")
+    @java.lang.Override
     public Optional<String> getLabel() {
         return label;
     }
@@ -93,6 +90,7 @@ public final class ConfigurablePropDiscord {
      * @return A description of the prop, shown to the user when configuring the component.
      */
     @JsonProperty("description")
+    @java.lang.Override
     public Optional<String> getDescription() {
         return description;
     }
@@ -101,6 +99,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, this prop does not need to be specified.
      */
     @JsonProperty("optional")
+    @java.lang.Override
     public Optional<Boolean> getOptional() {
         return optional;
     }
@@ -109,6 +108,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, this prop will be ignored.
      */
     @JsonProperty("disabled")
+    @java.lang.Override
     public Optional<Boolean> getDisabled() {
         return disabled;
     }
@@ -117,6 +117,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, should not expose this prop to the user
      */
     @JsonProperty("hidden")
+    @java.lang.Override
     public Optional<Boolean> getHidden() {
         return hidden;
     }
@@ -125,6 +126,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
      */
     @JsonProperty("remoteOptions")
+    @java.lang.Override
     public Optional<Boolean> getRemoteOptions() {
         return remoteOptions;
     }
@@ -133,6 +135,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
      */
     @JsonProperty("useQuery")
+    @java.lang.Override
     public Optional<Boolean> getUseQuery() {
         return useQuery;
     }
@@ -141,6 +144,7 @@ public final class ConfigurablePropDiscord {
      * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
     @JsonProperty("reloadProps")
+    @java.lang.Override
     public Optional<Boolean> getReloadProps() {
         return reloadProps;
     }
@@ -149,8 +153,14 @@ public final class ConfigurablePropDiscord {
      * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
      */
     @JsonProperty("withLabel")
+    @java.lang.Override
     public Optional<Boolean> getWithLabel() {
         return withLabel;
+    }
+
+    @JsonProperty("type")
+    public String getType() {
+        return "$.discord.channel";
     }
 
     @java.lang.Override
