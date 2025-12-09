@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.resources.components.types.ComponentsListRequestRegistry;
 import com.pipedream.api.types.ComponentType;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,8 @@ public final class ComponentsListRequest {
 
     private final Optional<String> app;
 
+    private final Optional<ComponentsListRequestRegistry> registry;
+
     private final Optional<ComponentType> componentType;
 
     private final Map<String, Object> additionalProperties;
@@ -41,6 +44,7 @@ public final class ComponentsListRequest {
             Optional<Integer> limit,
             Optional<String> q,
             Optional<String> app,
+            Optional<ComponentsListRequestRegistry> registry,
             Optional<ComponentType> componentType,
             Map<String, Object> additionalProperties) {
         this.after = after;
@@ -48,6 +52,7 @@ public final class ComponentsListRequest {
         this.limit = limit;
         this.q = q;
         this.app = app;
+        this.registry = registry;
         this.componentType = componentType;
         this.additionalProperties = additionalProperties;
     }
@@ -93,6 +98,14 @@ public final class ComponentsListRequest {
     }
 
     /**
+     * @return The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')
+     */
+    @JsonProperty("registry")
+    public Optional<ComponentsListRequestRegistry> getRegistry() {
+        return registry;
+    }
+
+    /**
      * @return The type of the component to filter the components
      */
     @JsonProperty("component_type")
@@ -117,12 +130,13 @@ public final class ComponentsListRequest {
                 && limit.equals(other.limit)
                 && q.equals(other.q)
                 && app.equals(other.app)
+                && registry.equals(other.registry)
                 && componentType.equals(other.componentType);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.after, this.before, this.limit, this.q, this.app, this.componentType);
+        return Objects.hash(this.after, this.before, this.limit, this.q, this.app, this.registry, this.componentType);
     }
 
     @java.lang.Override
@@ -146,6 +160,8 @@ public final class ComponentsListRequest {
 
         private Optional<String> app = Optional.empty();
 
+        private Optional<ComponentsListRequestRegistry> registry = Optional.empty();
+
         private Optional<ComponentType> componentType = Optional.empty();
 
         @JsonAnySetter
@@ -159,6 +175,7 @@ public final class ComponentsListRequest {
             limit(other.getLimit());
             q(other.getQ());
             app(other.getApp());
+            registry(other.getRegistry());
             componentType(other.getComponentType());
             return this;
         }
@@ -234,6 +251,20 @@ public final class ComponentsListRequest {
         }
 
         /**
+         * <p>The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')</p>
+         */
+        @JsonSetter(value = "registry", nulls = Nulls.SKIP)
+        public Builder registry(Optional<ComponentsListRequestRegistry> registry) {
+            this.registry = registry;
+            return this;
+        }
+
+        public Builder registry(ComponentsListRequestRegistry registry) {
+            this.registry = Optional.ofNullable(registry);
+            return this;
+        }
+
+        /**
          * <p>The type of the component to filter the components</p>
          */
         @JsonSetter(value = "component_type", nulls = Nulls.SKIP)
@@ -248,7 +279,8 @@ public final class ComponentsListRequest {
         }
 
         public ComponentsListRequest build() {
-            return new ComponentsListRequest(after, before, limit, q, app, componentType, additionalProperties);
+            return new ComponentsListRequest(
+                    after, before, limit, q, app, registry, componentType, additionalProperties);
         }
     }
 }
