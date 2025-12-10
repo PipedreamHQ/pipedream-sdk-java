@@ -93,9 +93,10 @@ public class RawAppsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 ListAppsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListAppsResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListAppsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
                 AppsListRequest nextRequest = AppsListRequest.builder()
                         .from(request)
@@ -108,12 +109,9 @@ public class RawAppsClient {
                                 .body()),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -147,16 +145,14 @@ public class RawAppsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetAppResponse.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetAppResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

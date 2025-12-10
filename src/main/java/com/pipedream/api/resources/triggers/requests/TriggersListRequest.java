@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.resources.triggers.types.TriggersListRequestRegistry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +31,8 @@ public final class TriggersListRequest {
 
     private final Optional<String> app;
 
+    private final Optional<TriggersListRequestRegistry> registry;
+
     private final Map<String, Object> additionalProperties;
 
     private TriggersListRequest(
@@ -38,12 +41,14 @@ public final class TriggersListRequest {
             Optional<Integer> limit,
             Optional<String> q,
             Optional<String> app,
+            Optional<TriggersListRequestRegistry> registry,
             Map<String, Object> additionalProperties) {
         this.after = after;
         this.before = before;
         this.limit = limit;
         this.q = q;
         this.app = app;
+        this.registry = registry;
         this.additionalProperties = additionalProperties;
     }
 
@@ -87,6 +92,14 @@ public final class TriggersListRequest {
         return app;
     }
 
+    /**
+     * @return The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')
+     */
+    @JsonProperty("registry")
+    public Optional<TriggersListRequestRegistry> getRegistry() {
+        return registry;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -103,12 +116,13 @@ public final class TriggersListRequest {
                 && before.equals(other.before)
                 && limit.equals(other.limit)
                 && q.equals(other.q)
-                && app.equals(other.app);
+                && app.equals(other.app)
+                && registry.equals(other.registry);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.after, this.before, this.limit, this.q, this.app);
+        return Objects.hash(this.after, this.before, this.limit, this.q, this.app, this.registry);
     }
 
     @java.lang.Override
@@ -132,6 +146,8 @@ public final class TriggersListRequest {
 
         private Optional<String> app = Optional.empty();
 
+        private Optional<TriggersListRequestRegistry> registry = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -143,6 +159,7 @@ public final class TriggersListRequest {
             limit(other.getLimit());
             q(other.getQ());
             app(other.getApp());
+            registry(other.getRegistry());
             return this;
         }
 
@@ -216,8 +233,22 @@ public final class TriggersListRequest {
             return this;
         }
 
+        /**
+         * <p>The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')</p>
+         */
+        @JsonSetter(value = "registry", nulls = Nulls.SKIP)
+        public Builder registry(Optional<TriggersListRequestRegistry> registry) {
+            this.registry = registry;
+            return this;
+        }
+
+        public Builder registry(TriggersListRequestRegistry registry) {
+            this.registry = Optional.ofNullable(registry);
+            return this;
+        }
+
         public TriggersListRequest build() {
-            return new TriggersListRequest(after, before, limit, q, app, additionalProperties);
+            return new TriggersListRequest(after, before, limit, q, app, registry, additionalProperties);
         }
     }
 }
