@@ -35,10 +35,10 @@ public final class ClientOptions {
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "com.pipedream:pipedream/1.1.1");
+                put("User-Agent", "com.pipedream:pipedream/1.1.2");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.pipedream.fern:api-sdk");
-                put("X-Fern-SDK-Version", "1.1.1");
+                put("X-Fern-SDK-Version", "1.1.2");
             }
         });
         this.headerSuppliers = headerSuppliers;
