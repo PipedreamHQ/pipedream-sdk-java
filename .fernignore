@@ -40,3 +40,8 @@ src/main/java/com/pipedream/api/resources/workflows/WorkflowsClient.java
 src/main/java/com/pipedream/api/resources/workflows/RawWorkflowsClient.java
 src/main/java/com/pipedream/api/resources/workflows/package-info.java
 src/main/java/com/pipedream/api/types/HTTPAuthType.java
+
+# Custom tests
+src/test/java/com/pipedream/api/OauthTokensWireTest.java
+src/test/java/com/pipedream/api/ProxyClientWireTest.java
+src/test/java/com/pipedream/api/TokensWireTest.java
