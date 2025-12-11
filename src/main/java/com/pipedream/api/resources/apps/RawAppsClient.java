@@ -77,6 +77,18 @@ public class RawAppsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "sort_direction", request.getSortDirection().get(), false);
         }
+        if (request.getHasComponents().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "has_components", request.getHasComponents().get(), false);
+        }
+        if (request.getHasActions().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "has_actions", request.getHasActions().get(), false);
+        }
+        if (request.getHasTriggers().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "has_triggers", request.getHasTriggers().get(), false);
+        }
         if (request.getCategoryIds().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "category_ids", request.getCategoryIds().get(), true);

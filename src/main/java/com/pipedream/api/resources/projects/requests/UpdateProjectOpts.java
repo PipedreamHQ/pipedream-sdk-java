@@ -26,16 +26,20 @@ public final class UpdateProjectOpts {
 
     private final Optional<String> supportEmail;
 
+    private final Optional<Boolean> connectRequireKeyAuthTest;
+
     private final Map<String, Object> additionalProperties;
 
     private UpdateProjectOpts(
             Optional<String> name,
             Optional<String> appName,
             Optional<String> supportEmail,
+            Optional<Boolean> connectRequireKeyAuthTest,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.appName = appName;
         this.supportEmail = supportEmail;
+        this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
         this.additionalProperties = additionalProperties;
     }
 
@@ -63,6 +67,14 @@ public final class UpdateProjectOpts {
         return supportEmail;
     }
 
+    /**
+     * @return Send a test request to the upstream API when adding Connect accounts for key-based apps
+     */
+    @JsonProperty("connect_require_key_auth_test")
+    public Optional<Boolean> getConnectRequireKeyAuthTest() {
+        return connectRequireKeyAuthTest;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -75,12 +87,15 @@ public final class UpdateProjectOpts {
     }
 
     private boolean equalTo(UpdateProjectOpts other) {
-        return name.equals(other.name) && appName.equals(other.appName) && supportEmail.equals(other.supportEmail);
+        return name.equals(other.name)
+                && appName.equals(other.appName)
+                && supportEmail.equals(other.supportEmail)
+                && connectRequireKeyAuthTest.equals(other.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.appName, this.supportEmail);
+        return Objects.hash(this.name, this.appName, this.supportEmail, this.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
@@ -100,6 +115,8 @@ public final class UpdateProjectOpts {
 
         private Optional<String> supportEmail = Optional.empty();
 
+        private Optional<Boolean> connectRequireKeyAuthTest = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -109,6 +126,7 @@ public final class UpdateProjectOpts {
             name(other.getName());
             appName(other.getAppName());
             supportEmail(other.getSupportEmail());
+            connectRequireKeyAuthTest(other.getConnectRequireKeyAuthTest());
             return this;
         }
 
@@ -154,8 +172,22 @@ public final class UpdateProjectOpts {
             return this;
         }
 
+        /**
+         * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
+         */
+        @JsonSetter(value = "connect_require_key_auth_test", nulls = Nulls.SKIP)
+        public Builder connectRequireKeyAuthTest(Optional<Boolean> connectRequireKeyAuthTest) {
+            this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
+            return this;
+        }
+
+        public Builder connectRequireKeyAuthTest(Boolean connectRequireKeyAuthTest) {
+            this.connectRequireKeyAuthTest = Optional.ofNullable(connectRequireKeyAuthTest);
+            return this;
+        }
+
         public UpdateProjectOpts build() {
-            return new UpdateProjectOpts(name, appName, supportEmail, additionalProperties);
+            return new UpdateProjectOpts(name, appName, supportEmail, connectRequireKeyAuthTest, additionalProperties);
         }
     }
 }

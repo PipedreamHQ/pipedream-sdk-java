@@ -29,6 +29,8 @@ public final class Project {
 
     private final Optional<String> supportEmail;
 
+    private final Optional<Boolean> connectRequireKeyAuthTest;
+
     private final Map<String, Object> additionalProperties;
 
     private Project(
@@ -36,11 +38,13 @@ public final class Project {
             String name,
             Optional<String> appName,
             Optional<String> supportEmail,
+            Optional<Boolean> connectRequireKeyAuthTest,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.name = name;
         this.appName = appName;
         this.supportEmail = supportEmail;
+        this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
         this.additionalProperties = additionalProperties;
     }
 
@@ -76,6 +80,14 @@ public final class Project {
         return supportEmail;
     }
 
+    /**
+     * @return Send a test request to the upstream API when adding Connect accounts for key-based apps
+     */
+    @JsonProperty("connect_require_key_auth_test")
+    public Optional<Boolean> getConnectRequireKeyAuthTest() {
+        return connectRequireKeyAuthTest;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -91,12 +103,13 @@ public final class Project {
         return id.equals(other.id)
                 && name.equals(other.name)
                 && appName.equals(other.appName)
-                && supportEmail.equals(other.supportEmail);
+                && supportEmail.equals(other.supportEmail)
+                && connectRequireKeyAuthTest.equals(other.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.appName, this.supportEmail);
+        return Objects.hash(this.id, this.name, this.appName, this.supportEmail, this.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
@@ -140,6 +153,13 @@ public final class Project {
         _FinalStage supportEmail(Optional<String> supportEmail);
 
         _FinalStage supportEmail(String supportEmail);
+
+        /**
+         * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
+         */
+        _FinalStage connectRequireKeyAuthTest(Optional<Boolean> connectRequireKeyAuthTest);
+
+        _FinalStage connectRequireKeyAuthTest(Boolean connectRequireKeyAuthTest);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -147,6 +167,8 @@ public final class Project {
         private String id;
 
         private String name;
+
+        private Optional<Boolean> connectRequireKeyAuthTest = Optional.empty();
 
         private Optional<String> supportEmail = Optional.empty();
 
@@ -163,6 +185,7 @@ public final class Project {
             name(other.getName());
             appName(other.getAppName());
             supportEmail(other.getSupportEmail());
+            connectRequireKeyAuthTest(other.getConnectRequireKeyAuthTest());
             return this;
         }
 
@@ -187,6 +210,26 @@ public final class Project {
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage connectRequireKeyAuthTest(Boolean connectRequireKeyAuthTest) {
+            this.connectRequireKeyAuthTest = Optional.ofNullable(connectRequireKeyAuthTest);
+            return this;
+        }
+
+        /**
+         * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "connect_require_key_auth_test", nulls = Nulls.SKIP)
+        public _FinalStage connectRequireKeyAuthTest(Optional<Boolean> connectRequireKeyAuthTest) {
+            this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
             return this;
         }
 
@@ -232,7 +275,7 @@ public final class Project {
 
         @java.lang.Override
         public Project build() {
-            return new Project(id, name, appName, supportEmail, additionalProperties);
+            return new Project(id, name, appName, supportEmail, connectRequireKeyAuthTest, additionalProperties);
         }
     }
 }
