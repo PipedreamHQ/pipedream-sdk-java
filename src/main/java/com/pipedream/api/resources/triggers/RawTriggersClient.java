@@ -13,6 +13,7 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
@@ -86,6 +87,10 @@ public class RawTriggersClient {
         if (request.getApp().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
         }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -115,9 +120,13 @@ public class RawTriggersClient {
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 429:
+                        throw new TooManyRequestsError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
