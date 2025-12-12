@@ -38,6 +38,12 @@ public final class AppsListRequest {
 
     private final Optional<AppsListRequestSortDirection> sortDirection;
 
+    private final Optional<Boolean> hasComponents;
+
+    private final Optional<Boolean> hasActions;
+
+    private final Optional<Boolean> hasTriggers;
+
     private final Map<String, Object> additionalProperties;
 
     private AppsListRequest(
@@ -48,6 +54,9 @@ public final class AppsListRequest {
             Optional<String> q,
             Optional<AppsListRequestSortKey> sortKey,
             Optional<AppsListRequestSortDirection> sortDirection,
+            Optional<Boolean> hasComponents,
+            Optional<Boolean> hasActions,
+            Optional<Boolean> hasTriggers,
             Map<String, Object> additionalProperties) {
         this.categoryIds = categoryIds;
         this.after = after;
@@ -56,6 +65,9 @@ public final class AppsListRequest {
         this.q = q;
         this.sortKey = sortKey;
         this.sortDirection = sortDirection;
+        this.hasComponents = hasComponents;
+        this.hasActions = hasActions;
+        this.hasTriggers = hasTriggers;
         this.additionalProperties = additionalProperties;
     }
 
@@ -115,6 +127,30 @@ public final class AppsListRequest {
         return sortDirection;
     }
 
+    /**
+     * @return Filter to apps that have components (actions or triggers)
+     */
+    @JsonProperty("has_components")
+    public Optional<Boolean> getHasComponents() {
+        return hasComponents;
+    }
+
+    /**
+     * @return Filter to apps that have actions
+     */
+    @JsonProperty("has_actions")
+    public Optional<Boolean> getHasActions() {
+        return hasActions;
+    }
+
+    /**
+     * @return Filter to apps that have triggers
+     */
+    @JsonProperty("has_triggers")
+    public Optional<Boolean> getHasTriggers() {
+        return hasTriggers;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -133,13 +169,25 @@ public final class AppsListRequest {
                 && limit.equals(other.limit)
                 && q.equals(other.q)
                 && sortKey.equals(other.sortKey)
-                && sortDirection.equals(other.sortDirection);
+                && sortDirection.equals(other.sortDirection)
+                && hasComponents.equals(other.hasComponents)
+                && hasActions.equals(other.hasActions)
+                && hasTriggers.equals(other.hasTriggers);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.categoryIds, this.after, this.before, this.limit, this.q, this.sortKey, this.sortDirection);
+                this.categoryIds,
+                this.after,
+                this.before,
+                this.limit,
+                this.q,
+                this.sortKey,
+                this.sortDirection,
+                this.hasComponents,
+                this.hasActions,
+                this.hasTriggers);
     }
 
     @java.lang.Override
@@ -167,6 +215,12 @@ public final class AppsListRequest {
 
         private Optional<AppsListRequestSortDirection> sortDirection = Optional.empty();
 
+        private Optional<Boolean> hasComponents = Optional.empty();
+
+        private Optional<Boolean> hasActions = Optional.empty();
+
+        private Optional<Boolean> hasTriggers = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -180,6 +234,9 @@ public final class AppsListRequest {
             q(other.getQ());
             sortKey(other.getSortKey());
             sortDirection(other.getSortDirection());
+            hasComponents(other.getHasComponents());
+            hasActions(other.getHasActions());
+            hasTriggers(other.getHasTriggers());
             return this;
         }
 
@@ -286,9 +343,61 @@ public final class AppsListRequest {
             return this;
         }
 
+        /**
+         * <p>Filter to apps that have components (actions or triggers)</p>
+         */
+        @JsonSetter(value = "has_components", nulls = Nulls.SKIP)
+        public Builder hasComponents(Optional<Boolean> hasComponents) {
+            this.hasComponents = hasComponents;
+            return this;
+        }
+
+        public Builder hasComponents(Boolean hasComponents) {
+            this.hasComponents = Optional.ofNullable(hasComponents);
+            return this;
+        }
+
+        /**
+         * <p>Filter to apps that have actions</p>
+         */
+        @JsonSetter(value = "has_actions", nulls = Nulls.SKIP)
+        public Builder hasActions(Optional<Boolean> hasActions) {
+            this.hasActions = hasActions;
+            return this;
+        }
+
+        public Builder hasActions(Boolean hasActions) {
+            this.hasActions = Optional.ofNullable(hasActions);
+            return this;
+        }
+
+        /**
+         * <p>Filter to apps that have triggers</p>
+         */
+        @JsonSetter(value = "has_triggers", nulls = Nulls.SKIP)
+        public Builder hasTriggers(Optional<Boolean> hasTriggers) {
+            this.hasTriggers = hasTriggers;
+            return this;
+        }
+
+        public Builder hasTriggers(Boolean hasTriggers) {
+            this.hasTriggers = Optional.ofNullable(hasTriggers);
+            return this;
+        }
+
         public AppsListRequest build() {
             return new AppsListRequest(
-                    categoryIds, after, before, limit, q, sortKey, sortDirection, additionalProperties);
+                    categoryIds,
+                    after,
+                    before,
+                    limit,
+                    q,
+                    sortKey,
+                    sortDirection,
+                    hasComponents,
+                    hasActions,
+                    hasTriggers,
+                    additionalProperties);
         }
     }
 }
