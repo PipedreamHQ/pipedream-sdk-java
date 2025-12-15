@@ -56,7 +56,7 @@ public final class ConfigurePropResponse {
     /**
      * @return Available options for the configured prop
      */
-    @JsonProperty("string_options")
+    @JsonProperty("stringOptions")
     public Optional<List<String>> getStringOptions() {
         return stringOptions;
     }
@@ -155,7 +155,7 @@ public final class ConfigurePropResponse {
         /**
          * <p>Available options for the configured prop</p>
          */
-        @JsonSetter(value = "string_options", nulls = Nulls.SKIP)
+        @JsonSetter(value = "stringOptions", nulls = Nulls.SKIP)
         public Builder stringOptions(Optional<List<String>> stringOptions) {
             this.stringOptions = stringOptions;
             return this;

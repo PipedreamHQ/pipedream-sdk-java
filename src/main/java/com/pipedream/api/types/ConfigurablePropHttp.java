@@ -5,7 +5,6 @@ package com.pipedream.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -386,7 +385,6 @@ public final class ConfigurablePropHttp implements IConfigurablePropBase {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonIgnore
         public _FinalStage withLabel(Boolean withLabel) {
             this.withLabel = Optional.ofNullable(withLabel);
             return this;
