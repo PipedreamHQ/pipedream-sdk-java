@@ -128,7 +128,7 @@ public final class AppsListRequest {
     }
 
     /**
-     * @return Filter to apps that have components (actions or triggers)
+     * @return Only return apps that have components (actions or triggers)
      */
     @JsonProperty("has_components")
     public Optional<Boolean> getHasComponents() {
@@ -136,7 +136,7 @@ public final class AppsListRequest {
     }
 
     /**
-     * @return Filter to apps that have actions
+     * @return Only return apps that have actions
      */
     @JsonProperty("has_actions")
     public Optional<Boolean> getHasActions() {
@@ -144,7 +144,7 @@ public final class AppsListRequest {
     }
 
     /**
-     * @return Filter to apps that have triggers
+     * @return Only return apps that have triggers
      */
     @JsonProperty("has_triggers")
     public Optional<Boolean> getHasTriggers() {
@@ -344,7 +344,7 @@ public final class AppsListRequest {
         }
 
         /**
-         * <p>Filter to apps that have components (actions or triggers)</p>
+         * <p>Only return apps that have components (actions or triggers)</p>
          */
         @JsonSetter(value = "has_components", nulls = Nulls.SKIP)
         public Builder hasComponents(Optional<Boolean> hasComponents) {
@@ -358,7 +358,7 @@ public final class AppsListRequest {
         }
 
         /**
-         * <p>Filter to apps that have actions</p>
+         * <p>Only return apps that have actions</p>
          */
         @JsonSetter(value = "has_actions", nulls = Nulls.SKIP)
         public Builder hasActions(Optional<Boolean> hasActions) {
@@ -372,7 +372,7 @@ public final class AppsListRequest {
         }
 
         /**
-         * <p>Filter to apps that have triggers</p>
+         * <p>Only return apps that have triggers</p>
          */
         @JsonSetter(value = "has_triggers", nulls = Nulls.SKIP)
         public Builder hasTriggers(Optional<Boolean> hasTriggers) {
