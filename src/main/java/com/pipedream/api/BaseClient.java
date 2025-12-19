@@ -118,7 +118,22 @@ public class BaseClient {
         return this.oauthTokensClient.get();
     }
 
-    public static BaseClientBuilder builder() {
-        return new BaseClientBuilder();
+    /**
+     * Creates a client builder using a pre-generated access token.
+     * @param token The access token to use for authentication
+     * @return A builder configured for token authentication
+     */
+    public static BaseClientBuilder._TokenAuth withToken(String token) {
+        return BaseClientBuilder.withToken(token);
+    }
+
+    /**
+     * Creates a client builder using OAuth client credentials.
+     * @param clientId The OAuth client ID
+     * @param clientSecret The OAuth client secret
+     * @return A builder configured for OAuth authentication
+     */
+    public static BaseClientBuilder._CredentialsAuth withCredentials(String clientId, String clientSecret) {
+        return BaseClientBuilder.withCredentials(clientId, clientSecret);
     }
 }

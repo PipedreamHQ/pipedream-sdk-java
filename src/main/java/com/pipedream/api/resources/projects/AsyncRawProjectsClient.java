@@ -98,9 +98,10 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         ListProjectsResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListProjectsResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListProjectsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
                         ProjectsListRequest nextRequest = ProjectsListRequest.builder()
@@ -122,7 +123,6 @@ public class AsyncRawProjectsClient {
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
                             case 404:
@@ -139,11 +139,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -197,12 +195,12 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Project.class), response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Project.class), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -212,11 +210,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -263,12 +259,12 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Project.class), response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Project.class), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -278,11 +274,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -342,11 +336,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -408,12 +400,12 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Project.class), response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Project.class), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -423,11 +415,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -504,11 +494,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -538,7 +526,8 @@ public class AsyncRawProjectsClient {
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("projects/info")
+                .addPathSegments("projects")
+                .addPathSegments("info")
                 .build();
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
@@ -555,13 +544,13 @@ public class AsyncRawProjectsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ProjectInfoResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ProjectInfoResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -571,11 +560,9 @@ public class AsyncRawProjectsClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
