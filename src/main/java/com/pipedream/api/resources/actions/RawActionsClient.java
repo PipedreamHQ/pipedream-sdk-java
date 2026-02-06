@@ -54,6 +54,13 @@ public class RawActionsClient {
     /**
      * Retrieve available actions with optional search and app filtering
      */
+    public BaseClientHttpResponse<SyncPagingIterable<Component>> list(RequestOptions requestOptions) {
+        return list(ActionsListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ActionsListRequest request) {
         return list(request, null);
     }
@@ -90,6 +97,11 @@ public class RawActionsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "registry", request.getRegistry().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -102,9 +114,10 @@ public class RawActionsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetComponentsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
                 ActionsListRequest nextRequest = ActionsListRequest.builder()
                         .from(request)
@@ -117,7 +130,6 @@ public class RawActionsClient {
                                 .body()),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 switch (response.code()) {
                     case 400:
@@ -130,11 +142,9 @@ public class RawActionsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -145,6 +155,13 @@ public class RawActionsClient {
      */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, ActionsRetrieveRequest.builder().build());
+    }
+
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
+    public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
+        return retrieve(componentId, ActionsRetrieveRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -169,6 +186,11 @@ public class RawActionsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "version", request.getVersion().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -181,12 +203,12 @@ public class RawActionsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetComponentResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -195,11 +217,9 @@ public class RawActionsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -217,12 +237,17 @@ public class RawActionsClient {
      */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/configure")
-                .build();
+                .addPathSegments("actions")
+                .addPathSegments("configure");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -231,7 +256,7 @@ public class RawActionsClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -243,12 +268,11 @@ public class RawActionsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConfigurePropResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -257,11 +281,9 @@ public class RawActionsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -279,12 +301,17 @@ public class RawActionsClient {
      */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/props")
-                .build();
+                .addPathSegments("actions")
+                .addPathSegments("props");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -293,7 +320,7 @@ public class RawActionsClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -305,12 +332,11 @@ public class RawActionsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ReloadPropsResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ReloadPropsResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -319,11 +345,9 @@ public class RawActionsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -340,12 +364,17 @@ public class RawActionsClient {
      * Execute an action with the provided configuration and return results
      */
     public BaseClientHttpResponse<RunActionResponse> run(RunActionOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("actions/run")
-                .build();
+                .addPathSegments("actions")
+                .addPathSegments("run");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -354,7 +383,7 @@ public class RawActionsClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -366,11 +395,11 @@ public class RawActionsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), RunActionResponse.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, RunActionResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -379,11 +408,9 @@ public class RawActionsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

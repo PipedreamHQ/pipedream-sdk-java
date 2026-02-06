@@ -42,6 +42,13 @@ public class AsyncComponentsClient {
     /**
      * Retrieve available components with optional search and app filtering
      */
+    public CompletableFuture<SyncPagingIterable<Component>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(ComponentsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
@@ -59,6 +66,13 @@ public class AsyncComponentsClient {
      */
     public CompletableFuture<Component> retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
+    public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
     /**

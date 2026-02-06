@@ -41,6 +41,13 @@ public class ComponentsClient {
     /**
      * Retrieve available components with optional search and app filtering
      */
+    public SyncPagingIterable<Component> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(ComponentsListRequest request) {
         return this.rawClient.list(request).body();
     }
@@ -57,6 +64,13 @@ public class ComponentsClient {
      */
     public Component retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).body();
+    }
+
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
+    public Component retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
     /**

@@ -38,6 +38,13 @@ public class AsyncAppsClient {
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
+    public CompletableFuture<SyncPagingIterable<App>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public CompletableFuture<SyncPagingIterable<App>> list(AppsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }

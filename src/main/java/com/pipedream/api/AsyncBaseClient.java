@@ -17,6 +17,7 @@ import com.pipedream.api.resources.projects.AsyncProjectsClient;
 import com.pipedream.api.resources.proxy.AsyncProxyClient;
 import com.pipedream.api.resources.tokens.AsyncTokensClient;
 import com.pipedream.api.resources.triggers.AsyncTriggersClient;
+import com.pipedream.api.resources.usage.AsyncUsageClient;
 import com.pipedream.api.resources.users.AsyncUsersClient;
 import java.util.function.Supplier;
 
@@ -47,6 +48,8 @@ public class AsyncBaseClient {
 
     protected final Supplier<AsyncTokensClient> tokensClient;
 
+    protected final Supplier<AsyncUsageClient> usageClient;
+
     protected final Supplier<AsyncOauthTokensClient> oauthTokensClient;
 
     public AsyncBaseClient(ClientOptions clientOptions) {
@@ -63,6 +66,7 @@ public class AsyncBaseClient {
         this.fileStashClient = Suppliers.memoize(() -> new AsyncFileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new AsyncProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new AsyncTokensClient(clientOptions));
+        this.usageClient = Suppliers.memoize(() -> new AsyncUsageClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new AsyncOauthTokensClient(clientOptions));
     }
 
@@ -114,11 +118,38 @@ public class AsyncBaseClient {
         return this.tokensClient.get();
     }
 
+    public AsyncUsageClient usage() {
+        return this.usageClient.get();
+    }
+
     public AsyncOauthTokensClient oauthTokens() {
         return this.oauthTokensClient.get();
     }
 
-    public static AsyncBaseClientBuilder builder() {
-        return new AsyncBaseClientBuilder();
+    /**
+     * Creates a client builder using a pre-generated access token.
+     * @param token The access token to use for authentication
+     * @return A builder configured for token authentication
+     */
+    public static AsyncBaseClientBuilder._TokenAuth withToken(String token) {
+        return AsyncBaseClientBuilder.withToken(token);
+    }
+
+    /**
+     * Creates a client builder using OAuth client credentials.
+     * @param clientId The OAuth client ID
+     * @param clientSecret The OAuth client secret
+     * @return A builder configured for OAuth authentication
+     */
+    public static AsyncBaseClientBuilder._CredentialsAuth withCredentials(String clientId, String clientSecret) {
+        return AsyncBaseClientBuilder.withCredentials(clientId, clientSecret);
+    }
+
+    /**
+     * Creates a new client builder.
+     * @return A builder for configuring and creating the client
+     */
+    public static AsyncBaseClientBuilder._Builder builder() {
+        return AsyncBaseClientBuilder.builder();
     }
 }

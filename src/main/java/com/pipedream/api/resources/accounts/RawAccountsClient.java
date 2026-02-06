@@ -47,6 +47,13 @@ public class RawAccountsClient {
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
+    public BaseClientHttpResponse<SyncPagingIterable<Account>> list(RequestOptions requestOptions) {
+        return list(AccountsListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Account>> list(AccountsListRequest request) {
         return list(request, null);
     }
@@ -91,6 +98,11 @@ public class RawAccountsClient {
                     request.getIncludeCredentials().get(),
                     false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -103,9 +115,10 @@ public class RawAccountsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 ListAccountsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListAccountsResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListAccountsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
                 AccountsListRequest nextRequest = AccountsListRequest.builder()
                         .from(request)
@@ -118,7 +131,6 @@ public class RawAccountsClient {
                                 .body()),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -127,11 +139,9 @@ public class RawAccountsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -161,6 +171,11 @@ public class RawAccountsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "oauth_app_id", request.getOauthAppId().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -181,11 +196,11 @@ public class RawAccountsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Account.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -194,11 +209,9 @@ public class RawAccountsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -209,6 +222,13 @@ public class RawAccountsClient {
      */
     public BaseClientHttpResponse<Account> retrieve(String accountId) {
         return retrieve(accountId, AccountsRetrieveRequest.builder().build());
+    }
+
+    /**
+     * Get the details for a specific connected account
+     */
+    public BaseClientHttpResponse<Account> retrieve(String accountId, RequestOptions requestOptions) {
+        return retrieve(accountId, AccountsRetrieveRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -236,6 +256,11 @@ public class RawAccountsClient {
                     request.getIncludeCredentials().get(),
                     false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -248,11 +273,11 @@ public class RawAccountsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), Account.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Account.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -261,11 +286,9 @@ public class RawAccountsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -282,15 +305,19 @@ public class RawAccountsClient {
      * Remove a connected account and its associated credentials
      */
     public BaseClientHttpResponse<Void> delete(String accountId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("accounts")
-                .addPathSegment(accountId)
-                .build();
+                .addPathSegment(accountId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
@@ -313,11 +340,9 @@ public class RawAccountsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -334,16 +359,20 @@ public class RawAccountsClient {
      * Remove all connected accounts for a specific app
      */
     public BaseClientHttpResponse<Void> deleteByApp(String appId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
                 .addPathSegments("apps")
                 .addPathSegment(appId)
-                .addPathSegments("accounts")
-                .build();
+                .addPathSegments("accounts");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
@@ -366,11 +395,9 @@ public class RawAccountsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

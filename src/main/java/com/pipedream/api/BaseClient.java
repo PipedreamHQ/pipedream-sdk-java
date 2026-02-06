@@ -17,6 +17,7 @@ import com.pipedream.api.resources.projects.ProjectsClient;
 import com.pipedream.api.resources.proxy.ProxyClient;
 import com.pipedream.api.resources.tokens.TokensClient;
 import com.pipedream.api.resources.triggers.TriggersClient;
+import com.pipedream.api.resources.usage.UsageClient;
 import com.pipedream.api.resources.users.UsersClient;
 import java.util.function.Supplier;
 
@@ -47,6 +48,8 @@ public class BaseClient {
 
     protected final Supplier<TokensClient> tokensClient;
 
+    protected final Supplier<UsageClient> usageClient;
+
     protected final Supplier<OauthTokensClient> oauthTokensClient;
 
     public BaseClient(ClientOptions clientOptions) {
@@ -63,6 +66,7 @@ public class BaseClient {
         this.fileStashClient = Suppliers.memoize(() -> new FileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new TokensClient(clientOptions));
+        this.usageClient = Suppliers.memoize(() -> new UsageClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new OauthTokensClient(clientOptions));
     }
 
@@ -114,11 +118,38 @@ public class BaseClient {
         return this.tokensClient.get();
     }
 
+    public UsageClient usage() {
+        return this.usageClient.get();
+    }
+
     public OauthTokensClient oauthTokens() {
         return this.oauthTokensClient.get();
     }
 
-    public static BaseClientBuilder builder() {
-        return new BaseClientBuilder();
+    /**
+     * Creates a client builder using a pre-generated access token.
+     * @param token The access token to use for authentication
+     * @return A builder configured for token authentication
+     */
+    public static BaseClientBuilder._TokenAuth withToken(String token) {
+        return BaseClientBuilder.withToken(token);
+    }
+
+    /**
+     * Creates a client builder using OAuth client credentials.
+     * @param clientId The OAuth client ID
+     * @param clientSecret The OAuth client secret
+     * @return A builder configured for OAuth authentication
+     */
+    public static BaseClientBuilder._CredentialsAuth withCredentials(String clientId, String clientSecret) {
+        return BaseClientBuilder.withCredentials(clientId, clientSecret);
+    }
+
+    /**
+     * Creates a new client builder.
+     * @return A builder for configuring and creating the client
+     */
+    public static BaseClientBuilder._Builder builder() {
+        return BaseClientBuilder.builder();
     }
 }

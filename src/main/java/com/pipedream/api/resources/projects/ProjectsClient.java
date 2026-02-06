@@ -40,6 +40,13 @@ public class ProjectsClient {
     /**
      * List the projects that are available to the authenticated Connect client
      */
+    public SyncPagingIterable<Project> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
     public SyncPagingIterable<Project> list(ProjectsListRequest request) {
         return this.rawClient.list(request).body();
     }
@@ -98,6 +105,13 @@ public class ProjectsClient {
      */
     public Project update(String projectId) {
         return this.rawClient.update(projectId).body();
+    }
+
+    /**
+     * Update project details or application information
+     */
+    public Project update(String projectId, RequestOptions requestOptions) {
+        return this.rawClient.update(projectId, requestOptions).body();
     }
 
     /**

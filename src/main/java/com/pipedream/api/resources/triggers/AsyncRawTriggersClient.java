@@ -60,6 +60,14 @@ public class AsyncRawTriggersClient {
     /**
      * Retrieve available triggers with optional search and app filtering
      */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
+            RequestOptions requestOptions) {
+        return list(TriggersListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(TriggersListRequest request) {
         return list(request, null);
     }
@@ -96,6 +104,11 @@ public class AsyncRawTriggersClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "registry", request.getRegistry().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -111,9 +124,10 @@ public class AsyncRawTriggersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         GetComponentsResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
                         TriggersListRequest nextRequest = TriggersListRequest.builder()
@@ -135,7 +149,6 @@ public class AsyncRawTriggersClient {
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         switch (response.code()) {
                             case 400:
@@ -152,11 +165,9 @@ public class AsyncRawTriggersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -182,6 +193,14 @@ public class AsyncRawTriggersClient {
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, RequestOptions requestOptions) {
+        return retrieve(componentId, TriggersRetrieveRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
             String componentId, TriggersRetrieveRequest request) {
         return retrieve(componentId, request, null);
     }
@@ -201,6 +220,11 @@ public class AsyncRawTriggersClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "version", request.getVersion().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -216,13 +240,13 @@ public class AsyncRawTriggersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         GetComponentResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
                         future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -232,11 +256,9 @@ public class AsyncRawTriggersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -263,12 +285,17 @@ public class AsyncRawTriggersClient {
      */
     public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers/configure")
-                .build();
+                .addPathSegments("triggers")
+                .addPathSegments("configure");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -277,7 +304,7 @@ public class AsyncRawTriggersClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -292,13 +319,13 @@ public class AsyncRawTriggersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConfigurePropResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -308,11 +335,9 @@ public class AsyncRawTriggersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -339,12 +364,17 @@ public class AsyncRawTriggersClient {
      */
     public CompletableFuture<BaseClientHttpResponse<ReloadPropsResponse>> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers/props")
-                .build();
+                .addPathSegments("triggers")
+                .addPathSegments("props");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -353,7 +383,7 @@ public class AsyncRawTriggersClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -368,13 +398,13 @@ public class AsyncRawTriggersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ReloadPropsResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ReloadPropsResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -384,11 +414,9 @@ public class AsyncRawTriggersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -415,12 +443,17 @@ public class AsyncRawTriggersClient {
      */
     public CompletableFuture<BaseClientHttpResponse<Emitter>> deploy(
             DeployTriggerOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers/deploy")
-                .build();
+                .addPathSegments("triggers")
+                .addPathSegments("deploy");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -429,7 +462,7 @@ public class AsyncRawTriggersClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -444,13 +477,13 @@ public class AsyncRawTriggersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         DeployTriggerResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), DeployTriggerResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DeployTriggerResponse.class);
                         future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -460,11 +493,9 @@ public class AsyncRawTriggersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));

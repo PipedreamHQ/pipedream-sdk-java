@@ -52,6 +52,13 @@ public class RawComponentsClient {
     /**
      * Retrieve available components with optional search and app filtering
      */
+    public BaseClientHttpResponse<SyncPagingIterable<Component>> list(RequestOptions requestOptions) {
+        return list(ComponentsListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve available components with optional search and app filtering
+     */
     public BaseClientHttpResponse<SyncPagingIterable<Component>> list(ComponentsListRequest request) {
         return list(request, null);
     }
@@ -92,6 +99,11 @@ public class RawComponentsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "component_type", request.getComponentType().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -104,9 +116,10 @@ public class RawComponentsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetComponentsResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentsResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
                 Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
                 ComponentsListRequest nextRequest = ComponentsListRequest.builder()
                         .from(request)
@@ -119,7 +132,6 @@ public class RawComponentsClient {
                                 .body()),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 switch (response.code()) {
                     case 400:
@@ -132,11 +144,9 @@ public class RawComponentsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -147,6 +157,13 @@ public class RawComponentsClient {
      */
     public BaseClientHttpResponse<Component> retrieve(String componentId) {
         return retrieve(componentId, ComponentsRetrieveRequest.builder().build());
+    }
+
+    /**
+     * Get detailed configuration for a specific component by its key
+     */
+    public BaseClientHttpResponse<Component> retrieve(String componentId, RequestOptions requestOptions) {
+        return retrieve(componentId, ComponentsRetrieveRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -171,6 +188,11 @@ public class RawComponentsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "version", request.getVersion().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -183,12 +205,12 @@ public class RawComponentsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 GetComponentResponse parsedResponse =
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetComponentResponse.class);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
                 return new BaseClientHttpResponse<>(parsedResponse.getData(), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -197,11 +219,9 @@ public class RawComponentsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -219,12 +239,17 @@ public class RawComponentsClient {
      */
     public BaseClientHttpResponse<ConfigurePropResponse> configureProp(
             ConfigurePropOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("components/configure")
-                .build();
+                .addPathSegments("components")
+                .addPathSegments("configure");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -233,7 +258,7 @@ public class RawComponentsClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -245,12 +270,11 @@ public class RawComponentsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConfigurePropResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -259,11 +283,9 @@ public class RawComponentsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -281,12 +303,17 @@ public class RawComponentsClient {
      */
     public BaseClientHttpResponse<ReloadPropsResponse> reloadProps(
             ReloadPropsOpts request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("components/props")
-                .build();
+                .addPathSegments("components")
+                .addPathSegments("props");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -295,7 +322,7 @@ public class RawComponentsClient {
             throw new BaseClientException("Failed to serialize request", e);
         }
         Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
@@ -307,12 +334,11 @@ public class RawComponentsClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ReloadPropsResponse.class),
-                        response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ReloadPropsResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -321,11 +347,9 @@ public class RawComponentsClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
