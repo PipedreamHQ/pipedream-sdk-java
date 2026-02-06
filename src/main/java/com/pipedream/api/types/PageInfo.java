@@ -43,21 +43,33 @@ public final class PageInfo {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Number of items returned
+     */
     @JsonProperty("count")
     public Optional<Integer> getCount() {
         return count;
     }
 
+    /**
+     * @return Total number of items
+     */
     @JsonProperty("total_count")
     public Optional<Integer> getTotalCount() {
         return totalCount;
     }
 
+    /**
+     * @return Used to fetch the previous page of items
+     */
     @JsonProperty("start_cursor")
     public Optional<String> getStartCursor() {
         return startCursor;
     }
 
+    /**
+     * @return Used to fetch the next page of items
+     */
     @JsonProperty("end_cursor")
     public Optional<String> getEndCursor() {
         return endCursor;
@@ -118,6 +130,9 @@ public final class PageInfo {
             return this;
         }
 
+        /**
+         * <p>Number of items returned</p>
+         */
         @JsonSetter(value = "count", nulls = Nulls.SKIP)
         public Builder count(Optional<Integer> count) {
             this.count = count;
@@ -129,6 +144,9 @@ public final class PageInfo {
             return this;
         }
 
+        /**
+         * <p>Total number of items</p>
+         */
         @JsonSetter(value = "total_count", nulls = Nulls.SKIP)
         public Builder totalCount(Optional<Integer> totalCount) {
             this.totalCount = totalCount;
@@ -140,6 +158,9 @@ public final class PageInfo {
             return this;
         }
 
+        /**
+         * <p>Used to fetch the previous page of items</p>
+         */
         @JsonSetter(value = "start_cursor", nulls = Nulls.SKIP)
         public Builder startCursor(Optional<String> startCursor) {
             this.startCursor = startCursor;
@@ -151,6 +172,9 @@ public final class PageInfo {
             return this;
         }
 
+        /**
+         * <p>Used to fetch the next page of items</p>
+         */
         @JsonSetter(value = "end_cursor", nulls = Nulls.SKIP)
         public Builder endCursor(Optional<String> endCursor) {
             this.endCursor = endCursor;

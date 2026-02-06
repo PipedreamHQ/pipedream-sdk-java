@@ -68,7 +68,7 @@ public final class BackendClientOpts {
     }
 
     /**
-     * @return Optional space-separated scopes for the access token. Defaults to '*'.
+     * @return Optional space-separated scopes for the access token. Defaults to <code>*</code>.
      */
     @JsonProperty("scope")
     public Optional<String> getScope() {
@@ -173,7 +173,7 @@ public final class BackendClientOpts {
         }
 
         /**
-         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          */
         @JsonSetter(value = "scope", nulls = Nulls.SKIP)
         public Builder scope(Optional<String> scope) {

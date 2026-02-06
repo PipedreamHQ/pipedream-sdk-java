@@ -53,7 +53,7 @@ public final class CreateOAuthTokenOpts {
     }
 
     /**
-     * @return Optional space-separated scopes for the access token. Defaults to '*'.
+     * @return Optional space-separated scopes for the access token. Defaults to <code>*</code>.
      */
     @JsonProperty("scope")
     public Optional<String> getScope() {
@@ -103,7 +103,7 @@ public final class CreateOAuthTokenOpts {
         CreateOAuthTokenOpts build();
 
         /**
-         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          */
         _FinalStage scope(Optional<String> scope);
 
@@ -146,7 +146,7 @@ public final class CreateOAuthTokenOpts {
         }
 
         /**
-         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -156,7 +156,7 @@ public final class CreateOAuthTokenOpts {
         }
 
         /**
-         * <p>Optional space-separated scopes for the access token. Defaults to '*'.</p>
+         * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "scope", nulls = Nulls.SKIP)
