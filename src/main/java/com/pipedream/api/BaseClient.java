@@ -17,6 +17,7 @@ import com.pipedream.api.resources.projects.ProjectsClient;
 import com.pipedream.api.resources.proxy.ProxyClient;
 import com.pipedream.api.resources.tokens.TokensClient;
 import com.pipedream.api.resources.triggers.TriggersClient;
+import com.pipedream.api.resources.usage.UsageClient;
 import com.pipedream.api.resources.users.UsersClient;
 import java.util.function.Supplier;
 
@@ -47,6 +48,8 @@ public class BaseClient {
 
     protected final Supplier<TokensClient> tokensClient;
 
+    protected final Supplier<UsageClient> usageClient;
+
     protected final Supplier<OauthTokensClient> oauthTokensClient;
 
     public BaseClient(ClientOptions clientOptions) {
@@ -63,6 +66,7 @@ public class BaseClient {
         this.fileStashClient = Suppliers.memoize(() -> new FileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new TokensClient(clientOptions));
+        this.usageClient = Suppliers.memoize(() -> new UsageClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new OauthTokensClient(clientOptions));
     }
 
@@ -112,6 +116,10 @@ public class BaseClient {
 
     public TokensClient tokens() {
         return this.tokensClient.get();
+    }
+
+    public UsageClient usage() {
+        return this.usageClient.get();
     }
 
     public OauthTokensClient oauthTokens() {
