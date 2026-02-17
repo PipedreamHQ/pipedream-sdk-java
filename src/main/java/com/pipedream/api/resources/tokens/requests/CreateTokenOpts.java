@@ -26,7 +26,11 @@ public final class CreateTokenOpts {
 
     private final Optional<String> errorRedirectUri;
 
+    private final Optional<Integer> expiresIn;
+
     private final String externalUserId;
+
+    private final Optional<String> scope;
 
     private final Optional<String> successRedirectUri;
 
@@ -37,13 +41,17 @@ public final class CreateTokenOpts {
     private CreateTokenOpts(
             Optional<List<String>> allowedOrigins,
             Optional<String> errorRedirectUri,
+            Optional<Integer> expiresIn,
             String externalUserId,
+            Optional<String> scope,
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
             Map<String, Object> additionalProperties) {
         this.allowedOrigins = allowedOrigins;
         this.errorRedirectUri = errorRedirectUri;
+        this.expiresIn = expiresIn;
         this.externalUserId = externalUserId;
+        this.scope = scope;
         this.successRedirectUri = successRedirectUri;
         this.webhookUri = webhookUri;
         this.additionalProperties = additionalProperties;
@@ -66,11 +74,27 @@ public final class CreateTokenOpts {
     }
 
     /**
+     * @return Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.
+     */
+    @JsonProperty("expires_in")
+    public Optional<Integer> getExpiresIn() {
+        return expiresIn;
+    }
+
+    /**
      * @return Your end user ID, for whom you're creating the token
      */
     @JsonProperty("external_user_id")
     public String getExternalUserId() {
         return externalUserId;
+    }
+
+    /**
+     * @return Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.
+     */
+    @JsonProperty("scope")
+    public Optional<String> getScope() {
+        return scope;
     }
 
     /**
@@ -103,7 +127,9 @@ public final class CreateTokenOpts {
     private boolean equalTo(CreateTokenOpts other) {
         return allowedOrigins.equals(other.allowedOrigins)
                 && errorRedirectUri.equals(other.errorRedirectUri)
+                && expiresIn.equals(other.expiresIn)
                 && externalUserId.equals(other.externalUserId)
+                && scope.equals(other.scope)
                 && successRedirectUri.equals(other.successRedirectUri)
                 && webhookUri.equals(other.webhookUri);
     }
@@ -113,7 +139,9 @@ public final class CreateTokenOpts {
         return Objects.hash(
                 this.allowedOrigins,
                 this.errorRedirectUri,
+                this.expiresIn,
                 this.externalUserId,
+                this.scope,
                 this.successRedirectUri,
                 this.webhookUri);
     }
@@ -154,6 +182,20 @@ public final class CreateTokenOpts {
         _FinalStage errorRedirectUri(String errorRedirectUri);
 
         /**
+         * <p>Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.</p>
+         */
+        _FinalStage expiresIn(Optional<Integer> expiresIn);
+
+        _FinalStage expiresIn(Integer expiresIn);
+
+        /**
+         * <p>Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.</p>
+         */
+        _FinalStage scope(Optional<String> scope);
+
+        _FinalStage scope(String scope);
+
+        /**
          * <p>URI to redirect to on success</p>
          */
         _FinalStage successRedirectUri(Optional<String> successRedirectUri);
@@ -176,6 +218,10 @@ public final class CreateTokenOpts {
 
         private Optional<String> successRedirectUri = Optional.empty();
 
+        private Optional<String> scope = Optional.empty();
+
+        private Optional<Integer> expiresIn = Optional.empty();
+
         private Optional<String> errorRedirectUri = Optional.empty();
 
         private Optional<List<String>> allowedOrigins = Optional.empty();
@@ -189,7 +235,9 @@ public final class CreateTokenOpts {
         public Builder from(CreateTokenOpts other) {
             allowedOrigins(other.getAllowedOrigins());
             errorRedirectUri(other.getErrorRedirectUri());
+            expiresIn(other.getExpiresIn());
             externalUserId(other.getExternalUserId());
+            scope(other.getScope());
             successRedirectUri(other.getSuccessRedirectUri());
             webhookUri(other.getWebhookUri());
             return this;
@@ -248,6 +296,46 @@ public final class CreateTokenOpts {
         }
 
         /**
+         * <p>Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scope(String scope) {
+            this.scope = Optional.ofNullable(scope);
+            return this;
+        }
+
+        /**
+         * <p>Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scope", nulls = Nulls.SKIP)
+        public _FinalStage scope(Optional<String> scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        /**
+         * <p>Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage expiresIn(Integer expiresIn) {
+            this.expiresIn = Optional.ofNullable(expiresIn);
+            return this;
+        }
+
+        /**
+         * <p>Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "expires_in", nulls = Nulls.SKIP)
+        public _FinalStage expiresIn(Optional<Integer> expiresIn) {
+            this.expiresIn = expiresIn;
+            return this;
+        }
+
+        /**
          * <p>URI to redirect to on error</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -292,7 +380,9 @@ public final class CreateTokenOpts {
             return new CreateTokenOpts(
                     allowedOrigins,
                     errorRedirectUri,
+                    expiresIn,
                     externalUserId,
+                    scope,
                     successRedirectUri,
                     webhookUri,
                     additionalProperties);
