@@ -44,6 +44,8 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
     private final Optional<Boolean> secret;
 
+    private final Optional<String> format;
+
     private final Optional<String> default_;
 
     private final Optional<List<ConfigurablePropStringOptionsItem>> options;
@@ -62,6 +64,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Optional<Boolean> secret,
+            Optional<String> format,
             Optional<String> default_,
             Optional<List<ConfigurablePropStringOptionsItem>> options,
             Map<String, Object> additionalProperties) {
@@ -76,6 +79,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
         this.secret = secret;
+        this.format = format;
         this.default_ = default_;
         this.options = options;
         this.additionalProperties = additionalProperties;
@@ -179,6 +183,14 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         return secret;
     }
 
+    /**
+     * @return The format of the string value. <code>file-ref</code> indicates a URL of a file or path to a file in the component's /tmp directory.
+     */
+    @JsonProperty("format")
+    public Optional<String> getFormat() {
+        return format;
+    }
+
     @JsonProperty("default")
     public Optional<String> getDefault() {
         return default_;
@@ -212,6 +224,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                 && reloadProps.equals(other.reloadProps)
                 && withLabel.equals(other.withLabel)
                 && secret.equals(other.secret)
+                && format.equals(other.format)
                 && default_.equals(other.default_)
                 && options.equals(other.options);
     }
@@ -230,6 +243,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                 this.reloadProps,
                 this.withLabel,
                 this.secret,
+                this.format,
                 this.default_,
                 this.options);
     }
@@ -325,6 +339,13 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
         _FinalStage secret(Boolean secret);
 
+        /**
+         * <p>The format of the string value. <code>file-ref</code> indicates a URL of a file or path to a file in the component's /tmp directory.</p>
+         */
+        _FinalStage format(Optional<String> format);
+
+        _FinalStage format(String format);
+
         _FinalStage default_(Optional<String> default_);
 
         _FinalStage default_(String default_);
@@ -341,6 +362,8 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         private Optional<List<ConfigurablePropStringOptionsItem>> options = Optional.empty();
 
         private Optional<String> default_ = Optional.empty();
+
+        private Optional<String> format = Optional.empty();
 
         private Optional<Boolean> secret = Optional.empty();
 
@@ -380,6 +403,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
             secret(other.getSecret());
+            format(other.getFormat());
             default_(other.getDefault());
             options(other.getOptions());
             return this;
@@ -420,6 +444,26 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
         public _FinalStage default_(Optional<String> default_) {
             this.default_ = default_;
+            return this;
+        }
+
+        /**
+         * <p>The format of the string value. <code>file-ref</code> indicates a URL of a file or path to a file in the component's /tmp directory.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage format(String format) {
+            this.format = Optional.ofNullable(format);
+            return this;
+        }
+
+        /**
+         * <p>The format of the string value. <code>file-ref</code> indicates a URL of a file or path to a file in the component's /tmp directory.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "format", nulls = Nulls.SKIP)
+        public _FinalStage format(Optional<String> format) {
+            this.format = format;
             return this;
         }
 
@@ -637,6 +681,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                     reloadProps,
                     withLabel,
                     secret,
+                    format,
                     default_,
                     options,
                     additionalProperties);
