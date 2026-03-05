@@ -44,6 +44,8 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
     private final Optional<Boolean> secret;
 
+    private final Optional<ConfigurablePropStringFormat> format;
+
     private final Optional<String> default_;
 
     private final Optional<List<ConfigurablePropStringOptionsItem>> options;
@@ -62,6 +64,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Optional<Boolean> secret,
+            Optional<ConfigurablePropStringFormat> format,
             Optional<String> default_,
             Optional<List<ConfigurablePropStringOptionsItem>> options,
             Map<String, Object> additionalProperties) {
@@ -76,6 +79,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
         this.secret = secret;
+        this.format = format;
         this.default_ = default_;
         this.options = options;
         this.additionalProperties = additionalProperties;
@@ -179,6 +183,11 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         return secret;
     }
 
+    @JsonProperty("format")
+    public Optional<ConfigurablePropStringFormat> getFormat() {
+        return format;
+    }
+
     @JsonProperty("default")
     public Optional<String> getDefault() {
         return default_;
@@ -212,6 +221,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                 && reloadProps.equals(other.reloadProps)
                 && withLabel.equals(other.withLabel)
                 && secret.equals(other.secret)
+                && format.equals(other.format)
                 && default_.equals(other.default_)
                 && options.equals(other.options);
     }
@@ -230,6 +240,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                 this.reloadProps,
                 this.withLabel,
                 this.secret,
+                this.format,
                 this.default_,
                 this.options);
     }
@@ -325,6 +336,10 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
         _FinalStage secret(Boolean secret);
 
+        _FinalStage format(Optional<ConfigurablePropStringFormat> format);
+
+        _FinalStage format(ConfigurablePropStringFormat format);
+
         _FinalStage default_(Optional<String> default_);
 
         _FinalStage default_(String default_);
@@ -341,6 +356,8 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         private Optional<List<ConfigurablePropStringOptionsItem>> options = Optional.empty();
 
         private Optional<String> default_ = Optional.empty();
+
+        private Optional<ConfigurablePropStringFormat> format = Optional.empty();
 
         private Optional<Boolean> secret = Optional.empty();
 
@@ -380,6 +397,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
             secret(other.getSecret());
+            format(other.getFormat());
             default_(other.getDefault());
             options(other.getOptions());
             return this;
@@ -420,6 +438,19 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
         public _FinalStage default_(Optional<String> default_) {
             this.default_ = default_;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage format(ConfigurablePropStringFormat format) {
+            this.format = Optional.ofNullable(format);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "format", nulls = Nulls.SKIP)
+        public _FinalStage format(Optional<ConfigurablePropStringFormat> format) {
+            this.format = format;
             return this;
         }
 
@@ -637,6 +668,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                     reloadProps,
                     withLabel,
                     secret,
+                    format,
                     default_,
                     options,
                     additionalProperties);
