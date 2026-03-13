@@ -4,10 +4,6 @@
 package com.pipedream.api.core;
 
 public final class Environment {
-    public static final Environment CANARY = new Environment("https://api2.pipedream.com");
-
-    public static final Environment DEV = new Environment("https://api.${DEV_NAMESPACE}.gkes.pipedream.net");
-
     public static final Environment PROD = new Environment("https://api.pipedream.com");
 
     private final String url;
