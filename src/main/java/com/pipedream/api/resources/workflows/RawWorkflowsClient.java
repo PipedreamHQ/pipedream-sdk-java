@@ -33,7 +33,8 @@ public class RawWorkflowsClient {
 
     public RawWorkflowsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
-        this.workflowDomain = getDefaultWorkflowDomain();
+        String workflowDomainEnv = System.getenv("PIPEDREAM_WORKFLOW_DOMAIN");
+        this.workflowDomain = workflowDomainEnv != null ? workflowDomainEnv : getDefaultWorkflowDomain();
         this.urlProtocol = getUrlProtocol();
     }
 
