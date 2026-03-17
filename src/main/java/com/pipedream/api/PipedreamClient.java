@@ -16,10 +16,13 @@ public class PipedreamClient extends BaseClient {
     }
 
     public static PipedreamClientBuilder builder() {
+        String baseUrl = System.getenv("PIPEDREAM_BASE_URL") != null
+                ? System.getenv("PIPEDREAM_BASE_URL")
+                : Environment.PROD.getUrl();
         return new PipedreamClientBuilder()
                 .clientId(System.getenv("PIPEDREAM_CLIENT_ID"))
                 .clientSecret(System.getenv("PIPEDREAM_CLIENT_SECRET"))
-                .environment(Environment.PROD)
+                .url(baseUrl)
                 .projectEnvironment(System.getenv("PIPEDREAM_PROJECT_ENVIRONMENT"))
                 .projectId(System.getenv("PIPEDREAM_PROJECT_ID"));
     }
