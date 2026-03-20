@@ -19,6 +19,7 @@ import com.pipedream.api.resources.tokens.TokensClient;
 import com.pipedream.api.resources.triggers.TriggersClient;
 import com.pipedream.api.resources.usage.UsageClient;
 import com.pipedream.api.resources.users.UsersClient;
+import com.pipedream.api.resources.webhooks.WebhooksClient;
 import java.util.function.Supplier;
 
 public class BaseClient {
@@ -39,6 +40,8 @@ public class BaseClient {
     protected final Supplier<TriggersClient> triggersClient;
 
     protected final Supplier<DeployedTriggersClient> deployedTriggersClient;
+
+    protected final Supplier<WebhooksClient> webhooksClient;
 
     protected final Supplier<ProjectsClient> projectsClient;
 
@@ -62,6 +65,7 @@ public class BaseClient {
         this.actionsClient = Suppliers.memoize(() -> new ActionsClient(clientOptions));
         this.triggersClient = Suppliers.memoize(() -> new TriggersClient(clientOptions));
         this.deployedTriggersClient = Suppliers.memoize(() -> new DeployedTriggersClient(clientOptions));
+        this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
         this.projectsClient = Suppliers.memoize(() -> new ProjectsClient(clientOptions));
         this.fileStashClient = Suppliers.memoize(() -> new FileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
@@ -100,6 +104,10 @@ public class BaseClient {
 
     public DeployedTriggersClient deployedTriggers() {
         return this.deployedTriggersClient.get();
+    }
+
+    public WebhooksClient webhooks() {
+        return this.webhooksClient.get();
     }
 
     public ProjectsClient projects() {

@@ -22,7 +22,7 @@ import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
-import com.pipedream.api.types.Emitter;
+import com.pipedream.api.types.DeployTriggerResult;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
 import com.pipedream.api.types.ReloadPropsOpts;
@@ -333,14 +333,15 @@ public class RawTriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public BaseClientHttpResponse<Emitter> deploy(DeployTriggerOpts request) {
+    public BaseClientHttpResponse<DeployTriggerResult> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public BaseClientHttpResponse<Emitter> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+    public BaseClientHttpResponse<DeployTriggerResult> deploy(
+            DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("v1/connect")

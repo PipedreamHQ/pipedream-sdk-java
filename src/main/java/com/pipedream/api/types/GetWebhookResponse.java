@@ -9,34 +9,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = DeployTriggerResponse.Builder.class)
-public final class DeployTriggerResponse {
-    private final DeployTriggerResult data;
+@JsonDeserialize(builder = GetWebhookResponse.Builder.class)
+public final class GetWebhookResponse {
+    private final Optional<Webhook> data;
 
     private final Map<String, Object> additionalProperties;
 
-    private DeployTriggerResponse(DeployTriggerResult data, Map<String, Object> additionalProperties) {
+    private GetWebhookResponse(Optional<Webhook> data, Map<String, Object> additionalProperties) {
         this.data = data;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public DeployTriggerResult getData() {
+    public Optional<Webhook> getData() {
         return data;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof DeployTriggerResponse && equalTo((DeployTriggerResponse) other);
+        return other instanceof GetWebhookResponse && equalTo((GetWebhookResponse) other);
     }
 
     @JsonAnyGetter
@@ -44,7 +45,7 @@ public final class DeployTriggerResponse {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(DeployTriggerResponse other) {
+    private boolean equalTo(GetWebhookResponse other) {
         return data.equals(other.data);
     }
 
@@ -58,45 +59,37 @@ public final class DeployTriggerResponse {
         return ObjectMappers.stringify(this);
     }
 
-    public static DataStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface DataStage {
-        _FinalStage data(@NotNull DeployTriggerResult data);
-
-        Builder from(DeployTriggerResponse other);
-    }
-
-    public interface _FinalStage {
-        DeployTriggerResponse build();
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements DataStage, _FinalStage {
-        private DeployTriggerResult data;
+    public static final class Builder {
+        private Optional<Webhook> data = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
-        public Builder from(DeployTriggerResponse other) {
+        public Builder from(GetWebhookResponse other) {
             data(other.getData());
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter("data")
-        public _FinalStage data(@NotNull DeployTriggerResult data) {
-            this.data = Objects.requireNonNull(data, "data must not be null");
+        @JsonSetter(value = "data", nulls = Nulls.SKIP)
+        public Builder data(Optional<Webhook> data) {
+            this.data = data;
             return this;
         }
 
-        @java.lang.Override
-        public DeployTriggerResponse build() {
-            return new DeployTriggerResponse(data, additionalProperties);
+        public Builder data(Webhook data) {
+            this.data = Optional.ofNullable(data);
+            return this;
+        }
+
+        public GetWebhookResponse build() {
+            return new GetWebhookResponse(data, additionalProperties);
         }
     }
 }

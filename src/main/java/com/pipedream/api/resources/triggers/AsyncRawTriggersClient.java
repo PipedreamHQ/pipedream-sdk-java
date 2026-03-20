@@ -22,7 +22,7 @@ import com.pipedream.api.types.Component;
 import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
-import com.pipedream.api.types.Emitter;
+import com.pipedream.api.types.DeployTriggerResult;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
 import com.pipedream.api.types.ReloadPropsOpts;
@@ -406,14 +406,14 @@ public class AsyncRawTriggersClient {
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<BaseClientHttpResponse<Emitter>> deploy(DeployTriggerOpts request) {
+    public CompletableFuture<BaseClientHttpResponse<DeployTriggerResult>> deploy(DeployTriggerOpts request) {
         return deploy(request, null);
     }
 
     /**
      * Deploy a trigger to listen for and emit events
      */
-    public CompletableFuture<BaseClientHttpResponse<Emitter>> deploy(
+    public CompletableFuture<BaseClientHttpResponse<DeployTriggerResult>> deploy(
             DeployTriggerOpts request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -439,7 +439,7 @@ public class AsyncRawTriggersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<BaseClientHttpResponse<Emitter>> future = new CompletableFuture<>();
+        CompletableFuture<BaseClientHttpResponse<DeployTriggerResult>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
