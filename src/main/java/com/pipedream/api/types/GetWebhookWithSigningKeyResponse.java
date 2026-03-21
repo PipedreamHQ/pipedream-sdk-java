@@ -17,26 +17,26 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = DeployTriggerResponse.Builder.class)
-public final class DeployTriggerResponse {
-    private final DeployTriggerResult data;
+@JsonDeserialize(builder = GetWebhookWithSigningKeyResponse.Builder.class)
+public final class GetWebhookWithSigningKeyResponse {
+    private final WebhookWithSigningKey data;
 
     private final Map<String, Object> additionalProperties;
 
-    private DeployTriggerResponse(DeployTriggerResult data, Map<String, Object> additionalProperties) {
+    private GetWebhookWithSigningKeyResponse(WebhookWithSigningKey data, Map<String, Object> additionalProperties) {
         this.data = data;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public DeployTriggerResult getData() {
+    public WebhookWithSigningKey getData() {
         return data;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof DeployTriggerResponse && equalTo((DeployTriggerResponse) other);
+        return other instanceof GetWebhookWithSigningKeyResponse && equalTo((GetWebhookWithSigningKeyResponse) other);
     }
 
     @JsonAnyGetter
@@ -44,7 +44,7 @@ public final class DeployTriggerResponse {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(DeployTriggerResponse other) {
+    private boolean equalTo(GetWebhookWithSigningKeyResponse other) {
         return data.equals(other.data);
     }
 
@@ -63,18 +63,18 @@ public final class DeployTriggerResponse {
     }
 
     public interface DataStage {
-        _FinalStage data(@NotNull DeployTriggerResult data);
+        _FinalStage data(@NotNull WebhookWithSigningKey data);
 
-        Builder from(DeployTriggerResponse other);
+        Builder from(GetWebhookWithSigningKeyResponse other);
     }
 
     public interface _FinalStage {
-        DeployTriggerResponse build();
+        GetWebhookWithSigningKeyResponse build();
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements DataStage, _FinalStage {
-        private DeployTriggerResult data;
+        private WebhookWithSigningKey data;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -82,21 +82,21 @@ public final class DeployTriggerResponse {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(DeployTriggerResponse other) {
+        public Builder from(GetWebhookWithSigningKeyResponse other) {
             data(other.getData());
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("data")
-        public _FinalStage data(@NotNull DeployTriggerResult data) {
+        public _FinalStage data(@NotNull WebhookWithSigningKey data) {
             this.data = Objects.requireNonNull(data, "data must not be null");
             return this;
         }
 
         @java.lang.Override
-        public DeployTriggerResponse build() {
-            return new DeployTriggerResponse(data, additionalProperties);
+        public GetWebhookWithSigningKeyResponse build() {
+            return new GetWebhookWithSigningKeyResponse(data, additionalProperties);
         }
     }
 }

@@ -13,6 +13,7 @@ import com.pipedream.api.resources.components.ComponentsClient;
 import com.pipedream.api.resources.deployedtriggers.DeployedTriggersClient;
 import com.pipedream.api.resources.filestash.FileStashClient;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import com.pipedream.api.resources.projectenvironment.ProjectEnvironmentClient;
 import com.pipedream.api.resources.projects.ProjectsClient;
 import com.pipedream.api.resources.proxy.ProxyClient;
 import com.pipedream.api.resources.tokens.TokensClient;
@@ -40,6 +41,8 @@ public class BaseClient {
 
     protected final Supplier<DeployedTriggersClient> deployedTriggersClient;
 
+    protected final Supplier<ProjectEnvironmentClient> projectEnvironmentClient;
+
     protected final Supplier<ProjectsClient> projectsClient;
 
     protected final Supplier<FileStashClient> fileStashClient;
@@ -62,6 +65,7 @@ public class BaseClient {
         this.actionsClient = Suppliers.memoize(() -> new ActionsClient(clientOptions));
         this.triggersClient = Suppliers.memoize(() -> new TriggersClient(clientOptions));
         this.deployedTriggersClient = Suppliers.memoize(() -> new DeployedTriggersClient(clientOptions));
+        this.projectEnvironmentClient = Suppliers.memoize(() -> new ProjectEnvironmentClient(clientOptions));
         this.projectsClient = Suppliers.memoize(() -> new ProjectsClient(clientOptions));
         this.fileStashClient = Suppliers.memoize(() -> new FileStashClient(clientOptions));
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
@@ -100,6 +104,10 @@ public class BaseClient {
 
     public DeployedTriggersClient deployedTriggers() {
         return this.deployedTriggersClient.get();
+    }
+
+    public ProjectEnvironmentClient projectEnvironment() {
+        return this.projectEnvironmentClient.get();
     }
 
     public ProjectsClient projects() {
