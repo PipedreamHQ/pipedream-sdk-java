@@ -17,22 +17,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetTriggerWebhooksResponse.Builder.class)
 public final class GetTriggerWebhooksResponse {
     private final List<String> webhookUrls;
 
+    private final Optional<List<TriggerWebhook>> webhooks;
+
     private final Map<String, Object> additionalProperties;
 
-    private GetTriggerWebhooksResponse(List<String> webhookUrls, Map<String, Object> additionalProperties) {
+    private GetTriggerWebhooksResponse(
+            List<String> webhookUrls,
+            Optional<List<TriggerWebhook>> webhooks,
+            Map<String, Object> additionalProperties) {
         this.webhookUrls = webhookUrls;
+        this.webhooks = webhooks;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("webhook_urls")
     public List<String> getWebhookUrls() {
         return webhookUrls;
+    }
+
+    /**
+     * @return Webhook objects for the configured URLs. <code>signing_key</code> is only returned for OAuth-authenticated requests.
+     */
+    @JsonProperty("webhooks")
+    public Optional<List<TriggerWebhook>> getWebhooks() {
+        return webhooks;
     }
 
     @java.lang.Override
@@ -47,12 +62,12 @@ public final class GetTriggerWebhooksResponse {
     }
 
     private boolean equalTo(GetTriggerWebhooksResponse other) {
-        return webhookUrls.equals(other.webhookUrls);
+        return webhookUrls.equals(other.webhookUrls) && webhooks.equals(other.webhooks);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.webhookUrls);
+        return Objects.hash(this.webhookUrls, this.webhooks);
     }
 
     @java.lang.Override
@@ -68,6 +83,8 @@ public final class GetTriggerWebhooksResponse {
     public static final class Builder {
         private List<String> webhookUrls = new ArrayList<>();
 
+        private Optional<List<TriggerWebhook>> webhooks = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -75,6 +92,7 @@ public final class GetTriggerWebhooksResponse {
 
         public Builder from(GetTriggerWebhooksResponse other) {
             webhookUrls(other.getWebhookUrls());
+            webhooks(other.getWebhooks());
             return this;
         }
 
@@ -99,8 +117,22 @@ public final class GetTriggerWebhooksResponse {
             return this;
         }
 
+        /**
+         * <p>Webhook objects for the configured URLs. <code>signing_key</code> is only returned for OAuth-authenticated requests.</p>
+         */
+        @JsonSetter(value = "webhooks", nulls = Nulls.SKIP)
+        public Builder webhooks(Optional<List<TriggerWebhook>> webhooks) {
+            this.webhooks = webhooks;
+            return this;
+        }
+
+        public Builder webhooks(List<TriggerWebhook> webhooks) {
+            this.webhooks = Optional.ofNullable(webhooks);
+            return this;
+        }
+
         public GetTriggerWebhooksResponse build() {
-            return new GetTriggerWebhooksResponse(webhookUrls, additionalProperties);
+            return new GetTriggerWebhooksResponse(webhookUrls, webhooks, additionalProperties);
         }
     }
 }

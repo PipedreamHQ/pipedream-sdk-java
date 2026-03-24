@@ -50,6 +50,8 @@ public final class DeployedComponent {
 
     private final Optional<Boolean> emitOnDeploy;
 
+    private final Optional<String> webhookSigningKey;
+
     private final Map<String, Object> additionalProperties;
 
     private DeployedComponent(
@@ -66,6 +68,7 @@ public final class DeployedComponent {
             String nameSlug,
             Optional<Object> callbackObservations,
             Optional<Boolean> emitOnDeploy,
+            Optional<String> webhookSigningKey,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.ownerId = ownerId;
@@ -80,6 +83,7 @@ public final class DeployedComponent {
         this.nameSlug = nameSlug;
         this.callbackObservations = callbackObservations;
         this.emitOnDeploy = emitOnDeploy;
+        this.webhookSigningKey = webhookSigningKey;
         this.additionalProperties = additionalProperties;
     }
 
@@ -184,6 +188,14 @@ public final class DeployedComponent {
         return emitOnDeploy;
     }
 
+    /**
+     * @return The webhook signing key. Only returned for OAuth-authenticated requests when <code>webhook_url</code> is supplied.
+     */
+    @JsonProperty("webhook_signing_key")
+    public Optional<String> getWebhookSigningKey() {
+        return webhookSigningKey;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -208,7 +220,8 @@ public final class DeployedComponent {
                 && name.equals(other.name)
                 && nameSlug.equals(other.nameSlug)
                 && callbackObservations.equals(other.callbackObservations)
-                && emitOnDeploy.equals(other.emitOnDeploy);
+                && emitOnDeploy.equals(other.emitOnDeploy)
+                && webhookSigningKey.equals(other.webhookSigningKey);
     }
 
     @java.lang.Override
@@ -226,7 +239,8 @@ public final class DeployedComponent {
                 this.name,
                 this.nameSlug,
                 this.callbackObservations,
-                this.emitOnDeploy);
+                this.emitOnDeploy,
+                this.webhookSigningKey);
     }
 
     @java.lang.Override
@@ -334,6 +348,13 @@ public final class DeployedComponent {
         _FinalStage emitOnDeploy(Optional<Boolean> emitOnDeploy);
 
         _FinalStage emitOnDeploy(Boolean emitOnDeploy);
+
+        /**
+         * <p>The webhook signing key. Only returned for OAuth-authenticated requests when <code>webhook_url</code> is supplied.</p>
+         */
+        _FinalStage webhookSigningKey(Optional<String> webhookSigningKey);
+
+        _FinalStage webhookSigningKey(String webhookSigningKey);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -362,6 +383,8 @@ public final class DeployedComponent {
         private String name;
 
         private String nameSlug;
+
+        private Optional<String> webhookSigningKey = Optional.empty();
 
         private Optional<Boolean> emitOnDeploy = Optional.empty();
 
@@ -393,6 +416,7 @@ public final class DeployedComponent {
             nameSlug(other.getNameSlug());
             callbackObservations(other.getCallbackObservations());
             emitOnDeploy(other.getEmitOnDeploy());
+            webhookSigningKey(other.getWebhookSigningKey());
             return this;
         }
 
@@ -489,6 +513,26 @@ public final class DeployedComponent {
         @JsonSetter("name_slug")
         public _FinalStage nameSlug(@NotNull String nameSlug) {
             this.nameSlug = Objects.requireNonNull(nameSlug, "nameSlug must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The webhook signing key. Only returned for OAuth-authenticated requests when <code>webhook_url</code> is supplied.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage webhookSigningKey(String webhookSigningKey) {
+            this.webhookSigningKey = Optional.ofNullable(webhookSigningKey);
+            return this;
+        }
+
+        /**
+         * <p>The webhook signing key. Only returned for OAuth-authenticated requests when <code>webhook_url</code> is supplied.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "webhook_signing_key", nulls = Nulls.SKIP)
+        public _FinalStage webhookSigningKey(Optional<String> webhookSigningKey) {
+            this.webhookSigningKey = webhookSigningKey;
             return this;
         }
 
@@ -627,6 +671,7 @@ public final class DeployedComponent {
                     nameSlug,
                     callbackObservations,
                     emitOnDeploy,
+                    webhookSigningKey,
                     additionalProperties);
         }
     }

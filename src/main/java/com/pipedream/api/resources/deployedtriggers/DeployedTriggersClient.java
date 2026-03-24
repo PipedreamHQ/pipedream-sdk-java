@@ -11,7 +11,9 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersLis
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRegenerateWebhookSigningKeyRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveWebhookRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -19,6 +21,7 @@ import com.pipedream.api.types.EmittedEvent;
 import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
+import com.pipedream.api.types.GetWebhookWithSigningKeyResponse;
 import java.util.List;
 
 public class DeployedTriggersClient {
@@ -157,17 +160,61 @@ public class DeployedTriggersClient {
     }
 
     /**
-     * Configure webhook URLs to receive trigger events
+     * Configure webhook URLs to receive trigger events. <code>signing_key</code> is only returned for OAuth-authenticated requests.
      */
     public GetTriggerWebhooksResponse updateWebhooks(String triggerId, UpdateTriggerWebhooksOpts request) {
         return this.rawClient.updateWebhooks(triggerId, request).body();
     }
 
     /**
-     * Configure webhook URLs to receive trigger events
+     * Configure webhook URLs to receive trigger events. <code>signing_key</code> is only returned for OAuth-authenticated requests.
      */
     public GetTriggerWebhooksResponse updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         return this.rawClient.updateWebhooks(triggerId, request, requestOptions).body();
+    }
+
+    /**
+     * Retrieve a specific webhook for a deployed trigger, including its signing key
+     */
+    public GetWebhookWithSigningKeyResponse retrieveWebhook(
+            String triggerId, String webhookId, DeployedTriggersRetrieveWebhookRequest request) {
+        return this.rawClient.retrieveWebhook(triggerId, webhookId, request).body();
+    }
+
+    /**
+     * Retrieve a specific webhook for a deployed trigger, including its signing key
+     */
+    public GetWebhookWithSigningKeyResponse retrieveWebhook(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersRetrieveWebhookRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .retrieveWebhook(triggerId, webhookId, request, requestOptions)
+                .body();
+    }
+
+    /**
+     * Regenerate the signing key for a specific webhook on a deployed trigger
+     */
+    public GetWebhookWithSigningKeyResponse regenerateWebhookSigningKey(
+            String triggerId, String webhookId, DeployedTriggersRegenerateWebhookSigningKeyRequest request) {
+        return this.rawClient
+                .regenerateWebhookSigningKey(triggerId, webhookId, request)
+                .body();
+    }
+
+    /**
+     * Regenerate the signing key for a specific webhook on a deployed trigger
+     */
+    public GetWebhookWithSigningKeyResponse regenerateWebhookSigningKey(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersRegenerateWebhookSigningKeyRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .regenerateWebhookSigningKey(triggerId, webhookId, request, requestOptions)
+                .body();
     }
 }
