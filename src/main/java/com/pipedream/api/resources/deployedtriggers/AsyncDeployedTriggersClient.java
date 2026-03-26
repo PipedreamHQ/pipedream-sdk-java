@@ -11,7 +11,9 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersLis
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRegenerateWebhookSigningKeyRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveWebhookRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWebhooksOpts;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerWorkflowsOpts;
@@ -19,6 +21,7 @@ import com.pipedream.api.types.EmittedEvent;
 import com.pipedream.api.types.Emitter;
 import com.pipedream.api.types.GetTriggerWebhooksResponse;
 import com.pipedream.api.types.GetTriggerWorkflowsResponse;
+import com.pipedream.api.types.GetWebhookWithSigningKeyResponse;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -166,7 +169,7 @@ public class AsyncDeployedTriggersClient {
     }
 
     /**
-     * Configure webhook URLs to receive trigger events
+     * Configure webhook URLs to receive trigger events. <code>signing_key</code> is only returned for OAuth-authenticated requests.
      */
     public CompletableFuture<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request) {
@@ -174,10 +177,54 @@ public class AsyncDeployedTriggersClient {
     }
 
     /**
-     * Configure webhook URLs to receive trigger events
+     * Configure webhook URLs to receive trigger events. <code>signing_key</code> is only returned for OAuth-authenticated requests.
      */
     public CompletableFuture<GetTriggerWebhooksResponse> updateWebhooks(
             String triggerId, UpdateTriggerWebhooksOpts request, RequestOptions requestOptions) {
         return this.rawClient.updateWebhooks(triggerId, request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve a specific webhook for a deployed trigger, including its signing key
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> retrieveWebhook(
+            String triggerId, String webhookId, DeployedTriggersRetrieveWebhookRequest request) {
+        return this.rawClient.retrieveWebhook(triggerId, webhookId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve a specific webhook for a deployed trigger, including its signing key
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> retrieveWebhook(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersRetrieveWebhookRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .retrieveWebhook(triggerId, webhookId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Regenerate the signing key for a specific webhook on a deployed trigger
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> regenerateWebhookSigningKey(
+            String triggerId, String webhookId, DeployedTriggersRegenerateWebhookSigningKeyRequest request) {
+        return this.rawClient
+                .regenerateWebhookSigningKey(triggerId, webhookId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Regenerate the signing key for a specific webhook on a deployed trigger
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> regenerateWebhookSigningKey(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersRegenerateWebhookSigningKeyRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .regenerateWebhookSigningKey(triggerId, webhookId, request, requestOptions)
+                .thenApply(response -> response.body());
     }
 }
