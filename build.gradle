@@ -47,23 +47,6 @@ java {
 }
 
 
-group = 'com.pipedream'
-
-version = '1.1.9'
-
-jar {
-    dependsOn(":generatePomFileForMavenPublication")
-    archiveBaseName = "pipedream"
-}
-
-sourcesJar {
-    archiveBaseName = "pipedream"
-}
-
-javadocJar {
-    archiveBaseName = "pipedream"
-}
-
 signing {
     sign(publishing.publications)
 }
@@ -75,60 +58,3 @@ test {
     }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.pipedream'
-            artifactId = 'pipedream'
-            version = '1.1.9'
-            from components.java
-            pom {
-                name = 'pipedream'
-                description = 'The official SDK of pipedream'
-                url = 'https://buildwithfern.com'
-                licenses {
-                    license {
-                        name = 'The MIT License (MIT)'
-                        url = 'https://mit-license.org/'
-                    }
-                }
-                developers {
-                    developer {
-                        name = 'pipedream'
-                        email = 'developers@pipedream.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/PipedreamHQ/pipedream-sdk-java.git'
-                    developerConnection = 'scm:git:git://github.com/PipedreamHQ/pipedream-sdk-java.git'
-                    url = 'https://github.com/PipedreamHQ/pipedream-sdk-java'
-                }
-            }
-        }
-    }
-}
-
-sonatypeCentralUpload {
-    username = "$System.env.MAVEN_USERNAME"
-    password = "$System.env.MAVEN_PASSWORD"
-
-    archives = files(
-        "$buildDir/libs/pipedream-" + version + ".jar",
-        "$buildDir/libs/pipedream-" + version + "-sources.jar",
-        "$buildDir/libs/pipedream-" + version + "-javadoc.jar"
-    )
-
-    pom = file("$buildDir/publications/maven/pom-default.xml")
-    signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
-    signingKeyPassphrase = "$System.env.MAVEN_SIGNATURE_PASSWORD"
-}
-
-signing {
-    def signingKeyId = "$System.env.MAVEN_SIGNATURE_KID"
-    def signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
-    def signingPassword = "$System.env.MAVEN_SIGNATURE_PASSWORD"
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    sign publishing.publications.maven
-}
-
-sonatypeCentralUpload.dependsOn build

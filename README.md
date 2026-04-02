@@ -1,9 +1,8 @@
-# Pipedream Java Library
+# Willktrial Java Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FPipedreamHQ%2Fpipedream-sdk-java)
-[![Maven Central](https://img.shields.io/maven-central/v/com.pipedream/pipedream)](https://central.sonatype.com/artifact/com.pipedream/pipedream)
 
-The Pipedream Java library provides convenient access to the Pipedream APIs from Java.
+The Willktrial Java library provides convenient access to the Willktrial APIs from Java.
 
 ## Table of Contents
 
@@ -51,23 +50,19 @@ Instantiate and use the client with the following:
 ```java
 package com.example.usage;
 
-import com.pipedream.api.BaseClient;
-import com.pipedream.api.resources.actions.requests.RunActionOpts;
+import com.willktrial.api.BaseClient;
+import com.willktrial.api.resources.pets.requests.CreatePetRequest;
 
 public class Example {
     public static void main(String[] args) {
         BaseClient client = BaseClient
             .builder()
-            .clientId("<clientId>")
-            .clientSecret("<clientSecret>")
-            .projectId("YOUR_PROJECT_ID")
             .build();
 
-        client.actions().run(
-            RunActionOpts
+        client.pets().createPet(
+            CreatePetRequest
                 .builder()
-                .id("id")
-                .externalUserId("external_user_id")
+                .name("name")
                 .build()
         );
     }
@@ -93,7 +88,7 @@ BaseClient client = BaseClient
 You can set a custom base URL when constructing the client.
 
 ```java
-import com.pipedream.api.BaseClient;
+import com.willktrial.api.BaseClient;
 
 BaseClient client = BaseClient
     .builder()
@@ -106,11 +101,11 @@ BaseClient client = BaseClient
 When the API returns a non-success status code (4xx or 5xx response), an API exception will be thrown.
 
 ```java
-import com.pipedream.api.core.PipedreamApiApiException;
+import com.willktrial.api.core.WillktrialApiApiException;
 
 try{
-    client.actions().run(...);
-} catch (PipedreamApiApiException e){
+    client.pets().createPet(...);
+} catch (WillktrialApiApiException e){
     // Do something with the API exception...
 }
 ```
@@ -123,7 +118,7 @@ This SDK is built to work with any instance of `OkHttpClient`. By default, if no
 However, you can pass your own client like so:
 
 ```java
-import com.pipedream.api.BaseClient;
+import com.willktrial.api.BaseClient;
 import okhttp3.OkHttpClient;
 
 OkHttpClient customClient = ...;
@@ -149,7 +144,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `maxRetries` client option to configure this behavior.
 
 ```java
-import com.pipedream.api.BaseClient;
+import com.willktrial.api.BaseClient;
 
 BaseClient client = BaseClient
     .builder()
@@ -162,8 +157,8 @@ BaseClient client = BaseClient
 The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
 
 ```java
-import com.pipedream.api.BaseClient;
-import com.pipedream.api.core.RequestOptions;
+import com.willktrial.api.BaseClient;
+import com.willktrial.api.core.RequestOptions;
 
 // Client level
 BaseClient client = BaseClient
@@ -172,7 +167,7 @@ BaseClient client = BaseClient
     .build();
 
 // Request level
-client.actions().run(
+client.pets().createPet(
     ...,
     RequestOptions
         .builder()
@@ -186,8 +181,8 @@ client.actions().run(
 The SDK allows you to add custom headers to requests. You can configure headers at the client level or at the request level.
 
 ```java
-import com.pipedream.api.BaseClient;
-import com.pipedream.api.core.RequestOptions;
+import com.willktrial.api.BaseClient;
+import com.willktrial.api.core.RequestOptions;
 
 // Client level
 BaseClient client = BaseClient
@@ -198,7 +193,7 @@ BaseClient client = BaseClient
 ;
 
 // Request level
-client.actions().run(
+client.pets().createPet(
     ...,
     RequestOptions
         .builder()
