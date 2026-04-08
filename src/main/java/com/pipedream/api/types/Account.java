@@ -38,7 +38,7 @@ public final class Account {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<Map<String, Object>> credentials;
+    private final Optional<AccountCredentials> credentials;
 
     private final Optional<OffsetDateTime> expiresAt;
 
@@ -59,7 +59,7 @@ public final class Account {
             Optional<App> app,
             Optional<OffsetDateTime> createdAt,
             Optional<OffsetDateTime> updatedAt,
-            Optional<Map<String, Object>> credentials,
+            Optional<AccountCredentials> credentials,
             Optional<OffsetDateTime> expiresAt,
             Optional<String> error,
             Optional<OffsetDateTime> lastRefreshedAt,
@@ -140,10 +140,10 @@ public final class Account {
     }
 
     /**
-     * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request
+     * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).
      */
     @JsonProperty("credentials")
-    public Optional<Map<String, Object>> getCredentials() {
+    public Optional<AccountCredentials> getCredentials() {
         return credentials;
     }
 
@@ -289,11 +289,11 @@ public final class Account {
         _FinalStage updatedAt(OffsetDateTime updatedAt);
 
         /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
          */
-        _FinalStage credentials(Optional<Map<String, Object>> credentials);
+        _FinalStage credentials(Optional<AccountCredentials> credentials);
 
-        _FinalStage credentials(Map<String, Object> credentials);
+        _FinalStage credentials(AccountCredentials credentials);
 
         /**
          * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
@@ -336,7 +336,7 @@ public final class Account {
 
         private Optional<OffsetDateTime> expiresAt = Optional.empty();
 
-        private Optional<Map<String, Object>> credentials = Optional.empty();
+        private Optional<AccountCredentials> credentials = Optional.empty();
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
@@ -463,21 +463,21 @@ public final class Account {
         }
 
         /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage credentials(Map<String, Object> credentials) {
+        public _FinalStage credentials(AccountCredentials credentials) {
             this.credentials = Optional.ofNullable(credentials);
             return this;
         }
 
         /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request</p>
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
          */
         @java.lang.Override
         @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
-        public _FinalStage credentials(Optional<Map<String, Object>> credentials) {
+        public _FinalStage credentials(Optional<AccountCredentials> credentials) {
             this.credentials = credentials;
             return this;
         }
