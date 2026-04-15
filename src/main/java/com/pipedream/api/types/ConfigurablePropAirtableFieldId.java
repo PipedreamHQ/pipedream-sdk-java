@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropAirtableFieldId implements IConfigurablePropBase {
     private final String name;
 
+    private final ConfigurablePropBaseType type;
+
     private final Optional<String> label;
 
     private final Optional<String> description;
@@ -47,6 +49,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
 
     private ConfigurablePropAirtableFieldId(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -59,6 +62,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
             String tableIdProp,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -79,6 +83,11 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
     @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
@@ -183,6 +192,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
 
     private boolean equalTo(ConfigurablePropAirtableFieldId other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -199,6 +209,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -224,9 +235,13 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        TableIdPropStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropAirtableFieldId other);
+    }
+
+    public interface TypeStage {
+        TableIdPropStage type(@NotNull ConfigurablePropBaseType type);
     }
 
     public interface TableIdPropStage {
@@ -304,8 +319,10 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, TableIdPropStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, TableIdPropStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private String tableIdProp;
 
@@ -335,6 +352,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableFieldId other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -355,8 +373,15 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
          */
         @java.lang.Override
         @JsonSetter("name")
-        public TableIdPropStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public TableIdPropStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -556,6 +581,7 @@ public final class ConfigurablePropAirtableFieldId implements IConfigurablePropB
         public ConfigurablePropAirtableFieldId build() {
             return new ConfigurablePropAirtableFieldId(
                     name,
+                    type,
                     label,
                     description,
                     optional,

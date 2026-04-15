@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface IConfigurablePropBase {
     String getName();
 
+    ConfigurablePropBaseType getType();
+
     Optional<String> getLabel();
 
     Optional<String> getDescription();

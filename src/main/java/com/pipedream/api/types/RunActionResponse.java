@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,9 +20,9 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RunActionResponse.Builder.class)
 public final class RunActionResponse {
-    private final Optional<Map<String, Object>> exports;
+    private final Optional<Object> exports;
 
-    private final Optional<List<Observation>> os;
+    private final Optional<Object> os;
 
     private final Optional<Object> ret;
 
@@ -32,8 +31,8 @@ public final class RunActionResponse {
     private final Map<String, Object> additionalProperties;
 
     private RunActionResponse(
-            Optional<Map<String, Object>> exports,
-            Optional<List<Observation>> os,
+            Optional<Object> exports,
+            Optional<Object> os,
             Optional<Object> ret,
             Optional<String> stashId,
             Map<String, Object> additionalProperties) {
@@ -48,7 +47,7 @@ public final class RunActionResponse {
      * @return The key-value pairs resulting from calls to <code>$.export</code>
      */
     @JsonProperty("exports")
-    public Optional<Map<String, Object>> getExports() {
+    public Optional<Object> getExports() {
         return exports;
     }
 
@@ -56,7 +55,7 @@ public final class RunActionResponse {
      * @return Any logs produced during the execution of the action
      */
     @JsonProperty("os")
-    public Optional<List<Observation>> getOs() {
+    public Optional<Object> getOs() {
         return os;
     }
 
@@ -107,9 +106,9 @@ public final class RunActionResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Object>> exports = Optional.empty();
+        private Optional<Object> exports = Optional.empty();
 
-        private Optional<List<Observation>> os = Optional.empty();
+        private Optional<Object> os = Optional.empty();
 
         private Optional<Object> ret = Optional.empty();
 
@@ -132,12 +131,12 @@ public final class RunActionResponse {
          * <p>The key-value pairs resulting from calls to <code>$.export</code></p>
          */
         @JsonSetter(value = "exports", nulls = Nulls.SKIP)
-        public Builder exports(Optional<Map<String, Object>> exports) {
+        public Builder exports(Optional<Object> exports) {
             this.exports = exports;
             return this;
         }
 
-        public Builder exports(Map<String, Object> exports) {
+        public Builder exports(Object exports) {
             this.exports = Optional.ofNullable(exports);
             return this;
         }
@@ -146,12 +145,12 @@ public final class RunActionResponse {
          * <p>Any logs produced during the execution of the action</p>
          */
         @JsonSetter(value = "os", nulls = Nulls.SKIP)
-        public Builder os(Optional<List<Observation>> os) {
+        public Builder os(Optional<Object> os) {
             this.os = os;
             return this;
         }
 
-        public Builder os(List<Observation> os) {
+        public Builder os(Object os) {
             this.os = Optional.ofNullable(os);
             return this;
         }

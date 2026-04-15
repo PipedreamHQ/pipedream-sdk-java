@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropAlert implements IConfigurablePropBase {
     private final String name;
 
+    private final ConfigurablePropBaseType type;
+
     private final Optional<String> label;
 
     private final Optional<String> description;
@@ -49,6 +51,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
 
     private ConfigurablePropAlert(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -62,6 +65,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
             String content,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -83,6 +87,11 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
     @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
@@ -192,6 +201,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
 
     private boolean equalTo(ConfigurablePropAlert other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -209,6 +219,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -235,9 +246,13 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        ContentStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropAlert other);
+    }
+
+    public interface TypeStage {
+        ContentStage type(@NotNull ConfigurablePropBaseType type);
     }
 
     public interface ContentStage {
@@ -319,8 +334,10 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, ContentStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, ContentStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private String content;
 
@@ -352,6 +369,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
         @java.lang.Override
         public Builder from(ConfigurablePropAlert other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -373,8 +391,15 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public ContentStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public ContentStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -587,6 +612,7 @@ public final class ConfigurablePropAlert implements IConfigurablePropBase {
         public ConfigurablePropAlert build() {
             return new ConfigurablePropAlert(
                     name,
+                    type,
                     label,
                     description,
                     optional,
