@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBase {
     private final String name;
 
+    private final ConfigurablePropBaseType type;
+
     private final Optional<String> label;
 
     private final Optional<String> description;
@@ -47,6 +49,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
 
     private ConfigurablePropAirtableBaseId(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -59,6 +62,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
             String appProp,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -79,6 +83,11 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
     @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
@@ -183,6 +192,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
 
     private boolean equalTo(ConfigurablePropAirtableBaseId other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -199,6 +209,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -224,9 +235,13 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        AppPropStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropAirtableBaseId other);
+    }
+
+    public interface TypeStage {
+        AppPropStage type(@NotNull ConfigurablePropBaseType type);
     }
 
     public interface AppPropStage {
@@ -304,8 +319,10 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, AppPropStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, AppPropStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private String appProp;
 
@@ -335,6 +352,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         @java.lang.Override
         public Builder from(ConfigurablePropAirtableBaseId other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -355,8 +373,15 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
          */
         @java.lang.Override
         @JsonSetter("name")
-        public AppPropStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public AppPropStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -556,6 +581,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         public ConfigurablePropAirtableBaseId build() {
             return new ConfigurablePropAirtableBaseId(
                     name,
+                    type,
                     label,
                     description,
                     optional,
