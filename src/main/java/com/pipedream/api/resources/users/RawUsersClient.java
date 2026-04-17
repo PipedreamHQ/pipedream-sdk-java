@@ -9,9 +9,16 @@ import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ObjectMappers;
+import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.users.requests.UsersListRequest;
+import com.pipedream.api.types.ExternalUser;
+import com.pipedream.api.types.GetUsersResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -58,6 +65,92 @@ public class RawUsersClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(null, response);
+            }
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            throw new BaseClientApiException(
+                    "Error with status code " + response.code(),
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                    response);
+        } catch (IOException e) {
+            throw new BaseClientException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public BaseClientHttpResponse<SyncPagingIterable<ExternalUser>> list() {
+        return list(UsersListRequest.builder().build());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public BaseClientHttpResponse<SyncPagingIterable<ExternalUser>> list(UsersListRequest request) {
+        return list(request, null);
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public BaseClientHttpResponse<SyncPagingIterable<ExternalUser>> list(
+            UsersListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("users");
+        if (request.getAfter().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "after", request.getAfter().get(), false);
+        }
+        if (request.getBefore().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "before", request.getBefore().get(), false);
+        }
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getQ().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "q", request.getQ().get(), false);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                GetUsersResponse parsedResponse =
+                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetUsersResponse.class);
+                Optional<String> startingAfter = parsedResponse.getPageInfo().getEndCursor();
+                UsersListRequest nextRequest = UsersListRequest.builder()
+                        .from(request)
+                        .after(startingAfter)
+                        .build();
+                List<ExternalUser> result = parsedResponse.getData();
+                return new BaseClientHttpResponse<>(
+                        new SyncPagingIterable<ExternalUser>(
+                                startingAfter.isPresent(), result, parsedResponse, () -> list(
+                                                nextRequest, requestOptions)
+                                        .body()),
+                        response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {

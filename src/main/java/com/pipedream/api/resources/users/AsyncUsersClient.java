@@ -5,6 +5,9 @@ package com.pipedream.api.resources.users;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.users.requests.UsersListRequest;
+import com.pipedream.api.types.ExternalUser;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncUsersClient {
@@ -36,5 +39,27 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<Void> deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
         return this.rawClient.deleteExternalUser(externalUserId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public CompletableFuture<SyncPagingIterable<ExternalUser>> list() {
+        return this.rawClient.list().thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public CompletableFuture<SyncPagingIterable<ExternalUser>> list(UsersListRequest request) {
+        return this.rawClient.list(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public CompletableFuture<SyncPagingIterable<ExternalUser>> list(
+            UsersListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
     }
 }
