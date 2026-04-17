@@ -31,6 +31,8 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
 
     private final Optional<Boolean> disabled;
 
+    private final Optional<Boolean> readOnly;
+
     private final Optional<Boolean> hidden;
 
     private final Optional<Boolean> remoteOptions;
@@ -51,6 +53,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
             Optional<String> description,
             Optional<Boolean> optional,
             Optional<Boolean> disabled,
+            Optional<Boolean> readOnly,
             Optional<Boolean> hidden,
             Optional<Boolean> remoteOptions,
             Optional<Boolean> useQuery,
@@ -63,6 +66,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         this.description = description;
         this.optional = optional;
         this.disabled = disabled;
+        this.readOnly = readOnly;
         this.hidden = hidden;
         this.remoteOptions = remoteOptions;
         this.useQuery = useQuery;
@@ -115,6 +119,15 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
     @java.lang.Override
     public Optional<Boolean> getDisabled() {
         return disabled;
+    }
+
+    /**
+     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
+     */
+    @JsonProperty("readOnly")
+    @java.lang.Override
+    public Optional<Boolean> getReadOnly() {
+        return readOnly;
     }
 
     /**
@@ -187,6 +200,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
                 && description.equals(other.description)
                 && optional.equals(other.optional)
                 && disabled.equals(other.disabled)
+                && readOnly.equals(other.readOnly)
                 && hidden.equals(other.hidden)
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
@@ -203,6 +217,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
                 this.description,
                 this.optional,
                 this.disabled,
+                this.readOnly,
                 this.hidden,
                 this.remoteOptions,
                 this.useQuery,
@@ -268,6 +283,13 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         _FinalStage disabled(Boolean disabled);
 
         /**
+         * <p>If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.</p>
+         */
+        _FinalStage readOnly(Optional<Boolean> readOnly);
+
+        _FinalStage readOnly(Boolean readOnly);
+
+        /**
          * <p>If true, should not expose this prop to the user</p>
          */
         _FinalStage hidden(Optional<Boolean> hidden);
@@ -319,6 +341,8 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
 
         private Optional<Boolean> hidden = Optional.empty();
 
+        private Optional<Boolean> readOnly = Optional.empty();
+
         private Optional<Boolean> disabled = Optional.empty();
 
         private Optional<Boolean> optional = Optional.empty();
@@ -339,6 +363,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
             description(other.getDescription());
             optional(other.getOptional());
             disabled(other.getDisabled());
+            readOnly(other.getReadOnly());
             hidden(other.getHidden());
             remoteOptions(other.getRemoteOptions());
             useQuery(other.getUseQuery());
@@ -473,6 +498,26 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
         }
 
         /**
+         * <p>If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage readOnly(Boolean readOnly) {
+            this.readOnly = Optional.ofNullable(readOnly);
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "readOnly", nulls = Nulls.SKIP)
+        public _FinalStage readOnly(Optional<Boolean> readOnly) {
+            this.readOnly = readOnly;
+            return this;
+        }
+
+        /**
          * <p>If true, this prop will be ignored.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -560,6 +605,7 @@ public final class ConfigurablePropAirtableBaseId implements IConfigurablePropBa
                     description,
                     optional,
                     disabled,
+                    readOnly,
                     hidden,
                     remoteOptions,
                     useQuery,
