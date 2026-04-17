@@ -5,6 +5,9 @@ package com.pipedream.api.resources.users;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.users.requests.UsersListRequest;
+import com.pipedream.api.types.ExternalUser;
 
 public class UsersClient {
     protected final ClientOptions clientOptions;
@@ -35,5 +38,26 @@ public class UsersClient {
      */
     public void deleteExternalUser(String externalUserId, RequestOptions requestOptions) {
         this.rawClient.deleteExternalUser(externalUserId, requestOptions).body();
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public SyncPagingIterable<ExternalUser> list() {
+        return this.rawClient.list().body();
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public SyncPagingIterable<ExternalUser> list(UsersListRequest request) {
+        return this.rawClient.list(request).body();
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public SyncPagingIterable<ExternalUser> list(UsersListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).body();
     }
 }

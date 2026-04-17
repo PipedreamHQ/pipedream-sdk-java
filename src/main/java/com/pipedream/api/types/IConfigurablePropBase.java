@@ -16,6 +16,8 @@ public interface IConfigurablePropBase {
 
     Optional<Boolean> getDisabled();
 
+    Optional<Boolean> getReadOnly();
+
     Optional<Boolean> getHidden();
 
     Optional<Boolean> getRemoteOptions();
