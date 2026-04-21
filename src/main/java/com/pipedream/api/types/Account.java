@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,6 +39,8 @@ public final class Account {
 
     private final Optional<OffsetDateTime> updatedAt;
 
+    private final Optional<List<String>> authorizedScopes;
+
     private final Optional<AccountCredentials> credentials;
 
     private final Optional<OffsetDateTime> expiresAt;
@@ -59,6 +62,7 @@ public final class Account {
             Optional<App> app,
             Optional<OffsetDateTime> createdAt,
             Optional<OffsetDateTime> updatedAt,
+            Optional<List<String>> authorizedScopes,
             Optional<AccountCredentials> credentials,
             Optional<OffsetDateTime> expiresAt,
             Optional<String> error,
@@ -73,6 +77,7 @@ public final class Account {
         this.app = app;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.authorizedScopes = authorizedScopes;
         this.credentials = credentials;
         this.expiresAt = expiresAt;
         this.error = error;
@@ -140,6 +145,14 @@ public final class Account {
     }
 
     /**
+     * @return The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.
+     */
+    @JsonProperty("authorized_scopes")
+    public Optional<List<String>> getAuthorizedScopes() {
+        return authorizedScopes;
+    }
+
+    /**
      * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).
      */
     @JsonProperty("credentials")
@@ -199,6 +212,7 @@ public final class Account {
                 && app.equals(other.app)
                 && createdAt.equals(other.createdAt)
                 && updatedAt.equals(other.updatedAt)
+                && authorizedScopes.equals(other.authorizedScopes)
                 && credentials.equals(other.credentials)
                 && expiresAt.equals(other.expiresAt)
                 && error.equals(other.error)
@@ -217,6 +231,7 @@ public final class Account {
                 this.app,
                 this.createdAt,
                 this.updatedAt,
+                this.authorizedScopes,
                 this.credentials,
                 this.expiresAt,
                 this.error,
@@ -289,6 +304,13 @@ public final class Account {
         _FinalStage updatedAt(OffsetDateTime updatedAt);
 
         /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         */
+        _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes);
+
+        _FinalStage authorizedScopes(List<String> authorizedScopes);
+
+        /**
          * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
          */
         _FinalStage credentials(Optional<AccountCredentials> credentials);
@@ -338,6 +360,8 @@ public final class Account {
 
         private Optional<AccountCredentials> credentials = Optional.empty();
 
+        private Optional<List<String>> authorizedScopes = Optional.empty();
+
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
@@ -367,6 +391,7 @@ public final class Account {
             app(other.getApp());
             createdAt(other.getCreatedAt());
             updatedAt(other.getUpdatedAt());
+            authorizedScopes(other.getAuthorizedScopes());
             credentials(other.getCredentials());
             expiresAt(other.getExpiresAt());
             error(other.getError());
@@ -479,6 +504,26 @@ public final class Account {
         @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
         public _FinalStage credentials(Optional<AccountCredentials> credentials) {
             this.credentials = credentials;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage authorizedScopes(List<String> authorizedScopes) {
+            this.authorizedScopes = Optional.ofNullable(authorizedScopes);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "authorized_scopes", nulls = Nulls.SKIP)
+        public _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes) {
+            this.authorizedScopes = authorizedScopes;
             return this;
         }
 
@@ -626,6 +671,7 @@ public final class Account {
                     app,
                     createdAt,
                     updatedAt,
+                    authorizedScopes,
                     credentials,
                     expiresAt,
                     error,

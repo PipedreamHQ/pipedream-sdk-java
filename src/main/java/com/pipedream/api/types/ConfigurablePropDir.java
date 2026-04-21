@@ -43,6 +43,10 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
 
     private final Optional<Boolean> withLabel;
 
+    private final Optional<ConfigurablePropDirAccessMode> accessMode;
+
+    private final Optional<Boolean> sync;
+
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDir(
@@ -57,6 +61,8 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
+            Optional<ConfigurablePropDirAccessMode> accessMode,
+            Optional<Boolean> sync,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.label = label;
@@ -69,6 +75,8 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
+        this.accessMode = accessMode;
+        this.sync = sync;
         this.additionalProperties = additionalProperties;
     }
 
@@ -171,6 +179,19 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
         return withLabel;
     }
 
+    @JsonProperty("accessMode")
+    public Optional<ConfigurablePropDirAccessMode> getAccessMode() {
+        return accessMode;
+    }
+
+    /**
+     * @return If true, the component's /tmp directory is synchronized with File Stash
+     */
+    @JsonProperty("sync")
+    public Optional<Boolean> getSync() {
+        return sync;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -193,7 +214,9 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel);
+                && withLabel.equals(other.withLabel)
+                && accessMode.equals(other.accessMode)
+                && sync.equals(other.sync);
     }
 
     @java.lang.Override
@@ -209,7 +232,9 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel);
+                this.withLabel,
+                this.accessMode,
+                this.sync);
     }
 
     @java.lang.Override
@@ -302,11 +327,26 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
+
+        _FinalStage accessMode(Optional<ConfigurablePropDirAccessMode> accessMode);
+
+        _FinalStage accessMode(ConfigurablePropDirAccessMode accessMode);
+
+        /**
+         * <p>If true, the component's /tmp directory is synchronized with File Stash</p>
+         */
+        _FinalStage sync(Optional<Boolean> sync);
+
+        _FinalStage sync(Boolean sync);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
+
+        private Optional<Boolean> sync = Optional.empty();
+
+        private Optional<ConfigurablePropDirAccessMode> accessMode = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -346,6 +386,8 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            accessMode(other.getAccessMode());
+            sync(other.getSync());
             return this;
         }
 
@@ -358,6 +400,39 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        /**
+         * <p>If true, the component's /tmp directory is synchronized with File Stash</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sync(Boolean sync) {
+            this.sync = Optional.ofNullable(sync);
+            return this;
+        }
+
+        /**
+         * <p>If true, the component's /tmp directory is synchronized with File Stash</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "sync", nulls = Nulls.SKIP)
+        public _FinalStage sync(Optional<Boolean> sync) {
+            this.sync = sync;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage accessMode(ConfigurablePropDirAccessMode accessMode) {
+            this.accessMode = Optional.ofNullable(accessMode);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "accessMode", nulls = Nulls.SKIP)
+        public _FinalStage accessMode(Optional<ConfigurablePropDirAccessMode> accessMode) {
+            this.accessMode = accessMode;
             return this;
         }
 
@@ -575,6 +650,8 @@ public final class ConfigurablePropDir implements IConfigurablePropBase {
                     useQuery,
                     reloadProps,
                     withLabel,
+                    accessMode,
+                    sync,
                     additionalProperties);
         }
     }
