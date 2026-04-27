@@ -28,7 +28,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.pipedream:pipedream:1.1.13'
+  implementation 'com.pipedream:pipedream:1.1.12'
 }
 ```
 
@@ -40,7 +40,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.1.13</version>
+  <version>1.1.12</version>
 </dependency>
 ```
 
