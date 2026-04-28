@@ -36,6 +36,8 @@ public final class CreateTokenOpts {
 
     private final Optional<String> webhookUri;
 
+    private final Optional<Boolean> allowProgressiveScopes;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateTokenOpts(
@@ -46,6 +48,7 @@ public final class CreateTokenOpts {
             Optional<String> scope,
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
+            Optional<Boolean> allowProgressiveScopes,
             Map<String, Object> additionalProperties) {
         this.allowedOrigins = allowedOrigins;
         this.errorRedirectUri = errorRedirectUri;
@@ -54,6 +57,7 @@ public final class CreateTokenOpts {
         this.scope = scope;
         this.successRedirectUri = successRedirectUri;
         this.webhookUri = webhookUri;
+        this.allowProgressiveScopes = allowProgressiveScopes;
         this.additionalProperties = additionalProperties;
     }
 
@@ -113,6 +117,14 @@ public final class CreateTokenOpts {
         return webhookUri;
     }
 
+    /**
+     * @return When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.
+     */
+    @JsonProperty("allow_progressive_scopes")
+    public Optional<Boolean> getAllowProgressiveScopes() {
+        return allowProgressiveScopes;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -131,7 +143,8 @@ public final class CreateTokenOpts {
                 && externalUserId.equals(other.externalUserId)
                 && scope.equals(other.scope)
                 && successRedirectUri.equals(other.successRedirectUri)
-                && webhookUri.equals(other.webhookUri);
+                && webhookUri.equals(other.webhookUri)
+                && allowProgressiveScopes.equals(other.allowProgressiveScopes);
     }
 
     @java.lang.Override
@@ -143,7 +156,8 @@ public final class CreateTokenOpts {
                 this.externalUserId,
                 this.scope,
                 this.successRedirectUri,
-                this.webhookUri);
+                this.webhookUri,
+                this.allowProgressiveScopes);
     }
 
     @java.lang.Override
@@ -208,11 +222,20 @@ public final class CreateTokenOpts {
         _FinalStage webhookUri(Optional<String> webhookUri);
 
         _FinalStage webhookUri(String webhookUri);
+
+        /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         */
+        _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes);
+
+        _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
+
+        private Optional<Boolean> allowProgressiveScopes = Optional.empty();
 
         private Optional<String> webhookUri = Optional.empty();
 
@@ -240,6 +263,7 @@ public final class CreateTokenOpts {
             scope(other.getScope());
             successRedirectUri(other.getSuccessRedirectUri());
             webhookUri(other.getWebhookUri());
+            allowProgressiveScopes(other.getAllowProgressiveScopes());
             return this;
         }
 
@@ -252,6 +276,26 @@ public final class CreateTokenOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes) {
+            this.allowProgressiveScopes = Optional.ofNullable(allowProgressiveScopes);
+            return this;
+        }
+
+        /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "allow_progressive_scopes", nulls = Nulls.SKIP)
+        public _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes) {
+            this.allowProgressiveScopes = allowProgressiveScopes;
             return this;
         }
 
@@ -385,6 +429,7 @@ public final class CreateTokenOpts {
                     scope,
                     successRedirectUri,
                     webhookUri,
+                    allowProgressiveScopes,
                     additionalProperties);
         }
     }
