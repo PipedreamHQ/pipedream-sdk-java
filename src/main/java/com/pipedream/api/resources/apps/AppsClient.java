@@ -37,6 +37,13 @@ public class AppsClient {
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
+    public SyncPagingIterable<App> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public SyncPagingIterable<App> list(AppsListRequest request) {
         return this.rawClient.list(request).body();
     }

@@ -50,6 +50,13 @@ public class UsersClient {
     /**
      * Retrieve all external users for the project
      */
+    public SyncPagingIterable<ExternalUser> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
     public SyncPagingIterable<ExternalUser> list(UsersListRequest request) {
         return this.rawClient.list(request).body();
     }

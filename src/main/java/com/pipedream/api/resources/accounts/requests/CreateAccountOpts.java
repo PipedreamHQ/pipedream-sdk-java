@@ -33,6 +33,8 @@ public final class CreateAccountOpts {
 
     private final Optional<String> name;
 
+    private final Optional<String> accountId;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateAccountOpts(
@@ -42,6 +44,7 @@ public final class CreateAccountOpts {
             String cfmapJson,
             String connectToken,
             Optional<String> name,
+            Optional<String> accountId,
             Map<String, Object> additionalProperties) {
         this.externalUserId = externalUserId;
         this.oauthAppId = oauthAppId;
@@ -49,6 +52,7 @@ public final class CreateAccountOpts {
         this.cfmapJson = cfmapJson;
         this.connectToken = connectToken;
         this.name = name;
+        this.accountId = accountId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -97,6 +101,14 @@ public final class CreateAccountOpts {
         return name;
     }
 
+    /**
+     * @return An existing account ID to reconnect. When provided, the account's credentials are updated instead of creating a new account. Must belong to the same external user and project environment as the connect token, and match the app identified by app_slug.
+     */
+    @JsonProperty("account_id")
+    public Optional<String> getAccountId() {
+        return accountId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -114,13 +126,20 @@ public final class CreateAccountOpts {
                 && appSlug.equals(other.appSlug)
                 && cfmapJson.equals(other.cfmapJson)
                 && connectToken.equals(other.connectToken)
-                && name.equals(other.name);
+                && name.equals(other.name)
+                && accountId.equals(other.accountId);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.externalUserId, this.oauthAppId, this.appSlug, this.cfmapJson, this.connectToken, this.name);
+                this.externalUserId,
+                this.oauthAppId,
+                this.appSlug,
+                this.cfmapJson,
+                this.connectToken,
+                this.name,
+                this.accountId);
     }
 
     @java.lang.Override
@@ -175,6 +194,13 @@ public final class CreateAccountOpts {
         _FinalStage name(Optional<String> name);
 
         _FinalStage name(String name);
+
+        /**
+         * <p>An existing account ID to reconnect. When provided, the account's credentials are updated instead of creating a new account. Must belong to the same external user and project environment as the connect token, and match the app identified by app_slug.</p>
+         */
+        _FinalStage accountId(Optional<String> accountId);
+
+        _FinalStage accountId(String accountId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -184,6 +210,8 @@ public final class CreateAccountOpts {
         private String cfmapJson;
 
         private String connectToken;
+
+        private Optional<String> accountId = Optional.empty();
 
         private Optional<String> name = Optional.empty();
 
@@ -204,6 +232,7 @@ public final class CreateAccountOpts {
             cfmapJson(other.getCfmapJson());
             connectToken(other.getConnectToken());
             name(other.getName());
+            accountId(other.getAccountId());
             return this;
         }
 
@@ -240,6 +269,26 @@ public final class CreateAccountOpts {
         @JsonSetter("connect_token")
         public _FinalStage connectToken(@NotNull String connectToken) {
             this.connectToken = Objects.requireNonNull(connectToken, "connectToken must not be null");
+            return this;
+        }
+
+        /**
+         * <p>An existing account ID to reconnect. When provided, the account's credentials are updated instead of creating a new account. Must belong to the same external user and project environment as the connect token, and match the app identified by app_slug.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage accountId(String accountId) {
+            this.accountId = Optional.ofNullable(accountId);
+            return this;
+        }
+
+        /**
+         * <p>An existing account ID to reconnect. When provided, the account's credentials are updated instead of creating a new account. Must belong to the same external user and project environment as the connect token, and match the app identified by app_slug.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "account_id", nulls = Nulls.SKIP)
+        public _FinalStage accountId(Optional<String> accountId) {
+            this.accountId = accountId;
             return this;
         }
 
@@ -299,7 +348,14 @@ public final class CreateAccountOpts {
         @java.lang.Override
         public CreateAccountOpts build() {
             return new CreateAccountOpts(
-                    externalUserId, oauthAppId, appSlug, cfmapJson, connectToken, name, additionalProperties);
+                    externalUserId,
+                    oauthAppId,
+                    appSlug,
+                    cfmapJson,
+                    connectToken,
+                    name,
+                    accountId,
+                    additionalProperties);
         }
     }
 }

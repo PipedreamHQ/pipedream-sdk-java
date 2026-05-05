@@ -47,6 +47,13 @@ public class AsyncRawAppsClient {
     /**
      * Retrieve all available apps with optional filtering and sorting
      */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<App>>> list(RequestOptions requestOptions) {
+        return list(AppsListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve all available apps with optional filtering and sorting
+     */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<App>>> list(AppsListRequest request) {
         return list(request, null);
     }
@@ -113,9 +120,10 @@ public class AsyncRawAppsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         ListAppsResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListAppsResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListAppsResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
                         AppsListRequest nextRequest = AppsListRequest.builder()
@@ -136,12 +144,9 @@ public class AsyncRawAppsClient {
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -188,18 +193,16 @@ public class AsyncRawAppsClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetAppResponse.class),
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetAppResponse.class),
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));

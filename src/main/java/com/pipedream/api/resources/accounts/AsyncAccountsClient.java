@@ -39,6 +39,13 @@ public class AsyncAccountsClient {
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
+    public CompletableFuture<SyncPagingIterable<Account>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public CompletableFuture<SyncPagingIterable<Account>> list(AccountsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
@@ -70,6 +77,13 @@ public class AsyncAccountsClient {
      */
     public CompletableFuture<Account> retrieve(String accountId) {
         return this.rawClient.retrieve(accountId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get the details for a specific connected account
+     */
+    public CompletableFuture<Account> retrieve(String accountId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(accountId, requestOptions).thenApply(response -> response.body());
     }
 
     /**

@@ -61,11 +61,11 @@ public class RawProjectEnvironmentClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetWebhookResponse.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetWebhookResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -74,11 +74,9 @@ public class RawProjectEnvironmentClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -122,11 +120,11 @@ public class RawProjectEnvironmentClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), SetWebhookResponse.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SetWebhookResponse.class), response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -135,11 +133,9 @@ public class RawProjectEnvironmentClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -186,11 +182,9 @@ public class RawProjectEnvironmentClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }
@@ -212,7 +206,8 @@ public class RawProjectEnvironmentClient {
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("webhook/regenerate_signing_key")
+                .addPathSegments("webhook")
+                .addPathSegments("regenerate_signing_key")
                 .build();
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
@@ -226,13 +221,12 @@ public class RawProjectEnvironmentClient {
         }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(
-                                responseBody.string(), GetWebhookWithSigningKeyResponse.class),
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetWebhookWithSigningKeyResponse.class),
                         response);
             }
-            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             try {
                 if (response.code() == 429) {
                     throw new TooManyRequestsError(
@@ -241,11 +235,9 @@ public class RawProjectEnvironmentClient {
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error
             }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
-                    "Error with status code " + response.code(),
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                    response);
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
         } catch (IOException e) {
             throw new BaseClientException("Network error executing HTTP request", e);
         }

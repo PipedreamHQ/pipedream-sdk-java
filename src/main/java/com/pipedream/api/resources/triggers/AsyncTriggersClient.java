@@ -44,6 +44,13 @@ public class AsyncTriggersClient {
     /**
      * Retrieve available triggers with optional search and app filtering
      */
+    public CompletableFuture<SyncPagingIterable<Component>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(TriggersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
@@ -61,6 +68,13 @@ public class AsyncTriggersClient {
      */
     public CompletableFuture<Component> retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
     /**

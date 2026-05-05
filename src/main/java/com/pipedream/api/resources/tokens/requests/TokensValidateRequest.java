@@ -23,12 +23,19 @@ import org.jetbrains.annotations.NotNull;
 public final class TokensValidateRequest {
     private final String appId;
 
+    private final Optional<String> accountId;
+
     private final Optional<String> oauthAppId;
 
     private final Map<String, Object> additionalProperties;
 
-    private TokensValidateRequest(String appId, Optional<String> oauthAppId, Map<String, Object> additionalProperties) {
+    private TokensValidateRequest(
+            String appId,
+            Optional<String> accountId,
+            Optional<String> oauthAppId,
+            Map<String, Object> additionalProperties) {
         this.appId = appId;
+        this.accountId = accountId;
         this.oauthAppId = oauthAppId;
         this.additionalProperties = additionalProperties;
     }
@@ -39,6 +46,14 @@ public final class TokensValidateRequest {
     @JsonProperty("app_id")
     public String getAppId() {
         return appId;
+    }
+
+    /**
+     * @return An existing account ID to reconnect. Must belong to the app identified by app_id.
+     */
+    @JsonProperty("account_id")
+    public Optional<String> getAccountId() {
+        return accountId;
     }
 
     /**
@@ -61,12 +76,12 @@ public final class TokensValidateRequest {
     }
 
     private boolean equalTo(TokensValidateRequest other) {
-        return appId.equals(other.appId) && oauthAppId.equals(other.oauthAppId);
+        return appId.equals(other.appId) && accountId.equals(other.accountId) && oauthAppId.equals(other.oauthAppId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.appId, this.oauthAppId);
+        return Objects.hash(this.appId, this.accountId, this.oauthAppId);
     }
 
     @java.lang.Override
@@ -91,6 +106,13 @@ public final class TokensValidateRequest {
         TokensValidateRequest build();
 
         /**
+         * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
+         */
+        _FinalStage accountId(Optional<String> accountId);
+
+        _FinalStage accountId(String accountId);
+
+        /**
          * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
          */
         _FinalStage oauthAppId(Optional<String> oauthAppId);
@@ -104,6 +126,8 @@ public final class TokensValidateRequest {
 
         private Optional<String> oauthAppId = Optional.empty();
 
+        private Optional<String> accountId = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -112,6 +136,7 @@ public final class TokensValidateRequest {
         @java.lang.Override
         public Builder from(TokensValidateRequest other) {
             appId(other.getAppId());
+            accountId(other.getAccountId());
             oauthAppId(other.getOauthAppId());
             return this;
         }
@@ -148,9 +173,29 @@ public final class TokensValidateRequest {
             return this;
         }
 
+        /**
+         * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage accountId(String accountId) {
+            this.accountId = Optional.ofNullable(accountId);
+            return this;
+        }
+
+        /**
+         * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "account_id", nulls = Nulls.SKIP)
+        public _FinalStage accountId(Optional<String> accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
         @java.lang.Override
         public TokensValidateRequest build() {
-            return new TokensValidateRequest(appId, oauthAppId, additionalProperties);
+            return new TokensValidateRequest(appId, accountId, oauthAppId, additionalProperties);
         }
     }
 }

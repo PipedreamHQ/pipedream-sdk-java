@@ -38,6 +38,13 @@ public class AccountsClient {
     /**
      * Retrieve all connected accounts for the project with optional filtering
      */
+    public SyncPagingIterable<Account> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve all connected accounts for the project with optional filtering
+     */
     public SyncPagingIterable<Account> list(AccountsListRequest request) {
         return this.rawClient.list(request).body();
     }
@@ -68,6 +75,13 @@ public class AccountsClient {
      */
     public Account retrieve(String accountId) {
         return this.rawClient.retrieve(accountId).body();
+    }
+
+    /**
+     * Get the details for a specific connected account
+     */
+    public Account retrieve(String accountId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(accountId, requestOptions).body();
     }
 
     /**
