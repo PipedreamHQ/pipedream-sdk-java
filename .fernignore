@@ -10,8 +10,8 @@ LICENSE
 reference.md
 
 # Base client files (temporary)
-src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
-src/main/java/com/pipedream/api/BaseClientBuilder.java
+# src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
+# src/main/java/com/pipedream/api/BaseClientBuilder.java
 
 # Custom Pipedream client files
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
