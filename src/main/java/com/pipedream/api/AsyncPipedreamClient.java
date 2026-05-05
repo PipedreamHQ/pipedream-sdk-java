@@ -15,11 +15,24 @@ public class AsyncPipedreamClient extends AsyncBaseClient {
         this.workflowsClient = Suppliers.memoize(() -> new WorkflowsClient(clientOptions));
     }
 
+    /**
+     * Creates a builder pre-populated from the standard Pipedream environment variables
+     * (PIPEDREAM_BASE_URL, PIPEDREAM_CLIENT_ID, PIPEDREAM_CLIENT_SECRET,
+     * PIPEDREAM_PROJECT_ENVIRONMENT, PIPEDREAM_PROJECT_ID).
+     *
+     * <p>For OAuth client credentials, the env-var defaults can be overridden via
+     * {@code .clientId(...)} / {@code .clientSecret(...)} and progressive scopes set with
+     * {@code .scope(...)}. For pre-generated access tokens, use {@code .token(...)} to bypass
+     * the OAuth flow entirely.
+     */
     public static AsyncPipedreamClientBuilder builder() {
+        String baseUrl = System.getenv("PIPEDREAM_BASE_URL") != null
+                ? System.getenv("PIPEDREAM_BASE_URL")
+                : Environment.PROD.getUrl();
         return new AsyncPipedreamClientBuilder()
                 .clientId(System.getenv("PIPEDREAM_CLIENT_ID"))
                 .clientSecret(System.getenv("PIPEDREAM_CLIENT_SECRET"))
-                .environment(Environment.PROD)
+                .url(baseUrl)
                 .projectEnvironment(System.getenv("PIPEDREAM_PROJECT_ENVIRONMENT"))
                 .projectId(System.getenv("PIPEDREAM_PROJECT_ID"));
     }

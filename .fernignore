@@ -10,8 +10,8 @@ LICENSE
 reference.md
 
 # Base client files (temporary)
-# src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
-# src/main/java/com/pipedream/api/BaseClientBuilder.java
+src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
+src/main/java/com/pipedream/api/BaseClientBuilder.java
 
 # Custom Pipedream client files
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
@@ -45,3 +45,8 @@ src/main/java/com/pipedream/api/types/HTTPAuthType.java
 src/test/java/com/pipedream/api/OauthTokensWireTest.java
 src/test/java/com/pipedream/api/ProxyClientWireTest.java
 src/test/java/com/pipedream/api/TokensWireTest.java
+
+# Test utilities (JDK-only mock-server shim used by wire tests)
+src/test/java/com/pipedream/api/testutil/MockResponse.java
+src/test/java/com/pipedream/api/testutil/MockWebServer.java
+src/test/java/com/pipedream/api/testutil/RecordedRequest.java

@@ -40,7 +40,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.1.14</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 

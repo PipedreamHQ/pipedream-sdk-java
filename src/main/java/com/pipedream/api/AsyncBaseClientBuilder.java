@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
 
-public class AsyncBaseClientBuilder {
+public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
     private Optional<Integer> timeout = Optional.empty();
 
     private Optional<Integer> maxRetries = Optional.empty();
@@ -54,43 +54,43 @@ public class AsyncBaseClientBuilder {
     /**
      * Sets projectEnvironment
      */
-    public AsyncBaseClientBuilder projectEnvironment(String projectEnvironment) {
+    public T projectEnvironment(String projectEnvironment) {
         this.projectEnvironment = projectEnvironment;
-        return this;
+        return (T) this;
     }
 
-    public AsyncBaseClientBuilder environment(Environment environment) {
+    public T environment(Environment environment) {
         this.environment = environment;
-        return this;
+        return (T) this;
     }
 
-    public AsyncBaseClientBuilder url(String url) {
+    public T url(String url) {
         this.environment = Environment.custom(url);
-        return this;
+        return (T) this;
     }
 
     /**
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
-    public AsyncBaseClientBuilder timeout(int timeout) {
+    public T timeout(int timeout) {
         this.timeout = Optional.of(timeout);
-        return this;
+        return (T) this;
     }
 
     /**
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
-    public AsyncBaseClientBuilder maxRetries(int maxRetries) {
+    public T maxRetries(int maxRetries) {
         this.maxRetries = Optional.of(maxRetries);
-        return this;
+        return (T) this;
     }
 
     /**
      * Sets the underlying OkHttp client
      */
-    public AsyncBaseClientBuilder httpClient(OkHttpClient httpClient) {
+    public T httpClient(OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        return this;
+        return (T) this;
     }
 
     /**
@@ -101,14 +101,14 @@ public class AsyncBaseClientBuilder {
      * @param value The header value
      * @return This builder for method chaining
      */
-    public AsyncBaseClientBuilder addHeader(String name, String value) {
+    public T addHeader(String name, String value) {
         this.customHeaders.put(name, value);
-        return this;
+        return (T) this;
     }
 
-    public AsyncBaseClientBuilder projectId(String projectId) {
+    public T projectId(String projectId) {
         this.projectId = projectId;
-        return this;
+        return (T) this;
     }
 
     protected ClientOptions buildClientOptions() {
