@@ -112,6 +112,10 @@ public class RawTokensClient {
                 .addPathSegment(ctok)
                 .addPathSegments("validate");
         QueryStringMapper.addQueryParameter(httpUrl, "app_id", request.getAppId(), false);
+        if (request.getAccountId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "account_id", request.getAccountId().get(), false);
+        }
         if (request.getOauthAppId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "oauth_app_id", request.getOauthAppId().get(), false);
