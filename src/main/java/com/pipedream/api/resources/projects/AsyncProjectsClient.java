@@ -41,6 +41,13 @@ public class AsyncProjectsClient {
     /**
      * List the projects that are available to the authenticated Connect client
      */
+    public CompletableFuture<SyncPagingIterable<Project>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * List the projects that are available to the authenticated Connect client
+     */
     public CompletableFuture<SyncPagingIterable<Project>> list(ProjectsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
@@ -100,6 +107,13 @@ public class AsyncProjectsClient {
      */
     public CompletableFuture<Project> update(String projectId) {
         return this.rawClient.update(projectId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Update project details or application information
+     */
+    public CompletableFuture<Project> update(String projectId, RequestOptions requestOptions) {
+        return this.rawClient.update(projectId, requestOptions).thenApply(response -> response.body());
     }
 
     /**

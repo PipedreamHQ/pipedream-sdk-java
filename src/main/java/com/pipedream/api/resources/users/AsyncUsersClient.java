@@ -51,6 +51,13 @@ public class AsyncUsersClient {
     /**
      * Retrieve all external users for the project
      */
+    public CompletableFuture<SyncPagingIterable<ExternalUser>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
     public CompletableFuture<SyncPagingIterable<ExternalUser>> list(UsersListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }

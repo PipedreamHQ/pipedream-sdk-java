@@ -86,11 +86,9 @@ public class AsyncRawUsersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
@@ -110,6 +108,14 @@ public class AsyncRawUsersClient {
      */
     public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<ExternalUser>>> list() {
         return list(UsersListRequest.builder().build());
+    }
+
+    /**
+     * Retrieve all external users for the project
+     */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<ExternalUser>>> list(
+            RequestOptions requestOptions) {
+        return list(UsersListRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -159,9 +165,10 @@ public class AsyncRawUsersClient {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         GetUsersResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetUsersResponse.class);
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetUsersResponse.class);
                         Optional<String> startingAfter =
                                 parsedResponse.getPageInfo().getEndCursor();
                         UsersListRequest nextRequest = UsersListRequest.builder()
@@ -183,7 +190,6 @@ public class AsyncRawUsersClient {
                                 response));
                         return;
                     }
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
@@ -193,11 +199,9 @@ public class AsyncRawUsersClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));

@@ -50,7 +50,8 @@ public class AsyncRawFileStashClient {
                 .newBuilder()
                 .addPathSegments("v1/connect")
                 .addPathSegment(clientOptions.projectId())
-                .addPathSegments("file_stash/download");
+                .addPathSegments("file_stash")
+                .addPathSegments("download");
         QueryStringMapper.addQueryParameter(httpUrl, "s3_key", request.getS3Key(), false);
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
@@ -82,11 +83,9 @@ public class AsyncRawFileStashClient {
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
                     }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
                     future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(),
-                            response.code(),
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                            response));
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
                     return;
                 } catch (IOException e) {
                     future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
