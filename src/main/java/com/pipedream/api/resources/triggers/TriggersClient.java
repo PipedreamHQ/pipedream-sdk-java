@@ -43,6 +43,13 @@ public class TriggersClient {
     /**
      * Retrieve available triggers with optional search and app filtering
      */
+    public SyncPagingIterable<Component> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(TriggersListRequest request) {
         return this.rawClient.list(request).body();
     }
@@ -59,6 +66,13 @@ public class TriggersClient {
      */
     public Component retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).body();
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public Component retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
     /**

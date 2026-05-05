@@ -15,6 +15,16 @@ public class PipedreamClient extends BaseClient {
         this.workflowsClient = Suppliers.memoize(() -> new WorkflowsClient(clientOptions));
     }
 
+    /**
+     * Creates a builder pre-populated from the standard Pipedream environment variables
+     * (PIPEDREAM_BASE_URL, PIPEDREAM_CLIENT_ID, PIPEDREAM_CLIENT_SECRET,
+     * PIPEDREAM_PROJECT_ENVIRONMENT, PIPEDREAM_PROJECT_ID).
+     *
+     * <p>For OAuth client credentials, the env-var defaults can be overridden via
+     * {@code .clientId(...)} / {@code .clientSecret(...)} and progressive scopes set with
+     * {@code .scope(...)}. For pre-generated access tokens, use {@code .token(...)} to bypass
+     * the OAuth flow entirely.
+     */
     public static PipedreamClientBuilder builder() {
         String baseUrl = System.getenv("PIPEDREAM_BASE_URL") != null
                 ? System.getenv("PIPEDREAM_BASE_URL")

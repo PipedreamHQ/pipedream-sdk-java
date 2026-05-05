@@ -44,6 +44,13 @@ public class AsyncActionsClient {
     /**
      * Retrieve available actions with optional search and app filtering
      */
+    public CompletableFuture<SyncPagingIterable<Component>> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public CompletableFuture<SyncPagingIterable<Component>> list(ActionsListRequest request) {
         return this.rawClient.list(request).thenApply(response -> response.body());
     }
@@ -61,6 +68,13 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<Component> retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
+    public CompletableFuture<Component> retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).thenApply(response -> response.body());
     }
 
     /**

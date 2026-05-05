@@ -43,6 +43,13 @@ public class ActionsClient {
     /**
      * Retrieve available actions with optional search and app filtering
      */
+    public SyncPagingIterable<Component> list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Retrieve available actions with optional search and app filtering
+     */
     public SyncPagingIterable<Component> list(ActionsListRequest request) {
         return this.rawClient.list(request).body();
     }
@@ -59,6 +66,13 @@ public class ActionsClient {
      */
     public Component retrieve(String componentId) {
         return this.rawClient.retrieve(componentId).body();
+    }
+
+    /**
+     * Get detailed configuration for a specific action by its key
+     */
+    public Component retrieve(String componentId, RequestOptions requestOptions) {
+        return this.rawClient.retrieve(componentId, requestOptions).body();
     }
 
     /**
