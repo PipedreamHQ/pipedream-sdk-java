@@ -21,7 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscord.Builder.class)
-public final class ConfigurablePropDiscord implements IConfigurablePropBase {
+public final class ConfigurablePropDiscord {
+    private final ConfigurablePropDiscordType type;
+
     private final String name;
 
     private final Optional<String> label;
@@ -47,6 +49,7 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDiscord(
+            ConfigurablePropDiscordType type,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -59,6 +62,7 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
+        this.type = type;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -73,11 +77,15 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
         this.additionalProperties = additionalProperties;
     }
 
+    @JsonProperty("type")
+    public ConfigurablePropDiscordType getType() {
+        return type;
+    }
+
     /**
      * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
      */
     @JsonProperty("name")
-    @java.lang.Override
     public String getName() {
         return name;
     }
@@ -86,7 +94,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
      */
     @JsonProperty("label")
-    @java.lang.Override
     public Optional<String> getLabel() {
         return label;
     }
@@ -95,7 +102,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return A description of the prop, shown to the user when configuring the component.
      */
     @JsonProperty("description")
-    @java.lang.Override
     public Optional<String> getDescription() {
         return description;
     }
@@ -104,7 +110,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, this prop does not need to be specified.
      */
     @JsonProperty("optional")
-    @java.lang.Override
     public Optional<Boolean> getOptional() {
         return optional;
     }
@@ -113,7 +118,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, this prop will be ignored.
      */
     @JsonProperty("disabled")
-    @java.lang.Override
     public Optional<Boolean> getDisabled() {
         return disabled;
     }
@@ -122,7 +126,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
      */
     @JsonProperty("readOnly")
-    @java.lang.Override
     public Optional<Boolean> getReadOnly() {
         return readOnly;
     }
@@ -131,7 +134,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, should not expose this prop to the user
      */
     @JsonProperty("hidden")
-    @java.lang.Override
     public Optional<Boolean> getHidden() {
         return hidden;
     }
@@ -140,7 +142,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
      */
     @JsonProperty("remoteOptions")
-    @java.lang.Override
     public Optional<Boolean> getRemoteOptions() {
         return remoteOptions;
     }
@@ -149,7 +150,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
      */
     @JsonProperty("useQuery")
-    @java.lang.Override
     public Optional<Boolean> getUseQuery() {
         return useQuery;
     }
@@ -158,7 +158,6 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
     @JsonProperty("reloadProps")
-    @java.lang.Override
     public Optional<Boolean> getReloadProps() {
         return reloadProps;
     }
@@ -167,14 +166,8 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
      * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
      */
     @JsonProperty("withLabel")
-    @java.lang.Override
     public Optional<Boolean> getWithLabel() {
         return withLabel;
-    }
-
-    @JsonProperty("type")
-    public String getType() {
-        return "$.discord.channel";
     }
 
     @java.lang.Override
@@ -189,7 +182,8 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
     }
 
     private boolean equalTo(ConfigurablePropDiscord other) {
-        return name.equals(other.name)
+        return type.equals(other.type)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -205,6 +199,7 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.type,
                 this.name,
                 this.label,
                 this.description,
@@ -223,8 +218,14 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameStage builder() {
+    public static TypeStage builder() {
         return new Builder();
+    }
+
+    public interface TypeStage {
+        NameStage type(@NotNull ConfigurablePropDiscordType type);
+
+        Builder from(ConfigurablePropDiscord other);
     }
 
     public interface NameStage {
@@ -232,12 +233,14 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
         _FinalStage name(@NotNull String name);
-
-        Builder from(ConfigurablePropDiscord other);
     }
 
     public interface _FinalStage {
         ConfigurablePropDiscord build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -311,7 +314,9 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements TypeStage, NameStage, _FinalStage {
+        private ConfigurablePropDiscordType type;
+
         private String name;
 
         private Optional<Boolean> withLabel = Optional.empty();
@@ -341,6 +346,7 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
 
         @java.lang.Override
         public Builder from(ConfigurablePropDiscord other) {
+            type(other.getType());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -352,6 +358,13 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public NameStage type(@NotNull ConfigurablePropDiscordType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -571,6 +584,7 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
         @java.lang.Override
         public ConfigurablePropDiscord build() {
             return new ConfigurablePropDiscord(
+                    type,
                     name,
                     label,
                     description,
@@ -583,6 +597,18 @@ public final class ConfigurablePropDiscord implements IConfigurablePropBase {
                     reloadProps,
                     withLabel,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

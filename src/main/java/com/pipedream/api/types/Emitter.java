@@ -82,6 +82,22 @@ public final class Emitter {
         return Optional.empty();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        return other instanceof Emitter && value.equals(((Emitter) other).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
     @JsonValue
     private Value getValue() {
         return this.value;
@@ -112,6 +128,7 @@ public final class Emitter {
     @JsonIgnoreProperties("type")
     private static final class DeployedComponentValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private DeployedComponent value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -151,6 +168,7 @@ public final class Emitter {
     @JsonIgnoreProperties("type")
     private static final class HttpInterfaceValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private HttpInterface value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -190,6 +208,7 @@ public final class Emitter {
     @JsonIgnoreProperties("type")
     private static final class TimerInterfaceValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private TimerInterface value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

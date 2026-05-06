@@ -160,6 +160,10 @@ public final class HttpInterface {
 
     public interface _FinalStage {
         HttpInterface build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -259,6 +263,18 @@ public final class HttpInterface {
         @java.lang.Override
         public HttpInterface build() {
             return new HttpInterface(id, key, endpointUrl, customResponse, createdAt, updatedAt, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

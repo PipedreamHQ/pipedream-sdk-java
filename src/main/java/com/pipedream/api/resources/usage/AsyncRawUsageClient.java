@@ -51,6 +51,11 @@ public class AsyncRawUsageClient {
                 .addPathSegments("v1/connect/usage");
         QueryStringMapper.addQueryParameter(httpUrl, "start_ts", request.getStartTs(), false);
         QueryStringMapper.addQueryParameter(httpUrl, "end_ts", request.getEndTs(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)

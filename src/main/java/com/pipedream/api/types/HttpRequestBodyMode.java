@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public final class HttpRequestBodyMode {
-    public static final HttpRequestBodyMode RAW = new HttpRequestBodyMode(Value.RAW, "raw");
-
     public static final HttpRequestBodyMode FIELDS = new HttpRequestBodyMode(Value.FIELDS, "fields");
+
+    public static final HttpRequestBodyMode RAW = new HttpRequestBodyMode(Value.RAW, "raw");
 
     private final Value value;
 
@@ -43,10 +43,10 @@ public final class HttpRequestBodyMode {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case RAW:
-                return visitor.visitRaw();
             case FIELDS:
                 return visitor.visitFields();
+            case RAW:
+                return visitor.visitRaw();
             case UNKNOWN:
             default:
                 return visitor.visitUnknown(string);
@@ -56,10 +56,10 @@ public final class HttpRequestBodyMode {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static HttpRequestBodyMode valueOf(String value) {
         switch (value) {
-            case "raw":
-                return RAW;
             case "fields":
                 return FIELDS;
+            case "raw":
+                return RAW;
             default:
                 return new HttpRequestBodyMode(Value.UNKNOWN, value);
         }

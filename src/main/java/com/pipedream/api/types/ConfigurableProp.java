@@ -382,6 +382,22 @@ public final class ConfigurableProp {
         return Optional.empty();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        return other instanceof ConfigurableProp && value.equals(((ConfigurableProp) other).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
     @JsonValue
     private Value getValue() {
         return this.value;
@@ -472,6 +488,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AlertValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAlert value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -511,6 +528,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AnyValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAny value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -550,6 +568,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AppValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropApp value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -589,6 +608,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class BooleanValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropBoolean value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -628,6 +648,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class DataStoreValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropDataStore value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -667,6 +688,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class DirValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropDir value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -706,6 +728,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class InterfaceTimerValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropTimer value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -745,6 +768,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class InterfaceApphookValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropApphook value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -784,6 +808,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class IntegerArrayValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropIntegerArray value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -823,6 +848,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class InterfaceHttpValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropHttp value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -862,6 +888,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class HttpRequestValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropHttpRequest value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -901,6 +928,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class ServiceDbValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropDb value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -940,6 +968,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class SqlValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropSql value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -979,6 +1008,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AirtableBaseIdValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAirtableBaseId value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1018,6 +1048,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AirtableTableIdValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAirtableTableId value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1057,6 +1088,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AirtableViewIdValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAirtableViewId value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1096,6 +1128,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class AirtableFieldIdValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropAirtableFieldId value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1135,6 +1168,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class DiscordChannelValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropDiscordChannel value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1174,6 +1208,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class DiscordChannelArrayValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropDiscordChannelArray value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1213,6 +1248,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class IntegerValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropInteger value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1252,6 +1288,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class ObjectValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropObject value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1291,6 +1328,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class StringValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropString value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -1330,6 +1368,7 @@ public final class ConfigurableProp {
     @JsonIgnoreProperties("type")
     private static final class StringArrayValue implements Value {
         @JsonUnwrapped
+        @JsonIgnoreProperties(value = "type", allowSetters = true)
         private ConfigurablePropStringArray value;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

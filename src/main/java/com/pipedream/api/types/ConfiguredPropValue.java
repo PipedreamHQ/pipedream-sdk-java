@@ -35,7 +35,7 @@ public final class ConfiguredPropValue {
     @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
-            return visitor.visit((Object) this.value);
+            return visitor.visit((ConfiguredPropValueAny) this.value);
         } else if (this.type == 1) {
             return visitor.visit((ConfiguredPropValueApp) this.value);
         } else if (this.type == 2) {
@@ -74,7 +74,7 @@ public final class ConfiguredPropValue {
         return this.value.toString();
     }
 
-    public static ConfiguredPropValue of(Object value) {
+    public static ConfiguredPropValue of(ConfiguredPropValueAny value) {
         return new ConfiguredPropValue(value, 0);
     }
 
@@ -107,7 +107,7 @@ public final class ConfiguredPropValue {
     }
 
     public interface Visitor<T> {
-        T visit(Object value);
+        T visit(ConfiguredPropValueAny value);
 
         T visit(ConfiguredPropValueApp value);
 
@@ -132,14 +132,6 @@ public final class ConfiguredPropValue {
         @java.lang.Override
         public ConfiguredPropValue deserialize(JsonParser p, DeserializationContext context) throws IOException {
             Object value = p.readValueAs(Object.class);
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, Object.class));
-            } catch (RuntimeException e) {
-            }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueApp.class));
-            } catch (RuntimeException e) {
-            }
             if (value instanceof Boolean) {
                 return of((Boolean) value);
             }
@@ -147,12 +139,28 @@ public final class ConfiguredPropValue {
                 return of((Double) value);
             }
             try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueAny.class));
+            } catch (RuntimeException e) {
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("authProvisionId")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueApp.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Map<String, Object>>() {}));
             } catch (RuntimeException e) {
             }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueSql.class));
-            } catch (RuntimeException e) {
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("value")
+                    && ((Map<?, ?>) value).containsKey("query")
+                    && ((Map<?, ?>) value).containsKey("params")
+                    && ((Map<?, ?>) value).containsKey("usePreparedStatements")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueSql.class));
+                } catch (RuntimeException e) {
+                }
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));

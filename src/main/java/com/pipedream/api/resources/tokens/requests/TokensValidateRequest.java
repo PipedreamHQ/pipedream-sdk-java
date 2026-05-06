@@ -5,9 +5,9 @@ package com.pipedream.api.resources.tokens.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -43,7 +43,7 @@ public final class TokensValidateRequest {
     /**
      * @return The app ID to validate against
      */
-    @JsonProperty("app_id")
+    @JsonIgnore
     public String getAppId() {
         return appId;
     }
@@ -51,7 +51,7 @@ public final class TokensValidateRequest {
     /**
      * @return An existing account ID to reconnect. Must belong to the app identified by app_id.
      */
-    @JsonProperty("account_id")
+    @JsonIgnore
     public Optional<String> getAccountId() {
         return accountId;
     }
@@ -59,7 +59,7 @@ public final class TokensValidateRequest {
     /**
      * @return The OAuth app ID to validate against (if the token is for an OAuth app)
      */
-    @JsonProperty("oauth_app_id")
+    @JsonIgnore
     public Optional<String> getOauthAppId() {
         return oauthAppId;
     }
@@ -104,6 +104,10 @@ public final class TokensValidateRequest {
 
     public interface _FinalStage {
         TokensValidateRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
@@ -196,6 +200,18 @@ public final class TokensValidateRequest {
         @java.lang.Override
         public TokensValidateRequest build() {
             return new TokensValidateRequest(appId, accountId, oauthAppId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

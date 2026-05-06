@@ -5,9 +5,9 @@ package com.pipedream.api.resources.triggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -55,7 +55,7 @@ public final class TriggersListRequest {
     /**
      * @return The cursor to start from for pagination
      */
-    @JsonProperty("after")
+    @JsonIgnore
     public Optional<String> getAfter() {
         return after;
     }
@@ -63,7 +63,7 @@ public final class TriggersListRequest {
     /**
      * @return The cursor to end before for pagination
      */
-    @JsonProperty("before")
+    @JsonIgnore
     public Optional<String> getBefore() {
         return before;
     }
@@ -71,7 +71,7 @@ public final class TriggersListRequest {
     /**
      * @return The maximum number of results to return
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -79,7 +79,7 @@ public final class TriggersListRequest {
     /**
      * @return A search query to filter the triggers
      */
-    @JsonProperty("q")
+    @JsonIgnore
     public Optional<String> getQ() {
         return q;
     }
@@ -87,7 +87,7 @@ public final class TriggersListRequest {
     /**
      * @return The ID or name slug of the app to filter the triggers
      */
-    @JsonProperty("app")
+    @JsonIgnore
     public Optional<String> getApp() {
         return app;
     }
@@ -95,7 +95,7 @@ public final class TriggersListRequest {
     /**
      * @return The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')
      */
-    @JsonProperty("registry")
+    @JsonIgnore
     public Optional<TriggersListRequestRegistry> getRegistry() {
         return registry;
     }
@@ -249,6 +249,16 @@ public final class TriggersListRequest {
 
         public TriggersListRequest build() {
             return new TriggersListRequest(after, before, limit, q, app, registry, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,9 +5,9 @@ package com.pipedream.api.resources.apps.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -74,7 +74,7 @@ public final class AppsListRequest {
     /**
      * @return Only return apps in these categories
      */
-    @JsonProperty("category_ids")
+    @JsonIgnore
     public Optional<List<String>> getCategoryIds() {
         return categoryIds;
     }
@@ -82,7 +82,7 @@ public final class AppsListRequest {
     /**
      * @return The cursor to start from for pagination
      */
-    @JsonProperty("after")
+    @JsonIgnore
     public Optional<String> getAfter() {
         return after;
     }
@@ -90,7 +90,7 @@ public final class AppsListRequest {
     /**
      * @return The cursor to end before for pagination
      */
-    @JsonProperty("before")
+    @JsonIgnore
     public Optional<String> getBefore() {
         return before;
     }
@@ -98,7 +98,7 @@ public final class AppsListRequest {
     /**
      * @return The maximum number of results to return
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -106,7 +106,7 @@ public final class AppsListRequest {
     /**
      * @return A search query to filter the apps
      */
-    @JsonProperty("q")
+    @JsonIgnore
     public Optional<String> getQ() {
         return q;
     }
@@ -114,7 +114,7 @@ public final class AppsListRequest {
     /**
      * @return The key to sort the apps by
      */
-    @JsonProperty("sort_key")
+    @JsonIgnore
     public Optional<AppsListRequestSortKey> getSortKey() {
         return sortKey;
     }
@@ -122,7 +122,7 @@ public final class AppsListRequest {
     /**
      * @return The direction to sort the apps
      */
-    @JsonProperty("sort_direction")
+    @JsonIgnore
     public Optional<AppsListRequestSortDirection> getSortDirection() {
         return sortDirection;
     }
@@ -130,7 +130,7 @@ public final class AppsListRequest {
     /**
      * @return Only return apps that have components (actions or triggers)
      */
-    @JsonProperty("has_components")
+    @JsonIgnore
     public Optional<Boolean> getHasComponents() {
         return hasComponents;
     }
@@ -138,7 +138,7 @@ public final class AppsListRequest {
     /**
      * @return Only return apps that have actions
      */
-    @JsonProperty("has_actions")
+    @JsonIgnore
     public Optional<Boolean> getHasActions() {
         return hasActions;
     }
@@ -146,7 +146,7 @@ public final class AppsListRequest {
     /**
      * @return Only return apps that have triggers
      */
-    @JsonProperty("has_triggers")
+    @JsonIgnore
     public Optional<Boolean> getHasTriggers() {
         return hasTriggers;
     }
@@ -398,6 +398,16 @@ public final class AppsListRequest {
                     hasActions,
                     hasTriggers,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

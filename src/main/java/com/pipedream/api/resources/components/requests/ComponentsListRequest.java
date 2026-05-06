@@ -5,9 +5,9 @@ package com.pipedream.api.resources.components.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -60,7 +60,7 @@ public final class ComponentsListRequest {
     /**
      * @return The cursor to start from for pagination
      */
-    @JsonProperty("after")
+    @JsonIgnore
     public Optional<String> getAfter() {
         return after;
     }
@@ -68,7 +68,7 @@ public final class ComponentsListRequest {
     /**
      * @return The cursor to end before for pagination
      */
-    @JsonProperty("before")
+    @JsonIgnore
     public Optional<String> getBefore() {
         return before;
     }
@@ -76,7 +76,7 @@ public final class ComponentsListRequest {
     /**
      * @return The maximum number of results to return
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -84,7 +84,7 @@ public final class ComponentsListRequest {
     /**
      * @return A search query to filter the components
      */
-    @JsonProperty("q")
+    @JsonIgnore
     public Optional<String> getQ() {
         return q;
     }
@@ -92,7 +92,7 @@ public final class ComponentsListRequest {
     /**
      * @return The ID or name slug of the app to filter the components
      */
-    @JsonProperty("app")
+    @JsonIgnore
     public Optional<String> getApp() {
         return app;
     }
@@ -100,7 +100,7 @@ public final class ComponentsListRequest {
     /**
      * @return The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')
      */
-    @JsonProperty("registry")
+    @JsonIgnore
     public Optional<ComponentsListRequestRegistry> getRegistry() {
         return registry;
     }
@@ -108,7 +108,7 @@ public final class ComponentsListRequest {
     /**
      * @return The type of the component to filter the components
      */
-    @JsonProperty("component_type")
+    @JsonIgnore
     public Optional<ComponentType> getComponentType() {
         return componentType;
     }
@@ -281,6 +281,16 @@ public final class ComponentsListRequest {
         public ComponentsListRequest build() {
             return new ComponentsListRequest(
                     after, before, limit, q, app, registry, componentType, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

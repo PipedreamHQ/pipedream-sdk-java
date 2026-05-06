@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropAny implements IConfigurablePropBase {
     private final String name;
 
+    private final ConfigurablePropBaseType type;
+
     private final Optional<String> label;
 
     private final Optional<String> description;
@@ -45,7 +47,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<Object> default_;
+    private final Optional<ConfiguredPropValueAny> default_;
 
     private final Optional<List<ConfigurablePropAnyOptionsItem>> options;
 
@@ -53,6 +55,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
 
     private ConfigurablePropAny(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -63,10 +66,11 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<Object> default_,
+            Optional<ConfiguredPropValueAny> default_,
             Optional<List<ConfigurablePropAnyOptionsItem>> options,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -89,6 +93,11 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
     @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
@@ -182,7 +191,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
     }
 
     @JsonProperty("default")
-    public Optional<Object> getDefault() {
+    public Optional<ConfiguredPropValueAny> getDefault() {
         return default_;
     }
 
@@ -204,6 +213,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
 
     private boolean equalTo(ConfigurablePropAny other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -222,6 +232,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -249,13 +260,21 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        _FinalStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropAny other);
     }
 
+    public interface TypeStage {
+        _FinalStage type(@NotNull ConfigurablePropBaseType type);
+    }
+
     public interface _FinalStage {
         ConfigurablePropAny build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -327,9 +346,9 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
 
         _FinalStage withLabel(Boolean withLabel);
 
-        _FinalStage default_(Optional<Object> default_);
+        _FinalStage default_(Optional<ConfiguredPropValueAny> default_);
 
-        _FinalStage default_(Object default_);
+        _FinalStage default_(ConfiguredPropValueAny default_);
 
         _FinalStage options(Optional<List<ConfigurablePropAnyOptionsItem>> options);
 
@@ -337,12 +356,14 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private Optional<List<ConfigurablePropAnyOptionsItem>> options = Optional.empty();
 
-        private Optional<Object> default_ = Optional.empty();
+        private Optional<ConfiguredPropValueAny> default_ = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -372,6 +393,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
         @java.lang.Override
         public Builder from(ConfigurablePropAny other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -394,8 +416,15 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public _FinalStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -413,14 +442,14 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
         }
 
         @java.lang.Override
-        public _FinalStage default_(Object default_) {
+        public _FinalStage default_(ConfiguredPropValueAny default_) {
             this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<Object> default_) {
+        public _FinalStage default_(Optional<ConfiguredPropValueAny> default_) {
             this.default_ = default_;
             return this;
         }
@@ -630,6 +659,7 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
         public ConfigurablePropAny build() {
             return new ConfigurablePropAny(
                     name,
+                    type,
                     label,
                     description,
                     optional,
@@ -643,6 +673,18 @@ public final class ConfigurablePropAny implements IConfigurablePropBase {
                     default_,
                     options,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

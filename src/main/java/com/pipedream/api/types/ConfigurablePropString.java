@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ConfigurablePropString implements IConfigurablePropBase {
     private final String name;
 
+    private final ConfigurablePropBaseType type;
+
     private final Optional<String> label;
 
     private final Optional<String> description;
@@ -57,6 +59,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
     private ConfigurablePropString(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -73,6 +76,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
             Optional<List<ConfigurablePropStringOptionsItem>> options,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -97,6 +101,11 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
     @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
@@ -225,6 +234,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
 
     private boolean equalTo(ConfigurablePropString other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -245,6 +255,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -274,13 +285,21 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        _FinalStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropString other);
     }
 
+    public interface TypeStage {
+        _FinalStage type(@NotNull ConfigurablePropBaseType type);
+    }
+
     public interface _FinalStage {
         ConfigurablePropString build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -373,8 +392,10 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private Optional<List<ConfigurablePropStringOptionsItem>> options = Optional.empty();
 
@@ -412,6 +433,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         @java.lang.Override
         public Builder from(ConfigurablePropString other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -436,8 +458,15 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public _FinalStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -705,6 +734,7 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
         public ConfigurablePropString build() {
             return new ConfigurablePropString(
                     name,
+                    type,
                     label,
                     description,
                     optional,
@@ -720,6 +750,18 @@ public final class ConfigurablePropString implements IConfigurablePropBase {
                     default_,
                     options,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

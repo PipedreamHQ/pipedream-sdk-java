@@ -5,9 +5,9 @@ package com.pipedream.api.resources.filestash.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
@@ -28,7 +28,7 @@ public final class FileStashDownloadFileRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("s3_key")
+    @JsonIgnore
     public String getS3Key() {
         return s3Key;
     }
@@ -70,6 +70,10 @@ public final class FileStashDownloadFileRequest {
 
     public interface _FinalStage {
         FileStashDownloadFileRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -97,6 +101,18 @@ public final class FileStashDownloadFileRequest {
         @java.lang.Override
         public FileStashDownloadFileRequest build() {
             return new FileStashDownloadFileRequest(s3Key, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

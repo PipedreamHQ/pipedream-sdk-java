@@ -1,13 +1,17 @@
 {
-  "cliVersion": "3.5.0",
+  "cliVersion": "5.17.0",
   "generatorName": "fernapi/fern-java-sdk",
-  "generatorVersion": "3.27.6",
+  "generatorVersion": "4.8.1",
   "generatorConfig": {
     "publish-to": "central",
     "client-class-name": "BaseClient",
     "custom-dependencies": [
       "api org.apache.commons:commons-text:1.13.1"
-    ]
+    ],
+    "retry-status-codes": "legacy"
   },
-  "sdkVersion": "1.2.0"
+  "originGitCommit": "f9376012cfe8a43f54ff328bdc49e2a36e168c0a",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual",
+  "sdkVersion": "1.2.1"
 }

@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public final class AppAuthType {
-    public static final AppAuthType KEYS = new AppAuthType(Value.KEYS, "keys");
-
     public static final AppAuthType OAUTH = new AppAuthType(Value.OAUTH, "oauth");
+
+    public static final AppAuthType KEYS = new AppAuthType(Value.KEYS, "keys");
 
     public static final AppAuthType NONE = new AppAuthType(Value.NONE, "none");
 
@@ -44,10 +44,10 @@ public final class AppAuthType {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case KEYS:
-                return visitor.visitKeys();
             case OAUTH:
                 return visitor.visitOauth();
+            case KEYS:
+                return visitor.visitKeys();
             case NONE:
                 return visitor.visitNone();
             case UNKNOWN:
@@ -59,10 +59,10 @@ public final class AppAuthType {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static AppAuthType valueOf(String value) {
         switch (value) {
-            case "keys":
-                return KEYS;
             case "oauth":
                 return OAUTH;
+            case "keys":
+                return KEYS;
             case "none":
                 return NONE;
             default:

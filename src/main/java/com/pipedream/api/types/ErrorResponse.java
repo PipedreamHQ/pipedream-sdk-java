@@ -105,6 +105,10 @@ public final class ErrorResponse {
     public interface _FinalStage {
         ErrorResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>The error code</p>
          */
@@ -196,6 +200,18 @@ public final class ErrorResponse {
         @java.lang.Override
         public ErrorResponse build() {
             return new ErrorResponse(error, code, details, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

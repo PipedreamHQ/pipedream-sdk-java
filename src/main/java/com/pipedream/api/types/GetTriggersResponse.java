@@ -82,6 +82,10 @@ public final class GetTriggersResponse {
     public interface _FinalStage {
         GetTriggersResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage data(List<Emitter> data);
 
         _FinalStage addData(Emitter data);
@@ -141,6 +145,18 @@ public final class GetTriggersResponse {
         @java.lang.Override
         public GetTriggersResponse build() {
             return new GetTriggersResponse(data, pageInfo, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
