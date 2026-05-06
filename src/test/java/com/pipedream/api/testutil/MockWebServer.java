@@ -63,9 +63,7 @@ public final class MockWebServer {
     private void handle(HttpExchange exchange) throws IOException {
         byte[] requestBody = readAllBytes(exchange.getRequestBody());
         requests.add(new RecordedRequest(
-                exchange.getRequestMethod(),
-                exchange.getRequestURI().toString(),
-                requestBody));
+                exchange.getRequestMethod(), exchange.getRequestURI().toString(), requestBody));
 
         MockResponse response = responses.poll();
         if (response == null) {

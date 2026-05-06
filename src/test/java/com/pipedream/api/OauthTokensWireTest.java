@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.resources.oauthtokens.requests.CreateOAuthTokenOpts;
-import com.pipedream.api.types.CreateOAuthTokenResponse;
 import com.pipedream.api.testutil.MockResponse;
 import com.pipedream.api.testutil.MockWebServer;
 import com.pipedream.api.testutil.RecordedRequest;
+import com.pipedream.api.types.CreateOAuthTokenResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +22,7 @@ public class OauthTokensWireTest {
     public void setup() throws Exception {
         server = new MockWebServer();
         server.start();
-        client = PipedreamClient.builder()
-                .url(server.url("/").toString())
-                .build();
+        client = PipedreamClient.builder().url(server.url("/").toString()).build();
     }
 
     @AfterEach

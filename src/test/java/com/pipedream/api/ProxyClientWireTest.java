@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.pipedream.api.resources.proxy.requests.ProxyGetRequest;
 import com.pipedream.api.resources.proxy.types.ProxyResponse;
+import com.pipedream.api.testutil.MockResponse;
+import com.pipedream.api.testutil.MockWebServer;
+import com.pipedream.api.testutil.RecordedRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +14,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
-import com.pipedream.api.testutil.MockResponse;
-import com.pipedream.api.testutil.MockWebServer;
-import com.pipedream.api.testutil.RecordedRequest;
 import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +35,8 @@ public class ProxyClientWireTest {
         String baseUrl = server.url("/").toString();
         // Explicitly set credentials to null to avoid OAuth token fetching
         // (environment variables might be set, which would trigger network calls)
-        client = PipedreamClient.builder()
-                .url(baseUrl)
-                .projectId("test-project")
-                .build();
+        client =
+                PipedreamClient.builder().url(baseUrl).projectId("test-project").build();
         asyncClient = AsyncPipedreamClient.builder()
                 .url(baseUrl)
                 .projectId("test-project")
