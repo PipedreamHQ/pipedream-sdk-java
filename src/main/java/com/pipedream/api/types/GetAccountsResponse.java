@@ -82,6 +82,10 @@ public final class GetAccountsResponse {
     public interface _FinalStage {
         GetAccountsResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage data(List<Account> data);
 
         _FinalStage addData(Account data);
@@ -141,6 +145,18 @@ public final class GetAccountsResponse {
         @java.lang.Override
         public GetAccountsResponse build() {
             return new GetAccountsResponse(data, pageInfo, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

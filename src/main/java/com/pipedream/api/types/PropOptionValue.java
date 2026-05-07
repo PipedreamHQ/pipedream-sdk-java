@@ -89,15 +89,15 @@ public final class PropOptionValue {
         @java.lang.Override
         public PropOptionValue deserialize(JsonParser p, DeserializationContext context) throws IOException {
             Object value = p.readValueAs(Object.class);
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
-            } catch (RuntimeException e) {
-            }
             if (value instanceof Integer) {
                 return of((Integer) value);
             }
             if (value instanceof Boolean) {
                 return of((Boolean) value);
+            }
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
+            } catch (RuntimeException e) {
             }
             throw new JsonParseException(p, "Failed to deserialize");
         }

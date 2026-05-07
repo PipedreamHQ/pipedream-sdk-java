@@ -22,7 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropSql.Builder.class)
-public final class ConfigurablePropSql implements IConfigurablePropBase {
+public final class ConfigurablePropSql {
+    private final Optional<ConfigurablePropSqlAuth> auth;
+
+    private final Optional<ConfiguredPropValueSql> default_;
+
+    private final Optional<List<ConfigurablePropSqlOptionsItem>> options;
+
     private final String name;
 
     private final Optional<String> label;
@@ -45,15 +51,12 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<ConfigurablePropSqlAuth> auth;
-
-    private final Optional<ConfiguredPropValueSql> default_;
-
-    private final Optional<List<ConfigurablePropSqlOptionsItem>> options;
-
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropSql(
+            Optional<ConfigurablePropSqlAuth> auth,
+            Optional<ConfiguredPropValueSql> default_,
+            Optional<List<ConfigurablePropSqlOptionsItem>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -65,10 +68,10 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<ConfigurablePropSqlAuth> auth,
-            Optional<ConfiguredPropValueSql> default_,
-            Optional<List<ConfigurablePropSqlOptionsItem>> options,
             Map<String, Object> additionalProperties) {
+        this.auth = auth;
+        this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -80,109 +83,12 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
-        this.auth = auth;
-        this.default_ = default_;
-        this.options = options;
         this.additionalProperties = additionalProperties;
     }
 
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    @java.lang.Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    @java.lang.Override
-    public Optional<String> getLabel() {
-        return label;
-    }
-
-    /**
-     * @return A description of the prop, shown to the user when configuring the component.
-     */
-    @JsonProperty("description")
-    @java.lang.Override
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    @java.lang.Override
-    public Optional<Boolean> getOptional() {
-        return optional;
-    }
-
-    /**
-     * @return If true, this prop will be ignored.
-     */
-    @JsonProperty("disabled")
-    @java.lang.Override
-    public Optional<Boolean> getDisabled() {
-        return disabled;
-    }
-
-    /**
-     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
-     */
-    @JsonProperty("readOnly")
-    @java.lang.Override
-    public Optional<Boolean> getReadOnly() {
-        return readOnly;
-    }
-
-    /**
-     * @return If true, should not expose this prop to the user
-     */
-    @JsonProperty("hidden")
-    @java.lang.Override
-    public Optional<Boolean> getHidden() {
-        return hidden;
-    }
-
-    /**
-     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
-     */
-    @JsonProperty("remoteOptions")
-    @java.lang.Override
-    public Optional<Boolean> getRemoteOptions() {
-        return remoteOptions;
-    }
-
-    /**
-     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
-     */
-    @JsonProperty("useQuery")
-    @java.lang.Override
-    public Optional<Boolean> getUseQuery() {
-        return useQuery;
-    }
-
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    @java.lang.Override
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
-    }
-
-    /**
-     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
-     */
-    @JsonProperty("withLabel")
-    @java.lang.Override
-    public Optional<Boolean> getWithLabel() {
-        return withLabel;
+    @JsonProperty("type")
+    public String getType() {
+        return "sql";
     }
 
     @JsonProperty("auth")
@@ -200,6 +106,94 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
         return options;
     }
 
+    /**
+     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
+     */
+    @JsonProperty("label")
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @return A description of the prop, shown to the user when configuring the component.
+     */
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    /**
+     * @return If true, this prop does not need to be specified.
+     */
+    @JsonProperty("optional")
+    public Optional<Boolean> getOptional() {
+        return optional;
+    }
+
+    /**
+     * @return If true, this prop will be ignored.
+     */
+    @JsonProperty("disabled")
+    public Optional<Boolean> getDisabled() {
+        return disabled;
+    }
+
+    /**
+     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
+     */
+    @JsonProperty("readOnly")
+    public Optional<Boolean> getReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * @return If true, should not expose this prop to the user
+     */
+    @JsonProperty("hidden")
+    public Optional<Boolean> getHidden() {
+        return hidden;
+    }
+
+    /**
+     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
+     */
+    @JsonProperty("remoteOptions")
+    public Optional<Boolean> getRemoteOptions() {
+        return remoteOptions;
+    }
+
+    /**
+     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
+     */
+    @JsonProperty("useQuery")
+    public Optional<Boolean> getUseQuery() {
+        return useQuery;
+    }
+
+    /**
+     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
+     */
+    @JsonProperty("reloadProps")
+    public Optional<Boolean> getReloadProps() {
+        return reloadProps;
+    }
+
+    /**
+     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
+     */
+    @JsonProperty("withLabel")
+    public Optional<Boolean> getWithLabel() {
+        return withLabel;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -212,7 +206,10 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
     }
 
     private boolean equalTo(ConfigurablePropSql other) {
-        return name.equals(other.name)
+        return auth.equals(other.auth)
+                && default_.equals(other.default_)
+                && options.equals(other.options)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -222,15 +219,15 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel)
-                && auth.equals(other.auth)
-                && default_.equals(other.default_)
-                && options.equals(other.options);
+                && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.auth,
+                this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -241,10 +238,7 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel,
-                this.auth,
-                this.default_,
-                this.options);
+                this.withLabel);
     }
 
     @java.lang.Override
@@ -267,6 +261,22 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
 
     public interface _FinalStage {
         ConfigurablePropSql build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage auth(Optional<ConfigurablePropSqlAuth> auth);
+
+        _FinalStage auth(ConfigurablePropSqlAuth auth);
+
+        _FinalStage default_(Optional<ConfiguredPropValueSql> default_);
+
+        _FinalStage default_(ConfiguredPropValueSql default_);
+
+        _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options);
+
+        _FinalStage options(List<ConfigurablePropSqlOptionsItem> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -337,29 +347,11 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
-
-        _FinalStage auth(Optional<ConfigurablePropSqlAuth> auth);
-
-        _FinalStage auth(ConfigurablePropSqlAuth auth);
-
-        _FinalStage default_(Optional<ConfiguredPropValueSql> default_);
-
-        _FinalStage default_(ConfiguredPropValueSql default_);
-
-        _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options);
-
-        _FinalStage options(List<ConfigurablePropSqlOptionsItem> options);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private Optional<List<ConfigurablePropSqlOptionsItem>> options = Optional.empty();
-
-        private Optional<ConfiguredPropValueSql> default_ = Optional.empty();
-
-        private Optional<ConfigurablePropSqlAuth> auth = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -381,6 +373,12 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<List<ConfigurablePropSqlOptionsItem>> options = Optional.empty();
+
+        private Optional<ConfiguredPropValueSql> default_ = Optional.empty();
+
+        private Optional<ConfigurablePropSqlAuth> auth = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -388,6 +386,9 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
 
         @java.lang.Override
         public Builder from(ConfigurablePropSql other) {
+            auth(other.getAuth());
+            default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -399,9 +400,6 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
-            auth(other.getAuth());
-            default_(other.getDefault());
-            options(other.getOptions());
             return this;
         }
 
@@ -414,45 +412,6 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage options(List<ConfigurablePropSqlOptionsItem> options) {
-            this.options = Optional.ofNullable(options);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options) {
-            this.options = options;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage default_(ConfiguredPropValueSql default_) {
-            this.default_ = Optional.ofNullable(default_);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<ConfiguredPropValueSql> default_) {
-            this.default_ = default_;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage auth(ConfigurablePropSqlAuth auth) {
-            this.auth = Optional.ofNullable(auth);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "auth", nulls = Nulls.SKIP)
-        public _FinalStage auth(Optional<ConfigurablePropSqlAuth> auth) {
-            this.auth = auth;
             return this;
         }
 
@@ -658,8 +617,50 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
         }
 
         @java.lang.Override
+        public _FinalStage options(List<ConfigurablePropSqlOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<ConfigurablePropSqlOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage default_(ConfiguredPropValueSql default_) {
+            this.default_ = Optional.ofNullable(default_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<ConfiguredPropValueSql> default_) {
+            this.default_ = default_;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage auth(ConfigurablePropSqlAuth auth) {
+            this.auth = Optional.ofNullable(auth);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "auth", nulls = Nulls.SKIP)
+        public _FinalStage auth(Optional<ConfigurablePropSqlAuth> auth) {
+            this.auth = auth;
+            return this;
+        }
+
+        @java.lang.Override
         public ConfigurablePropSql build() {
             return new ConfigurablePropSql(
+                    auth,
+                    default_,
+                    options,
                     name,
                     label,
                     description,
@@ -671,10 +672,19 @@ public final class ConfigurablePropSql implements IConfigurablePropBase {
                     useQuery,
                     reloadProps,
                     withLabel,
-                    auth,
-                    default_,
-                    options,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

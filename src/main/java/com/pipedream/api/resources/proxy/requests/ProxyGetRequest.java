@@ -5,9 +5,9 @@ package com.pipedream.api.resources.proxy.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
@@ -34,7 +34,7 @@ public final class ProxyGetRequest {
     /**
      * @return The external user ID for the proxy request
      */
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public String getExternalUserId() {
         return externalUserId;
     }
@@ -42,7 +42,7 @@ public final class ProxyGetRequest {
     /**
      * @return The account ID to use for authentication
      */
-    @JsonProperty("account_id")
+    @JsonIgnore
     public String getAccountId() {
         return accountId;
     }
@@ -94,6 +94,10 @@ public final class ProxyGetRequest {
 
     public interface _FinalStage {
         ProxyGetRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -141,6 +145,18 @@ public final class ProxyGetRequest {
         @java.lang.Override
         public ProxyGetRequest build() {
             return new ProxyGetRequest(externalUserId, accountId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,9 +5,9 @@ package com.pipedream.api.resources.deployedtriggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -52,7 +52,7 @@ public final class DeployedTriggersListRequest {
     /**
      * @return The cursor to start from for pagination
      */
-    @JsonProperty("after")
+    @JsonIgnore
     public Optional<String> getAfter() {
         return after;
     }
@@ -60,7 +60,7 @@ public final class DeployedTriggersListRequest {
     /**
      * @return The cursor to end before for pagination
      */
-    @JsonProperty("before")
+    @JsonIgnore
     public Optional<String> getBefore() {
         return before;
     }
@@ -68,7 +68,7 @@ public final class DeployedTriggersListRequest {
     /**
      * @return The maximum number of results to return
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -76,7 +76,7 @@ public final class DeployedTriggersListRequest {
     /**
      * @return Your end user ID, for whom you deployed the trigger
      */
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public String getExternalUserId() {
         return externalUserId;
     }
@@ -84,7 +84,7 @@ public final class DeployedTriggersListRequest {
     /**
      * @return Filter deployed triggers by emitter type (defaults to 'source' if not provided)
      */
-    @JsonProperty("emitter_type")
+    @JsonIgnore
     public Optional<EmitterType> getEmitterType() {
         return emitterType;
     }
@@ -133,6 +133,10 @@ public final class DeployedTriggersListRequest {
 
     public interface _FinalStage {
         DeployedTriggersListRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>The cursor to start from for pagination</p>
@@ -286,6 +290,18 @@ public final class DeployedTriggersListRequest {
         public DeployedTriggersListRequest build() {
             return new DeployedTriggersListRequest(
                     after, before, limit, externalUserId, emitterType, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

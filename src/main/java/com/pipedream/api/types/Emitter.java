@@ -3,261 +3,133 @@
  */
 package com.pipedream.api.types;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.pipedream.api.core.ObjectMappers;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
+@JsonDeserialize(using = Emitter.Deserializer.class)
 public final class Emitter {
-    private final Value value;
+    private final Object value;
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    private Emitter(Value value) {
+    private final int type;
+
+    private Emitter(Object value, int type) {
         this.value = value;
-    }
-
-    public <T> T visit(Visitor<T> visitor) {
-        return value.visit(visitor);
-    }
-
-    public static Emitter deployedComponent(DeployedComponent value) {
-        return new Emitter(new DeployedComponentValue(value));
-    }
-
-    public static Emitter httpInterface(HttpInterface value) {
-        return new Emitter(new HttpInterfaceValue(value));
-    }
-
-    public static Emitter timerInterface(TimerInterface value) {
-        return new Emitter(new TimerInterfaceValue(value));
-    }
-
-    public boolean isDeployedComponent() {
-        return value instanceof DeployedComponentValue;
-    }
-
-    public boolean isHttpInterface() {
-        return value instanceof HttpInterfaceValue;
-    }
-
-    public boolean isTimerInterface() {
-        return value instanceof TimerInterfaceValue;
-    }
-
-    public boolean _isUnknown() {
-        return value instanceof _UnknownValue;
-    }
-
-    public Optional<DeployedComponent> getDeployedComponent() {
-        if (isDeployedComponent()) {
-            return Optional.of(((DeployedComponentValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<HttpInterface> getHttpInterface() {
-        if (isHttpInterface()) {
-            return Optional.of(((HttpInterfaceValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<TimerInterface> getTimerInterface() {
-        if (isTimerInterface()) {
-            return Optional.of(((TimerInterfaceValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Object> _getUnknown() {
-        if (_isUnknown()) {
-            return Optional.of(((_UnknownValue) value).value);
-        }
-        return Optional.empty();
+        this.type = type;
     }
 
     @JsonValue
-    private Value getValue() {
+    public Object get() {
         return this.value;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T visit(Visitor<T> visitor) {
+        if (this.type == 0) {
+            return visitor.visit((DeployedComponent) this.value);
+        } else if (this.type == 1) {
+            return visitor.visit((HttpInterface) this.value);
+        } else if (this.type == 2) {
+            return visitor.visit((TimerInterface) this.value);
+        }
+        throw new IllegalStateException("Failed to visit value. This should never happen.");
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        return other instanceof Emitter && equalTo((Emitter) other);
+    }
+
+    private boolean equalTo(Emitter other) {
+        return value.equals(other.value);
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return Objects.hash(this.value);
+    }
+
+    @java.lang.Override
+    public String toString() {
+        return this.value.toString();
+    }
+
+    public static Emitter of(DeployedComponent value) {
+        return new Emitter(value, 0);
+    }
+
+    public static Emitter of(HttpInterface value) {
+        return new Emitter(value, 1);
+    }
+
+    public static Emitter of(TimerInterface value) {
+        return new Emitter(value, 2);
+    }
+
     public interface Visitor<T> {
-        T visitDeployedComponent(DeployedComponent deployedComponent);
+        T visit(DeployedComponent value);
 
-        T visitHttpInterface(HttpInterface httpInterface);
+        T visit(HttpInterface value);
 
-        T visitTimerInterface(TimerInterface timerInterface);
-
-        T _visitUnknown(Object unknownType);
+        T visit(TimerInterface value);
     }
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = _UnknownValue.class)
-    @JsonSubTypes({
-        @JsonSubTypes.Type(DeployedComponentValue.class),
-        @JsonSubTypes.Type(HttpInterfaceValue.class),
-        @JsonSubTypes.Type(TimerInterfaceValue.class)
-    })
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private interface Value {
-        <T> T visit(Visitor<T> visitor);
-    }
-
-    @JsonTypeName("DeployedComponent")
-    @JsonIgnoreProperties("type")
-    private static final class DeployedComponentValue implements Value {
-        @JsonUnwrapped
-        private DeployedComponent value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private DeployedComponentValue() {}
-
-        private DeployedComponentValue(DeployedComponent value) {
-            this.value = value;
+    static final class Deserializer extends StdDeserializer<Emitter> {
+        Deserializer() {
+            super(Emitter.class);
         }
 
         @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitDeployedComponent(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof DeployedComponentValue && equalTo((DeployedComponentValue) other);
-        }
-
-        private boolean equalTo(DeployedComponentValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "Emitter{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("HttpInterface")
-    @JsonIgnoreProperties("type")
-    private static final class HttpInterfaceValue implements Value {
-        @JsonUnwrapped
-        private HttpInterface value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private HttpInterfaceValue() {}
-
-        private HttpInterfaceValue(HttpInterface value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitHttpInterface(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof HttpInterfaceValue && equalTo((HttpInterfaceValue) other);
-        }
-
-        private boolean equalTo(HttpInterfaceValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "Emitter{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("TimerInterface")
-    @JsonIgnoreProperties("type")
-    private static final class TimerInterfaceValue implements Value {
-        @JsonUnwrapped
-        private TimerInterface value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private TimerInterfaceValue() {}
-
-        private TimerInterfaceValue(TimerInterface value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitTimerInterface(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof TimerInterfaceValue && equalTo((TimerInterfaceValue) other);
-        }
-
-        private boolean equalTo(TimerInterfaceValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "Emitter{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonIgnoreProperties("type")
-    private static final class _UnknownValue implements Value {
-        private String type;
-
-        @JsonValue
-        private Object value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private _UnknownValue(@JsonProperty("value") Object value) {}
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor._visitUnknown(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof _UnknownValue && equalTo((_UnknownValue) other);
-        }
-
-        private boolean equalTo(_UnknownValue other) {
-            return type.equals(other.type) && value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.type, this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "Emitter{" + "type: " + type + ", value: " + value + "}";
+        public Emitter deserialize(JsonParser p, DeserializationContext context) throws IOException {
+            Object value = p.readValueAs(Object.class);
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("id")
+                    && ((Map<?, ?>) value).containsKey("owner_id")
+                    && ((Map<?, ?>) value).containsKey("component_id")
+                    && ((Map<?, ?>) value).containsKey("configurable_props")
+                    && ((Map<?, ?>) value).containsKey("configured_props")
+                    && ((Map<?, ?>) value).containsKey("active")
+                    && ((Map<?, ?>) value).containsKey("created_at")
+                    && ((Map<?, ?>) value).containsKey("updated_at")
+                    && ((Map<?, ?>) value).containsKey("name")
+                    && ((Map<?, ?>) value).containsKey("name_slug")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, DeployedComponent.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("id")
+                    && ((Map<?, ?>) value).containsKey("key")
+                    && ((Map<?, ?>) value).containsKey("endpoint_url")
+                    && ((Map<?, ?>) value).containsKey("custom_response")
+                    && ((Map<?, ?>) value).containsKey("created_at")
+                    && ((Map<?, ?>) value).containsKey("updated_at")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, HttpInterface.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("id")
+                    && ((Map<?, ?>) value).containsKey("timezone")
+                    && ((Map<?, ?>) value).containsKey("schedule_changed_at")
+                    && ((Map<?, ?>) value).containsKey("created_at")
+                    && ((Map<?, ?>) value).containsKey("updated_at")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, TimerInterface.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            throw new JsonParseException(p, "Failed to deserialize");
         }
     }
 }

@@ -21,7 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropHttpRequest.Builder.class)
-public final class ConfigurablePropHttpRequest implements IConfigurablePropBase {
+public final class ConfigurablePropHttpRequest {
+    private final Optional<HttpRequestConfig> default_;
+
     private final String name;
 
     private final Optional<String> label;
@@ -44,11 +46,10 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<HttpRequestConfig> default_;
-
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropHttpRequest(
+            Optional<HttpRequestConfig> default_,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -60,8 +61,8 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<HttpRequestConfig> default_,
             Map<String, Object> additionalProperties) {
+        this.default_ = default_;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -73,15 +74,23 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
-        this.default_ = default_;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("type")
+    public String getType() {
+        return "http_request";
+    }
+
+    @JsonProperty("default")
+    public Optional<HttpRequestConfig> getDefault() {
+        return default_;
     }
 
     /**
      * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
      */
     @JsonProperty("name")
-    @java.lang.Override
     public String getName() {
         return name;
     }
@@ -90,7 +99,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
      */
     @JsonProperty("label")
-    @java.lang.Override
     public Optional<String> getLabel() {
         return label;
     }
@@ -99,7 +107,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return A description of the prop, shown to the user when configuring the component.
      */
     @JsonProperty("description")
-    @java.lang.Override
     public Optional<String> getDescription() {
         return description;
     }
@@ -108,7 +115,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, this prop does not need to be specified.
      */
     @JsonProperty("optional")
-    @java.lang.Override
     public Optional<Boolean> getOptional() {
         return optional;
     }
@@ -117,7 +123,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, this prop will be ignored.
      */
     @JsonProperty("disabled")
-    @java.lang.Override
     public Optional<Boolean> getDisabled() {
         return disabled;
     }
@@ -126,7 +131,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
      */
     @JsonProperty("readOnly")
-    @java.lang.Override
     public Optional<Boolean> getReadOnly() {
         return readOnly;
     }
@@ -135,7 +139,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, should not expose this prop to the user
      */
     @JsonProperty("hidden")
-    @java.lang.Override
     public Optional<Boolean> getHidden() {
         return hidden;
     }
@@ -144,7 +147,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
      */
     @JsonProperty("remoteOptions")
-    @java.lang.Override
     public Optional<Boolean> getRemoteOptions() {
         return remoteOptions;
     }
@@ -153,7 +155,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
      */
     @JsonProperty("useQuery")
-    @java.lang.Override
     public Optional<Boolean> getUseQuery() {
         return useQuery;
     }
@@ -162,7 +163,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
     @JsonProperty("reloadProps")
-    @java.lang.Override
     public Optional<Boolean> getReloadProps() {
         return reloadProps;
     }
@@ -171,14 +171,8 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
      * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
      */
     @JsonProperty("withLabel")
-    @java.lang.Override
     public Optional<Boolean> getWithLabel() {
         return withLabel;
-    }
-
-    @JsonProperty("default")
-    public Optional<HttpRequestConfig> getDefault() {
-        return default_;
     }
 
     @java.lang.Override
@@ -193,7 +187,8 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
     }
 
     private boolean equalTo(ConfigurablePropHttpRequest other) {
-        return name.equals(other.name)
+        return default_.equals(other.default_)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -203,13 +198,13 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel)
-                && default_.equals(other.default_);
+                && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.default_,
                 this.name,
                 this.label,
                 this.description,
@@ -220,8 +215,7 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel,
-                this.default_);
+                this.withLabel);
     }
 
     @java.lang.Override
@@ -244,6 +238,14 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
 
     public interface _FinalStage {
         ConfigurablePropHttpRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage default_(Optional<HttpRequestConfig> default_);
+
+        _FinalStage default_(HttpRequestConfig default_);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -314,17 +316,11 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
-
-        _FinalStage default_(Optional<HttpRequestConfig> default_);
-
-        _FinalStage default_(HttpRequestConfig default_);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private Optional<HttpRequestConfig> default_ = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -346,6 +342,8 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<HttpRequestConfig> default_ = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -353,6 +351,7 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
 
         @java.lang.Override
         public Builder from(ConfigurablePropHttpRequest other) {
+            default_(other.getDefault());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -364,7 +363,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
-            default_(other.getDefault());
             return this;
         }
 
@@ -377,19 +375,6 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage default_(HttpRequestConfig default_) {
-            this.default_ = Optional.ofNullable(default_);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<HttpRequestConfig> default_) {
-            this.default_ = default_;
             return this;
         }
 
@@ -595,8 +580,22 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
         }
 
         @java.lang.Override
+        public _FinalStage default_(HttpRequestConfig default_) {
+            this.default_ = Optional.ofNullable(default_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<HttpRequestConfig> default_) {
+            this.default_ = default_;
+            return this;
+        }
+
+        @java.lang.Override
         public ConfigurablePropHttpRequest build() {
             return new ConfigurablePropHttpRequest(
+                    default_,
                     name,
                     label,
                     description,
@@ -608,8 +607,19 @@ public final class ConfigurablePropHttpRequest implements IConfigurablePropBase 
                     useQuery,
                     reloadProps,
                     withLabel,
-                    default_,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

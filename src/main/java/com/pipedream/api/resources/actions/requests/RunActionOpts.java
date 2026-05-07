@@ -150,6 +150,10 @@ public final class RunActionOpts {
     public interface _FinalStage {
         RunActionOpts build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
          */
@@ -297,6 +301,18 @@ public final class RunActionOpts {
         public RunActionOpts build() {
             return new RunActionOpts(
                     id, version, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

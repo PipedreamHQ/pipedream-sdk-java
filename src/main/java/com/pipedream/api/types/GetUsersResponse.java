@@ -82,6 +82,10 @@ public final class GetUsersResponse {
     public interface _FinalStage {
         GetUsersResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage data(List<ExternalUser> data);
 
         _FinalStage addData(ExternalUser data);
@@ -141,6 +145,18 @@ public final class GetUsersResponse {
         @java.lang.Override
         public GetUsersResponse build() {
             return new GetUsersResponse(data, pageInfo, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

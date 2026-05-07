@@ -5,9 +5,9 @@ package com.pipedream.api.resources.accounts.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -55,7 +55,7 @@ public final class AccountsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public Optional<String> getExternalUserId() {
         return externalUserId;
     }
@@ -63,7 +63,7 @@ public final class AccountsListRequest {
     /**
      * @return The OAuth app ID to filter by, if applicable
      */
-    @JsonProperty("oauth_app_id")
+    @JsonIgnore
     public Optional<String> getOauthAppId() {
         return oauthAppId;
     }
@@ -71,7 +71,7 @@ public final class AccountsListRequest {
     /**
      * @return The cursor to start from for pagination
      */
-    @JsonProperty("after")
+    @JsonIgnore
     public Optional<String> getAfter() {
         return after;
     }
@@ -79,7 +79,7 @@ public final class AccountsListRequest {
     /**
      * @return The cursor to end before for pagination
      */
-    @JsonProperty("before")
+    @JsonIgnore
     public Optional<String> getBefore() {
         return before;
     }
@@ -87,7 +87,7 @@ public final class AccountsListRequest {
     /**
      * @return The maximum number of results to return
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -95,7 +95,7 @@ public final class AccountsListRequest {
     /**
      * @return The app slug or ID to filter accounts by.
      */
-    @JsonProperty("app")
+    @JsonIgnore
     public Optional<String> getApp() {
         return app;
     }
@@ -103,7 +103,7 @@ public final class AccountsListRequest {
     /**
      * @return Whether to retrieve the account's credentials or not
      */
-    @JsonProperty("include_credentials")
+    @JsonIgnore
     public Optional<Boolean> getIncludeCredentials() {
         return includeCredentials;
     }
@@ -280,6 +280,16 @@ public final class AccountsListRequest {
         public AccountsListRequest build() {
             return new AccountsListRequest(
                     externalUserId, oauthAppId, after, before, limit, app, includeCredentials, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

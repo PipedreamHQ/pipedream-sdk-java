@@ -5,6 +5,7 @@ package com.pipedream.api.resources.deployedtriggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,7 +39,7 @@ public final class UpdateTriggerWorkflowsOpts {
     /**
      * @return The external user ID who owns the trigger
      */
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public String getExternalUserId() {
         return externalUserId;
     }
@@ -91,6 +92,10 @@ public final class UpdateTriggerWorkflowsOpts {
 
     public interface _FinalStage {
         UpdateTriggerWorkflowsOpts build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Array of workflow IDs to set</p>
@@ -170,6 +175,18 @@ public final class UpdateTriggerWorkflowsOpts {
         @java.lang.Override
         public UpdateTriggerWorkflowsOpts build() {
             return new UpdateTriggerWorkflowsOpts(externalUserId, workflowIds, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

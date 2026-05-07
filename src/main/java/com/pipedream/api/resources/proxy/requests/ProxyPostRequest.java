@@ -5,6 +5,7 @@ package com.pipedream.api.resources.proxy.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +44,7 @@ public final class ProxyPostRequest {
     /**
      * @return The external user ID for the proxy request
      */
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public String getExternalUserId() {
         return externalUserId;
     }
@@ -51,7 +52,7 @@ public final class ProxyPostRequest {
     /**
      * @return The account ID to use for authentication
      */
-    @JsonProperty("account_id")
+    @JsonIgnore
     public String getAccountId() {
         return accountId;
     }
@@ -113,6 +114,10 @@ public final class ProxyPostRequest {
 
     public interface _FinalStage {
         ProxyPostRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Request body to forward to the target API</p>
@@ -207,6 +212,18 @@ public final class ProxyPostRequest {
         @java.lang.Override
         public ProxyPostRequest build() {
             return new ProxyPostRequest(externalUserId, accountId, body, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

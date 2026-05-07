@@ -91,6 +91,11 @@ public class AsyncRawDeployedTriggersClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "emitter_type", request.getEmitterType().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -177,6 +182,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegments("deployed-triggers")
                 .addPathSegment(triggerId);
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -244,6 +254,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegments("deployed-triggers")
                 .addPathSegment(triggerId);
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -324,6 +339,11 @@ public class AsyncRawDeployedTriggersClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "ignore_hook_errors", request.getIgnoreHookErrors().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("DELETE", null)
@@ -394,6 +414,11 @@ public class AsyncRawDeployedTriggersClient {
         if (request.getN().isPresent()) {
             QueryStringMapper.addQueryParameter(httpUrl, "n", request.getN().get(), false);
         }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -463,6 +488,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("pipelines");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -533,6 +563,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("pipelines");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -611,6 +646,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("webhooks");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -681,6 +721,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(triggerId)
                 .addPathSegments("webhooks");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         RequestBody body;
         try {
             body = RequestBody.create(
@@ -763,6 +808,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegments("webhooks")
                 .addPathSegment(webhookId);
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
@@ -838,6 +888,11 @@ public class AsyncRawDeployedTriggersClient {
                 .addPathSegment(webhookId)
                 .addPathSegments("regenerate_signing_key");
         QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("POST", RequestBody.create("", null))

@@ -5,9 +5,9 @@ package com.pipedream.api.resources.deployedtriggers.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
@@ -31,7 +31,7 @@ public final class DeployedTriggersRetrieveRequest {
     /**
      * @return Your end user ID, for whom you deployed the trigger
      */
-    @JsonProperty("external_user_id")
+    @JsonIgnore
     public String getExternalUserId() {
         return externalUserId;
     }
@@ -76,6 +76,10 @@ public final class DeployedTriggersRetrieveRequest {
 
     public interface _FinalStage {
         DeployedTriggersRetrieveRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -108,6 +112,18 @@ public final class DeployedTriggersRetrieveRequest {
         @java.lang.Override
         public DeployedTriggersRetrieveRequest build() {
             return new DeployedTriggersRetrieveRequest(externalUserId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
