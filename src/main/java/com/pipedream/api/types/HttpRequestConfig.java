@@ -238,5 +238,15 @@ public final class HttpRequestConfig {
         public HttpRequestConfig build() {
             return new HttpRequestConfig(auth, body, headers, params, tab, method, url, additionalProperties);
         }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
+        }
     }
 }

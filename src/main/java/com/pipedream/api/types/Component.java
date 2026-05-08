@@ -187,6 +187,10 @@ public final class Component {
     public interface _FinalStage {
         Component build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage configurableProps(List<ConfigurableProp> configurableProps);
 
         _FinalStage addConfigurableProps(ConfigurableProp configurableProps);
@@ -390,6 +394,18 @@ public final class Component {
                     stash,
                     annotations,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

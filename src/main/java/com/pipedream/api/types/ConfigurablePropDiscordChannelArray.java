@@ -21,7 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDiscordChannelArray.Builder.class)
-public final class ConfigurablePropDiscordChannelArray implements IConfigurablePropBase {
+public final class ConfigurablePropDiscordChannelArray {
+    private final Optional<String> appProp;
+
     private final String name;
 
     private final Optional<String> label;
@@ -44,11 +46,10 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<String> appProp;
-
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDiscordChannelArray(
+            Optional<String> appProp,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -60,8 +61,8 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<String> appProp,
             Map<String, Object> additionalProperties) {
+        this.appProp = appProp;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -73,107 +74,12 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
-        this.appProp = appProp;
         this.additionalProperties = additionalProperties;
     }
 
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    @java.lang.Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    @java.lang.Override
-    public Optional<String> getLabel() {
-        return label;
-    }
-
-    /**
-     * @return A description of the prop, shown to the user when configuring the component.
-     */
-    @JsonProperty("description")
-    @java.lang.Override
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    @java.lang.Override
-    public Optional<Boolean> getOptional() {
-        return optional;
-    }
-
-    /**
-     * @return If true, this prop will be ignored.
-     */
-    @JsonProperty("disabled")
-    @java.lang.Override
-    public Optional<Boolean> getDisabled() {
-        return disabled;
-    }
-
-    /**
-     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
-     */
-    @JsonProperty("readOnly")
-    @java.lang.Override
-    public Optional<Boolean> getReadOnly() {
-        return readOnly;
-    }
-
-    /**
-     * @return If true, should not expose this prop to the user
-     */
-    @JsonProperty("hidden")
-    @java.lang.Override
-    public Optional<Boolean> getHidden() {
-        return hidden;
-    }
-
-    /**
-     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
-     */
-    @JsonProperty("remoteOptions")
-    @java.lang.Override
-    public Optional<Boolean> getRemoteOptions() {
-        return remoteOptions;
-    }
-
-    /**
-     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
-     */
-    @JsonProperty("useQuery")
-    @java.lang.Override
-    public Optional<Boolean> getUseQuery() {
-        return useQuery;
-    }
-
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    @java.lang.Override
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
-    }
-
-    /**
-     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
-     */
-    @JsonProperty("withLabel")
-    @java.lang.Override
-    public Optional<Boolean> getWithLabel() {
-        return withLabel;
+    @JsonProperty("type")
+    public String getType() {
+        return "$.discord.channel[]";
     }
 
     /**
@@ -182,6 +88,94 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
     @JsonProperty("appProp")
     public Optional<String> getAppProp() {
         return appProp;
+    }
+
+    /**
+     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
+     */
+    @JsonProperty("label")
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @return A description of the prop, shown to the user when configuring the component.
+     */
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    /**
+     * @return If true, this prop does not need to be specified.
+     */
+    @JsonProperty("optional")
+    public Optional<Boolean> getOptional() {
+        return optional;
+    }
+
+    /**
+     * @return If true, this prop will be ignored.
+     */
+    @JsonProperty("disabled")
+    public Optional<Boolean> getDisabled() {
+        return disabled;
+    }
+
+    /**
+     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
+     */
+    @JsonProperty("readOnly")
+    public Optional<Boolean> getReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * @return If true, should not expose this prop to the user
+     */
+    @JsonProperty("hidden")
+    public Optional<Boolean> getHidden() {
+        return hidden;
+    }
+
+    /**
+     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
+     */
+    @JsonProperty("remoteOptions")
+    public Optional<Boolean> getRemoteOptions() {
+        return remoteOptions;
+    }
+
+    /**
+     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
+     */
+    @JsonProperty("useQuery")
+    public Optional<Boolean> getUseQuery() {
+        return useQuery;
+    }
+
+    /**
+     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
+     */
+    @JsonProperty("reloadProps")
+    public Optional<Boolean> getReloadProps() {
+        return reloadProps;
+    }
+
+    /**
+     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
+     */
+    @JsonProperty("withLabel")
+    public Optional<Boolean> getWithLabel() {
+        return withLabel;
     }
 
     @java.lang.Override
@@ -197,7 +191,8 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
     }
 
     private boolean equalTo(ConfigurablePropDiscordChannelArray other) {
-        return name.equals(other.name)
+        return appProp.equals(other.appProp)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -207,13 +202,13 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel)
-                && appProp.equals(other.appProp);
+                && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.appProp,
                 this.name,
                 this.label,
                 this.description,
@@ -224,8 +219,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel,
-                this.appProp);
+                this.withLabel);
     }
 
     @java.lang.Override
@@ -248,6 +242,17 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
 
     public interface _FinalStage {
         ConfigurablePropDiscordChannelArray build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>The name of the app prop that provides Discord authentication</p>
+         */
+        _FinalStage appProp(Optional<String> appProp);
+
+        _FinalStage appProp(String appProp);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -318,20 +323,11 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        _FinalStage appProp(Optional<String> appProp);
-
-        _FinalStage appProp(String appProp);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private Optional<String> appProp = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -353,6 +349,8 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<String> appProp = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -360,6 +358,7 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
 
         @java.lang.Override
         public Builder from(ConfigurablePropDiscordChannelArray other) {
+            appProp(other.getAppProp());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -371,7 +370,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
-            appProp(other.getAppProp());
             return this;
         }
 
@@ -384,26 +382,6 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appProp(String appProp) {
-            this.appProp = Optional.ofNullable(appProp);
-            return this;
-        }
-
-        /**
-         * <p>The name of the app prop that provides Discord authentication</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
-        public _FinalStage appProp(Optional<String> appProp) {
-            this.appProp = appProp;
             return this;
         }
 
@@ -608,9 +586,30 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
             return this;
         }
 
+        /**
+         * <p>The name of the app prop that provides Discord authentication</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appProp(String appProp) {
+            this.appProp = Optional.ofNullable(appProp);
+            return this;
+        }
+
+        /**
+         * <p>The name of the app prop that provides Discord authentication</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "appProp", nulls = Nulls.SKIP)
+        public _FinalStage appProp(Optional<String> appProp) {
+            this.appProp = appProp;
+            return this;
+        }
+
         @java.lang.Override
         public ConfigurablePropDiscordChannelArray build() {
             return new ConfigurablePropDiscordChannelArray(
+                    appProp,
                     name,
                     label,
                     description,
@@ -622,8 +621,19 @@ public final class ConfigurablePropDiscordChannelArray implements IConfigurableP
                     useQuery,
                     reloadProps,
                     withLabel,
-                    appProp,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
