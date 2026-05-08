@@ -152,12 +152,4 @@ public class AsyncBaseClient {
     public static AsyncBaseClientBuilder._CredentialsAuth withCredentials(String clientId, String clientSecret) {
         return AsyncBaseClientBuilder.withCredentials(clientId, clientSecret);
     }
-
-    /**
-     * Creates a new client builder.
-     * @return A builder for configuring and creating the client
-     */
-    public static AsyncBaseClientBuilder._Builder builder() {
-        return AsyncBaseClientBuilder.builder();
-    }
 }
