@@ -134,5 +134,15 @@ public final class GetTriggerWebhooksResponse {
         public GetTriggerWebhooksResponse build() {
             return new GetTriggerWebhooksResponse(webhookUrls, webhooks, additionalProperties);
         }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
+        }
     }
 }

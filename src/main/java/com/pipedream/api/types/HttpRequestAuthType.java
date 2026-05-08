@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public final class HttpRequestAuthType {
-    public static final HttpRequestAuthType BEARER = new HttpRequestAuthType(Value.BEARER, "bearer");
-
     public static final HttpRequestAuthType BASIC = new HttpRequestAuthType(Value.BASIC, "basic");
+
+    public static final HttpRequestAuthType BEARER = new HttpRequestAuthType(Value.BEARER, "bearer");
 
     public static final HttpRequestAuthType NONE = new HttpRequestAuthType(Value.NONE, "none");
 
@@ -45,10 +45,10 @@ public final class HttpRequestAuthType {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case BEARER:
-                return visitor.visitBearer();
             case BASIC:
                 return visitor.visitBasic();
+            case BEARER:
+                return visitor.visitBearer();
             case NONE:
                 return visitor.visitNone();
             case UNKNOWN:
@@ -60,10 +60,10 @@ public final class HttpRequestAuthType {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static HttpRequestAuthType valueOf(String value) {
         switch (value) {
-            case "bearer":
-                return BEARER;
             case "basic":
                 return BASIC;
+            case "bearer":
+                return BEARER;
             case "none":
                 return NONE;
             default:

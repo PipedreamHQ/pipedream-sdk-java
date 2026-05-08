@@ -181,6 +181,10 @@ public final class CreateTokenOpts {
     public interface _FinalStage {
         CreateTokenOpts build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>List of allowed origins for CORS</p>
          */
@@ -431,6 +435,18 @@ public final class CreateTokenOpts {
                     webhookUri,
                     allowProgressiveScopes,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -49,6 +49,11 @@ public class RawFileStashClient {
                 .addPathSegments("file_stash")
                 .addPathSegments("download");
         QueryStringMapper.addQueryParameter(httpUrl, "s3_key", request.getS3Key(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)

@@ -22,7 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropTimer.Builder.class)
-public final class ConfigurablePropTimer implements IConfigurablePropBase {
+public final class ConfigurablePropTimer {
+    private final Optional<ConfigurablePropTimerStatic> static_;
+
+    private final Optional<ConfigurablePropTimerDefault> default_;
+
+    private final Optional<List<Optional<ConfigurablePropTimerOption>>> options;
+
     private final String name;
 
     private final Optional<String> label;
@@ -45,15 +51,12 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
 
     private final Optional<Boolean> withLabel;
 
-    private final Optional<ConfigurablePropTimerStatic> static_;
-
-    private final Optional<ConfigurablePropTimerDefault> default_;
-
-    private final Optional<List<Optional<ConfigurablePropTimerOption>>> options;
-
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropTimer(
+            Optional<ConfigurablePropTimerStatic> static_,
+            Optional<ConfigurablePropTimerDefault> default_,
+            Optional<List<Optional<ConfigurablePropTimerOption>>> options,
             String name,
             Optional<String> label,
             Optional<String> description,
@@ -65,10 +68,10 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
             Optional<Boolean> useQuery,
             Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
-            Optional<ConfigurablePropTimerStatic> static_,
-            Optional<ConfigurablePropTimerDefault> default_,
-            Optional<List<Optional<ConfigurablePropTimerOption>>> options,
             Map<String, Object> additionalProperties) {
+        this.static_ = static_;
+        this.default_ = default_;
+        this.options = options;
         this.name = name;
         this.label = label;
         this.description = description;
@@ -80,109 +83,12 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
         this.useQuery = useQuery;
         this.reloadProps = reloadProps;
         this.withLabel = withLabel;
-        this.static_ = static_;
-        this.default_ = default_;
-        this.options = options;
         this.additionalProperties = additionalProperties;
     }
 
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    @java.lang.Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    @java.lang.Override
-    public Optional<String> getLabel() {
-        return label;
-    }
-
-    /**
-     * @return A description of the prop, shown to the user when configuring the component.
-     */
-    @JsonProperty("description")
-    @java.lang.Override
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    @java.lang.Override
-    public Optional<Boolean> getOptional() {
-        return optional;
-    }
-
-    /**
-     * @return If true, this prop will be ignored.
-     */
-    @JsonProperty("disabled")
-    @java.lang.Override
-    public Optional<Boolean> getDisabled() {
-        return disabled;
-    }
-
-    /**
-     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
-     */
-    @JsonProperty("readOnly")
-    @java.lang.Override
-    public Optional<Boolean> getReadOnly() {
-        return readOnly;
-    }
-
-    /**
-     * @return If true, should not expose this prop to the user
-     */
-    @JsonProperty("hidden")
-    @java.lang.Override
-    public Optional<Boolean> getHidden() {
-        return hidden;
-    }
-
-    /**
-     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
-     */
-    @JsonProperty("remoteOptions")
-    @java.lang.Override
-    public Optional<Boolean> getRemoteOptions() {
-        return remoteOptions;
-    }
-
-    /**
-     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
-     */
-    @JsonProperty("useQuery")
-    @java.lang.Override
-    public Optional<Boolean> getUseQuery() {
-        return useQuery;
-    }
-
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    @java.lang.Override
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
-    }
-
-    /**
-     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
-     */
-    @JsonProperty("withLabel")
-    @java.lang.Override
-    public Optional<Boolean> getWithLabel() {
-        return withLabel;
+    @JsonProperty("type")
+    public String getType() {
+        return "$.interface.timer";
     }
 
     @JsonProperty("static")
@@ -203,6 +109,94 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
         return options;
     }
 
+    /**
+     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
+     */
+    @JsonProperty("label")
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @return A description of the prop, shown to the user when configuring the component.
+     */
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    /**
+     * @return If true, this prop does not need to be specified.
+     */
+    @JsonProperty("optional")
+    public Optional<Boolean> getOptional() {
+        return optional;
+    }
+
+    /**
+     * @return If true, this prop will be ignored.
+     */
+    @JsonProperty("disabled")
+    public Optional<Boolean> getDisabled() {
+        return disabled;
+    }
+
+    /**
+     * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
+     */
+    @JsonProperty("readOnly")
+    public Optional<Boolean> getReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * @return If true, should not expose this prop to the user
+     */
+    @JsonProperty("hidden")
+    public Optional<Boolean> getHidden() {
+        return hidden;
+    }
+
+    /**
+     * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
+     */
+    @JsonProperty("remoteOptions")
+    public Optional<Boolean> getRemoteOptions() {
+        return remoteOptions;
+    }
+
+    /**
+     * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
+     */
+    @JsonProperty("useQuery")
+    public Optional<Boolean> getUseQuery() {
+        return useQuery;
+    }
+
+    /**
+     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
+     */
+    @JsonProperty("reloadProps")
+    public Optional<Boolean> getReloadProps() {
+        return reloadProps;
+    }
+
+    /**
+     * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
+     */
+    @JsonProperty("withLabel")
+    public Optional<Boolean> getWithLabel() {
+        return withLabel;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -215,7 +209,10 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
     }
 
     private boolean equalTo(ConfigurablePropTimer other) {
-        return name.equals(other.name)
+        return static_.equals(other.static_)
+                && default_.equals(other.default_)
+                && options.equals(other.options)
+                && name.equals(other.name)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -225,15 +222,15 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
                 && reloadProps.equals(other.reloadProps)
-                && withLabel.equals(other.withLabel)
-                && static_.equals(other.static_)
-                && default_.equals(other.default_)
-                && options.equals(other.options);
+                && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.static_,
+                this.default_,
+                this.options,
                 this.name,
                 this.label,
                 this.description,
@@ -244,10 +241,7 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
                 this.remoteOptions,
                 this.useQuery,
                 this.reloadProps,
-                this.withLabel,
-                this.static_,
-                this.default_,
-                this.options);
+                this.withLabel);
     }
 
     @java.lang.Override
@@ -270,6 +264,25 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
 
     public interface _FinalStage {
         ConfigurablePropTimer build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage static_(Optional<ConfigurablePropTimerStatic> static_);
+
+        _FinalStage static_(ConfigurablePropTimerStatic static_);
+
+        _FinalStage default_(Optional<ConfigurablePropTimerDefault> default_);
+
+        _FinalStage default_(ConfigurablePropTimerDefault default_);
+
+        /**
+         * <p>Available timer configuration options</p>
+         */
+        _FinalStage options(Optional<List<Optional<ConfigurablePropTimerOption>>> options);
+
+        _FinalStage options(List<Optional<ConfigurablePropTimerOption>> options);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -340,32 +353,11 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
         _FinalStage withLabel(Optional<Boolean> withLabel);
 
         _FinalStage withLabel(Boolean withLabel);
-
-        _FinalStage static_(Optional<ConfigurablePropTimerStatic> static_);
-
-        _FinalStage static_(ConfigurablePropTimerStatic static_);
-
-        _FinalStage default_(Optional<ConfigurablePropTimerDefault> default_);
-
-        _FinalStage default_(ConfigurablePropTimerDefault default_);
-
-        /**
-         * <p>Available timer configuration options</p>
-         */
-        _FinalStage options(Optional<List<Optional<ConfigurablePropTimerOption>>> options);
-
-        _FinalStage options(List<Optional<ConfigurablePropTimerOption>> options);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private Optional<List<Optional<ConfigurablePropTimerOption>>> options = Optional.empty();
-
-        private Optional<ConfigurablePropTimerDefault> default_ = Optional.empty();
-
-        private Optional<ConfigurablePropTimerStatic> static_ = Optional.empty();
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -387,6 +379,12 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
 
         private Optional<String> label = Optional.empty();
 
+        private Optional<List<Optional<ConfigurablePropTimerOption>>> options = Optional.empty();
+
+        private Optional<ConfigurablePropTimerDefault> default_ = Optional.empty();
+
+        private Optional<ConfigurablePropTimerStatic> static_ = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -394,6 +392,9 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
 
         @java.lang.Override
         public Builder from(ConfigurablePropTimer other) {
+            static_(other.getStatic());
+            default_(other.getDefault());
+            options(other.getOptions());
             name(other.getName());
             label(other.getLabel());
             description(other.getDescription());
@@ -405,9 +406,6 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
             useQuery(other.getUseQuery());
             reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
-            static_(other.getStatic());
-            default_(other.getDefault());
-            options(other.getOptions());
             return this;
         }
 
@@ -420,52 +418,6 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Available timer configuration options</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage options(List<Optional<ConfigurablePropTimerOption>> options) {
-            this.options = Optional.ofNullable(options);
-            return this;
-        }
-
-        /**
-         * <p>Available timer configuration options</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public _FinalStage options(Optional<List<Optional<ConfigurablePropTimerOption>>> options) {
-            this.options = options;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage default_(ConfigurablePropTimerDefault default_) {
-            this.default_ = Optional.ofNullable(default_);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "default", nulls = Nulls.SKIP)
-        public _FinalStage default_(Optional<ConfigurablePropTimerDefault> default_) {
-            this.default_ = default_;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage static_(ConfigurablePropTimerStatic static_) {
-            this.static_ = Optional.ofNullable(static_);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "static", nulls = Nulls.SKIP)
-        public _FinalStage static_(Optional<ConfigurablePropTimerStatic> static_) {
-            this.static_ = static_;
             return this;
         }
 
@@ -670,9 +622,58 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
             return this;
         }
 
+        /**
+         * <p>Available timer configuration options</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage options(List<Optional<ConfigurablePropTimerOption>> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        /**
+         * <p>Available timer configuration options</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public _FinalStage options(Optional<List<Optional<ConfigurablePropTimerOption>>> options) {
+            this.options = options;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage default_(ConfigurablePropTimerDefault default_) {
+            this.default_ = Optional.ofNullable(default_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "default", nulls = Nulls.SKIP)
+        public _FinalStage default_(Optional<ConfigurablePropTimerDefault> default_) {
+            this.default_ = default_;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage static_(ConfigurablePropTimerStatic static_) {
+            this.static_ = Optional.ofNullable(static_);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "static", nulls = Nulls.SKIP)
+        public _FinalStage static_(Optional<ConfigurablePropTimerStatic> static_) {
+            this.static_ = static_;
+            return this;
+        }
+
         @java.lang.Override
         public ConfigurablePropTimer build() {
             return new ConfigurablePropTimer(
+                    static_,
+                    default_,
+                    options,
                     name,
                     label,
                     description,
@@ -684,10 +685,19 @@ public final class ConfigurablePropTimer implements IConfigurablePropBase {
                     useQuery,
                     reloadProps,
                     withLabel,
-                    static_,
-                    default_,
-                    options,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
