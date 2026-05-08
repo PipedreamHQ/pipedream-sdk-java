@@ -204,6 +204,10 @@ public final class ValidateTokenResponse {
     public interface _FinalStage {
         ValidateTokenResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage app(Optional<App> app);
 
         _FinalStage app(App app);
@@ -506,6 +510,18 @@ public final class ValidateTokenResponse {
                     success,
                     successRedirectUri,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

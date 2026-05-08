@@ -1,52 +1,55 @@
-# # Specify files that shouldn't be modified by Fern
+# Specify files that shouldn't be modified by Fern
 
-# # Custom CI/CD
-# .github/workflows/auto-close-empty-prs.yml
+# Custom CI/CD
+.github/workflows/auto-close-empty-prs.yml
 
-# # Our own license
-# LICENSE
+# Our own license
+LICENSE
 
-# # References doc (we have additional use cases)
-# reference.md
+# References doc (we have additional use cases)
+reference.md
 
-# # Base client files (temporary)
-# src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
-# src/main/java/com/pipedream/api/BaseClientBuilder.java
+# Migration doc
+MIGRATE.md
 
-# # Custom Pipedream client files
-# src/main/java/com/pipedream/api/AsyncPipedreamClient.java
-# src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
-# src/main/java/com/pipedream/api/PipedreamClient.java
-# src/main/java/com/pipedream/api/PipedreamClientBuilder.java
+# Base client files (temporary)
+src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
+src/main/java/com/pipedream/api/BaseClientBuilder.java
 
-# # Custom Proxy files
-# src/main/java/com/pipedream/api/resources/proxy/AsyncProxyClient.java
-# src/main/java/com/pipedream/api/resources/proxy/AsyncRawProxyClient.java
-# src/main/java/com/pipedream/api/resources/proxy/ProxyClient.java
-# src/main/java/com/pipedream/api/resources/proxy/RawProxyClient.java
-# src/main/java/com/pipedream/api/resources/proxy/requests/ProxyDeleteRequest.java
-# src/main/java/com/pipedream/api/resources/proxy/requests/ProxyGetRequest.java
-# src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPatchRequest.java
-# src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPostRequest.java
-# src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPutRequest.java
-# src/main/java/com/pipedream/api/resources/proxy/types/ProxyResponse.java
+# Custom Pipedream client files
+src/main/java/com/pipedream/api/AsyncPipedreamClient.java
+src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
+src/main/java/com/pipedream/api/PipedreamClient.java
+src/main/java/com/pipedream/api/PipedreamClientBuilder.java
 
-# # Custom Workflow files
-# src/main/java/com/pipedream/api/resources/workflows/AsyncWorkflowsClient.java
-# src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowOpts.java
-# src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowForExternalUserOpts.java
-# src/main/java/com/pipedream/api/resources/workflows/AsyncRawWorkflowsClient.java
-# src/main/java/com/pipedream/api/resources/workflows/WorkflowsClient.java
-# src/main/java/com/pipedream/api/resources/workflows/RawWorkflowsClient.java
-# src/main/java/com/pipedream/api/resources/workflows/package-info.java
-# src/main/java/com/pipedream/api/types/HTTPAuthType.java
+# Custom Proxy files
+src/main/java/com/pipedream/api/resources/proxy/AsyncProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/AsyncRawProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/ProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/RawProxyClient.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyDeleteRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyGetRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPatchRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPostRequest.java
+src/main/java/com/pipedream/api/resources/proxy/requests/ProxyPutRequest.java
+src/main/java/com/pipedream/api/resources/proxy/types/ProxyResponse.java
 
-# # Custom tests
-# src/test/java/com/pipedream/api/OauthTokensWireTest.java
-# src/test/java/com/pipedream/api/ProxyClientWireTest.java
-# src/test/java/com/pipedream/api/TokensWireTest.java
+# Custom Workflow files
+src/main/java/com/pipedream/api/resources/workflows/AsyncWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowOpts.java
+src/main/java/com/pipedream/api/resources/workflows/requests/InvokeWorkflowForExternalUserOpts.java
+src/main/java/com/pipedream/api/resources/workflows/AsyncRawWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/WorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/RawWorkflowsClient.java
+src/main/java/com/pipedream/api/resources/workflows/package-info.java
+src/main/java/com/pipedream/api/types/HTTPAuthType.java
 
-# # Test utilities (JDK-only mock-server shim used by wire tests)
-# src/test/java/com/pipedream/api/testutil/MockResponse.java
-# src/test/java/com/pipedream/api/testutil/MockWebServer.java
-# src/test/java/com/pipedream/api/testutil/RecordedRequest.java
+# Custom tests
+src/test/java/com/pipedream/api/OauthTokensWireTest.java
+src/test/java/com/pipedream/api/ProxyClientWireTest.java
+src/test/java/com/pipedream/api/TokensWireTest.java
+
+# Test utilities (JDK-only mock-server shim used by wire tests)
+src/test/java/com/pipedream/api/testutil/MockResponse.java
+src/test/java/com/pipedream/api/testutil/MockWebServer.java
+src/test/java/com/pipedream/api/testutil/RecordedRequest.java

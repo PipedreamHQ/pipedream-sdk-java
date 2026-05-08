@@ -134,6 +134,10 @@ public final class TriggerWebhook {
     public interface _FinalStage {
         TriggerWebhook build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>The webhook signing key, returned only for OAuth-authenticated requests</p>
          */
@@ -225,6 +229,18 @@ public final class TriggerWebhook {
         @java.lang.Override
         public TriggerWebhook build() {
             return new TriggerWebhook(id, url, signingKey, signingKeySet, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

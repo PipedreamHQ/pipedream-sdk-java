@@ -23,6 +23,8 @@ public final class ClientOptions {
 
     private final int maxRetries;
 
+    private final Optional<LogConfig> logging;
+
     private String projectId;
 
     private ClientOptions(
@@ -32,22 +34,24 @@ public final class ClientOptions {
             OkHttpClient httpClient,
             int timeout,
             int maxRetries,
+            Optional<LogConfig> logging,
             String projectId) {
         this.environment = environment;
         this.headers = new HashMap<>();
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "com.pipedream:pipedream/1.2.0");
+                put("User-Agent", "com.pipedream:pipedream/2.0.0");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.pipedream.fern:api-sdk");
-                put("X-Fern-SDK-Version", "1.2.0");
+                put("X-Fern-SDK-Version", "2.0.0");
             }
         });
         this.headerSuppliers = headerSuppliers;
         this.httpClient = httpClient;
         this.timeout = timeout;
         this.maxRetries = maxRetries;
+        this.logging = logging;
         this.projectId = projectId;
     }
 
@@ -94,6 +98,10 @@ public final class ClientOptions {
         return this.maxRetries;
     }
 
+    public Optional<LogConfig> logging() {
+        return this.logging;
+    }
+
     public String projectId() {
         return this.projectId;
     }
@@ -114,6 +122,8 @@ public final class ClientOptions {
         private Optional<Integer> timeout = Optional.empty();
 
         private OkHttpClient httpClient = null;
+
+        private Optional<LogConfig> logging = Optional.empty();
 
         private String projectId;
 
@@ -161,6 +171,14 @@ public final class ClientOptions {
             return this;
         }
 
+        /**
+         * Configure logging for the SDK. Silent by default — no log output unless explicitly configured.
+         */
+        public Builder logging(LogConfig logging) {
+            this.logging = Optional.of(logging);
+            return this;
+        }
+
         public Builder projectId(String projectId) {
             this.projectId = projectId;
             return this;
@@ -185,6 +203,9 @@ public final class ClientOptions {
                         .addInterceptor(new RetryInterceptor(this.maxRetries));
             }
 
+            Logger logger = Logger.from(this.logging);
+            httpClientBuilder.addInterceptor(new LoggingInterceptor(logger));
+
             this.httpClient = httpClientBuilder.build();
             this.timeout = Optional.of(httpClient.callTimeoutMillis() / 1000);
 
@@ -195,6 +216,7 @@ public final class ClientOptions {
                     httpClient,
                     this.timeout.get(),
                     this.maxRetries,
+                    this.logging,
                     this.projectId);
         }
 
@@ -209,6 +231,7 @@ public final class ClientOptions {
             builder.headers.putAll(clientOptions.headers);
             builder.headerSuppliers.putAll(clientOptions.headerSuppliers);
             builder.maxRetries = clientOptions.maxRetries();
+            builder.logging = clientOptions.logging();
             builder.projectId = clientOptions.projectId();
             return builder;
         }

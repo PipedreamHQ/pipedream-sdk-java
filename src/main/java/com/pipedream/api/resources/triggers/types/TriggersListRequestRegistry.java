@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public final class TriggersListRequestRegistry {
-    public static final TriggersListRequestRegistry PRIVATE = new TriggersListRequestRegistry(Value.PRIVATE, "private");
-
     public static final TriggersListRequestRegistry ALL = new TriggersListRequestRegistry(Value.ALL, "all");
+
+    public static final TriggersListRequestRegistry PRIVATE = new TriggersListRequestRegistry(Value.PRIVATE, "private");
 
     public static final TriggersListRequestRegistry PUBLIC = new TriggersListRequestRegistry(Value.PUBLIC, "public");
 
@@ -46,10 +46,10 @@ public final class TriggersListRequestRegistry {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case PRIVATE:
-                return visitor.visitPrivate();
             case ALL:
                 return visitor.visitAll();
+            case PRIVATE:
+                return visitor.visitPrivate();
             case PUBLIC:
                 return visitor.visitPublic();
             case UNKNOWN:
@@ -61,10 +61,10 @@ public final class TriggersListRequestRegistry {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static TriggersListRequestRegistry valueOf(String value) {
         switch (value) {
-            case "private":
-                return PRIVATE;
             case "all":
                 return ALL;
+            case "private":
+                return PRIVATE;
             case "public":
                 return PUBLIC;
             default:

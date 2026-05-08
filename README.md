@@ -9,6 +9,7 @@ The Pipedream Java library provides convenient access to the Pipedream APIs from
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Authentication](#authentication)
 - [Environments](#environments)
 - [Base Url](#base-url)
 - [Exception Handling](#exception-handling)
@@ -17,6 +18,7 @@ The Pipedream Java library provides convenient access to the Pipedream APIs from
   - [Retries](#retries)
   - [Timeouts](#timeouts)
   - [Custom Headers](#custom-headers)
+  - [Access Raw Response Data](#access-raw-response-data)
 - [Contributing](#contributing)
 - [Reference](#reference)
 
@@ -28,7 +30,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.pipedream:pipedream'
+  implementation 'com.pipedream:pipedream:2.0.0'
 }
 ```
 
@@ -40,7 +42,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -71,6 +73,7 @@ public class Example {
     }
 }
 ```
+
 ## Authentication
 
 This SDK supports two authentication methods:
@@ -80,7 +83,8 @@ This SDK supports two authentication methods:
 If you already have a valid access token, you can use it directly:
 
 ```java
-BaseClient client = BaseClient.withToken("your-access-token")
+BaseClient client = BaseClient.builder()
+    .token("your-access-token")
     .url("https://api.example.com")
     .build();
 ```
@@ -90,7 +94,8 @@ BaseClient client = BaseClient.withToken("your-access-token")
 The SDK can automatically handle token acquisition and refresh:
 
 ```java
-BaseClient client = BaseClient.withCredentials("client-id", "client-secret")
+BaseClient client = BaseClient.builder()
+    .credentials("client-id", "client-secret")
     .url("https://api.example.com")
     .build();
 ```
@@ -127,11 +132,11 @@ BaseClient client = BaseClient
 When the API returns a non-success status code (4xx or 5xx response), an API exception will be thrown.
 
 ```java
-import com.pipedream.api.core.PipedreamApiApiException;
+import com.pipedream.api.core.BaseClientApiException;
 
 try{
     client.actions().run(...);
-} catch (PipedreamApiApiException e){
+} catch (BaseClientApiException e){
     // Do something with the API exception...
 }
 ```
@@ -163,11 +168,19 @@ retry limit (default: 2). Before defaulting to exponential backoff, the SDK will
 the `Retry-After` header (as either in seconds or as an HTTP date), and then the `X-RateLimit-Reset` header
 (as a Unix timestamp in epoch seconds); failing both of those, it will fall back to exponential backoff.
 
-A request is deemed retryable when any of the following HTTP status codes is returned:
+Which status codes are retried depends on the `retry-status-codes` generator configuration:
 
+**`legacy`** (current default): retries on
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (All server errors, including 500)
+
+**`recommended`**: retries on
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [502](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) (Bad Gateway)
+- [503](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) (Service Unavailable)
+- [504](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) (Gateway Timeout)
 
 Use the `maxRetries` client option to configure this behavior.
 
@@ -236,7 +249,7 @@ The `withRawResponse()` method returns a raw client that wraps all responses wit
 (A normal client's `response` is identical to a raw client's `response.body()`.)
 
 ```java
-RunHttpResponse response = client.actions().withRawResponse().run(...);
+BaseClientHttpResponse response = client.actions().withRawResponse().run(...);
 
 System.out.println(response.body());
 System.out.println(response.headers().get("X-My-Header"));
@@ -254,3 +267,4 @@ On the other hand, contributions to the README are always very welcome!
 ## Reference
 
 A full reference for this library is available [here](https://github.com/PipedreamHQ/pipedream-sdk-java/blob/HEAD/./reference.md).
+

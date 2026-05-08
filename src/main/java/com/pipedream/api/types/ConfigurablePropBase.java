@@ -21,8 +21,10 @@ import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropBase.Builder.class)
-public final class ConfigurablePropBase implements IConfigurablePropBase {
+public final class ConfigurablePropBase {
     private final String name;
+
+    private final ConfigurablePropBaseType type;
 
     private final Optional<String> label;
 
@@ -48,6 +50,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
 
     private ConfigurablePropBase(
             String name,
+            ConfigurablePropBaseType type,
             Optional<String> label,
             Optional<String> description,
             Optional<Boolean> optional,
@@ -60,6 +63,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
         this.name = name;
+        this.type = type;
         this.label = label;
         this.description = description;
         this.optional = optional;
@@ -77,16 +81,19 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
      */
     @JsonProperty("name")
-    @java.lang.Override
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("type")
+    public ConfigurablePropBaseType getType() {
+        return type;
     }
 
     /**
      * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
      */
     @JsonProperty("label")
-    @java.lang.Override
     public Optional<String> getLabel() {
         return label;
     }
@@ -95,7 +102,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return A description of the prop, shown to the user when configuring the component.
      */
     @JsonProperty("description")
-    @java.lang.Override
     public Optional<String> getDescription() {
         return description;
     }
@@ -104,7 +110,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, this prop does not need to be specified.
      */
     @JsonProperty("optional")
-    @java.lang.Override
     public Optional<Boolean> getOptional() {
         return optional;
     }
@@ -113,7 +118,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, this prop will be ignored.
      */
     @JsonProperty("disabled")
-    @java.lang.Override
     public Optional<Boolean> getDisabled() {
         return disabled;
     }
@@ -122,7 +126,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.
      */
     @JsonProperty("readOnly")
-    @java.lang.Override
     public Optional<Boolean> getReadOnly() {
         return readOnly;
     }
@@ -131,7 +134,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, should not expose this prop to the user
      */
     @JsonProperty("hidden")
-    @java.lang.Override
     public Optional<Boolean> getHidden() {
         return hidden;
     }
@@ -140,7 +142,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options
      */
     @JsonProperty("remoteOptions")
-    @java.lang.Override
     public Optional<Boolean> getRemoteOptions() {
         return remoteOptions;
     }
@@ -149,7 +150,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, calls to <code>configureComponent</code> for this prop support receiving a <code>query</code> parameter to filter remote options
      */
     @JsonProperty("useQuery")
-    @java.lang.Override
     public Optional<Boolean> getUseQuery() {
         return useQuery;
     }
@@ -158,7 +158,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
     @JsonProperty("reloadProps")
-    @java.lang.Override
     public Optional<Boolean> getReloadProps() {
         return reloadProps;
     }
@@ -167,7 +166,6 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
      * @return If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label
      */
     @JsonProperty("withLabel")
-    @java.lang.Override
     public Optional<Boolean> getWithLabel() {
         return withLabel;
     }
@@ -185,6 +183,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
 
     private boolean equalTo(ConfigurablePropBase other) {
         return name.equals(other.name)
+                && type.equals(other.type)
                 && label.equals(other.label)
                 && description.equals(other.description)
                 && optional.equals(other.optional)
@@ -201,6 +200,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
     public int hashCode() {
         return Objects.hash(
                 this.name,
+                this.type,
                 this.label,
                 this.description,
                 this.optional,
@@ -226,13 +226,21 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
         /**
          * <p>When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value</p>
          */
-        _FinalStage name(@NotNull String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(ConfigurablePropBase other);
     }
 
+    public interface TypeStage {
+        _FinalStage type(@NotNull ConfigurablePropBaseType type);
+    }
+
     public interface _FinalStage {
         ConfigurablePropBase build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
          * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
@@ -306,8 +314,10 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, _FinalStage {
+    public static final class Builder implements NameStage, TypeStage, _FinalStage {
         private String name;
+
+        private ConfigurablePropBaseType type;
 
         private Optional<Boolean> withLabel = Optional.empty();
 
@@ -337,6 +347,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
         @java.lang.Override
         public Builder from(ConfigurablePropBase other) {
             name(other.getName());
+            type(other.getType());
             label(other.getLabel());
             description(other.getDescription());
             optional(other.getOptional());
@@ -357,8 +368,15 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(@NotNull String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("type")
+        public _FinalStage type(@NotNull ConfigurablePropBaseType type) {
+            this.type = Objects.requireNonNull(type, "type must not be null");
             return this;
         }
 
@@ -567,6 +585,7 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
         public ConfigurablePropBase build() {
             return new ConfigurablePropBase(
                     name,
+                    type,
                     label,
                     description,
                     optional,
@@ -578,6 +597,18 @@ public final class ConfigurablePropBase implements IConfigurablePropBase {
                     reloadProps,
                     withLabel,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

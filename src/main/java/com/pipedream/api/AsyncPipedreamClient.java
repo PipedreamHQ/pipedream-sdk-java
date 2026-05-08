@@ -3,16 +3,16 @@ package com.pipedream.api;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
 import com.pipedream.api.core.Suppliers;
-import com.pipedream.api.resources.workflows.WorkflowsClient;
+import com.pipedream.api.resources.workflows.AsyncWorkflowsClient;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AsyncPipedreamClient extends AsyncBaseClient {
-    private final Supplier<WorkflowsClient> workflowsClient;
+    private final Supplier<AsyncWorkflowsClient> workflowsClient;
 
     public AsyncPipedreamClient(final ClientOptions clientOptions) {
         super(clientOptions);
-        this.workflowsClient = Suppliers.memoize(() -> new WorkflowsClient(clientOptions));
+        this.workflowsClient = Suppliers.memoize(() -> new AsyncWorkflowsClient(clientOptions));
     }
 
     /**
@@ -51,7 +51,7 @@ public class AsyncPipedreamClient extends AsyncBaseClient {
         return Optional.ofNullable(authorizationHeader).map(h -> h.replaceFirst("^.*?\\s+", ""));
     }
 
-    public WorkflowsClient workflows() {
+    public AsyncWorkflowsClient workflows() {
         return this.workflowsClient.get();
     }
 }

@@ -140,6 +140,10 @@ public final class Project {
     public interface _FinalStage {
         Project build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>App name shown to Connect users</p>
          */
@@ -276,6 +280,18 @@ public final class Project {
         @java.lang.Override
         public Project build() {
             return new Project(id, name, appName, supportEmail, connectRequireKeyAuthTest, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
