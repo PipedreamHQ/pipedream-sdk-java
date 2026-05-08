@@ -9,6 +9,9 @@ LICENSE
 # References doc (we have additional use cases)
 reference.md
 
+# Migration doc
+MIGRATE.md
+
 # Base client files (temporary)
 src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
 src/main/java/com/pipedream/api/BaseClientBuilder.java
