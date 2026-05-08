@@ -91,6 +91,10 @@ public final class DeployedTriggersListEventsRequest {
     public interface _FinalStage {
         DeployedTriggersListEventsRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>The number of events to retrieve (defaults to 20 if not provided)</p>
          */
@@ -152,6 +156,18 @@ public final class DeployedTriggersListEventsRequest {
         @java.lang.Override
         public DeployedTriggersListEventsRequest build() {
             return new DeployedTriggersListEventsRequest(externalUserId, n, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

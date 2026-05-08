@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.pipedream.api.core.ObjectMappers;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -93,13 +94,17 @@ public final class ConfigurablePropIntegerOptionsItem {
         public ConfigurablePropIntegerOptionsItem deserialize(JsonParser p, DeserializationContext context)
                 throws IOException {
             Object value = p.readValueAs(Object.class);
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOption.class));
-            } catch (RuntimeException e) {
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("label")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOption.class));
+                } catch (RuntimeException e) {
+                }
             }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOptionNested.class));
-            } catch (RuntimeException e) {
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("__lv")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, PropOptionNested.class));
+                } catch (RuntimeException e) {
+                }
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(

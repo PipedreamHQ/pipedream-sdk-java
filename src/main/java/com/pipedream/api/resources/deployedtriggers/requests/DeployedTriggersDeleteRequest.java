@@ -91,6 +91,10 @@ public final class DeployedTriggersDeleteRequest {
     public interface _FinalStage {
         DeployedTriggersDeleteRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Whether to ignore errors during deactivation hook</p>
          */
@@ -152,6 +156,18 @@ public final class DeployedTriggersDeleteRequest {
         @java.lang.Override
         public DeployedTriggersDeleteRequest build() {
             return new DeployedTriggersDeleteRequest(externalUserId, ignoreHookErrors, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

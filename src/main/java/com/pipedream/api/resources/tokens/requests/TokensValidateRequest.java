@@ -105,6 +105,10 @@ public final class TokensValidateRequest {
     public interface _FinalStage {
         TokensValidateRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
          */
@@ -196,6 +200,18 @@ public final class TokensValidateRequest {
         @java.lang.Override
         public TokensValidateRequest build() {
             return new TokensValidateRequest(appId, accountId, oauthAppId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

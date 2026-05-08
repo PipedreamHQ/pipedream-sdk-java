@@ -102,6 +102,10 @@ public final class CreateOAuthTokenOpts {
     public interface _FinalStage {
         CreateOAuthTokenOpts build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          */
@@ -168,6 +172,18 @@ public final class CreateOAuthTokenOpts {
         @java.lang.Override
         public CreateOAuthTokenOpts build() {
             return new CreateOAuthTokenOpts(clientId, clientSecret, scope, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

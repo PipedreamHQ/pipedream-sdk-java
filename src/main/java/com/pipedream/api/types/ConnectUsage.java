@@ -165,6 +165,10 @@ public final class ConnectUsage {
     public interface _FinalStage {
         ConnectUsage build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Credits used when running Connect actions</p>
          */
@@ -323,6 +327,18 @@ public final class ConnectUsage {
                     usageStartTs,
                     usageEndTs,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

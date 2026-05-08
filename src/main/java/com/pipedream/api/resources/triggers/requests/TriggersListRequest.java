@@ -250,5 +250,15 @@ public final class TriggersListRequest {
         public TriggersListRequest build() {
             return new TriggersListRequest(after, before, limit, q, app, registry, additionalProperties);
         }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
+        }
     }
 }

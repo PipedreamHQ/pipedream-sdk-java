@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public final class ConfigurablePropDirAccessMode {
     public static final ConfigurablePropDirAccessMode WRITE = new ConfigurablePropDirAccessMode(Value.WRITE, "write");
 
+    public static final ConfigurablePropDirAccessMode READ = new ConfigurablePropDirAccessMode(Value.READ, "read");
+
     public static final ConfigurablePropDirAccessMode READ_WRITE =
             new ConfigurablePropDirAccessMode(Value.READ_WRITE, "read-write");
-
-    public static final ConfigurablePropDirAccessMode READ = new ConfigurablePropDirAccessMode(Value.READ, "read");
 
     private final Value value;
 
@@ -49,10 +49,10 @@ public final class ConfigurablePropDirAccessMode {
         switch (value) {
             case WRITE:
                 return visitor.visitWrite();
-            case READ_WRITE:
-                return visitor.visitReadWrite();
             case READ:
                 return visitor.visitRead();
+            case READ_WRITE:
+                return visitor.visitReadWrite();
             case UNKNOWN:
             default:
                 return visitor.visitUnknown(string);
@@ -64,10 +64,10 @@ public final class ConfigurablePropDirAccessMode {
         switch (value) {
             case "write":
                 return WRITE;
-            case "read-write":
-                return READ_WRITE;
             case "read":
                 return READ;
+            case "read-write":
+                return READ_WRITE;
             default:
                 return new ConfigurablePropDirAccessMode(Value.UNKNOWN, value);
         }
