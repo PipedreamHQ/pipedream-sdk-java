@@ -7,10 +7,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public final class ComponentsListRequestRegistry {
+    public static final ComponentsListRequestRegistry ALL = new ComponentsListRequestRegistry(Value.ALL, "all");
+
     public static final ComponentsListRequestRegistry PRIVATE =
             new ComponentsListRequestRegistry(Value.PRIVATE, "private");
-
-    public static final ComponentsListRequestRegistry ALL = new ComponentsListRequestRegistry(Value.ALL, "all");
 
     public static final ComponentsListRequestRegistry PUBLIC =
             new ComponentsListRequestRegistry(Value.PUBLIC, "public");
@@ -48,10 +48,10 @@ public final class ComponentsListRequestRegistry {
 
     public <T> T visit(Visitor<T> visitor) {
         switch (value) {
-            case PRIVATE:
-                return visitor.visitPrivate();
             case ALL:
                 return visitor.visitAll();
+            case PRIVATE:
+                return visitor.visitPrivate();
             case PUBLIC:
                 return visitor.visitPublic();
             case UNKNOWN:
@@ -63,10 +63,10 @@ public final class ComponentsListRequestRegistry {
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static ComponentsListRequestRegistry valueOf(String value) {
         switch (value) {
-            case "private":
-                return PRIVATE;
             case "all":
                 return ALL;
+            case "private":
+                return PRIVATE;
             case "public":
                 return PUBLIC;
             default:

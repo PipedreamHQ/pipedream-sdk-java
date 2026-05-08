@@ -87,6 +87,10 @@ public final class PropOption {
     public interface _FinalStage {
         PropOption build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage value(Optional<PropOptionValue> value);
 
         _FinalStage value(PropOptionValue value);
@@ -138,6 +142,18 @@ public final class PropOption {
         @java.lang.Override
         public PropOption build() {
             return new PropOption(label, value, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

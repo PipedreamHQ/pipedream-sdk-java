@@ -185,6 +185,10 @@ public final class DeployTriggerOpts {
     public interface _FinalStage {
         DeployTriggerOpts build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
          */
@@ -410,6 +414,18 @@ public final class DeployTriggerOpts {
                     webhookUrl,
                     emitOnDeploy,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

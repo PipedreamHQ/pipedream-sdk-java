@@ -135,6 +135,10 @@ public final class ConfiguredPropValueSql {
     public interface _FinalStage {
         ConfiguredPropValueSql build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         /**
          * <p>The list of parameters for the prepared statement</p>
          */
@@ -243,6 +247,18 @@ public final class ConfiguredPropValueSql {
         @java.lang.Override
         public ConfiguredPropValueSql build() {
             return new ConfiguredPropValueSql(value, query, params, usePreparedStatements, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

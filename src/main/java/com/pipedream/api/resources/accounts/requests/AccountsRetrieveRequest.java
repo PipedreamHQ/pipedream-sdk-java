@@ -97,5 +97,15 @@ public final class AccountsRetrieveRequest {
         public AccountsRetrieveRequest build() {
             return new AccountsRetrieveRequest(includeCredentials, additionalProperties);
         }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
+        }
     }
 }

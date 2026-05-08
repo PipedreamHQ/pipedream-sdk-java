@@ -3,1401 +3,408 @@
  */
 package com.pipedream.api.types;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.pipedream.api.core.ObjectMappers;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
+@JsonDeserialize(using = ConfigurableProp.Deserializer.class)
 public final class ConfigurableProp {
-    private final Value value;
+    private final Object value;
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    private ConfigurableProp(Value value) {
+    private final int type;
+
+    private ConfigurableProp(Object value, int type) {
         this.value = value;
-    }
-
-    public <T> T visit(Visitor<T> visitor) {
-        return value.visit(visitor);
-    }
-
-    public static ConfigurableProp alert(ConfigurablePropAlert value) {
-        return new ConfigurableProp(new AlertValue(value));
-    }
-
-    public static ConfigurableProp any(ConfigurablePropAny value) {
-        return new ConfigurableProp(new AnyValue(value));
-    }
-
-    public static ConfigurableProp app(ConfigurablePropApp value) {
-        return new ConfigurableProp(new AppValue(value));
-    }
-
-    public static ConfigurableProp boolean_(ConfigurablePropBoolean value) {
-        return new ConfigurableProp(new BooleanValue(value));
-    }
-
-    public static ConfigurableProp dataStore(ConfigurablePropDataStore value) {
-        return new ConfigurableProp(new DataStoreValue(value));
-    }
-
-    public static ConfigurableProp dir(ConfigurablePropDir value) {
-        return new ConfigurableProp(new DirValue(value));
-    }
-
-    public static ConfigurableProp interfaceTimer(ConfigurablePropTimer value) {
-        return new ConfigurableProp(new InterfaceTimerValue(value));
-    }
-
-    public static ConfigurableProp interfaceApphook(ConfigurablePropApphook value) {
-        return new ConfigurableProp(new InterfaceApphookValue(value));
-    }
-
-    public static ConfigurableProp integerArray(ConfigurablePropIntegerArray value) {
-        return new ConfigurableProp(new IntegerArrayValue(value));
-    }
-
-    public static ConfigurableProp interfaceHttp(ConfigurablePropHttp value) {
-        return new ConfigurableProp(new InterfaceHttpValue(value));
-    }
-
-    public static ConfigurableProp httpRequest(ConfigurablePropHttpRequest value) {
-        return new ConfigurableProp(new HttpRequestValue(value));
-    }
-
-    public static ConfigurableProp serviceDb(ConfigurablePropDb value) {
-        return new ConfigurableProp(new ServiceDbValue(value));
-    }
-
-    public static ConfigurableProp sql(ConfigurablePropSql value) {
-        return new ConfigurableProp(new SqlValue(value));
-    }
-
-    public static ConfigurableProp airtableBaseId(ConfigurablePropAirtableBaseId value) {
-        return new ConfigurableProp(new AirtableBaseIdValue(value));
-    }
-
-    public static ConfigurableProp airtableTableId(ConfigurablePropAirtableTableId value) {
-        return new ConfigurableProp(new AirtableTableIdValue(value));
-    }
-
-    public static ConfigurableProp airtableViewId(ConfigurablePropAirtableViewId value) {
-        return new ConfigurableProp(new AirtableViewIdValue(value));
-    }
-
-    public static ConfigurableProp airtableFieldId(ConfigurablePropAirtableFieldId value) {
-        return new ConfigurableProp(new AirtableFieldIdValue(value));
-    }
-
-    public static ConfigurableProp discordChannel(ConfigurablePropDiscordChannel value) {
-        return new ConfigurableProp(new DiscordChannelValue(value));
-    }
-
-    public static ConfigurableProp discordChannelArray(ConfigurablePropDiscordChannelArray value) {
-        return new ConfigurableProp(new DiscordChannelArrayValue(value));
-    }
-
-    public static ConfigurableProp integer(ConfigurablePropInteger value) {
-        return new ConfigurableProp(new IntegerValue(value));
-    }
-
-    public static ConfigurableProp object(ConfigurablePropObject value) {
-        return new ConfigurableProp(new ObjectValue(value));
-    }
-
-    public static ConfigurableProp string(ConfigurablePropString value) {
-        return new ConfigurableProp(new StringValue(value));
-    }
-
-    public static ConfigurableProp stringArray(ConfigurablePropStringArray value) {
-        return new ConfigurableProp(new StringArrayValue(value));
-    }
-
-    public boolean isAlert() {
-        return value instanceof AlertValue;
-    }
-
-    public boolean isAny() {
-        return value instanceof AnyValue;
-    }
-
-    public boolean isApp() {
-        return value instanceof AppValue;
-    }
-
-    public boolean isBoolean() {
-        return value instanceof BooleanValue;
-    }
-
-    public boolean isDataStore() {
-        return value instanceof DataStoreValue;
-    }
-
-    public boolean isDir() {
-        return value instanceof DirValue;
-    }
-
-    public boolean isInterfaceTimer() {
-        return value instanceof InterfaceTimerValue;
-    }
-
-    public boolean isInterfaceApphook() {
-        return value instanceof InterfaceApphookValue;
-    }
-
-    public boolean isIntegerArray() {
-        return value instanceof IntegerArrayValue;
-    }
-
-    public boolean isInterfaceHttp() {
-        return value instanceof InterfaceHttpValue;
-    }
-
-    public boolean isHttpRequest() {
-        return value instanceof HttpRequestValue;
-    }
-
-    public boolean isServiceDb() {
-        return value instanceof ServiceDbValue;
-    }
-
-    public boolean isSql() {
-        return value instanceof SqlValue;
-    }
-
-    public boolean isAirtableBaseId() {
-        return value instanceof AirtableBaseIdValue;
-    }
-
-    public boolean isAirtableTableId() {
-        return value instanceof AirtableTableIdValue;
-    }
-
-    public boolean isAirtableViewId() {
-        return value instanceof AirtableViewIdValue;
-    }
-
-    public boolean isAirtableFieldId() {
-        return value instanceof AirtableFieldIdValue;
-    }
-
-    public boolean isDiscordChannel() {
-        return value instanceof DiscordChannelValue;
-    }
-
-    public boolean isDiscordChannelArray() {
-        return value instanceof DiscordChannelArrayValue;
-    }
-
-    public boolean isInteger() {
-        return value instanceof IntegerValue;
-    }
-
-    public boolean isObject() {
-        return value instanceof ObjectValue;
-    }
-
-    public boolean isString() {
-        return value instanceof StringValue;
-    }
-
-    public boolean isStringArray() {
-        return value instanceof StringArrayValue;
-    }
-
-    public boolean _isUnknown() {
-        return value instanceof _UnknownValue;
-    }
-
-    public Optional<ConfigurablePropAlert> getAlert() {
-        if (isAlert()) {
-            return Optional.of(((AlertValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropAny> getAny() {
-        if (isAny()) {
-            return Optional.of(((AnyValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropApp> getApp() {
-        if (isApp()) {
-            return Optional.of(((AppValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropBoolean> getBoolean() {
-        if (isBoolean()) {
-            return Optional.of(((BooleanValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropDataStore> getDataStore() {
-        if (isDataStore()) {
-            return Optional.of(((DataStoreValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropDir> getDir() {
-        if (isDir()) {
-            return Optional.of(((DirValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropTimer> getInterfaceTimer() {
-        if (isInterfaceTimer()) {
-            return Optional.of(((InterfaceTimerValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropApphook> getInterfaceApphook() {
-        if (isInterfaceApphook()) {
-            return Optional.of(((InterfaceApphookValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropIntegerArray> getIntegerArray() {
-        if (isIntegerArray()) {
-            return Optional.of(((IntegerArrayValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropHttp> getInterfaceHttp() {
-        if (isInterfaceHttp()) {
-            return Optional.of(((InterfaceHttpValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropHttpRequest> getHttpRequest() {
-        if (isHttpRequest()) {
-            return Optional.of(((HttpRequestValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropDb> getServiceDb() {
-        if (isServiceDb()) {
-            return Optional.of(((ServiceDbValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropSql> getSql() {
-        if (isSql()) {
-            return Optional.of(((SqlValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropAirtableBaseId> getAirtableBaseId() {
-        if (isAirtableBaseId()) {
-            return Optional.of(((AirtableBaseIdValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropAirtableTableId> getAirtableTableId() {
-        if (isAirtableTableId()) {
-            return Optional.of(((AirtableTableIdValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropAirtableViewId> getAirtableViewId() {
-        if (isAirtableViewId()) {
-            return Optional.of(((AirtableViewIdValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropAirtableFieldId> getAirtableFieldId() {
-        if (isAirtableFieldId()) {
-            return Optional.of(((AirtableFieldIdValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropDiscordChannel> getDiscordChannel() {
-        if (isDiscordChannel()) {
-            return Optional.of(((DiscordChannelValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropDiscordChannelArray> getDiscordChannelArray() {
-        if (isDiscordChannelArray()) {
-            return Optional.of(((DiscordChannelArrayValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropInteger> getInteger() {
-        if (isInteger()) {
-            return Optional.of(((IntegerValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropObject> getObject() {
-        if (isObject()) {
-            return Optional.of(((ObjectValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropString> getString() {
-        if (isString()) {
-            return Optional.of(((StringValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<ConfigurablePropStringArray> getStringArray() {
-        if (isStringArray()) {
-            return Optional.of(((StringArrayValue) value).value);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Object> _getUnknown() {
-        if (_isUnknown()) {
-            return Optional.of(((_UnknownValue) value).value);
-        }
-        return Optional.empty();
+        this.type = type;
     }
 
     @JsonValue
-    private Value getValue() {
+    public Object get() {
         return this.value;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T visit(Visitor<T> visitor) {
+        if (this.type == 0) {
+            return visitor.visit((ConfigurablePropAlert) this.value);
+        } else if (this.type == 1) {
+            return visitor.visit((ConfigurablePropApp) this.value);
+        } else if (this.type == 2) {
+            return visitor.visit((ConfigurablePropBoolean) this.value);
+        } else if (this.type == 3) {
+            return visitor.visit((ConfigurablePropDataStore) this.value);
+        } else if (this.type == 4) {
+            return visitor.visit((ConfigurablePropDir) this.value);
+        } else if (this.type == 5) {
+            return visitor.visit((ConfigurablePropTimer) this.value);
+        } else if (this.type == 6) {
+            return visitor.visit((ConfigurablePropApphook) this.value);
+        } else if (this.type == 7) {
+            return visitor.visit((ConfigurablePropIntegerArray) this.value);
+        } else if (this.type == 8) {
+            return visitor.visit((ConfigurablePropHttp) this.value);
+        } else if (this.type == 9) {
+            return visitor.visit((ConfigurablePropHttpRequest) this.value);
+        } else if (this.type == 10) {
+            return visitor.visit((ConfigurablePropDb) this.value);
+        } else if (this.type == 11) {
+            return visitor.visit((ConfigurablePropSql) this.value);
+        } else if (this.type == 12) {
+            return visitor.visit((ConfigurablePropAirtableBaseId) this.value);
+        } else if (this.type == 13) {
+            return visitor.visit((ConfigurablePropAirtableTableId) this.value);
+        } else if (this.type == 14) {
+            return visitor.visit((ConfigurablePropAirtableViewId) this.value);
+        } else if (this.type == 15) {
+            return visitor.visit((ConfigurablePropAirtableFieldId) this.value);
+        } else if (this.type == 16) {
+            return visitor.visit((ConfigurablePropDiscordChannel) this.value);
+        } else if (this.type == 17) {
+            return visitor.visit((ConfigurablePropDiscordChannelArray) this.value);
+        } else if (this.type == 18) {
+            return visitor.visit((ConfigurablePropInteger) this.value);
+        } else if (this.type == 19) {
+            return visitor.visit((ConfigurablePropString) this.value);
+        } else if (this.type == 20) {
+            return visitor.visit((ConfigurablePropStringArray) this.value);
+        } else if (this.type == 21) {
+            return visitor.visit((ConfigurablePropObject) this.value);
+        } else if (this.type == 22) {
+            return visitor.visit((ConfigurablePropAny) this.value);
+        }
+        throw new IllegalStateException("Failed to visit value. This should never happen.");
+    }
+
+    @java.lang.Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        return other instanceof ConfigurableProp && equalTo((ConfigurableProp) other);
+    }
+
+    private boolean equalTo(ConfigurableProp other) {
+        return value.equals(other.value);
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+        return Objects.hash(this.value);
+    }
+
+    @java.lang.Override
+    public String toString() {
+        return this.value.toString();
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAlert value) {
+        return new ConfigurableProp(value, 0);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropApp value) {
+        return new ConfigurableProp(value, 1);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropBoolean value) {
+        return new ConfigurableProp(value, 2);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropDataStore value) {
+        return new ConfigurableProp(value, 3);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropDir value) {
+        return new ConfigurableProp(value, 4);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropTimer value) {
+        return new ConfigurableProp(value, 5);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropApphook value) {
+        return new ConfigurableProp(value, 6);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropIntegerArray value) {
+        return new ConfigurableProp(value, 7);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropHttp value) {
+        return new ConfigurableProp(value, 8);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropHttpRequest value) {
+        return new ConfigurableProp(value, 9);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropDb value) {
+        return new ConfigurableProp(value, 10);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropSql value) {
+        return new ConfigurableProp(value, 11);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAirtableBaseId value) {
+        return new ConfigurableProp(value, 12);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAirtableTableId value) {
+        return new ConfigurableProp(value, 13);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAirtableViewId value) {
+        return new ConfigurableProp(value, 14);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAirtableFieldId value) {
+        return new ConfigurableProp(value, 15);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropDiscordChannel value) {
+        return new ConfigurableProp(value, 16);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropDiscordChannelArray value) {
+        return new ConfigurableProp(value, 17);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropInteger value) {
+        return new ConfigurableProp(value, 18);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropString value) {
+        return new ConfigurableProp(value, 19);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropStringArray value) {
+        return new ConfigurableProp(value, 20);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropObject value) {
+        return new ConfigurableProp(value, 21);
+    }
+
+    public static ConfigurableProp of(ConfigurablePropAny value) {
+        return new ConfigurableProp(value, 22);
+    }
+
     public interface Visitor<T> {
-        T visitAlert(ConfigurablePropAlert alert);
+        T visit(ConfigurablePropAlert value);
 
-        T visitAny(ConfigurablePropAny any);
+        T visit(ConfigurablePropApp value);
 
-        T visitApp(ConfigurablePropApp app);
+        T visit(ConfigurablePropBoolean value);
 
-        T visitBoolean(ConfigurablePropBoolean boolean_);
+        T visit(ConfigurablePropDataStore value);
 
-        T visitDataStore(ConfigurablePropDataStore dataStore);
+        T visit(ConfigurablePropDir value);
 
-        T visitDir(ConfigurablePropDir dir);
+        T visit(ConfigurablePropTimer value);
 
-        T visitInterfaceTimer(ConfigurablePropTimer interfaceTimer);
+        T visit(ConfigurablePropApphook value);
 
-        T visitInterfaceApphook(ConfigurablePropApphook interfaceApphook);
+        T visit(ConfigurablePropIntegerArray value);
 
-        T visitIntegerArray(ConfigurablePropIntegerArray integerArray);
+        T visit(ConfigurablePropHttp value);
 
-        T visitInterfaceHttp(ConfigurablePropHttp interfaceHttp);
+        T visit(ConfigurablePropHttpRequest value);
 
-        T visitHttpRequest(ConfigurablePropHttpRequest httpRequest);
+        T visit(ConfigurablePropDb value);
 
-        T visitServiceDb(ConfigurablePropDb serviceDb);
+        T visit(ConfigurablePropSql value);
 
-        T visitSql(ConfigurablePropSql sql);
+        T visit(ConfigurablePropAirtableBaseId value);
 
-        T visitAirtableBaseId(ConfigurablePropAirtableBaseId airtableBaseId);
+        T visit(ConfigurablePropAirtableTableId value);
 
-        T visitAirtableTableId(ConfigurablePropAirtableTableId airtableTableId);
+        T visit(ConfigurablePropAirtableViewId value);
 
-        T visitAirtableViewId(ConfigurablePropAirtableViewId airtableViewId);
+        T visit(ConfigurablePropAirtableFieldId value);
 
-        T visitAirtableFieldId(ConfigurablePropAirtableFieldId airtableFieldId);
+        T visit(ConfigurablePropDiscordChannel value);
 
-        T visitDiscordChannel(ConfigurablePropDiscordChannel discordChannel);
+        T visit(ConfigurablePropDiscordChannelArray value);
 
-        T visitDiscordChannelArray(ConfigurablePropDiscordChannelArray discordChannelArray);
+        T visit(ConfigurablePropInteger value);
 
-        T visitInteger(ConfigurablePropInteger integer);
+        T visit(ConfigurablePropString value);
 
-        T visitObject(ConfigurablePropObject object);
+        T visit(ConfigurablePropStringArray value);
 
-        T visitString(ConfigurablePropString string);
+        T visit(ConfigurablePropObject value);
 
-        T visitStringArray(ConfigurablePropStringArray stringArray);
-
-        T _visitUnknown(Object unknownType);
+        T visit(ConfigurablePropAny value);
     }
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = _UnknownValue.class)
-    @JsonSubTypes({
-        @JsonSubTypes.Type(AlertValue.class),
-        @JsonSubTypes.Type(AnyValue.class),
-        @JsonSubTypes.Type(AppValue.class),
-        @JsonSubTypes.Type(BooleanValue.class),
-        @JsonSubTypes.Type(DataStoreValue.class),
-        @JsonSubTypes.Type(DirValue.class),
-        @JsonSubTypes.Type(InterfaceTimerValue.class),
-        @JsonSubTypes.Type(InterfaceApphookValue.class),
-        @JsonSubTypes.Type(IntegerArrayValue.class),
-        @JsonSubTypes.Type(InterfaceHttpValue.class),
-        @JsonSubTypes.Type(HttpRequestValue.class),
-        @JsonSubTypes.Type(ServiceDbValue.class),
-        @JsonSubTypes.Type(SqlValue.class),
-        @JsonSubTypes.Type(AirtableBaseIdValue.class),
-        @JsonSubTypes.Type(AirtableTableIdValue.class),
-        @JsonSubTypes.Type(AirtableViewIdValue.class),
-        @JsonSubTypes.Type(AirtableFieldIdValue.class),
-        @JsonSubTypes.Type(DiscordChannelValue.class),
-        @JsonSubTypes.Type(DiscordChannelArrayValue.class),
-        @JsonSubTypes.Type(IntegerValue.class),
-        @JsonSubTypes.Type(ObjectValue.class),
-        @JsonSubTypes.Type(StringValue.class),
-        @JsonSubTypes.Type(StringArrayValue.class)
-    })
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private interface Value {
-        <T> T visit(Visitor<T> visitor);
-    }
-
-    @JsonTypeName("alert")
-    @JsonIgnoreProperties("type")
-    private static final class AlertValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAlert value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AlertValue() {}
-
-        private AlertValue(ConfigurablePropAlert value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAlert(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AlertValue && equalTo((AlertValue) other);
-        }
-
-        private boolean equalTo(AlertValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("any")
-    @JsonIgnoreProperties("type")
-    private static final class AnyValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAny value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AnyValue() {}
-
-        private AnyValue(ConfigurablePropAny value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAny(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AnyValue && equalTo((AnyValue) other);
-        }
-
-        private boolean equalTo(AnyValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("app")
-    @JsonIgnoreProperties("type")
-    private static final class AppValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropApp value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AppValue() {}
-
-        private AppValue(ConfigurablePropApp value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitApp(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AppValue && equalTo((AppValue) other);
-        }
-
-        private boolean equalTo(AppValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("boolean")
-    @JsonIgnoreProperties("type")
-    private static final class BooleanValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropBoolean value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private BooleanValue() {}
-
-        private BooleanValue(ConfigurablePropBoolean value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitBoolean(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof BooleanValue && equalTo((BooleanValue) other);
-        }
-
-        private boolean equalTo(BooleanValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("data_store")
-    @JsonIgnoreProperties("type")
-    private static final class DataStoreValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropDataStore value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private DataStoreValue() {}
-
-        private DataStoreValue(ConfigurablePropDataStore value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitDataStore(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof DataStoreValue && equalTo((DataStoreValue) other);
-        }
-
-        private boolean equalTo(DataStoreValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("dir")
-    @JsonIgnoreProperties("type")
-    private static final class DirValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropDir value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private DirValue() {}
-
-        private DirValue(ConfigurablePropDir value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitDir(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof DirValue && equalTo((DirValue) other);
-        }
-
-        private boolean equalTo(DirValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.interface.timer")
-    @JsonIgnoreProperties("type")
-    private static final class InterfaceTimerValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropTimer value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private InterfaceTimerValue() {}
-
-        private InterfaceTimerValue(ConfigurablePropTimer value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitInterfaceTimer(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof InterfaceTimerValue && equalTo((InterfaceTimerValue) other);
-        }
-
-        private boolean equalTo(InterfaceTimerValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.interface.apphook")
-    @JsonIgnoreProperties("type")
-    private static final class InterfaceApphookValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropApphook value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private InterfaceApphookValue() {}
-
-        private InterfaceApphookValue(ConfigurablePropApphook value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitInterfaceApphook(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof InterfaceApphookValue && equalTo((InterfaceApphookValue) other);
-        }
-
-        private boolean equalTo(InterfaceApphookValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("integer[]")
-    @JsonIgnoreProperties("type")
-    private static final class IntegerArrayValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropIntegerArray value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private IntegerArrayValue() {}
-
-        private IntegerArrayValue(ConfigurablePropIntegerArray value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitIntegerArray(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof IntegerArrayValue && equalTo((IntegerArrayValue) other);
-        }
-
-        private boolean equalTo(IntegerArrayValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.interface.http")
-    @JsonIgnoreProperties("type")
-    private static final class InterfaceHttpValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropHttp value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private InterfaceHttpValue() {}
-
-        private InterfaceHttpValue(ConfigurablePropHttp value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitInterfaceHttp(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof InterfaceHttpValue && equalTo((InterfaceHttpValue) other);
-        }
-
-        private boolean equalTo(InterfaceHttpValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("http_request")
-    @JsonIgnoreProperties("type")
-    private static final class HttpRequestValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropHttpRequest value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private HttpRequestValue() {}
-
-        private HttpRequestValue(ConfigurablePropHttpRequest value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitHttpRequest(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof HttpRequestValue && equalTo((HttpRequestValue) other);
-        }
-
-        private boolean equalTo(HttpRequestValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.service.db")
-    @JsonIgnoreProperties("type")
-    private static final class ServiceDbValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropDb value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private ServiceDbValue() {}
-
-        private ServiceDbValue(ConfigurablePropDb value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitServiceDb(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof ServiceDbValue && equalTo((ServiceDbValue) other);
-        }
-
-        private boolean equalTo(ServiceDbValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("sql")
-    @JsonIgnoreProperties("type")
-    private static final class SqlValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropSql value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private SqlValue() {}
-
-        private SqlValue(ConfigurablePropSql value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitSql(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof SqlValue && equalTo((SqlValue) other);
-        }
-
-        private boolean equalTo(SqlValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.airtable.baseId")
-    @JsonIgnoreProperties("type")
-    private static final class AirtableBaseIdValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAirtableBaseId value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AirtableBaseIdValue() {}
-
-        private AirtableBaseIdValue(ConfigurablePropAirtableBaseId value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAirtableBaseId(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AirtableBaseIdValue && equalTo((AirtableBaseIdValue) other);
-        }
-
-        private boolean equalTo(AirtableBaseIdValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.airtable.tableId")
-    @JsonIgnoreProperties("type")
-    private static final class AirtableTableIdValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAirtableTableId value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AirtableTableIdValue() {}
-
-        private AirtableTableIdValue(ConfigurablePropAirtableTableId value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAirtableTableId(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AirtableTableIdValue && equalTo((AirtableTableIdValue) other);
-        }
-
-        private boolean equalTo(AirtableTableIdValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.airtable.viewId")
-    @JsonIgnoreProperties("type")
-    private static final class AirtableViewIdValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAirtableViewId value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AirtableViewIdValue() {}
-
-        private AirtableViewIdValue(ConfigurablePropAirtableViewId value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAirtableViewId(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AirtableViewIdValue && equalTo((AirtableViewIdValue) other);
-        }
-
-        private boolean equalTo(AirtableViewIdValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.airtable.fieldId")
-    @JsonIgnoreProperties("type")
-    private static final class AirtableFieldIdValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropAirtableFieldId value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private AirtableFieldIdValue() {}
-
-        private AirtableFieldIdValue(ConfigurablePropAirtableFieldId value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitAirtableFieldId(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof AirtableFieldIdValue && equalTo((AirtableFieldIdValue) other);
-        }
-
-        private boolean equalTo(AirtableFieldIdValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.discord.channel")
-    @JsonIgnoreProperties("type")
-    private static final class DiscordChannelValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropDiscordChannel value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private DiscordChannelValue() {}
-
-        private DiscordChannelValue(ConfigurablePropDiscordChannel value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitDiscordChannel(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof DiscordChannelValue && equalTo((DiscordChannelValue) other);
-        }
-
-        private boolean equalTo(DiscordChannelValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("$.discord.channel[]")
-    @JsonIgnoreProperties("type")
-    private static final class DiscordChannelArrayValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropDiscordChannelArray value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private DiscordChannelArrayValue() {}
-
-        private DiscordChannelArrayValue(ConfigurablePropDiscordChannelArray value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitDiscordChannelArray(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof DiscordChannelArrayValue && equalTo((DiscordChannelArrayValue) other);
-        }
-
-        private boolean equalTo(DiscordChannelArrayValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("integer")
-    @JsonIgnoreProperties("type")
-    private static final class IntegerValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropInteger value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private IntegerValue() {}
-
-        private IntegerValue(ConfigurablePropInteger value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitInteger(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof IntegerValue && equalTo((IntegerValue) other);
-        }
-
-        private boolean equalTo(IntegerValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("object")
-    @JsonIgnoreProperties("type")
-    private static final class ObjectValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropObject value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private ObjectValue() {}
-
-        private ObjectValue(ConfigurablePropObject value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitObject(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof ObjectValue && equalTo((ObjectValue) other);
-        }
-
-        private boolean equalTo(ObjectValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("string")
-    @JsonIgnoreProperties("type")
-    private static final class StringValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropString value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private StringValue() {}
-
-        private StringValue(ConfigurablePropString value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitString(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof StringValue && equalTo((StringValue) other);
-        }
-
-        private boolean equalTo(StringValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonTypeName("string[]")
-    @JsonIgnoreProperties("type")
-    private static final class StringArrayValue implements Value {
-        @JsonUnwrapped
-        private ConfigurablePropStringArray value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private StringArrayValue() {}
-
-        private StringArrayValue(ConfigurablePropStringArray value) {
-            this.value = value;
-        }
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor.visitStringArray(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof StringArrayValue && equalTo((StringArrayValue) other);
-        }
-
-        private boolean equalTo(StringArrayValue other) {
-            return value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "value: " + value + "}";
-        }
-    }
-
-    @JsonIgnoreProperties("type")
-    private static final class _UnknownValue implements Value {
-        private String type;
-
-        @JsonValue
-        private Object value;
-
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        private _UnknownValue(@JsonProperty("value") Object value) {}
-
-        @java.lang.Override
-        public <T> T visit(Visitor<T> visitor) {
-            return visitor._visitUnknown(value);
-        }
-
-        @java.lang.Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            return other instanceof _UnknownValue && equalTo((_UnknownValue) other);
-        }
-
-        private boolean equalTo(_UnknownValue other) {
-            return type.equals(other.type) && value.equals(other.value);
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            return Objects.hash(this.type, this.value);
-        }
-
-        @java.lang.Override
-        public String toString() {
-            return "ConfigurableProp{" + "type: " + type + ", value: " + value + "}";
+    static final class Deserializer extends StdDeserializer<ConfigurableProp> {
+        Deserializer() {
+            super(ConfigurableProp.class);
+        }
+
+        @java.lang.Override
+        public ConfigurableProp deserialize(JsonParser p, DeserializationContext context) throws IOException {
+            Object value = p.readValueAs(Object.class);
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("content")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAlert.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("app")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropApp.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropBoolean.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDataStore.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDir.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropTimer.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropApphook.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropIntegerArray.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttp.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttpRequest.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDb.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropSql.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableBaseId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("baseIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableTableId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("tableIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableViewId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("tableIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableFieldId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannel.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannelArray.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropInteger.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropString.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropStringArray.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropObject.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAny.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            throw new JsonParseException(p, "Failed to deserialize");
         }
     }
 }

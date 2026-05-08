@@ -5,6 +5,7 @@ package com.pipedream.api;
 
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.Environment;
+import com.pipedream.api.core.LogConfig;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import okhttp3.OkHttpClient;
 
-public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
+public class AsyncBaseClientBuilder {
     private Optional<Integer> timeout = Optional.empty();
 
     private Optional<Integer> maxRetries = Optional.empty();
@@ -24,6 +25,8 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
     protected Environment environment = Environment.PROD;
 
     private OkHttpClient httpClient;
+
+    private Optional<LogConfig> logging = Optional.empty();
 
     private String projectId;
 
@@ -52,45 +55,63 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
     }
 
     /**
+     * Creates a new client builder.
+     * Use this method to start building a client with the classic builder pattern.
+     *
+     * @return A builder for configuring authentication and creating the client
+     */
+    public static _Builder builder() {
+        return new _Builder();
+    }
+
+    /**
      * Sets projectEnvironment
      */
-    public T projectEnvironment(String projectEnvironment) {
+    public AsyncBaseClientBuilder projectEnvironment(String projectEnvironment) {
         this.projectEnvironment = projectEnvironment;
-        return (T) this;
+        return this;
     }
 
-    public T environment(Environment environment) {
+    public AsyncBaseClientBuilder environment(Environment environment) {
         this.environment = environment;
-        return (T) this;
+        return this;
     }
 
-    public T url(String url) {
+    public AsyncBaseClientBuilder url(String url) {
         this.environment = Environment.custom(url);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
      */
-    public T timeout(int timeout) {
+    public AsyncBaseClientBuilder timeout(int timeout) {
         this.timeout = Optional.of(timeout);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the maximum number of retries for the client. Defaults to 2 retries.
      */
-    public T maxRetries(int maxRetries) {
+    public AsyncBaseClientBuilder maxRetries(int maxRetries) {
         this.maxRetries = Optional.of(maxRetries);
-        return (T) this;
+        return this;
     }
 
     /**
      * Sets the underlying OkHttp client
      */
-    public T httpClient(OkHttpClient httpClient) {
+    public AsyncBaseClientBuilder httpClient(OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        return (T) this;
+        return this;
+    }
+
+    /**
+     * Configure logging for the SDK. Silent by default — no log output unless explicitly configured.
+     */
+    public AsyncBaseClientBuilder logging(LogConfig logging) {
+        this.logging = Optional.of(logging);
+        return this;
     }
 
     /**
@@ -101,14 +122,14 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
      * @param value The header value
      * @return This builder for method chaining
      */
-    public T addHeader(String name, String value) {
+    public AsyncBaseClientBuilder addHeader(String name, String value) {
         this.customHeaders.put(name, value);
-        return (T) this;
+        return this;
     }
 
-    public T projectId(String projectId) {
+    public AsyncBaseClientBuilder projectId(String projectId) {
         this.projectId = projectId;
-        return (T) this;
+        return this;
     }
 
     protected ClientOptions buildClientOptions() {
@@ -120,6 +141,7 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
         setHttpClient(builder);
         setTimeouts(builder);
         setRetries(builder);
+        setLogging(builder);
         for (Map.Entry<String, String> header : this.customHeaders.entrySet()) {
             builder.addHeader(header.getKey(), header.getValue());
         }
@@ -224,6 +246,18 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
     }
 
     /**
+     * Sets the logging configuration for the SDK.
+     * Override this method to customize logging behavior.
+     *
+     * @param builder The ClientOptions.Builder to configure
+     */
+    protected void setLogging(ClientOptions.Builder builder) {
+        if (this.logging.isPresent()) {
+            builder.logging(this.logging.get());
+        }
+    }
+
+    /**
      * Override this method to add any additional configuration to the client.
      * This method is called at the end of the configuration chain, allowing you to add
      * custom headers, modify settings, or perform any other client customization.
@@ -305,6 +339,119 @@ public class AsyncBaseClientBuilder<T extends AsyncBaseClientBuilder<T>> {
                     .addHeader("Authorization", oAuthTokenSupplier)
                     .build();
             return new AsyncBaseClient(finalOptions);
+        }
+    }
+
+    public static final class _Builder {
+        private Environment environment;
+
+        private Optional<Integer> timeout = Optional.empty();
+
+        private Optional<Integer> maxRetries = Optional.empty();
+
+        private OkHttpClient httpClient;
+
+        private final Map<String, String> headers = new HashMap<>();
+
+        public _Builder environment(Environment environment) {
+            this.environment = environment;
+            return this;
+        }
+
+        public _Builder url(String url) {
+            this.environment = Environment.custom(url);
+            return this;
+        }
+
+        /**
+         * Sets the timeout (in seconds) for the client. Defaults to 60 seconds.
+         */
+        public _Builder timeout(int timeout) {
+            this.timeout = Optional.of(timeout);
+            return this;
+        }
+
+        /**
+         * Sets the maximum number of retries for the client. Defaults to 2 retries.
+         */
+        public _Builder maxRetries(int maxRetries) {
+            this.maxRetries = Optional.of(maxRetries);
+            return this;
+        }
+
+        /**
+         * Sets the underlying OkHttp client
+         */
+        public _Builder httpClient(OkHttpClient httpClient) {
+            this.httpClient = httpClient;
+            return this;
+        }
+
+        /**
+         * Add a custom header to be sent with all requests.
+         * @param name The header name
+         * @param value The header value
+         * @return This builder for method chaining
+         */
+        public _Builder addHeader(String name, String value) {
+            this.headers.put(name, value);
+            return this;
+        }
+
+        /**
+         * Configure the client to use a pre-generated access token for authentication.
+         * Use this when you already have a valid access token and want to bypass
+         * the OAuth client credentials flow.
+         *
+         * @param token The access token to use for Authorization header
+         * @return A builder configured for token authentication
+         */
+        public _TokenAuth token(String token) {
+            _TokenAuth auth = new _TokenAuth(token);
+            if (this.environment != null) {
+                auth.environment = this.environment;
+            }
+            if (this.timeout.isPresent()) {
+                auth.timeout(this.timeout.get());
+            }
+            if (this.maxRetries.isPresent()) {
+                auth.maxRetries(this.maxRetries.get());
+            }
+            if (this.httpClient != null) {
+                auth.httpClient(this.httpClient);
+            }
+            for (Map.Entry<String, String> header : this.headers.entrySet()) {
+                auth.addHeader(header.getKey(), header.getValue());
+            }
+            return auth;
+        }
+
+        /**
+         * Configure the client to use OAuth client credentials for authentication.
+         * The builder will automatically handle token acquisition and refresh.
+         *
+         * @param clientId The OAuth client ID
+         * @param clientSecret The OAuth client secret
+         * @return A builder configured for OAuth client credentials authentication
+         */
+        public _CredentialsAuth credentials(String clientId, String clientSecret) {
+            _CredentialsAuth auth = new _CredentialsAuth(clientId, clientSecret);
+            if (this.environment != null) {
+                auth.environment = this.environment;
+            }
+            if (this.timeout.isPresent()) {
+                auth.timeout(this.timeout.get());
+            }
+            if (this.maxRetries.isPresent()) {
+                auth.maxRetries(this.maxRetries.get());
+            }
+            if (this.httpClient != null) {
+                auth.httpClient(this.httpClient);
+            }
+            for (Map.Entry<String, String> header : this.headers.entrySet()) {
+                auth.addHeader(header.getKey(), header.getValue());
+            }
+            return auth;
         }
     }
 }

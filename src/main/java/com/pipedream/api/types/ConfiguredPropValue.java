@@ -35,21 +35,21 @@ public final class ConfiguredPropValue {
     @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
-            return visitor.visit((Object) this.value);
-        } else if (this.type == 1) {
             return visitor.visit((ConfiguredPropValueApp) this.value);
-        } else if (this.type == 2) {
+        } else if (this.type == 1) {
             return visitor.visit((boolean) this.value);
-        } else if (this.type == 3) {
+        } else if (this.type == 2) {
             return visitor.visit((double) this.value);
-        } else if (this.type == 4) {
-            return visitor.visit((Map<String, Object>) this.value);
-        } else if (this.type == 5) {
+        } else if (this.type == 3) {
             return visitor.visit((ConfiguredPropValueSql) this.value);
-        } else if (this.type == 6) {
+        } else if (this.type == 4) {
             return visitor.visit((String) this.value);
-        } else if (this.type == 7) {
+        } else if (this.type == 5) {
             return visitor.visit((List<String>) this.value);
+        } else if (this.type == 6) {
+            return visitor.visit((Map<String, Object>) this.value);
+        } else if (this.type == 7) {
+            return visitor.visit((ConfiguredPropValueAny) this.value);
         }
         throw new IllegalStateException("Failed to visit value. This should never happen.");
     }
@@ -74,54 +74,54 @@ public final class ConfiguredPropValue {
         return this.value.toString();
     }
 
-    public static ConfiguredPropValue of(Object value) {
+    public static ConfiguredPropValue of(ConfiguredPropValueApp value) {
         return new ConfiguredPropValue(value, 0);
     }
 
-    public static ConfiguredPropValue of(ConfiguredPropValueApp value) {
+    public static ConfiguredPropValue of(boolean value) {
         return new ConfiguredPropValue(value, 1);
     }
 
-    public static ConfiguredPropValue of(boolean value) {
+    public static ConfiguredPropValue of(double value) {
         return new ConfiguredPropValue(value, 2);
     }
 
-    public static ConfiguredPropValue of(double value) {
+    public static ConfiguredPropValue of(ConfiguredPropValueSql value) {
         return new ConfiguredPropValue(value, 3);
     }
 
-    public static ConfiguredPropValue of(Map<String, Object> value) {
+    public static ConfiguredPropValue of(String value) {
         return new ConfiguredPropValue(value, 4);
     }
 
-    public static ConfiguredPropValue of(ConfiguredPropValueSql value) {
+    public static ConfiguredPropValue of(List<String> value) {
         return new ConfiguredPropValue(value, 5);
     }
 
-    public static ConfiguredPropValue of(String value) {
+    public static ConfiguredPropValue of(Map<String, Object> value) {
         return new ConfiguredPropValue(value, 6);
     }
 
-    public static ConfiguredPropValue of(List<String> value) {
+    public static ConfiguredPropValue of(ConfiguredPropValueAny value) {
         return new ConfiguredPropValue(value, 7);
     }
 
     public interface Visitor<T> {
-        T visit(Object value);
-
         T visit(ConfiguredPropValueApp value);
 
         T visit(boolean value);
 
         T visit(double value);
 
-        T visit(Map<String, Object> value);
-
         T visit(ConfiguredPropValueSql value);
 
         T visit(String value);
 
         T visit(List<String> value);
+
+        T visit(Map<String, Object> value);
+
+        T visit(ConfiguredPropValueAny value);
     }
 
     static final class Deserializer extends StdDeserializer<ConfiguredPropValue> {
@@ -132,27 +132,27 @@ public final class ConfiguredPropValue {
         @java.lang.Override
         public ConfiguredPropValue deserialize(JsonParser p, DeserializationContext context) throws IOException {
             Object value = p.readValueAs(Object.class);
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, Object.class));
-            } catch (RuntimeException e) {
-            }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueApp.class));
-            } catch (RuntimeException e) {
-            }
             if (value instanceof Boolean) {
                 return of((Boolean) value);
             }
             if (value instanceof Double) {
                 return of((Double) value);
             }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Map<String, Object>>() {}));
-            } catch (RuntimeException e) {
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("authProvisionId")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueApp.class));
+                } catch (RuntimeException e) {
+                }
             }
-            try {
-                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueSql.class));
-            } catch (RuntimeException e) {
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("value")
+                    && ((Map<?, ?>) value).containsKey("query")
+                    && ((Map<?, ?>) value).containsKey("params")
+                    && ((Map<?, ?>) value).containsKey("usePreparedStatements")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueSql.class));
+                } catch (RuntimeException e) {
+                }
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
@@ -160,6 +160,14 @@ public final class ConfiguredPropValue {
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<List<String>>() {}));
+            } catch (RuntimeException e) {
+            }
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, new TypeReference<Map<String, Object>>() {}));
+            } catch (RuntimeException e) {
+            }
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueAny.class));
             } catch (RuntimeException e) {
             }
             throw new JsonParseException(p, "Failed to deserialize");

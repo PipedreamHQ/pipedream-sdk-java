@@ -82,6 +82,10 @@ public final class ListProjectsResponse {
     public interface _FinalStage {
         ListProjectsResponse build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage data(List<Project> data);
 
         _FinalStage addData(Project data);
@@ -141,6 +145,18 @@ public final class ListProjectsResponse {
         @java.lang.Override
         public ListProjectsResponse build() {
             return new ListProjectsResponse(data, pageInfo, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
