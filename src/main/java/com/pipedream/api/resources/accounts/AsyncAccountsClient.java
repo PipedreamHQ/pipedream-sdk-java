@@ -6,10 +6,12 @@ package com.pipedream.api.resources.accounts;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.accounts.requests.AccountsListByExternalUserRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncAccountsClient {
@@ -127,5 +129,37 @@ public class AsyncAccountsClient {
      */
     public CompletableFuture<Void> deleteByApp(String appId, RequestOptions requestOptions) {
         return this.rawClient.deleteByApp(appId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<List<Account>> listByExternalUser(String externalUserId) {
+        return this.rawClient.listByExternalUser(externalUserId).thenApply(response -> response.body());
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<List<Account>> listByExternalUser(String externalUserId, RequestOptions requestOptions) {
+        return this.rawClient.listByExternalUser(externalUserId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<List<Account>> listByExternalUser(
+            String externalUserId, AccountsListByExternalUserRequest request) {
+        return this.rawClient.listByExternalUser(externalUserId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<List<Account>> listByExternalUser(
+            String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listByExternalUser(externalUserId, request, requestOptions)
+                .thenApply(response -> response.body());
     }
 }
