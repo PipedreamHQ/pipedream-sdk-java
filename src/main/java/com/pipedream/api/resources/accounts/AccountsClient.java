@@ -6,10 +6,12 @@ package com.pipedream.api.resources.accounts;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.resources.accounts.requests.AccountsListByExternalUserRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
+import java.util.List;
 
 public class AccountsClient {
     protected final ClientOptions clientOptions;
@@ -124,5 +126,36 @@ public class AccountsClient {
      */
     public void deleteByApp(String appId, RequestOptions requestOptions) {
         this.rawClient.deleteByApp(appId, requestOptions).body();
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public List<Account> listByExternalUser(String externalUserId) {
+        return this.rawClient.listByExternalUser(externalUserId).body();
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public List<Account> listByExternalUser(String externalUserId, RequestOptions requestOptions) {
+        return this.rawClient.listByExternalUser(externalUserId, requestOptions).body();
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public List<Account> listByExternalUser(String externalUserId, AccountsListByExternalUserRequest request) {
+        return this.rawClient.listByExternalUser(externalUserId, request).body();
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public List<Account> listByExternalUser(
+            String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listByExternalUser(externalUserId, request, requestOptions)
+                .body();
     }
 }
