@@ -4,6 +4,7 @@
 package com.pipedream.api.resources.accounts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -14,6 +15,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.resources.accounts.requests.AccountsListByExternalUserRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
@@ -463,6 +465,107 @@ public class AsyncRawAccountsClient {
                         return;
                     }
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    try {
+                        if (response.code() == 429) {
+                            future.completeExceptionally(new TooManyRequestsError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
+                            return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new BaseClientApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(String externalUserId) {
+        return listByExternalUser(
+                externalUserId, AccountsListByExternalUserRequest.builder().build());
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
+            String externalUserId, RequestOptions requestOptions) {
+        return listByExternalUser(
+                externalUserId, AccountsListByExternalUserRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
+            String externalUserId, AccountsListByExternalUserRequest request) {
+        return listByExternalUser(externalUserId, request, null);
+    }
+
+    /**
+     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     */
+    public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
+            String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("users")
+                .addPathSegment(externalUserId)
+                .addPathSegments("accounts");
+        if (request.getIncludeCredentials().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl,
+                    "include_credentials",
+                    request.getIncludeCredentials().get(),
+                    false);
+        }
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<BaseClientHttpResponse<List<Account>>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, new TypeReference<List<Account>>() {}),
+                                response));
+                        return;
+                    }
                     try {
                         if (response.code() == 429) {
                             future.completeExceptionally(new TooManyRequestsError(
