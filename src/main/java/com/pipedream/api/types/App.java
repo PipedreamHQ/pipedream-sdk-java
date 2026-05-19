@@ -41,6 +41,8 @@ public final class App {
 
     private final double featuredWeight;
 
+    private final List<AppScopeProfilesItem> scopeProfiles;
+
     private final Map<String, Object> additionalProperties;
 
     private App(
@@ -53,6 +55,7 @@ public final class App {
             Optional<String> customFieldsJson,
             List<String> categories,
             double featuredWeight,
+            List<AppScopeProfilesItem> scopeProfiles,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.nameSlug = nameSlug;
@@ -63,6 +66,7 @@ public final class App {
         this.customFieldsJson = customFieldsJson;
         this.categories = categories;
         this.featuredWeight = featuredWeight;
+        this.scopeProfiles = scopeProfiles;
         this.additionalProperties = additionalProperties;
     }
 
@@ -135,6 +139,14 @@ public final class App {
         return featuredWeight;
     }
 
+    /**
+     * @return Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.
+     */
+    @JsonProperty("scope_profiles")
+    public List<AppScopeProfilesItem> getScopeProfiles() {
+        return scopeProfiles;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -155,7 +167,8 @@ public final class App {
                 && imgSrc.equals(other.imgSrc)
                 && customFieldsJson.equals(other.customFieldsJson)
                 && categories.equals(other.categories)
-                && featuredWeight == other.featuredWeight;
+                && featuredWeight == other.featuredWeight
+                && scopeProfiles.equals(other.scopeProfiles);
     }
 
     @java.lang.Override
@@ -169,7 +182,8 @@ public final class App {
                 this.imgSrc,
                 this.customFieldsJson,
                 this.categories,
-                this.featuredWeight);
+                this.featuredWeight,
+                this.scopeProfiles);
     }
 
     @java.lang.Override
@@ -251,6 +265,15 @@ public final class App {
         _FinalStage addCategories(String categories);
 
         _FinalStage addAllCategories(List<String> categories);
+
+        /**
+         * <p>Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.</p>
+         */
+        _FinalStage scopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
+
+        _FinalStage addScopeProfiles(AppScopeProfilesItem scopeProfiles);
+
+        _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -263,6 +286,8 @@ public final class App {
         private String imgSrc;
 
         private double featuredWeight;
+
+        private List<AppScopeProfilesItem> scopeProfiles = new ArrayList<>();
 
         private List<String> categories = new ArrayList<>();
 
@@ -290,6 +315,7 @@ public final class App {
             customFieldsJson(other.getCustomFieldsJson());
             categories(other.getCategories());
             featuredWeight(other.getFeaturedWeight());
+            scopeProfiles(other.getScopeProfiles());
             return this;
         }
 
@@ -338,6 +364,41 @@ public final class App {
         @JsonSetter("featured_weight")
         public _FinalStage featuredWeight(double featuredWeight) {
             this.featuredWeight = featuredWeight;
+            return this;
+        }
+
+        /**
+         * <p>Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles) {
+            if (scopeProfiles != null) {
+                this.scopeProfiles.addAll(scopeProfiles);
+            }
+            return this;
+        }
+
+        /**
+         * <p>Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage addScopeProfiles(AppScopeProfilesItem scopeProfiles) {
+            this.scopeProfiles.add(scopeProfiles);
+            return this;
+        }
+
+        /**
+         * <p>Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scope_profiles", nulls = Nulls.SKIP)
+        public _FinalStage scopeProfiles(List<AppScopeProfilesItem> scopeProfiles) {
+            this.scopeProfiles.clear();
+            if (scopeProfiles != null) {
+                this.scopeProfiles.addAll(scopeProfiles);
+            }
             return this;
         }
 
@@ -461,6 +522,7 @@ public final class App {
                     customFieldsJson,
                     categories,
                     featuredWeight,
+                    scopeProfiles,
                     additionalProperties);
         }
 

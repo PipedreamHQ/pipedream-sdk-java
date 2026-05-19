@@ -56,3 +56,6 @@ src/test/java/com/pipedream/api/TokensWireTest.java
 src/test/java/com/pipedream/api/testutil/MockResponse.java
 src/test/java/com/pipedream/api/testutil/MockWebServer.java
 src/test/java/com/pipedream/api/testutil/RecordedRequest.java
+.fern/replay.lock
+.fern/replay.yml
+.gitattributes
