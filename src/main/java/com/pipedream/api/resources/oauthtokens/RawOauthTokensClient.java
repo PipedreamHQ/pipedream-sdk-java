@@ -11,6 +11,7 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.resources.oauthtokens.requests.CreateOAuthTokenOpts;
 import com.pipedream.api.types.CreateOAuthTokenResponse;
 import java.io.IOException;
@@ -74,6 +75,14 @@ public class RawOauthTokensClient {
                 return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, CreateOAuthTokenResponse.class),
                         response);
+            }
+            try {
+                if (response.code() == 429) {
+                    throw new TooManyRequestsError(
+                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
             }
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
