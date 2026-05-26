@@ -731,6 +731,91 @@ client.accounts().deleteByApp("app_id");
 </dl>
 </details>
 
+<details><summary><code>client.accounts.listByExternalUser(projectId, externalUserId) -> List&amp;lt;Account&amp;gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.accounts().listByExternalUser(
+    "external_user_id",
+    AccountsListByExternalUserRequest
+        .builder()
+        .includeCredentials(true)
+        .app("app")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — The project ID, which starts with `proj_`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**externalUserId:** `String` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**includeCredentials:** `Optional<Boolean>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app:** `Optional<String>` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Users
 <details><summary><code>client.users.deleteExternalUser(projectId, externalUserId)</code></summary>
 <dl>
