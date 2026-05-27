@@ -1,5 +1,7 @@
 # Reference
+
 ## AppCategories
+
 <details><summary><code>client.appCategories.list() -> List&amp;lt;AppCategory&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -29,11 +31,11 @@ Retrieve all available categories for integrated apps
 ```java
 client.appCategories().list();
 ```
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -68,6 +70,7 @@ Get details of a specific app category by its ID
 ```java
 client.appCategories().retrieve("id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -82,18 +85,18 @@ client.appCategories().retrieve("id");
 <dd>
 
 **id:** `String` — The ID of the app category to retrieve
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Apps
+
 <details><summary><code>client.apps.list() -> SyncPagingIterable&amp;lt;App&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -139,6 +142,7 @@ client.apps().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -153,7 +157,7 @@ client.apps().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -161,7 +165,7 @@ client.apps().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -169,7 +173,7 @@ client.apps().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -177,7 +181,7 @@ client.apps().list(
 <dd>
 
 **q:** `Optional<String>` — A search query to filter the apps
-    
+
 </dd>
 </dl>
 
@@ -185,7 +189,7 @@ client.apps().list(
 <dd>
 
 **sortKey:** `Optional<AppsListRequestSortKey>` — The key to sort the apps by
-    
+
 </dd>
 </dl>
 
@@ -193,7 +197,7 @@ client.apps().list(
 <dd>
 
 **sortDirection:** `Optional<AppsListRequestSortDirection>` — The direction to sort the apps
-    
+
 </dd>
 </dl>
 
@@ -201,7 +205,7 @@ client.apps().list(
 <dd>
 
 **categoryIds:** `Optional<String>` — Only return apps in these categories
-    
+
 </dd>
 </dl>
 
@@ -209,7 +213,7 @@ client.apps().list(
 <dd>
 
 **hasComponents:** `Optional<Boolean>` — Only return apps that have components (actions or triggers)
-    
+
 </dd>
 </dl>
 
@@ -217,7 +221,7 @@ client.apps().list(
 <dd>
 
 **hasActions:** `Optional<Boolean>` — Only return apps that have actions
-    
+
 </dd>
 </dl>
 
@@ -225,12 +229,11 @@ client.apps().list(
 <dd>
 
 **hasTriggers:** `Optional<Boolean>` — Only return apps that have triggers
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -265,6 +268,7 @@ Get detailed information about a specific app by ID or name slug
 ```java
 client.apps().retrieve("app_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -279,18 +283,18 @@ client.apps().retrieve("app_id");
 <dd>
 
 **appId:** `String` — The name slug or ID of the app (e.g., 'slack', 'github')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Accounts
+
 <details><summary><code>client.accounts.list(projectId) -> SyncPagingIterable&amp;lt;Account&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -331,6 +335,7 @@ client.accounts().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -345,15 +350,15 @@ client.accounts().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**externalUserId:** `Optional<String>` 
-    
+**externalUserId:** `Optional<String>`
+
 </dd>
 </dl>
 
@@ -361,7 +366,7 @@ client.accounts().list(
 <dd>
 
 **oauthAppId:** `Optional<String>` — The OAuth app ID to filter by, if applicable
-    
+
 </dd>
 </dl>
 
@@ -369,7 +374,7 @@ client.accounts().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -377,7 +382,7 @@ client.accounts().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -385,7 +390,7 @@ client.accounts().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -393,7 +398,7 @@ client.accounts().list(
 <dd>
 
 **app:** `Optional<String>` — The app slug or ID to filter accounts by.
-    
+
 </dd>
 </dl>
 
@@ -401,12 +406,11 @@ client.accounts().list(
 <dd>
 
 **includeCredentials:** `Optional<Boolean>` — Whether to retrieve the account's credentials or not
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -450,6 +454,7 @@ client.accounts().create(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -464,15 +469,15 @@ client.accounts().create(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**externalUserId:** `Optional<String>` 
-    
+**externalUserId:** `Optional<String>`
+
 </dd>
 </dl>
 
@@ -480,7 +485,7 @@ client.accounts().create(
 <dd>
 
 **oauthAppId:** `Optional<String>` — The OAuth app ID to filter by, if applicable
-    
+
 </dd>
 </dl>
 
@@ -488,7 +493,7 @@ client.accounts().create(
 <dd>
 
 **appSlug:** `String` — The app slug for the account
-    
+
 </dd>
 </dl>
 
@@ -496,7 +501,7 @@ client.accounts().create(
 <dd>
 
 **cfmapJson:** `String` — JSON string containing the custom fields mapping
-    
+
 </dd>
 </dl>
 
@@ -504,7 +509,7 @@ client.accounts().create(
 <dd>
 
 **connectToken:** `String` — The connect token for authentication
-    
+
 </dd>
 </dl>
 
@@ -512,7 +517,7 @@ client.accounts().create(
 <dd>
 
 **name:** `Optional<String>` — Optional name for the account
-    
+
 </dd>
 </dl>
 
@@ -520,12 +525,11 @@ client.accounts().create(
 <dd>
 
 **accountId:** `Optional<String>` — An existing account ID to reconnect. When provided, the account's credentials are updated instead of creating a new account. Must belong to the same external user and project environment as the connect token, and match the app identified by app_slug.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -566,6 +570,7 @@ client.accounts().retrieve(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -580,15 +585,15 @@ client.accounts().retrieve(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**accountId:** `String` 
-    
+**accountId:** `String`
+
 </dd>
 </dl>
 
@@ -596,12 +601,11 @@ client.accounts().retrieve(
 <dd>
 
 **includeCredentials:** `Optional<Boolean>` — Whether to retrieve the account's credentials or not
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -636,6 +640,7 @@ Remove a connected account and its associated credentials
 ```java
 client.accounts().delete("account_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -650,20 +655,19 @@ client.accounts().delete("account_id");
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**accountId:** `String` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**accountId:** `String`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -698,6 +702,7 @@ Remove all connected accounts for a specific app
 ```java
 client.accounts().deleteByApp("app_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -712,26 +717,111 @@ client.accounts().deleteByApp("app_id");
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**appId:** `String` 
-    
+**appId:** `String`
+
 </dd>
 </dl>
 </dd>
 </dl>
 
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.accounts.listByExternalUser(projectId, externalUserId) -> List&amp;lt;Account&amp;gt;</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.accounts().listByExternalUser(
+    "external_user_id",
+    AccountsListByExternalUserRequest
+        .builder()
+        .includeCredentials(true)
+        .app("app")
+        .build()
+);
+```
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**projectId:** `String` — The project ID, which starts with `proj_`.
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**externalUserId:** `String`
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**includeCredentials:** `Optional<Boolean>`
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app:** `Optional<String>`
+
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Users
+
 <details><summary><code>client.users.deleteExternalUser(projectId, externalUserId)</code></summary>
 <dl>
 <dd>
@@ -761,6 +851,7 @@ Remove an external user and all their associated accounts and resources
 ```java
 client.users().deleteExternalUser("external_user_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -775,20 +866,19 @@ client.users().deleteExternalUser("external_user_id");
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**externalUserId:** `String` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**externalUserId:** `String`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -831,6 +921,7 @@ client.users().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -845,7 +936,7 @@ client.users().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -853,7 +944,7 @@ client.users().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -861,7 +952,7 @@ client.users().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -869,7 +960,7 @@ client.users().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -877,18 +968,18 @@ client.users().list(
 <dd>
 
 **q:** `Optional<String>` — Filter users by external_id (partial match)
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Components
+
 <details><summary><code>client.components.list(projectId) -> SyncPagingIterable&amp;lt;Component&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -929,6 +1020,7 @@ client.components().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -943,7 +1035,7 @@ client.components().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -951,7 +1043,7 @@ client.components().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -959,7 +1051,7 @@ client.components().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -967,7 +1059,7 @@ client.components().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -975,7 +1067,7 @@ client.components().list(
 <dd>
 
 **q:** `Optional<String>` — A search query to filter the components
-    
+
 </dd>
 </dl>
 
@@ -983,7 +1075,7 @@ client.components().list(
 <dd>
 
 **app:** `Optional<String>` — The ID or name slug of the app to filter the components
-    
+
 </dd>
 </dl>
 
@@ -991,7 +1083,7 @@ client.components().list(
 <dd>
 
 **registry:** `Optional<ComponentsListRequestRegistry>` — The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')
-    
+
 </dd>
 </dl>
 
@@ -999,12 +1091,11 @@ client.components().list(
 <dd>
 
 **componentType:** `Optional<ComponentType>` — The type of the component to filter the components
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1045,6 +1136,7 @@ client.components().retrieve(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1059,7 +1151,7 @@ client.components().retrieve(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1067,7 +1159,7 @@ client.components().retrieve(
 <dd>
 
 **componentId:** `String` — The key that uniquely identifies the component (e.g., 'slack-send-message')
-    
+
 </dd>
 </dl>
 
@@ -1075,12 +1167,11 @@ client.components().retrieve(
 <dd>
 
 **version:** `Optional<String>` — Optional semantic version of the component to retrieve (for example '1.0.0')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1122,6 +1213,7 @@ client.components().configureProp(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1136,20 +1228,19 @@ client.components().configureProp(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ConfigurePropOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ConfigurePropOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1190,6 +1281,7 @@ client.components().reloadProps(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1204,26 +1296,26 @@ client.components().reloadProps(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ReloadPropsOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ReloadPropsOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Actions
+
 <details><summary><code>client.actions.list(projectId) -> SyncPagingIterable&amp;lt;Component&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -1263,6 +1355,7 @@ client.actions().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1277,7 +1370,7 @@ client.actions().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1285,7 +1378,7 @@ client.actions().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -1293,7 +1386,7 @@ client.actions().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -1301,7 +1394,7 @@ client.actions().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -1309,7 +1402,7 @@ client.actions().list(
 <dd>
 
 **q:** `Optional<String>` — A search query to filter the actions
-    
+
 </dd>
 </dl>
 
@@ -1317,7 +1410,7 @@ client.actions().list(
 <dd>
 
 **app:** `Optional<String>` — The ID or name slug of the app to filter the actions
-    
+
 </dd>
 </dl>
 
@@ -1325,12 +1418,11 @@ client.actions().list(
 <dd>
 
 **registry:** `Optional<ActionsListRequestRegistry>` — The registry to retrieve actions from. Defaults to 'all' ('public', 'private', or 'all')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1371,6 +1463,7 @@ client.actions().retrieve(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1385,7 +1478,7 @@ client.actions().retrieve(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1393,7 +1486,7 @@ client.actions().retrieve(
 <dd>
 
 **componentId:** `String` — The key that uniquely identifies the component (e.g., 'slack-send-message')
-    
+
 </dd>
 </dl>
 
@@ -1401,12 +1494,11 @@ client.actions().retrieve(
 <dd>
 
 **version:** `Optional<String>` — Optional semantic version of the component to retrieve (for example '1.0.0')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1448,6 +1540,7 @@ client.actions().configureProp(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1462,20 +1555,19 @@ client.actions().configureProp(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ConfigurePropOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ConfigurePropOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1516,6 +1608,7 @@ client.actions().reloadProps(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1530,20 +1623,19 @@ client.actions().reloadProps(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ReloadPropsOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ReloadPropsOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1584,6 +1676,7 @@ client.actions().run(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1598,7 +1691,7 @@ client.actions().run(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1606,7 +1699,7 @@ client.actions().run(
 <dd>
 
 **id:** `String` — The action component ID
-    
+
 </dd>
 </dl>
 
@@ -1614,7 +1707,7 @@ client.actions().run(
 <dd>
 
 **version:** `Optional<String>` — Optional action component version (in SemVer format, for example '1.0.0'), defaults to latest
-    
+
 </dd>
 </dl>
 
@@ -1622,15 +1715,15 @@ client.actions().run(
 <dd>
 
 **externalUserId:** `String` — The external user ID
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>` 
-    
+**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>`
+
 </dd>
 </dl>
 
@@ -1638,26 +1731,26 @@ client.actions().run(
 <dd>
 
 **dynamicPropsId:** `Optional<String>` — The ID for dynamic props
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**stashId:** `Optional<RunActionOptsStashId>` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**stashId:** `Optional<RunActionOptsStashId>`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Triggers
+
 <details><summary><code>client.triggers.list(projectId) -> SyncPagingIterable&amp;lt;Component&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -1697,6 +1790,7 @@ client.triggers().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1711,7 +1805,7 @@ client.triggers().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1719,7 +1813,7 @@ client.triggers().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -1727,7 +1821,7 @@ client.triggers().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -1735,7 +1829,7 @@ client.triggers().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -1743,7 +1837,7 @@ client.triggers().list(
 <dd>
 
 **q:** `Optional<String>` — A search query to filter the triggers
-    
+
 </dd>
 </dl>
 
@@ -1751,7 +1845,7 @@ client.triggers().list(
 <dd>
 
 **app:** `Optional<String>` — The ID or name slug of the app to filter the triggers
-    
+
 </dd>
 </dl>
 
@@ -1759,12 +1853,11 @@ client.triggers().list(
 <dd>
 
 **registry:** `Optional<TriggersListRequestRegistry>` — The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1805,6 +1898,7 @@ client.triggers().retrieve(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1819,7 +1913,7 @@ client.triggers().retrieve(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -1827,7 +1921,7 @@ client.triggers().retrieve(
 <dd>
 
 **componentId:** `String` — The key that uniquely identifies the component (e.g., 'slack-send-message')
-    
+
 </dd>
 </dl>
 
@@ -1835,12 +1929,11 @@ client.triggers().retrieve(
 <dd>
 
 **version:** `Optional<String>` — Optional semantic version of the component to retrieve (for example '1.0.0')
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1882,6 +1975,7 @@ client.triggers().configureProp(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1896,20 +1990,19 @@ client.triggers().configureProp(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ConfigurePropOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ConfigurePropOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -1950,6 +2043,7 @@ client.triggers().reloadProps(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -1964,20 +2058,19 @@ client.triggers().reloadProps(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `ReloadPropsOpts` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**request:** `ReloadPropsOpts`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2018,6 +2111,7 @@ client.triggers().deploy(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2032,7 +2126,7 @@ client.triggers().deploy(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -2040,7 +2134,7 @@ client.triggers().deploy(
 <dd>
 
 **id:** `String` — The trigger component ID
-    
+
 </dd>
 </dl>
 
@@ -2048,7 +2142,7 @@ client.triggers().deploy(
 <dd>
 
 **version:** `Optional<String>` — Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest
-    
+
 </dd>
 </dl>
 
@@ -2056,15 +2150,15 @@ client.triggers().deploy(
 <dd>
 
 **externalUserId:** `String` — The external user ID
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>` 
-    
+**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>`
+
 </dd>
 </dl>
 
@@ -2072,7 +2166,7 @@ client.triggers().deploy(
 <dd>
 
 **dynamicPropsId:** `Optional<String>` — The ID for dynamic props
-    
+
 </dd>
 </dl>
 
@@ -2080,7 +2174,7 @@ client.triggers().deploy(
 <dd>
 
 **workflowId:** `Optional<String>` — Optional ID of a workflow to receive trigger events
-    
+
 </dd>
 </dl>
 
@@ -2088,7 +2182,7 @@ client.triggers().deploy(
 <dd>
 
 **webhookUrl:** `Optional<String>` — Optional webhook URL to receive trigger events
-    
+
 </dd>
 </dl>
 
@@ -2096,18 +2190,18 @@ client.triggers().deploy(
 <dd>
 
 **emitOnDeploy:** `Optional<Boolean>` — Whether the trigger should emit events during the deploy hook execution. Defaults to true if not specified.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## DeployedTriggers
+
 <details><summary><code>client.deployedTriggers.list(projectId) -> SyncPagingIterable&amp;lt;Emitter&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -2146,6 +2240,7 @@ client.deployedTriggers().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2160,7 +2255,7 @@ client.deployedTriggers().list(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -2168,7 +2263,7 @@ client.deployedTriggers().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -2176,7 +2271,7 @@ client.deployedTriggers().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -2184,7 +2279,7 @@ client.deployedTriggers().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -2192,7 +2287,7 @@ client.deployedTriggers().list(
 <dd>
 
 **externalUserId:** `String` — Your end user ID, for whom you deployed the trigger
-    
+
 </dd>
 </dl>
 
@@ -2200,12 +2295,11 @@ client.deployedTriggers().list(
 <dd>
 
 **emitterType:** `Optional<EmitterType>` — Filter deployed triggers by emitter type (defaults to 'source' if not provided)
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2246,6 +2340,7 @@ client.deployedTriggers().retrieve(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2260,15 +2355,15 @@ client.deployedTriggers().retrieve(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2276,12 +2371,11 @@ client.deployedTriggers().retrieve(
 <dd>
 
 **externalUserId:** `String` — Your end user ID, for whom you deployed the trigger
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2322,6 +2416,7 @@ client.deployedTriggers().update(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2336,15 +2431,15 @@ client.deployedTriggers().update(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2352,7 +2447,7 @@ client.deployedTriggers().update(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
+
 </dd>
 </dl>
 
@@ -2360,15 +2455,15 @@ client.deployedTriggers().update(
 <dd>
 
 **active:** `Optional<Boolean>` — Whether the trigger should be active
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>` 
-    
+**configuredProps:** `Optional<Map<String, ConfiguredPropValue>>`
+
 </dd>
 </dl>
 
@@ -2376,7 +2471,7 @@ client.deployedTriggers().update(
 <dd>
 
 **name:** `Optional<String>` — The name of the trigger
-    
+
 </dd>
 </dl>
 
@@ -2384,12 +2479,11 @@ client.deployedTriggers().update(
 <dd>
 
 **emitOnDeploy:** `Optional<Boolean>` — Whether the trigger should emit events during deployment
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2431,6 +2525,7 @@ client.deployedTriggers().delete(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2445,15 +2540,15 @@ client.deployedTriggers().delete(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2461,7 +2556,7 @@ client.deployedTriggers().delete(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
+
 </dd>
 </dl>
 
@@ -2469,12 +2564,11 @@ client.deployedTriggers().delete(
 <dd>
 
 **ignoreHookErrors:** `Optional<Boolean>` — Whether to ignore errors during deactivation hook
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2516,6 +2610,7 @@ client.deployedTriggers().listEvents(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2530,15 +2625,15 @@ client.deployedTriggers().listEvents(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2546,7 +2641,7 @@ client.deployedTriggers().listEvents(
 <dd>
 
 **externalUserId:** `String` — Your end user ID, for whom you deployed the trigger
-    
+
 </dd>
 </dl>
 
@@ -2554,12 +2649,11 @@ client.deployedTriggers().listEvents(
 <dd>
 
 **n:** `Optional<Integer>` — The number of events to retrieve (defaults to 20 if not provided)
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2600,6 +2694,7 @@ client.deployedTriggers().listWorkflows(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2614,15 +2709,15 @@ client.deployedTriggers().listWorkflows(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2630,12 +2725,11 @@ client.deployedTriggers().listWorkflows(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2679,6 +2773,7 @@ client.deployedTriggers().updateWorkflows(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2693,15 +2788,15 @@ client.deployedTriggers().updateWorkflows(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2709,7 +2804,7 @@ client.deployedTriggers().updateWorkflows(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
+
 </dd>
 </dl>
 
@@ -2717,12 +2812,11 @@ client.deployedTriggers().updateWorkflows(
 <dd>
 
 **workflowIds:** `List<String>` — Array of workflow IDs to set
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2763,6 +2857,7 @@ client.deployedTriggers().listWebhooks(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2777,15 +2872,15 @@ client.deployedTriggers().listWebhooks(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2793,12 +2888,11 @@ client.deployedTriggers().listWebhooks(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2842,6 +2936,7 @@ client.deployedTriggers().updateWebhooks(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2856,15 +2951,15 @@ client.deployedTriggers().updateWebhooks(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
@@ -2872,7 +2967,7 @@ client.deployedTriggers().updateWebhooks(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
+
 </dd>
 </dl>
 
@@ -2880,12 +2975,11 @@ client.deployedTriggers().updateWebhooks(
 <dd>
 
 **webhookUrls:** `List<String>` — Array of webhook URLs to set
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -2927,6 +3021,7 @@ client.deployedTriggers().retrieveWebhook(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -2941,23 +3036,23 @@ client.deployedTriggers().retrieveWebhook(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**webhookId:** `String` 
-    
+**webhookId:** `String`
+
 </dd>
 </dl>
 
@@ -2965,12 +3060,11 @@ client.deployedTriggers().retrieveWebhook(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3012,6 +3106,7 @@ client.deployedTriggers().regenerateWebhookSigningKey(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3026,23 +3121,23 @@ client.deployedTriggers().regenerateWebhookSigningKey(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**triggerId:** `String` 
-    
+**triggerId:** `String`
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**webhookId:** `String` 
-    
+**webhookId:** `String`
+
 </dd>
 </dl>
 
@@ -3050,18 +3145,18 @@ client.deployedTriggers().regenerateWebhookSigningKey(
 <dd>
 
 **externalUserId:** `String` — The external user ID who owns the trigger
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## ProjectEnvironment
+
 <details><summary><code>client.projectEnvironment.retrieveWebhook(projectId) -> GetWebhookResponse</code></summary>
 <dl>
 <dd>
@@ -3091,6 +3186,7 @@ Retrieve the webhook configured for a project environment
 ```java
 client.projectEnvironment().retrieveWebhook();
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3105,12 +3201,11 @@ client.projectEnvironment().retrieveWebhook();
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3150,6 +3245,7 @@ client.projectEnvironment().updateWebhook(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3164,7 +3260,7 @@ client.projectEnvironment().updateWebhook(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -3172,12 +3268,11 @@ client.projectEnvironment().updateWebhook(
 <dd>
 
 **url:** `String` — The webhook URL to set
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3212,6 +3307,7 @@ Remove the webhook configured for a project environment
 ```java
 client.projectEnvironment().deleteWebhook();
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3226,12 +3322,11 @@ client.projectEnvironment().deleteWebhook();
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3266,6 +3361,7 @@ Regenerate the signing key for the project environment webhook
 ```java
 client.projectEnvironment().regenerateWebhookSigningKey();
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3280,18 +3376,18 @@ client.projectEnvironment().regenerateWebhookSigningKey();
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Projects
+
 <details><summary><code>client.projects.list() -> SyncPagingIterable&amp;lt;Project&amp;gt;</code></summary>
 <dl>
 <dd>
@@ -3329,6 +3425,7 @@ client.projects().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3343,7 +3440,7 @@ client.projects().list(
 <dd>
 
 **after:** `Optional<String>` — The cursor to start from for pagination
-    
+
 </dd>
 </dl>
 
@@ -3351,7 +3448,7 @@ client.projects().list(
 <dd>
 
 **before:** `Optional<String>` — The cursor to end before for pagination
-    
+
 </dd>
 </dl>
 
@@ -3359,7 +3456,7 @@ client.projects().list(
 <dd>
 
 **limit:** `Optional<Integer>` — The maximum number of results to return
-    
+
 </dd>
 </dl>
 
@@ -3367,12 +3464,11 @@ client.projects().list(
 <dd>
 
 **q:** `Optional<String>` — A search query to filter the projects
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3412,6 +3508,7 @@ client.projects().create(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3426,7 +3523,7 @@ client.projects().create(
 <dd>
 
 **name:** `String` — Name of the project
-    
+
 </dd>
 </dl>
 
@@ -3434,7 +3531,7 @@ client.projects().create(
 <dd>
 
 **appName:** `Optional<String>` — Display name for the Connect application
-    
+
 </dd>
 </dl>
 
@@ -3442,7 +3539,7 @@ client.projects().create(
 <dd>
 
 **supportEmail:** `Optional<String>` — Support email displayed to end users
-    
+
 </dd>
 </dl>
 
@@ -3450,12 +3547,11 @@ client.projects().create(
 <dd>
 
 **connectRequireKeyAuthTest:** `Optional<Boolean>` — Send a test request to the upstream API when adding Connect accounts for key-based apps
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3490,6 +3586,7 @@ Get the project details for a specific project
 ```java
 client.projects().retrieve("project_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3504,12 +3601,11 @@ client.projects().retrieve("project_id");
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3544,6 +3640,7 @@ Delete a project owned by the authenticated workspace
 ```java
 client.projects().delete("project_id");
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3558,12 +3655,11 @@ client.projects().delete("project_id");
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3603,6 +3699,7 @@ client.projects().update(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3617,7 +3714,7 @@ client.projects().update(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -3625,7 +3722,7 @@ client.projects().update(
 <dd>
 
 **name:** `Optional<String>` — Name of the project
-    
+
 </dd>
 </dl>
 
@@ -3633,7 +3730,7 @@ client.projects().update(
 <dd>
 
 **appName:** `Optional<String>` — Display name for the Connect application
-    
+
 </dd>
 </dl>
 
@@ -3641,7 +3738,7 @@ client.projects().update(
 <dd>
 
 **supportEmail:** `Optional<String>` — Support email displayed to end users
-    
+
 </dd>
 </dl>
 
@@ -3649,12 +3746,11 @@ client.projects().update(
 <dd>
 
 **connectRequireKeyAuthTest:** `Optional<Boolean>` — Send a test request to the upstream API when adding Connect accounts for key-based apps
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3695,6 +3791,7 @@ client.projects().updateLogo(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3709,7 +3806,7 @@ client.projects().updateLogo(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -3717,12 +3814,11 @@ client.projects().updateLogo(
 <dd>
 
 **logo:** `String` — Data URI containing the new Base64 encoded image
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -3757,6 +3853,7 @@ Retrieve project configuration and environment details
 ```java
 client.projects().retrieveInfo();
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3771,18 +3868,18 @@ client.projects().retrieveInfo();
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## FileStash
+
 <details><summary><code>client.fileStash.downloadFile(projectId) -> InputStream</code></summary>
 <dl>
 <dd>
@@ -3817,6 +3914,7 @@ client.fileStash().downloadFile(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3831,27 +3929,50 @@ client.fileStash().downloadFile(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**s3Key:** `String` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**s3Key:** `String`
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Proxy
-<details><summary><code>client.proxy.get(projectId, url64) -> InputStream</code></summary>
+
+The Proxy client forwards authenticated HTTP requests to a third-party API using credentials
+from a connected account stored in Pipedream Connect. Pass the target URL as a `String` (or
+`okhttp3.HttpUrl`) — the client Base64-encodes it internally before calling the Pipedream API.
+
+Every method returns a `ProxyResponse`, which is a closeable union of either a parsed JSON
+value (`response.isJson()` / `response.json()`) or a raw `InputStream` (`response.isStream()` /
+`response.stream()`), determined by the upstream `Content-Type`. Stream responses should be
+consumed inside a try-with-resources block to release the underlying HTTP connection:
+
+```java
+try (ProxyResponse response = client.proxy().get("https://api.example.com/users", request)) {
+    if (response.isJson()) {
+        Object json = response.json();
+    } else {
+        InputStream body = response.stream();
+    }
+}
+```
+
+For full HTTP metadata (status code, headers), use `client.proxy().withRawResponse()`. The
+async client (`asyncClient.proxy().get(...)`) exposes the same surface with
+`CompletableFuture<ProxyResponse>` return types.
+
+<details><summary><code>client.proxy.get(url, request) -> ProxyResponse</code></summary>
 <dl>
 <dd>
 
@@ -3879,7 +4000,7 @@ Forward an authenticated GET request to an external API using an external user's
 
 ```java
 client.proxy().get(
-    "url_64",
+    "https://api.example.com/users",
     ProxyGetRequest
         .builder()
         .externalUserId("external_user_id")
@@ -3887,6 +4008,7 @@ client.proxy().get(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3900,16 +4022,8 @@ client.proxy().get(
 <dl>
 <dd>
 
-**projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
+**url:** `String` — Target URL to forward the request to. Base64-encoded internally before being sent to Pipedream. An `okhttp3.HttpUrl` overload is also available.
 
-<dl>
-<dd>
-
-**url64:** `String` — Base64-encoded target URL
-    
 </dd>
 </dl>
 
@@ -3917,7 +4031,7 @@ client.proxy().get(
 <dd>
 
 **externalUserId:** `String` — The external user ID for the proxy request
-    
+
 </dd>
 </dl>
 
@@ -3925,18 +4039,17 @@ client.proxy().get(
 <dd>
 
 **accountId:** `String` — The account ID to use for authentication
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
-<details><summary><code>client.proxy.post(projectId, url64, request) -> InputStream</code></summary>
+<details><summary><code>client.proxy.post(url, request) -> ProxyResponse</code></summary>
 <dl>
 <dd>
 
@@ -3964,21 +4077,21 @@ Forward an authenticated POST request to an external API using an external user'
 
 ```java
 client.proxy().post(
-    "url_64",
+    "https://api.example.com/users",
     ProxyPostRequest
         .builder()
         .externalUserId("external_user_id")
         .accountId("account_id")
         .body(
             new HashMap<String, Object>() {{
-                put("string", new 
-                HashMap<String, Object>() {{put("key", "value");
-                }});
+                put("name", "Jane Doe");
+                put("email", "jane@example.com");
             }}
         )
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -3992,16 +4105,8 @@ client.proxy().post(
 <dl>
 <dd>
 
-**projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
+**url:** `String` — Target URL to forward the request to. Base64-encoded internally before being sent to Pipedream. An `okhttp3.HttpUrl` overload is also available.
 
-<dl>
-<dd>
-
-**url64:** `String` — Base64-encoded target URL
-    
 </dd>
 </dl>
 
@@ -4009,7 +4114,7 @@ client.proxy().post(
 <dd>
 
 **externalUserId:** `String` — The external user ID for the proxy request
-    
+
 </dd>
 </dl>
 
@@ -4017,26 +4122,25 @@ client.proxy().post(
 <dd>
 
 **accountId:** `String` — The account ID to use for authentication
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `Map<String, Object>` — Request body to forward to the target API
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**body:** `Map<String, Object>` — Request body to forward to the target API
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
-<details><summary><code>client.proxy.put(projectId, url64, request) -> InputStream</code></summary>
+<details><summary><code>client.proxy.put(url, request) -> ProxyResponse</code></summary>
 <dl>
 <dd>
 
@@ -4064,21 +4168,21 @@ Forward an authenticated PUT request to an external API using an external user's
 
 ```java
 client.proxy().put(
-    "url_64",
+    "https://api.example.com/users/42",
     ProxyPutRequest
         .builder()
         .externalUserId("external_user_id")
         .accountId("account_id")
         .body(
             new HashMap<String, Object>() {{
-                put("string", new 
-                HashMap<String, Object>() {{put("key", "value");
-                }});
+                put("name", "Jane Doe");
+                put("email", "jane@example.com");
             }}
         )
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4092,16 +4196,8 @@ client.proxy().put(
 <dl>
 <dd>
 
-**projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
+**url:** `String` — Target URL to forward the request to. Base64-encoded internally before being sent to Pipedream. An `okhttp3.HttpUrl` overload is also available.
 
-<dl>
-<dd>
-
-**url64:** `String` — Base64-encoded target URL
-    
 </dd>
 </dl>
 
@@ -4109,7 +4205,7 @@ client.proxy().put(
 <dd>
 
 **externalUserId:** `String` — The external user ID for the proxy request
-    
+
 </dd>
 </dl>
 
@@ -4117,26 +4213,25 @@ client.proxy().put(
 <dd>
 
 **accountId:** `String` — The account ID to use for authentication
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `Map<String, Object>` — Request body to forward to the target API
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**body:** `Map<String, Object>` — Request body to forward to the target API
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
-<details><summary><code>client.proxy.delete(projectId, url64) -> InputStream</code></summary>
+<details><summary><code>client.proxy.delete(url, request) -> ProxyResponse</code></summary>
 <dl>
 <dd>
 
@@ -4164,7 +4259,7 @@ Forward an authenticated DELETE request to an external API using an external use
 
 ```java
 client.proxy().delete(
-    "url_64",
+    "https://api.example.com/users/42",
     ProxyDeleteRequest
         .builder()
         .externalUserId("external_user_id")
@@ -4172,6 +4267,7 @@ client.proxy().delete(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4185,16 +4281,8 @@ client.proxy().delete(
 <dl>
 <dd>
 
-**projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
+**url:** `String` — Target URL to forward the request to. Base64-encoded internally before being sent to Pipedream. An `okhttp3.HttpUrl` overload is also available.
 
-<dl>
-<dd>
-
-**url64:** `String` — Base64-encoded target URL
-    
 </dd>
 </dl>
 
@@ -4202,7 +4290,7 @@ client.proxy().delete(
 <dd>
 
 **externalUserId:** `String` — The external user ID for the proxy request
-    
+
 </dd>
 </dl>
 
@@ -4210,18 +4298,17 @@ client.proxy().delete(
 <dd>
 
 **accountId:** `String` — The account ID to use for authentication
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
-<details><summary><code>client.proxy.patch(projectId, url64, request) -> InputStream</code></summary>
+<details><summary><code>client.proxy.patch(url, request) -> ProxyResponse</code></summary>
 <dl>
 <dd>
 
@@ -4249,21 +4336,20 @@ Forward an authenticated PATCH request to an external API using an external user
 
 ```java
 client.proxy().patch(
-    "url_64",
+    "https://api.example.com/users/42",
     ProxyPatchRequest
         .builder()
         .externalUserId("external_user_id")
         .accountId("account_id")
         .body(
             new HashMap<String, Object>() {{
-                put("string", new 
-                HashMap<String, Object>() {{put("key", "value");
-                }});
+                put("email", "jane.new@example.com");
             }}
         )
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4277,16 +4363,8 @@ client.proxy().patch(
 <dl>
 <dd>
 
-**projectId:** `String` — The project ID, which starts with `proj_`.
-    
-</dd>
-</dl>
+**url:** `String` — Target URL to forward the request to. Base64-encoded internally before being sent to Pipedream. An `okhttp3.HttpUrl` overload is also available.
 
-<dl>
-<dd>
-
-**url64:** `String` — Base64-encoded target URL
-    
 </dd>
 </dl>
 
@@ -4294,7 +4372,7 @@ client.proxy().patch(
 <dd>
 
 **externalUserId:** `String` — The external user ID for the proxy request
-    
+
 </dd>
 </dl>
 
@@ -4302,26 +4380,26 @@ client.proxy().patch(
 <dd>
 
 **accountId:** `String` — The account ID to use for authentication
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**request:** `Map<String, Object>` — Request body to forward to the target API
-    
-</dd>
-</dl>
-</dd>
-</dl>
+**body:** `Map<String, Object>` — Request body to forward to the target API
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Tokens
+
 <details><summary><code>client.tokens.create(projectId, request) -> CreateTokenResponse</code></summary>
 <dl>
 <dd>
@@ -4356,6 +4434,7 @@ client.tokens().create(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4370,7 +4449,7 @@ client.tokens().create(
 <dd>
 
 **projectId:** `String` — The project ID, which starts with `proj_`.
-    
+
 </dd>
 </dl>
 
@@ -4378,7 +4457,7 @@ client.tokens().create(
 <dd>
 
 **allowedOrigins:** `Optional<List<String>>` — List of allowed origins for CORS
-    
+
 </dd>
 </dl>
 
@@ -4386,7 +4465,7 @@ client.tokens().create(
 <dd>
 
 **errorRedirectUri:** `Optional<String>` — URI to redirect to on error
-    
+
 </dd>
 </dl>
 
@@ -4394,7 +4473,7 @@ client.tokens().create(
 <dd>
 
 **expiresIn:** `Optional<Integer>` — Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.
-    
+
 </dd>
 </dl>
 
@@ -4402,15 +4481,15 @@ client.tokens().create(
 <dd>
 
 **externalUserId:** `String` — Your end user ID, for whom you're creating the token
-    
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**scope:** `Optional<String>` — Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.
-    
+**scope:** `Optional<String>` — Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See <https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes> for more information.
+
 </dd>
 </dl>
 
@@ -4418,7 +4497,7 @@ client.tokens().create(
 <dd>
 
 **successRedirectUri:** `Optional<String>` — URI to redirect to on success
-    
+
 </dd>
 </dl>
 
@@ -4426,7 +4505,7 @@ client.tokens().create(
 <dd>
 
 **webhookUri:** `Optional<String>` — Webhook URI for notifications
-    
+
 </dd>
 </dl>
 
@@ -4434,12 +4513,11 @@ client.tokens().create(
 <dd>
 
 **allowProgressiveScopes:** `Optional<Boolean>` — When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
@@ -4482,6 +4560,7 @@ client.tokens().validate(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4495,8 +4574,8 @@ client.tokens().validate(
 <dl>
 <dd>
 
-**ctok:** `String` 
-    
+**ctok:** `String`
+
 </dd>
 </dl>
 
@@ -4504,7 +4583,7 @@ client.tokens().validate(
 <dd>
 
 **appId:** `String` — The app ID to validate against
-    
+
 </dd>
 </dl>
 
@@ -4512,7 +4591,7 @@ client.tokens().validate(
 <dd>
 
 **accountId:** `Optional<String>` — An existing account ID to reconnect. Must belong to the app identified by app_id.
-    
+
 </dd>
 </dl>
 
@@ -4520,18 +4599,18 @@ client.tokens().validate(
 <dd>
 
 **oauthAppId:** `Optional<String>` — The OAuth app ID to validate against (if the token is for an OAuth app)
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## Usage
+
 <details><summary><code>client.usage.list() -> ConnectUsageResponse</code></summary>
 <dl>
 <dd>
@@ -4567,6 +4646,7 @@ client.usage().list(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4581,7 +4661,7 @@ client.usage().list(
 <dd>
 
 **startTs:** `Integer` — Usage window start timestamp (seconds)
-    
+
 </dd>
 </dl>
 
@@ -4589,18 +4669,18 @@ client.usage().list(
 <dd>
 
 **endTs:** `Integer` — Usage window end timestamp (seconds)
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
 ## OauthTokens
+
 <details><summary><code>client.oauthTokens.create(request) -> CreateOAuthTokenResponse</code></summary>
 <dl>
 <dd>
@@ -4636,6 +4716,7 @@ client.oauthTokens().create(
         .build()
 );
 ```
+
 </dd>
 </dl>
 </dd>
@@ -4649,24 +4730,24 @@ client.oauthTokens().create(
 <dl>
 <dd>
 
-**grantType:** `String` 
-    
+**grantType:** `String`
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**clientId:** `String` 
-    
+**clientId:** `String`
+
 </dd>
 </dl>
 
 <dl>
 <dd>
 
-**clientSecret:** `String` 
-    
+**clientSecret:** `String`
+
 </dd>
 </dl>
 
@@ -4674,14 +4755,219 @@ client.oauthTokens().create(
 <dd>
 
 **scope:** `Optional<String>` — Optional space-separated scopes for the access token. Defaults to `*`.
-    
-</dd>
-</dl>
-</dd>
-</dl>
 
+</dd>
+</dl>
+</dd>
+</dl>
 
 </dd>
 </dl>
 </details>
 
+## Workflows
+
+The Workflows client invokes a Pipedream workflow via its HTTP interface. Pass either a full
+workflow URL (`https://eo3xxxx.m.pipedream.net`) or just the endpoint ID (`eo3xxxx`). Both
+methods return the workflow's response body as a deserialized `Object` (typically a `Map`,
+`List`, or scalar — see Jackson's default deserialization). The async client
+(`asyncClient.workflows().invoke(...)` / `invokeForExternalUser(...)`) exposes the same two
+methods returning `CompletableFuture<Object>`.
+
+<details><summary><code>client.workflows.invoke(urlOrEndpoint) -> Object</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+// Simple workflow invocation (uses OAuth authentication by default)
+client.workflows().invoke("eo3xxxx");
+
+// Advanced workflow invocation with all options
+client.workflows().invoke(
+    InvokeWorkflowOpts
+        .builder()
+        .urlOrEndpoint("https://eo3xxxx.m.pipedream.net")
+        .body(
+            new HashMap<String, Object>() {{
+                put("name", "John Doe");
+                put("email", "john@example.com");
+            }}
+        )
+        .headers(
+            new HashMap<String, String>() {{
+                put("Content-Type", "application/json");
+                put("Authorization", "Bearer your-token"); // For STATIC_BEARER auth
+            }}
+        )
+        .method("POST")
+        .authType(HTTPAuthType.STATIC_BEARER)
+        .build()
+);
+```
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**urlOrEndpoint:** `String` — Either a workflow endpoint ID (e.g., `eo3xxxx`) or a full workflow URL
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**body:** `Optional<Object>` — Request body to send to the workflow (will be JSON serialized)
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**headers:** `Optional<Map<String, String>>` — Additional headers to include in the request
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method:** `Optional<String>` — HTTP method to use (defaults to `POST`)
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**authType:** `Optional<HTTPAuthType>` — Authentication type: `OAUTH` (default), `STATIC_BEARER`, or `NONE`
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.invokeForExternalUser(urlOrEndpoint, externalUserId) -> Object</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+// Simple external user invocation (uses OAuth authentication by default)
+client.workflows().invokeForExternalUser("eo3xxxx", "user123");
+
+// Advanced external user invocation with all options
+client.workflows().invokeForExternalUser(
+    InvokeWorkflowForExternalUserOpts
+        .builder()
+        .url("https://eo3xxxx.m.pipedream.net")
+        .externalUserId("user123")
+        .body(
+            new HashMap<String, Object>() {{
+                put("action", "process_data");
+                put("data", Arrays.asList("item1", "item2"));
+            }}
+        )
+        .headers(
+            new HashMap<String, String>() {{
+                put("X-Custom-Header", "value");
+            }}
+        )
+        .method("POST")
+        .authType(HTTPAuthType.OAUTH)
+        .build()
+);
+```
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**url:** `String` — The full workflow URL to invoke
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**externalUserId:** `String` — Your end user ID, for whom you're invoking the workflow (Pipedream Connect)
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**body:** `Optional<Object>` — Request body to send to the workflow (will be JSON serialized)
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**headers:** `Optional<Map<String, String>>` — Additional headers to include in the request
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method:** `Optional<String>` — HTTP method to use (defaults to `POST`)
+
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**authType:** `Optional<HTTPAuthType>` — Authentication type: `OAUTH` (default), `STATIC_BEARER`, or `NONE`
+
+</dd>
+</dl>
+</dd>
+</dl>
+
+</dd>
+</dl>
+</details>
