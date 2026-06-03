@@ -77,7 +77,7 @@ public final class ConfigurePropOpts {
     }
 
     /**
-     * @return Optional component version (in SemVer format, for example '1.0.0'), defaults to latest
+     * @return Component semantic version
      */
     @JsonProperty("version")
     public Optional<String> getVersion() {
@@ -224,7 +224,7 @@ public final class ConfigurePropOpts {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Component semantic version</p>
          */
         _FinalStage version(Optional<String> version);
 
@@ -462,7 +462,7 @@ public final class ConfigurePropOpts {
         }
 
         /**
-         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Component semantic version</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -472,7 +472,7 @@ public final class ConfigurePropOpts {
         }
 
         /**
-         * <p>Optional component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Component semantic version</p>
          */
         @java.lang.Override
         @JsonSetter(value = "version", nulls = Nulls.SKIP)

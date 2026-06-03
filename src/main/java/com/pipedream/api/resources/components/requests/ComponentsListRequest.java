@@ -98,7 +98,7 @@ public final class ComponentsListRequest {
     }
 
     /**
-     * @return The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')
+     * @return The registry to retrieve components from
      */
     @JsonProperty("registry")
     public Optional<ComponentsListRequestRegistry> getRegistry() {
@@ -251,7 +251,7 @@ public final class ComponentsListRequest {
         }
 
         /**
-         * <p>The registry to retrieve components from. Defaults to 'all' ('public', 'private', or 'all')</p>
+         * <p>The registry to retrieve components from</p>
          */
         @JsonSetter(value = "registry", nulls = Nulls.SKIP)
         public Builder registry(Optional<ComponentsListRequestRegistry> registry) {

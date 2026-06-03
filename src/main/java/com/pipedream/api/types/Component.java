@@ -71,7 +71,7 @@ public final class Component {
     }
 
     /**
-     * @return The human-readable name of the component, e.g. 'GitLab: List Commits'
+     * @return The human-readable name of the component
      */
     @JsonProperty("name")
     public String getName() {
@@ -79,7 +79,7 @@ public final class Component {
     }
 
     /**
-     * @return The latest version of the component, in SemVer format.
+     * @return The latest version of the component, in semantic versioning format.
      */
     @JsonProperty("version")
     public String getVersion() {
@@ -172,14 +172,14 @@ public final class Component {
 
     public interface NameStage {
         /**
-         * <p>The human-readable name of the component, e.g. 'GitLab: List Commits'</p>
+         * <p>The human-readable name of the component</p>
          */
         VersionStage name(@NotNull String name);
     }
 
     public interface VersionStage {
         /**
-         * <p>The latest version of the component, in SemVer format.</p>
+         * <p>The latest version of the component, in semantic versioning format.</p>
          */
         _FinalStage version(@NotNull String version);
     }
@@ -269,8 +269,8 @@ public final class Component {
         }
 
         /**
-         * <p>The human-readable name of the component, e.g. 'GitLab: List Commits'</p>
-         * <p>The human-readable name of the component, e.g. 'GitLab: List Commits'</p>
+         * <p>The human-readable name of the component</p>
+         * <p>The human-readable name of the component</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -281,8 +281,8 @@ public final class Component {
         }
 
         /**
-         * <p>The latest version of the component, in SemVer format.</p>
-         * <p>The latest version of the component, in SemVer format.</p>
+         * <p>The latest version of the component, in semantic versioning format.</p>
+         * <p>The latest version of the component, in semantic versioning format.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

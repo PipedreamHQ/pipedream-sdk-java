@@ -93,7 +93,7 @@ public final class TriggersListRequest {
     }
 
     /**
-     * @return The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')
+     * @return The registry to retrieve triggers from
      */
     @JsonProperty("registry")
     public Optional<TriggersListRequestRegistry> getRegistry() {
@@ -234,7 +234,7 @@ public final class TriggersListRequest {
         }
 
         /**
-         * <p>The registry to retrieve triggers from. Defaults to 'all' ('public', 'private', or 'all')</p>
+         * <p>The registry to retrieve triggers from</p>
          */
         @JsonSetter(value = "registry", nulls = Nulls.SKIP)
         public Builder registry(Optional<TriggersListRequestRegistry> registry) {

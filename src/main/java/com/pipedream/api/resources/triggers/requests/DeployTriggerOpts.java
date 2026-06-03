@@ -70,7 +70,7 @@ public final class DeployTriggerOpts {
     }
 
     /**
-     * @return Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest
+     * @return Trigger component semantic version
      */
     @JsonProperty("version")
     public Optional<String> getVersion() {
@@ -190,7 +190,7 @@ public final class DeployTriggerOpts {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Trigger component semantic version</p>
          */
         _FinalStage version(Optional<String> version);
 
@@ -383,7 +383,7 @@ public final class DeployTriggerOpts {
         }
 
         /**
-         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Trigger component semantic version</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -393,7 +393,7 @@ public final class DeployTriggerOpts {
         }
 
         /**
-         * <p>Optional trigger component version (in SemVer format, for example '1.0.0'), defaults to latest</p>
+         * <p>Trigger component semantic version</p>
          */
         @java.lang.Override
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
