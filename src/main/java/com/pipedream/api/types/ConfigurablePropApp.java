@@ -83,7 +83,7 @@ public final class ConfigurablePropApp {
     }
 
     /**
-     * @return The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.
+     * @return The name slug of the app, used to identify the app for which the account is being configured.
      */
     @JsonProperty("app")
     public String getApp() {
@@ -232,7 +232,7 @@ public final class ConfigurablePropApp {
 
     public interface AppStage {
         /**
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
+         * <p>The name slug of the app, used to identify the app for which the account is being configured.</p>
          */
         NameStage app(@NotNull String app);
 
@@ -373,8 +373,8 @@ public final class ConfigurablePropApp {
         }
 
         /**
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
-         * <p>The name slug of the app, e.g. 'github', 'slack', etc. This is used to identify the app for which the account is being configured.</p>
+         * <p>The name slug of the app, used to identify the app for which the account is being configured.</p>
+         * <p>The name slug of the app, used to identify the app for which the account is being configured.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
