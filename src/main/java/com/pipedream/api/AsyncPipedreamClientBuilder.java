@@ -1,8 +1,13 @@
 package com.pipedream.api;
 
 import com.pipedream.api.core.ClientOptions;
+import com.pipedream.api.core.ConnectPathNormalizationInterceptor;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 /**
  * Builder for creating AsyncPipedreamClient instances.
@@ -16,24 +21,40 @@ public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<As
 
     public AsyncPipedreamClient build() {
         validateConfiguration();
+
+        final ClientOptions baseOptions = buildClientOptions();
+        final ClientOptions.Builder optionsBuilder = ClientOptions.Builder.from(baseOptions);
+        final ClientOptions finalOptions = optionsBuilder
+                .addHeader("Authorization", getAuthHeaderSupplier(baseOptions))
+                .httpClient(withConnectPathNormalization(baseOptions.httpClient()))
+                .build();
+        return new AsyncPipedreamClient(finalOptions);
+    }
+
+    @NotNull
+    private Supplier<String> getAuthHeaderSupplier(final ClientOptions baseOptions) {
         if (this.token != null) {
-            ClientOptions baseOptions = buildClientOptions();
-            ClientOptions finalOptions = ClientOptions.Builder.from(baseOptions)
-                    .addHeader("Authorization", "Bearer " + this.token)
-                    .build();
-            return new AsyncPipedreamClient(finalOptions);
+            return () -> "Bearer " + this.token;
         }
+
         if (this.clientId != null && this.clientSecret != null) {
-            ClientOptions baseOptions = buildClientOptions();
-            OauthTokensClient authClient = new OauthTokensClient(baseOptions);
-            OAuthTokenSupplier oAuthTokenSupplier =
-                    new OAuthTokenSupplier(this.clientId, this.clientSecret, this.scope, authClient);
-            ClientOptions finalOptions = ClientOptions.Builder.from(baseOptions)
-                    .addHeader("Authorization", oAuthTokenSupplier)
-                    .build();
-            return new AsyncPipedreamClient(finalOptions);
+            final OauthTokensClient authClient = new OauthTokensClient(baseOptions);
+            return new OAuthTokenSupplier(
+                    this.clientId,
+                    this.clientSecret,
+                    this.scope,
+                    authClient
+            );
         }
-        return new AsyncPipedreamClient(buildClientOptions());
+
+        return () -> "";
+    }
+
+    private static OkHttpClient withConnectPathNormalization(OkHttpClient httpClient) {
+        return httpClient
+                .newBuilder()
+                .addInterceptor(new ConnectPathNormalizationInterceptor())
+                .build();
     }
 
     /**
@@ -87,6 +108,8 @@ public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<As
 
     @Override
     public void setVariables(ClientOptions.Builder builder) {
-        builder.projectId(this.projectId);
+        // Coerce project IDs to strings, so that an NPE doesn't blow things up
+        // at runtime.
+        builder.projectId(this.projectId != null ? this.projectId : "");
     }
 }

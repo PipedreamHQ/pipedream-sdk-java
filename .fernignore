@@ -19,6 +19,9 @@ src/main/java/com/pipedream/api/AsyncBaseClientBuilder.java
 src/main/java/com/pipedream/api/BaseClient.java
 src/main/java/com/pipedream/api/BaseClientBuilder.java
 
+# Custom Connect path normalization (strips the empty project-ID segment)
+src/main/java/com/pipedream/api/core/ConnectPathNormalizationInterceptor.java
+
 # Custom Pipedream client files
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
 src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
@@ -48,6 +51,7 @@ src/main/java/com/pipedream/api/resources/workflows/package-info.java
 src/main/java/com/pipedream/api/types/HTTPAuthType.java
 
 # Custom tests
+src/test/java/com/pipedream/api/ConnectTokenProjectIdWireTest.java
 src/test/java/com/pipedream/api/OauthTokensWireTest.java
 src/test/java/com/pipedream/api/ProxyClientWireTest.java
 src/test/java/com/pipedream/api/TokensWireTest.java
