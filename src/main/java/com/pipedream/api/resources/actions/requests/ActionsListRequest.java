@@ -93,7 +93,7 @@ public final class ActionsListRequest {
     }
 
     /**
-     * @return The registry to retrieve actions from. Defaults to 'all' ('public', 'private', or 'all')
+     * @return The registry to retrieve actions from
      */
     @JsonProperty("registry")
     public Optional<ActionsListRequestRegistry> getRegistry() {
@@ -234,7 +234,7 @@ public final class ActionsListRequest {
         }
 
         /**
-         * <p>The registry to retrieve actions from. Defaults to 'all' ('public', 'private', or 'all')</p>
+         * <p>The registry to retrieve actions from</p>
          */
         @JsonSetter(value = "registry", nulls = Nulls.SKIP)
         public Builder registry(Optional<ActionsListRequestRegistry> registry) {

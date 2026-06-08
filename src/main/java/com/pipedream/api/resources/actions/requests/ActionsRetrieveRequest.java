@@ -30,7 +30,7 @@ public final class ActionsRetrieveRequest {
     }
 
     /**
-     * @return Optional semantic version of the component to retrieve (for example '1.0.0')
+     * @return Optional semantic version of the component to retrieve
      */
     @JsonProperty("version")
     public Optional<String> getVersion() {
@@ -81,7 +81,7 @@ public final class ActionsRetrieveRequest {
         }
 
         /**
-         * <p>Optional semantic version of the component to retrieve (for example '1.0.0')</p>
+         * <p>Optional semantic version of the component to retrieve</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<String> version) {

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -29,13 +30,22 @@ public final class EmittedEvent {
 
     private final String id;
 
+    private final Optional<String> sum;
+
     private final Map<String, Object> additionalProperties;
 
-    private EmittedEvent(Map<String, Object> e, String k, int ts, String id, Map<String, Object> additionalProperties) {
+    private EmittedEvent(
+            Map<String, Object> e,
+            String k,
+            int ts,
+            String id,
+            Optional<String> sum,
+            Map<String, Object> additionalProperties) {
         this.e = e;
         this.k = k;
         this.ts = ts;
         this.id = id;
+        this.sum = sum;
         this.additionalProperties = additionalProperties;
     }
 
@@ -71,6 +81,14 @@ public final class EmittedEvent {
         return id;
     }
 
+    /**
+     * @return A short summary of the event's payload
+     */
+    @JsonProperty("sum")
+    public Optional<String> getSum() {
+        return sum;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -83,12 +101,12 @@ public final class EmittedEvent {
     }
 
     private boolean equalTo(EmittedEvent other) {
-        return e.equals(other.e) && k.equals(other.k) && ts == other.ts && id.equals(other.id);
+        return e.equals(other.e) && k.equals(other.k) && ts == other.ts && id.equals(other.id) && sum.equals(other.sum);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.e, this.k, this.ts, this.id);
+        return Objects.hash(this.e, this.k, this.ts, this.id, this.sum);
     }
 
     @java.lang.Override
@@ -138,6 +156,13 @@ public final class EmittedEvent {
         _FinalStage putAllE(Map<String, Object> e);
 
         _FinalStage e(String key, Object value);
+
+        /**
+         * <p>A short summary of the event's payload</p>
+         */
+        _FinalStage sum(Optional<String> sum);
+
+        _FinalStage sum(String sum);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -147,6 +172,8 @@ public final class EmittedEvent {
         private int ts;
 
         private String id;
+
+        private Optional<String> sum = Optional.empty();
 
         private Map<String, Object> e = new LinkedHashMap<>();
 
@@ -161,6 +188,7 @@ public final class EmittedEvent {
             k(other.getK());
             ts(other.getTs());
             id(other.getId());
+            sum(other.getSum());
             return this;
         }
 
@@ -201,6 +229,26 @@ public final class EmittedEvent {
         }
 
         /**
+         * <p>A short summary of the event's payload</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage sum(String sum) {
+            this.sum = Optional.ofNullable(sum);
+            return this;
+        }
+
+        /**
+         * <p>A short summary of the event's payload</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "sum", nulls = Nulls.SKIP)
+        public _FinalStage sum(Optional<String> sum) {
+            this.sum = sum;
+            return this;
+        }
+
+        /**
          * <p>The event's payload</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -237,7 +285,7 @@ public final class EmittedEvent {
 
         @java.lang.Override
         public EmittedEvent build() {
-            return new EmittedEvent(e, k, ts, id, additionalProperties);
+            return new EmittedEvent(e, k, ts, id, sum, additionalProperties);
         }
 
         @java.lang.Override
