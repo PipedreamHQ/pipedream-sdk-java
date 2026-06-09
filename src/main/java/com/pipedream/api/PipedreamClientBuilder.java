@@ -4,10 +4,9 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ConnectPathNormalizationInterceptor;
 import com.pipedream.api.core.OAuthTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
+import java.util.function.Supplier;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * Builder for creating PipedreamClient instances.
@@ -39,12 +38,7 @@ public final class PipedreamClientBuilder extends BaseClientBuilder<PipedreamCli
 
         if (this.clientId != null && this.clientSecret != null) {
             final OauthTokensClient authClient = new OauthTokensClient(baseOptions);
-            return new OAuthTokenSupplier(
-                    this.clientId,
-                    this.clientSecret,
-                    this.scope,
-                    authClient
-            );
+            return new OAuthTokenSupplier(this.clientId, this.clientSecret, this.scope, authClient);
         }
 
         return () -> "";
