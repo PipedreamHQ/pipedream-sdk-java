@@ -28,6 +28,8 @@ public final class ValidateTokenResponse {
 
     private final Optional<String> oauthAppId;
 
+    private final Optional<Boolean> oauthAppWorkdayOfficial;
+
     private final Optional<String> projectAppName;
 
     private final Optional<String> projectEnvironment;
@@ -47,6 +49,7 @@ public final class ValidateTokenResponse {
             Optional<String> error,
             Optional<String> errorRedirectUri,
             Optional<String> oauthAppId,
+            Optional<Boolean> oauthAppWorkdayOfficial,
             Optional<String> projectAppName,
             Optional<String> projectEnvironment,
             Optional<String> projectId,
@@ -58,6 +61,7 @@ public final class ValidateTokenResponse {
         this.error = error;
         this.errorRedirectUri = errorRedirectUri;
         this.oauthAppId = oauthAppId;
+        this.oauthAppWorkdayOfficial = oauthAppWorkdayOfficial;
         this.projectAppName = projectAppName;
         this.projectEnvironment = projectEnvironment;
         this.projectId = projectId;
@@ -94,6 +98,14 @@ public final class ValidateTokenResponse {
     @JsonProperty("oauth_app_id")
     public Optional<String> getOauthAppId() {
         return oauthAppId;
+    }
+
+    /**
+     * @return True when the resolved OAuth client is the app's Workday-official client
+     */
+    @JsonProperty("oauth_app_workday_official")
+    public Optional<Boolean> getOauthAppWorkdayOfficial() {
+        return oauthAppWorkdayOfficial;
     }
 
     /**
@@ -160,6 +172,7 @@ public final class ValidateTokenResponse {
                 && error.equals(other.error)
                 && errorRedirectUri.equals(other.errorRedirectUri)
                 && oauthAppId.equals(other.oauthAppId)
+                && oauthAppWorkdayOfficial.equals(other.oauthAppWorkdayOfficial)
                 && projectAppName.equals(other.projectAppName)
                 && projectEnvironment.equals(other.projectEnvironment)
                 && projectId.equals(other.projectId)
@@ -175,6 +188,7 @@ public final class ValidateTokenResponse {
                 this.error,
                 this.errorRedirectUri,
                 this.oauthAppId,
+                this.oauthAppWorkdayOfficial,
                 this.projectAppName,
                 this.projectEnvironment,
                 this.projectId,
@@ -234,6 +248,13 @@ public final class ValidateTokenResponse {
         _FinalStage oauthAppId(String oauthAppId);
 
         /**
+         * <p>True when the resolved OAuth client is the app's Workday-official client</p>
+         */
+        _FinalStage oauthAppWorkdayOfficial(Optional<Boolean> oauthAppWorkdayOfficial);
+
+        _FinalStage oauthAppWorkdayOfficial(Boolean oauthAppWorkdayOfficial);
+
+        /**
          * <p>Name of the project app</p>
          */
         _FinalStage projectAppName(Optional<String> projectAppName);
@@ -283,6 +304,8 @@ public final class ValidateTokenResponse {
 
         private Optional<String> projectAppName = Optional.empty();
 
+        private Optional<Boolean> oauthAppWorkdayOfficial = Optional.empty();
+
         private Optional<String> oauthAppId = Optional.empty();
 
         private Optional<String> errorRedirectUri = Optional.empty();
@@ -302,6 +325,7 @@ public final class ValidateTokenResponse {
             error(other.getError());
             errorRedirectUri(other.getErrorRedirectUri());
             oauthAppId(other.getOauthAppId());
+            oauthAppWorkdayOfficial(other.getOauthAppWorkdayOfficial());
             projectAppName(other.getProjectAppName());
             projectEnvironment(other.getProjectEnvironment());
             projectId(other.getProjectId());
@@ -424,6 +448,26 @@ public final class ValidateTokenResponse {
         }
 
         /**
+         * <p>True when the resolved OAuth client is the app's Workday-official client</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppWorkdayOfficial(Boolean oauthAppWorkdayOfficial) {
+            this.oauthAppWorkdayOfficial = Optional.ofNullable(oauthAppWorkdayOfficial);
+            return this;
+        }
+
+        /**
+         * <p>True when the resolved OAuth client is the app's Workday-official client</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_workday_official", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppWorkdayOfficial(Optional<Boolean> oauthAppWorkdayOfficial) {
+            this.oauthAppWorkdayOfficial = oauthAppWorkdayOfficial;
+            return this;
+        }
+
+        /**
          * <p>OAuth app ID if applicable</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -503,6 +547,7 @@ public final class ValidateTokenResponse {
                     error,
                     errorRedirectUri,
                     oauthAppId,
+                    oauthAppWorkdayOfficial,
                     projectAppName,
                     projectEnvironment,
                     projectId,

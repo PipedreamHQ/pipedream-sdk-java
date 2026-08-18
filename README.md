@@ -30,7 +30,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.pipedream:pipedream:2.1.0'
+  implementation 'com.pipedream:pipedream:2.1.1'
 }
 ```
 
@@ -42,7 +42,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>2.1.0</version>
+  <version>2.1.1</version>
 </dependency>
 ```
 
@@ -267,3 +267,4 @@ On the other hand, contributions to the README are always very welcome!
 ## Reference
 
 A full reference for this library is available [here](https://github.com/PipedreamHQ/pipedream-sdk-java/blob/HEAD/./reference.md).
+
