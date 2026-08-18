@@ -48,8 +48,20 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check if tag is on main
+        id: tag-on-main
+        run: |
+          if git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "on-main=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "on-main=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping publish: tag $GITHUB_REF_NAME is not on main"
+          fi
 
       - name: Set up Java
+        if: steps.tag-on-main.outputs.on-main == 'true'
         id: setup-jre
         uses: actions/setup-java@v1
         with:
@@ -57,6 +69,7 @@ jobs:
           architecture: x64
 
       - name: Publish to maven
+        if: steps.tag-on-main.outputs.on-main == 'true'
         run: |
           ./gradlew sonatypeCentralUpload
         env:
