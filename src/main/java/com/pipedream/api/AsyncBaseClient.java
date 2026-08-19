@@ -8,10 +8,12 @@ import com.pipedream.api.core.Suppliers;
 import com.pipedream.api.resources.accounts.AsyncAccountsClient;
 import com.pipedream.api.resources.actions.AsyncActionsClient;
 import com.pipedream.api.resources.appcategories.AsyncAppCategoriesClient;
+import com.pipedream.api.resources.appoverrides.AsyncAppOverridesClient;
 import com.pipedream.api.resources.apps.AsyncAppsClient;
 import com.pipedream.api.resources.components.AsyncComponentsClient;
 import com.pipedream.api.resources.deployedtriggers.AsyncDeployedTriggersClient;
 import com.pipedream.api.resources.filestash.AsyncFileStashClient;
+import com.pipedream.api.resources.oauthapps.AsyncOauthAppsClient;
 import com.pipedream.api.resources.oauthtokens.AsyncOauthTokensClient;
 import com.pipedream.api.resources.projectenvironment.AsyncProjectEnvironmentClient;
 import com.pipedream.api.resources.projects.AsyncProjectsClient;
@@ -28,6 +30,8 @@ public class AsyncBaseClient {
     protected final Supplier<AsyncAppCategoriesClient> appCategoriesClient;
 
     protected final Supplier<AsyncAppsClient> appsClient;
+
+    protected final Supplier<AsyncAppOverridesClient> appOverridesClient;
 
     protected final Supplier<AsyncAccountsClient> accountsClient;
 
@@ -53,12 +57,15 @@ public class AsyncBaseClient {
 
     protected final Supplier<AsyncUsageClient> usageClient;
 
+    protected final Supplier<AsyncOauthAppsClient> oauthAppsClient;
+
     protected final Supplier<AsyncOauthTokensClient> oauthTokensClient;
 
     public AsyncBaseClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AsyncAppCategoriesClient(clientOptions));
         this.appsClient = Suppliers.memoize(() -> new AsyncAppsClient(clientOptions));
+        this.appOverridesClient = Suppliers.memoize(() -> new AsyncAppOverridesClient(clientOptions));
         this.accountsClient = Suppliers.memoize(() -> new AsyncAccountsClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new AsyncUsersClient(clientOptions));
         this.componentsClient = Suppliers.memoize(() -> new AsyncComponentsClient(clientOptions));
@@ -71,6 +78,7 @@ public class AsyncBaseClient {
         this.proxyClient = Suppliers.memoize(() -> new AsyncProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new AsyncTokensClient(clientOptions));
         this.usageClient = Suppliers.memoize(() -> new AsyncUsageClient(clientOptions));
+        this.oauthAppsClient = Suppliers.memoize(() -> new AsyncOauthAppsClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new AsyncOauthTokensClient(clientOptions));
     }
 
@@ -80,6 +88,10 @@ public class AsyncBaseClient {
 
     public AsyncAppsClient apps() {
         return this.appsClient.get();
+    }
+
+    public AsyncAppOverridesClient appOverrides() {
+        return this.appOverridesClient.get();
     }
 
     public AsyncAccountsClient accounts() {
@@ -128,6 +140,10 @@ public class AsyncBaseClient {
 
     public AsyncUsageClient usage() {
         return this.usageClient.get();
+    }
+
+    public AsyncOauthAppsClient oauthApps() {
+        return this.oauthAppsClient.get();
     }
 
     public AsyncOauthTokensClient oauthTokens() {
