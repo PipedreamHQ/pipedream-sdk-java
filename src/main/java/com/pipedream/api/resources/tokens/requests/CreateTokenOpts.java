@@ -38,6 +38,10 @@ public final class CreateTokenOpts {
 
     private final Optional<Boolean> allowProgressiveScopes;
 
+    private final Optional<String> appId;
+
+    private final Optional<String> oauthAppId;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateTokenOpts(
@@ -49,6 +53,8 @@ public final class CreateTokenOpts {
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
             Optional<Boolean> allowProgressiveScopes,
+            Optional<String> appId,
+            Optional<String> oauthAppId,
             Map<String, Object> additionalProperties) {
         this.allowedOrigins = allowedOrigins;
         this.errorRedirectUri = errorRedirectUri;
@@ -58,6 +64,8 @@ public final class CreateTokenOpts {
         this.successRedirectUri = successRedirectUri;
         this.webhookUri = webhookUri;
         this.allowProgressiveScopes = allowProgressiveScopes;
+        this.appId = appId;
+        this.oauthAppId = oauthAppId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -125,6 +133,22 @@ public final class CreateTokenOpts {
         return allowProgressiveScopes;
     }
 
+    /**
+     * @return Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.
+     */
+    @JsonProperty("app_id")
+    public Optional<String> getAppId() {
+        return appId;
+    }
+
+    /**
+     * @return Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.
+     */
+    @JsonProperty("oauth_app_id")
+    public Optional<String> getOauthAppId() {
+        return oauthAppId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -144,7 +168,9 @@ public final class CreateTokenOpts {
                 && scope.equals(other.scope)
                 && successRedirectUri.equals(other.successRedirectUri)
                 && webhookUri.equals(other.webhookUri)
-                && allowProgressiveScopes.equals(other.allowProgressiveScopes);
+                && allowProgressiveScopes.equals(other.allowProgressiveScopes)
+                && appId.equals(other.appId)
+                && oauthAppId.equals(other.oauthAppId);
     }
 
     @java.lang.Override
@@ -157,7 +183,9 @@ public final class CreateTokenOpts {
                 this.scope,
                 this.successRedirectUri,
                 this.webhookUri,
-                this.allowProgressiveScopes);
+                this.allowProgressiveScopes,
+                this.appId,
+                this.oauthAppId);
     }
 
     @java.lang.Override
@@ -233,11 +261,29 @@ public final class CreateTokenOpts {
         _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes);
 
         _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes);
+
+        /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         */
+        _FinalStage appId(Optional<String> appId);
+
+        _FinalStage appId(String appId);
+
+        /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         */
+        _FinalStage oauthAppId(Optional<String> oauthAppId);
+
+        _FinalStage oauthAppId(String oauthAppId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
+
+        private Optional<String> oauthAppId = Optional.empty();
+
+        private Optional<String> appId = Optional.empty();
 
         private Optional<Boolean> allowProgressiveScopes = Optional.empty();
 
@@ -268,6 +314,8 @@ public final class CreateTokenOpts {
             successRedirectUri(other.getSuccessRedirectUri());
             webhookUri(other.getWebhookUri());
             allowProgressiveScopes(other.getAllowProgressiveScopes());
+            appId(other.getAppId());
+            oauthAppId(other.getOauthAppId());
             return this;
         }
 
@@ -280,6 +328,46 @@ public final class CreateTokenOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appId(String appId) {
+            this.appId = Optional.ofNullable(appId);
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
+        public _FinalStage appId(Optional<String> appId) {
+            this.appId = appId;
             return this;
         }
 
@@ -434,6 +522,8 @@ public final class CreateTokenOpts {
                     successRedirectUri,
                     webhookUri,
                     allowProgressiveScopes,
+                    appId,
+                    oauthAppId,
                     additionalProperties);
         }
 

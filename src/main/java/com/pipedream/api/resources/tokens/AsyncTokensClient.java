@@ -45,6 +45,20 @@ public class AsyncTokensClient {
     /**
      * Confirm the validity of a Connect token
      */
+    public CompletableFuture<ValidateTokenResponse> validate(String ctok) {
+        return this.rawClient.validate(ctok).thenApply(response -> response.body());
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
+    public CompletableFuture<ValidateTokenResponse> validate(String ctok, RequestOptions requestOptions) {
+        return this.rawClient.validate(ctok, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
     public CompletableFuture<ValidateTokenResponse> validate(String ctok, TokensValidateRequest request) {
         return this.rawClient.validate(ctok, request).thenApply(response -> response.body());
     }

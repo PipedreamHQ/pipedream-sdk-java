@@ -8,10 +8,12 @@ import com.pipedream.api.core.Suppliers;
 import com.pipedream.api.resources.accounts.AccountsClient;
 import com.pipedream.api.resources.actions.ActionsClient;
 import com.pipedream.api.resources.appcategories.AppCategoriesClient;
+import com.pipedream.api.resources.appoverrides.AppOverridesClient;
 import com.pipedream.api.resources.apps.AppsClient;
 import com.pipedream.api.resources.components.ComponentsClient;
 import com.pipedream.api.resources.deployedtriggers.DeployedTriggersClient;
 import com.pipedream.api.resources.filestash.FileStashClient;
+import com.pipedream.api.resources.oauthapps.OauthAppsClient;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import com.pipedream.api.resources.projectenvironment.ProjectEnvironmentClient;
 import com.pipedream.api.resources.projects.ProjectsClient;
@@ -28,6 +30,8 @@ public class BaseClient {
     protected final Supplier<AppCategoriesClient> appCategoriesClient;
 
     protected final Supplier<AppsClient> appsClient;
+
+    protected final Supplier<AppOverridesClient> appOverridesClient;
 
     protected final Supplier<AccountsClient> accountsClient;
 
@@ -53,12 +57,15 @@ public class BaseClient {
 
     protected final Supplier<UsageClient> usageClient;
 
+    protected final Supplier<OauthAppsClient> oauthAppsClient;
+
     protected final Supplier<OauthTokensClient> oauthTokensClient;
 
     public BaseClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.appCategoriesClient = Suppliers.memoize(() -> new AppCategoriesClient(clientOptions));
         this.appsClient = Suppliers.memoize(() -> new AppsClient(clientOptions));
+        this.appOverridesClient = Suppliers.memoize(() -> new AppOverridesClient(clientOptions));
         this.accountsClient = Suppliers.memoize(() -> new AccountsClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
         this.componentsClient = Suppliers.memoize(() -> new ComponentsClient(clientOptions));
@@ -71,6 +78,7 @@ public class BaseClient {
         this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
         this.tokensClient = Suppliers.memoize(() -> new TokensClient(clientOptions));
         this.usageClient = Suppliers.memoize(() -> new UsageClient(clientOptions));
+        this.oauthAppsClient = Suppliers.memoize(() -> new OauthAppsClient(clientOptions));
         this.oauthTokensClient = Suppliers.memoize(() -> new OauthTokensClient(clientOptions));
     }
 
@@ -80,6 +88,10 @@ public class BaseClient {
 
     public AppsClient apps() {
         return this.appsClient.get();
+    }
+
+    public AppOverridesClient appOverrides() {
+        return this.appOverridesClient.get();
     }
 
     public AccountsClient accounts() {
@@ -128,6 +140,10 @@ public class BaseClient {
 
     public UsageClient usage() {
         return this.usageClient.get();
+    }
+
+    public OauthAppsClient oauthApps() {
+        return this.oauthAppsClient.get();
     }
 
     public OauthTokensClient oauthTokens() {
