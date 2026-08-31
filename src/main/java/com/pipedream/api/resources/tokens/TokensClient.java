@@ -44,6 +44,20 @@ public class TokensClient {
     /**
      * Confirm the validity of a Connect token
      */
+    public ValidateTokenResponse validate(String ctok) {
+        return this.rawClient.validate(ctok).body();
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
+    public ValidateTokenResponse validate(String ctok, RequestOptions requestOptions) {
+        return this.rawClient.validate(ctok, requestOptions).body();
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
     public ValidateTokenResponse validate(String ctok, TokensValidateRequest request) {
         return this.rawClient.validate(ctok, request).body();
     }

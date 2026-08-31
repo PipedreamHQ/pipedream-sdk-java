@@ -30,7 +30,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'com.pipedream:pipedream:2.1.3'
+  implementation 'com.pipedream:pipedream:2.1.4'
 }
 ```
 
@@ -42,7 +42,7 @@ Add the dependency in your `pom.xml` file:
 <dependency>
   <groupId>com.pipedream</groupId>
   <artifactId>pipedream</artifactId>
-  <version>2.1.3</version>
+  <version>2.1.4</version>
 </dependency>
 ```
 
@@ -171,13 +171,11 @@ the `Retry-After` header (as either in seconds or as an HTTP date), and then the
 Which status codes are retried depends on the `retry-status-codes` generator configuration:
 
 **`legacy`** (current default): retries on
-
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
 - [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (All server errors, including 500)
 
 **`recommended`**: retries on
-
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
 - [502](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) (Bad Gateway)
@@ -198,7 +196,6 @@ BaseClient client = BaseClient
 ### Timeouts
 
 The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
-
 ```java
 import com.pipedream.api.BaseClient;
 import com.pipedream.api.core.RequestOptions;
@@ -267,7 +264,7 @@ a proof of concept, but know that we will not be able to merge it as-is. We sugg
 an issue first to discuss with us!
 
 On the other hand, contributions to the README are always very welcome!
-
 ## Reference
 
 A full reference for this library is available [here](https://github.com/PipedreamHQ/pipedream-sdk-java/blob/HEAD/./reference.md).
+

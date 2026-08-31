@@ -16,35 +16,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TokensValidateRequest.Builder.class)
 public final class TokensValidateRequest {
-    private final String appId;
+    private final Optional<String> appId;
 
     private final Optional<String> accountId;
 
     private final Optional<String> oauthAppId;
 
+    private final Optional<String> appOverrideId;
+
     private final Map<String, Object> additionalProperties;
 
     private TokensValidateRequest(
-            String appId,
+            Optional<String> appId,
             Optional<String> accountId,
             Optional<String> oauthAppId,
+            Optional<String> appOverrideId,
             Map<String, Object> additionalProperties) {
         this.appId = appId;
         this.accountId = accountId;
         this.oauthAppId = oauthAppId;
+        this.appOverrideId = appOverrideId;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return The app ID to validate against
+     * @return The app ID to validate against. Required unless account_id or app_override_id identifies the app.
      */
     @JsonProperty("app_id")
-    public String getAppId() {
+    public Optional<String> getAppId() {
         return appId;
     }
 
@@ -64,6 +67,14 @@ public final class TokensValidateRequest {
         return oauthAppId;
     }
 
+    /**
+     * @return An app override ID. Selects the override's app, pre-defined custom fields, and OAuth client. With account_id, re-links the account to this override; it must belong to the account's app, and an override that pins a different OAuth client switches the account to that client when the reconnect flow completes. A conflicting app_id or oauth_app_id is an error. To resolve an override by name, list them with GET /v1/connect/{project_id}/app_overrides and match on name.
+     */
+    @JsonProperty("app_override_id")
+    public Optional<String> getAppOverrideId() {
+        return appOverrideId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -76,12 +87,15 @@ public final class TokensValidateRequest {
     }
 
     private boolean equalTo(TokensValidateRequest other) {
-        return appId.equals(other.appId) && accountId.equals(other.accountId) && oauthAppId.equals(other.oauthAppId);
+        return appId.equals(other.appId)
+                && accountId.equals(other.accountId)
+                && oauthAppId.equals(other.oauthAppId)
+                && appOverrideId.equals(other.appOverrideId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.appId, this.accountId, this.oauthAppId);
+        return Objects.hash(this.appId, this.accountId, this.oauthAppId, this.appOverrideId);
     }
 
     @java.lang.Override
@@ -89,126 +103,98 @@ public final class TokensValidateRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static AppIdStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface AppIdStage {
-        /**
-         * <p>The app ID to validate against</p>
-         */
-        _FinalStage appId(@NotNull String appId);
-
-        Builder from(TokensValidateRequest other);
-    }
-
-    public interface _FinalStage {
-        TokensValidateRequest build();
-
-        _FinalStage additionalProperty(String key, Object value);
-
-        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
-
-        /**
-         * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
-         */
-        _FinalStage accountId(Optional<String> accountId);
-
-        _FinalStage accountId(String accountId);
-
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         */
-        _FinalStage oauthAppId(Optional<String> oauthAppId);
-
-        _FinalStage oauthAppId(String oauthAppId);
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements AppIdStage, _FinalStage {
-        private String appId;
+    public static final class Builder {
+        private Optional<String> appId = Optional.empty();
+
+        private Optional<String> accountId = Optional.empty();
 
         private Optional<String> oauthAppId = Optional.empty();
 
-        private Optional<String> accountId = Optional.empty();
+        private Optional<String> appOverrideId = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
         public Builder from(TokensValidateRequest other) {
             appId(other.getAppId());
             accountId(other.getAccountId());
             oauthAppId(other.getOauthAppId());
+            appOverrideId(other.getAppOverrideId());
             return this;
         }
 
         /**
-         * <p>The app ID to validate against</p>
-         * <p>The app ID to validate against</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
+         * <p>The app ID to validate against. Required unless account_id or app_override_id identifies the app.</p>
          */
-        @java.lang.Override
-        @JsonSetter("app_id")
-        public _FinalStage appId(@NotNull String appId) {
-            this.appId = Objects.requireNonNull(appId, "appId must not be null");
+        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
+        public Builder appId(Optional<String> appId) {
+            this.appId = appId;
             return this;
         }
 
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage oauthAppId(String oauthAppId) {
-            this.oauthAppId = Optional.ofNullable(oauthAppId);
-            return this;
-        }
-
-        /**
-         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
-        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
-            this.oauthAppId = oauthAppId;
+        public Builder appId(String appId) {
+            this.appId = Optional.ofNullable(appId);
             return this;
         }
 
         /**
          * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @java.lang.Override
-        public _FinalStage accountId(String accountId) {
+        @JsonSetter(value = "account_id", nulls = Nulls.SKIP)
+        public Builder accountId(Optional<String> accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public Builder accountId(String accountId) {
             this.accountId = Optional.ofNullable(accountId);
             return this;
         }
 
         /**
-         * <p>An existing account ID to reconnect. Must belong to the app identified by app_id.</p>
+         * <p>The OAuth app ID to validate against (if the token is for an OAuth app)</p>
          */
-        @java.lang.Override
-        @JsonSetter(value = "account_id", nulls = Nulls.SKIP)
-        public _FinalStage accountId(Optional<String> accountId) {
-            this.accountId = accountId;
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public Builder oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
             return this;
         }
 
-        @java.lang.Override
-        public TokensValidateRequest build() {
-            return new TokensValidateRequest(appId, accountId, oauthAppId, additionalProperties);
+        public Builder oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
         }
 
-        @java.lang.Override
+        /**
+         * <p>An app override ID. Selects the override's app, pre-defined custom fields, and OAuth client. With account_id, re-links the account to this override; it must belong to the account's app, and an override that pins a different OAuth client switches the account to that client when the reconnect flow completes. A conflicting app_id or oauth_app_id is an error. To resolve an override by name, list them with GET /v1/connect/{project_id}/app_overrides and match on name.</p>
+         */
+        @JsonSetter(value = "app_override_id", nulls = Nulls.SKIP)
+        public Builder appOverrideId(Optional<String> appOverrideId) {
+            this.appOverrideId = appOverrideId;
+            return this;
+        }
+
+        public Builder appOverrideId(String appOverrideId) {
+            this.appOverrideId = Optional.ofNullable(appOverrideId);
+            return this;
+        }
+
+        public TokensValidateRequest build() {
+            return new TokensValidateRequest(appId, accountId, oauthAppId, appOverrideId, additionalProperties);
+        }
+
         public Builder additionalProperty(String key, Object value) {
             this.additionalProperties.put(key, value);
             return this;
         }
 
-        @java.lang.Override
         public Builder additionalProperties(Map<String, Object> additionalProperties) {
             this.additionalProperties.putAll(additionalProperties);
             return this;

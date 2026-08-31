@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +23,10 @@ import java.util.Optional;
 public final class ValidateTokenResponse {
     private final Optional<App> app;
 
+    private final Optional<String> appOverrideId;
+
+    private final Optional<List<String>> appOverrideFieldNames;
+
     private final Optional<String> error;
 
     private final Optional<String> errorRedirectUri;
@@ -29,6 +34,8 @@ public final class ValidateTokenResponse {
     private final Optional<String> oauthAppId;
 
     private final Optional<Boolean> oauthAppWorkdayOfficial;
+
+    private final Optional<String> oauthAppConnectBaseUrl;
 
     private final Optional<String> projectAppName;
 
@@ -46,10 +53,13 @@ public final class ValidateTokenResponse {
 
     private ValidateTokenResponse(
             Optional<App> app,
+            Optional<String> appOverrideId,
+            Optional<List<String>> appOverrideFieldNames,
             Optional<String> error,
             Optional<String> errorRedirectUri,
             Optional<String> oauthAppId,
             Optional<Boolean> oauthAppWorkdayOfficial,
+            Optional<String> oauthAppConnectBaseUrl,
             Optional<String> projectAppName,
             Optional<String> projectEnvironment,
             Optional<String> projectId,
@@ -58,10 +68,13 @@ public final class ValidateTokenResponse {
             Optional<String> successRedirectUri,
             Map<String, Object> additionalProperties) {
         this.app = app;
+        this.appOverrideId = appOverrideId;
+        this.appOverrideFieldNames = appOverrideFieldNames;
         this.error = error;
         this.errorRedirectUri = errorRedirectUri;
         this.oauthAppId = oauthAppId;
         this.oauthAppWorkdayOfficial = oauthAppWorkdayOfficial;
+        this.oauthAppConnectBaseUrl = oauthAppConnectBaseUrl;
         this.projectAppName = projectAppName;
         this.projectEnvironment = projectEnvironment;
         this.projectId = projectId;
@@ -74,6 +87,22 @@ public final class ValidateTokenResponse {
     @JsonProperty("app")
     public Optional<App> getApp() {
         return app;
+    }
+
+    /**
+     * @return ID of the resolved app override, echoed from the request
+     */
+    @JsonProperty("app_override_id")
+    public Optional<String> getAppOverrideId() {
+        return appOverrideId;
+    }
+
+    /**
+     * @return Names of the custom fields the resolved app override pre-defines
+     */
+    @JsonProperty("app_override_field_names")
+    public Optional<List<String>> getAppOverrideFieldNames() {
+        return appOverrideFieldNames;
     }
 
     /**
@@ -106,6 +135,14 @@ public final class ValidateTokenResponse {
     @JsonProperty("oauth_app_workday_official")
     public Optional<Boolean> getOauthAppWorkdayOfficial() {
         return oauthAppWorkdayOfficial;
+    }
+
+    /**
+     * @return Base URL the Connect UI must run this client's OAuth flow on; null means the default API URL
+     */
+    @JsonProperty("oauth_app_connect_base_url")
+    public Optional<String> getOauthAppConnectBaseUrl() {
+        return oauthAppConnectBaseUrl;
     }
 
     /**
@@ -169,10 +206,13 @@ public final class ValidateTokenResponse {
 
     private boolean equalTo(ValidateTokenResponse other) {
         return app.equals(other.app)
+                && appOverrideId.equals(other.appOverrideId)
+                && appOverrideFieldNames.equals(other.appOverrideFieldNames)
                 && error.equals(other.error)
                 && errorRedirectUri.equals(other.errorRedirectUri)
                 && oauthAppId.equals(other.oauthAppId)
                 && oauthAppWorkdayOfficial.equals(other.oauthAppWorkdayOfficial)
+                && oauthAppConnectBaseUrl.equals(other.oauthAppConnectBaseUrl)
                 && projectAppName.equals(other.projectAppName)
                 && projectEnvironment.equals(other.projectEnvironment)
                 && projectId.equals(other.projectId)
@@ -185,10 +225,13 @@ public final class ValidateTokenResponse {
     public int hashCode() {
         return Objects.hash(
                 this.app,
+                this.appOverrideId,
+                this.appOverrideFieldNames,
                 this.error,
                 this.errorRedirectUri,
                 this.oauthAppId,
                 this.oauthAppWorkdayOfficial,
+                this.oauthAppConnectBaseUrl,
                 this.projectAppName,
                 this.projectEnvironment,
                 this.projectId,
@@ -227,6 +270,20 @@ public final class ValidateTokenResponse {
         _FinalStage app(App app);
 
         /**
+         * <p>ID of the resolved app override, echoed from the request</p>
+         */
+        _FinalStage appOverrideId(Optional<String> appOverrideId);
+
+        _FinalStage appOverrideId(String appOverrideId);
+
+        /**
+         * <p>Names of the custom fields the resolved app override pre-defines</p>
+         */
+        _FinalStage appOverrideFieldNames(Optional<List<String>> appOverrideFieldNames);
+
+        _FinalStage appOverrideFieldNames(List<String> appOverrideFieldNames);
+
+        /**
          * <p>Error message if validation failed</p>
          */
         _FinalStage error(Optional<String> error);
@@ -253,6 +310,13 @@ public final class ValidateTokenResponse {
         _FinalStage oauthAppWorkdayOfficial(Optional<Boolean> oauthAppWorkdayOfficial);
 
         _FinalStage oauthAppWorkdayOfficial(Boolean oauthAppWorkdayOfficial);
+
+        /**
+         * <p>Base URL the Connect UI must run this client's OAuth flow on; null means the default API URL</p>
+         */
+        _FinalStage oauthAppConnectBaseUrl(Optional<String> oauthAppConnectBaseUrl);
+
+        _FinalStage oauthAppConnectBaseUrl(String oauthAppConnectBaseUrl);
 
         /**
          * <p>Name of the project app</p>
@@ -304,6 +368,8 @@ public final class ValidateTokenResponse {
 
         private Optional<String> projectAppName = Optional.empty();
 
+        private Optional<String> oauthAppConnectBaseUrl = Optional.empty();
+
         private Optional<Boolean> oauthAppWorkdayOfficial = Optional.empty();
 
         private Optional<String> oauthAppId = Optional.empty();
@@ -311,6 +377,10 @@ public final class ValidateTokenResponse {
         private Optional<String> errorRedirectUri = Optional.empty();
 
         private Optional<String> error = Optional.empty();
+
+        private Optional<List<String>> appOverrideFieldNames = Optional.empty();
+
+        private Optional<String> appOverrideId = Optional.empty();
 
         private Optional<App> app = Optional.empty();
 
@@ -322,10 +392,13 @@ public final class ValidateTokenResponse {
         @java.lang.Override
         public Builder from(ValidateTokenResponse other) {
             app(other.getApp());
+            appOverrideId(other.getAppOverrideId());
+            appOverrideFieldNames(other.getAppOverrideFieldNames());
             error(other.getError());
             errorRedirectUri(other.getErrorRedirectUri());
             oauthAppId(other.getOauthAppId());
             oauthAppWorkdayOfficial(other.getOauthAppWorkdayOfficial());
+            oauthAppConnectBaseUrl(other.getOauthAppConnectBaseUrl());
             projectAppName(other.getProjectAppName());
             projectEnvironment(other.getProjectEnvironment());
             projectId(other.getProjectId());
@@ -448,6 +521,26 @@ public final class ValidateTokenResponse {
         }
 
         /**
+         * <p>Base URL the Connect UI must run this client's OAuth flow on; null means the default API URL</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppConnectBaseUrl(String oauthAppConnectBaseUrl) {
+            this.oauthAppConnectBaseUrl = Optional.ofNullable(oauthAppConnectBaseUrl);
+            return this;
+        }
+
+        /**
+         * <p>Base URL the Connect UI must run this client's OAuth flow on; null means the default API URL</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_connect_base_url", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppConnectBaseUrl(Optional<String> oauthAppConnectBaseUrl) {
+            this.oauthAppConnectBaseUrl = oauthAppConnectBaseUrl;
+            return this;
+        }
+
+        /**
          * <p>True when the resolved OAuth client is the app's Workday-official client</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -527,6 +620,46 @@ public final class ValidateTokenResponse {
             return this;
         }
 
+        /**
+         * <p>Names of the custom fields the resolved app override pre-defines</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appOverrideFieldNames(List<String> appOverrideFieldNames) {
+            this.appOverrideFieldNames = Optional.ofNullable(appOverrideFieldNames);
+            return this;
+        }
+
+        /**
+         * <p>Names of the custom fields the resolved app override pre-defines</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "app_override_field_names", nulls = Nulls.SKIP)
+        public _FinalStage appOverrideFieldNames(Optional<List<String>> appOverrideFieldNames) {
+            this.appOverrideFieldNames = appOverrideFieldNames;
+            return this;
+        }
+
+        /**
+         * <p>ID of the resolved app override, echoed from the request</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appOverrideId(String appOverrideId) {
+            this.appOverrideId = Optional.ofNullable(appOverrideId);
+            return this;
+        }
+
+        /**
+         * <p>ID of the resolved app override, echoed from the request</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "app_override_id", nulls = Nulls.SKIP)
+        public _FinalStage appOverrideId(Optional<String> appOverrideId) {
+            this.appOverrideId = appOverrideId;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage app(App app) {
             this.app = Optional.ofNullable(app);
@@ -544,10 +677,13 @@ public final class ValidateTokenResponse {
         public ValidateTokenResponse build() {
             return new ValidateTokenResponse(
                     app,
+                    appOverrideId,
+                    appOverrideFieldNames,
                     error,
                     errorRedirectUri,
                     oauthAppId,
                     oauthAppWorkdayOfficial,
+                    oauthAppConnectBaseUrl,
                     projectAppName,
                     projectEnvironment,
                     projectId,
