@@ -118,6 +118,21 @@ public class AsyncRawTokensClient {
     /**
      * Confirm the validity of a Connect token
      */
+    public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(String ctok) {
+        return validate(ctok, TokensValidateRequest.builder().build());
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
+    public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
+            String ctok, RequestOptions requestOptions) {
+        return validate(ctok, TokensValidateRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Confirm the validity of a Connect token
+     */
     public CompletableFuture<BaseClientHttpResponse<ValidateTokenResponse>> validate(
             String ctok, TokensValidateRequest request) {
         return validate(ctok, request, null);
@@ -133,7 +148,10 @@ public class AsyncRawTokensClient {
                 .addPathSegments("v1/connect/tokens")
                 .addPathSegment(ctok)
                 .addPathSegments("validate");
-        QueryStringMapper.addQueryParameter(httpUrl, "app_id", request.getAppId(), false);
+        if (request.getAppId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "app_id", request.getAppId().get(), false);
+        }
         if (request.getAccountId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "account_id", request.getAccountId().get(), false);
@@ -141,6 +159,10 @@ public class AsyncRawTokensClient {
         if (request.getOauthAppId().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "oauth_app_id", request.getOauthAppId().get(), false);
+        }
+        if (request.getAppOverrideId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "app_override_id", request.getAppOverrideId().get(), false);
         }
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {

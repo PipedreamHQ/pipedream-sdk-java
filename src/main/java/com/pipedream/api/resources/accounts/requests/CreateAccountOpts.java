@@ -36,6 +36,8 @@ public final class CreateAccountOpts {
 
     private final Optional<String> accountId;
 
+    private final Optional<String> appOverrideId;
+
     private final Map<String, Object> additionalProperties;
 
     private CreateAccountOpts(
@@ -46,6 +48,7 @@ public final class CreateAccountOpts {
             String connectToken,
             Optional<String> name,
             Optional<String> accountId,
+            Optional<String> appOverrideId,
             Map<String, Object> additionalProperties) {
         this.externalUserId = externalUserId;
         this.oauthAppId = oauthAppId;
@@ -54,6 +57,7 @@ public final class CreateAccountOpts {
         this.connectToken = connectToken;
         this.name = name;
         this.accountId = accountId;
+        this.appOverrideId = appOverrideId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -110,6 +114,14 @@ public final class CreateAccountOpts {
         return accountId;
     }
 
+    /**
+     * @return An app override ID. The account is linked to the override and the override's pre-defined custom field values are merged over cfmap_json; with account_id, the account is re-linked to this override. Must belong to the app identified by app_slug, and must not select an OAuth client — overrides that do can only connect through the OAuth flow.
+     */
+    @JsonProperty("app_override_id")
+    public Optional<String> getAppOverrideId() {
+        return appOverrideId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -128,7 +140,8 @@ public final class CreateAccountOpts {
                 && cfmapJson.equals(other.cfmapJson)
                 && connectToken.equals(other.connectToken)
                 && name.equals(other.name)
-                && accountId.equals(other.accountId);
+                && accountId.equals(other.accountId)
+                && appOverrideId.equals(other.appOverrideId);
     }
 
     @java.lang.Override
@@ -140,7 +153,8 @@ public final class CreateAccountOpts {
                 this.cfmapJson,
                 this.connectToken,
                 this.name,
-                this.accountId);
+                this.accountId,
+                this.appOverrideId);
     }
 
     @java.lang.Override
@@ -206,6 +220,13 @@ public final class CreateAccountOpts {
         _FinalStage accountId(Optional<String> accountId);
 
         _FinalStage accountId(String accountId);
+
+        /**
+         * <p>An app override ID. The account is linked to the override and the override's pre-defined custom field values are merged over cfmap_json; with account_id, the account is re-linked to this override. Must belong to the app identified by app_slug, and must not select an OAuth client — overrides that do can only connect through the OAuth flow.</p>
+         */
+        _FinalStage appOverrideId(Optional<String> appOverrideId);
+
+        _FinalStage appOverrideId(String appOverrideId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -215,6 +236,8 @@ public final class CreateAccountOpts {
         private String cfmapJson;
 
         private String connectToken;
+
+        private Optional<String> appOverrideId = Optional.empty();
 
         private Optional<String> accountId = Optional.empty();
 
@@ -238,6 +261,7 @@ public final class CreateAccountOpts {
             connectToken(other.getConnectToken());
             name(other.getName());
             accountId(other.getAccountId());
+            appOverrideId(other.getAppOverrideId());
             return this;
         }
 
@@ -274,6 +298,26 @@ public final class CreateAccountOpts {
         @JsonSetter("connect_token")
         public _FinalStage connectToken(@NotNull String connectToken) {
             this.connectToken = Objects.requireNonNull(connectToken, "connectToken must not be null");
+            return this;
+        }
+
+        /**
+         * <p>An app override ID. The account is linked to the override and the override's pre-defined custom field values are merged over cfmap_json; with account_id, the account is re-linked to this override. Must belong to the app identified by app_slug, and must not select an OAuth client — overrides that do can only connect through the OAuth flow.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appOverrideId(String appOverrideId) {
+            this.appOverrideId = Optional.ofNullable(appOverrideId);
+            return this;
+        }
+
+        /**
+         * <p>An app override ID. The account is linked to the override and the override's pre-defined custom field values are merged over cfmap_json; with account_id, the account is re-linked to this override. Must belong to the app identified by app_slug, and must not select an OAuth client — overrides that do can only connect through the OAuth flow.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "app_override_id", nulls = Nulls.SKIP)
+        public _FinalStage appOverrideId(Optional<String> appOverrideId) {
+            this.appOverrideId = appOverrideId;
             return this;
         }
 
@@ -360,6 +404,7 @@ public final class CreateAccountOpts {
                     connectToken,
                     name,
                     accountId,
+                    appOverrideId,
                     additionalProperties);
         }
 
