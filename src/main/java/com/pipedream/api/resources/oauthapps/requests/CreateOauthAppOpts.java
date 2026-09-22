@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
 public final class CreateOauthAppOpts {
     private final String app;
 
-    private final String clientId;
+    private final Optional<String> clientId;
 
-    private final String clientSecret;
+    private final Optional<String> clientSecret;
 
     private final Optional<String> name;
 
@@ -40,8 +40,8 @@ public final class CreateOauthAppOpts {
 
     private CreateOauthAppOpts(
             String app,
-            String clientId,
-            String clientSecret,
+            Optional<String> clientId,
+            Optional<String> clientSecret,
             Optional<String> name,
             Optional<String> description,
             Optional<List<String>> scopes,
@@ -66,18 +66,18 @@ public final class CreateOauthAppOpts {
     }
 
     /**
-     * @return The OAuth client ID registered with the upstream provider
+     * @return The OAuth client ID registered with the upstream provider. Optional: providers that only issue credentials once they have a callback URL can be registered without one, and the client cannot connect accounts until it is set.
      */
     @JsonProperty("client_id")
-    public String getClientId() {
+    public Optional<String> getClientId() {
         return clientId;
     }
 
     /**
-     * @return The OAuth client secret. Write-only; never returned in responses.
+     * @return The OAuth client secret. Optional, like the client ID. Write-only; never returned in responses.
      */
     @JsonProperty("client_secret")
-    public String getClientSecret() {
+    public Optional<String> getClientSecret() {
         return clientSecret;
     }
 
@@ -159,23 +159,9 @@ public final class CreateOauthAppOpts {
         /**
          * <p>The app's ID or name slug. The app must have custom OAuth clients enabled.</p>
          */
-        ClientIdStage app(@NotNull String app);
+        _FinalStage app(@NotNull String app);
 
         Builder from(CreateOauthAppOpts other);
-    }
-
-    public interface ClientIdStage {
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         */
-        ClientSecretStage clientId(@NotNull String clientId);
-    }
-
-    public interface ClientSecretStage {
-        /**
-         * <p>The OAuth client secret. Write-only; never returned in responses.</p>
-         */
-        _FinalStage clientSecret(@NotNull String clientSecret);
     }
 
     public interface _FinalStage {
@@ -184,6 +170,20 @@ public final class CreateOauthAppOpts {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Optional: providers that only issue credentials once they have a callback URL can be registered without one, and the client cannot connect accounts until it is set.</p>
+         */
+        _FinalStage clientId(Optional<String> clientId);
+
+        _FinalStage clientId(String clientId);
+
+        /**
+         * <p>The OAuth client secret. Optional, like the client ID. Write-only; never returned in responses.</p>
+         */
+        _FinalStage clientSecret(Optional<String> clientSecret);
+
+        _FinalStage clientSecret(String clientSecret);
 
         /**
          * <p>Display name of the OAuth client</p>
@@ -215,12 +215,8 @@ public final class CreateOauthAppOpts {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements AppStage, ClientIdStage, ClientSecretStage, _FinalStage {
+    public static final class Builder implements AppStage, _FinalStage {
         private String app;
-
-        private String clientId;
-
-        private String clientSecret;
 
         private Optional<List<String>> additionalScopes = Optional.empty();
 
@@ -229,6 +225,10 @@ public final class CreateOauthAppOpts {
         private Optional<String> description = Optional.empty();
 
         private Optional<String> name = Optional.empty();
+
+        private Optional<String> clientSecret = Optional.empty();
+
+        private Optional<String> clientId = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -254,32 +254,8 @@ public final class CreateOauthAppOpts {
          */
         @java.lang.Override
         @JsonSetter("app")
-        public ClientIdStage app(@NotNull String app) {
+        public _FinalStage app(@NotNull String app) {
             this.app = Objects.requireNonNull(app, "app must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("client_id")
-        public ClientSecretStage clientId(@NotNull String clientId) {
-            this.clientId = Objects.requireNonNull(clientId, "clientId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The OAuth client secret. Write-only; never returned in responses.</p>
-         * <p>The OAuth client secret. Write-only; never returned in responses.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("client_secret")
-        public _FinalStage clientSecret(@NotNull String clientSecret) {
-            this.clientSecret = Objects.requireNonNull(clientSecret, "clientSecret must not be null");
             return this;
         }
 
@@ -360,6 +336,46 @@ public final class CreateOauthAppOpts {
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public _FinalStage name(Optional<String> name) {
             this.name = name;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client secret. Optional, like the client ID. Write-only; never returned in responses.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientSecret(String clientSecret) {
+            this.clientSecret = Optional.ofNullable(clientSecret);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client secret. Optional, like the client ID. Write-only; never returned in responses.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_secret", nulls = Nulls.SKIP)
+        public _FinalStage clientSecret(Optional<String> clientSecret) {
+            this.clientSecret = clientSecret;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Optional: providers that only issue credentials once they have a callback URL can be registered without one, and the client cannot connect accounts until it is set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientId(String clientId) {
+            this.clientId = Optional.ofNullable(clientId);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Optional: providers that only issue credentials once they have a callback URL can be registered without one, and the client cannot connect accounts until it is set.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
+        public _FinalStage clientId(Optional<String> clientId) {
+            this.clientId = clientId;
             return this;
         }
 

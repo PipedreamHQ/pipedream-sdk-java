@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public final class OauthApp {
     private final Optional<String> id;
 
-    private final String clientId;
+    private final Optional<String> clientId;
 
     private final Optional<List<String>> scopes;
 
@@ -62,7 +62,7 @@ public final class OauthApp {
 
     private OauthApp(
             Optional<String> id,
-            String clientId,
+            Optional<String> clientId,
             Optional<List<String>> scopes,
             Optional<List<String>> additionalScopes,
             Optional<String> redirectUri,
@@ -108,10 +108,10 @@ public final class OauthApp {
     }
 
     /**
-     * @return The OAuth client ID registered with the upstream provider
+     * @return The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.
      */
     @JsonProperty("client_id")
-    public String getClientId() {
+    public Optional<String> getClientId() {
         return clientId;
     }
 
@@ -284,17 +284,8 @@ public final class OauthApp {
         return ObjectMappers.stringify(this);
     }
 
-    public static ClientIdStage builder() {
+    public static OwnerIdStage builder() {
         return new Builder();
-    }
-
-    public interface ClientIdStage {
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         */
-        OwnerIdStage clientId(@NotNull String clientId);
-
-        Builder from(OauthApp other);
     }
 
     public interface OwnerIdStage {
@@ -302,6 +293,8 @@ public final class OauthApp {
          * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...)</p>
          */
         NameSlugStage ownerId(@NotNull String ownerId);
+
+        Builder from(OauthApp other);
     }
 
     public interface NameSlugStage {
@@ -345,6 +338,13 @@ public final class OauthApp {
         _FinalStage id(Optional<String> id);
 
         _FinalStage id(String id);
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         */
+        _FinalStage clientId(Optional<String> clientId);
+
+        _FinalStage clientId(String clientId);
 
         /**
          * <p>OAuth scopes requested when users connect through this client</p>
@@ -414,15 +414,7 @@ public final class OauthApp {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements ClientIdStage,
-                    OwnerIdStage,
-                    NameSlugStage,
-                    NameStage,
-                    ImgSrcStage,
-                    FeaturedWeightStage,
-                    _FinalStage {
-        private String clientId;
-
+            implements OwnerIdStage, NameSlugStage, NameStage, ImgSrcStage, FeaturedWeightStage, _FinalStage {
         private String ownerId;
 
         private String nameSlug;
@@ -453,6 +445,8 @@ public final class OauthApp {
 
         private Optional<List<String>> scopes = Optional.empty();
 
+        private Optional<String> clientId = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         @JsonAnySetter
@@ -479,18 +473,6 @@ public final class OauthApp {
             categories(other.getCategories());
             featuredWeight(other.getFeaturedWeight());
             scopeProfiles(other.getScopeProfiles());
-            return this;
-        }
-
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("client_id")
-        public OwnerIdStage clientId(@NotNull String clientId) {
-            this.clientId = Objects.requireNonNull(clientId, "clientId must not be null");
             return this;
         }
 
@@ -760,6 +742,26 @@ public final class OauthApp {
         @JsonSetter(value = "scopes", nulls = Nulls.SKIP)
         public _FinalStage scopes(Optional<List<String>> scopes) {
             this.scopes = scopes;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientId(String clientId) {
+            this.clientId = Optional.ofNullable(clientId);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
+        public _FinalStage clientId(Optional<String> clientId) {
+            this.clientId = clientId;
             return this;
         }
 
