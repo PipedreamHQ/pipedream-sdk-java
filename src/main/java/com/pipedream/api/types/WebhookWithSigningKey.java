@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
@@ -27,6 +29,12 @@ public final class WebhookWithSigningKey {
 
     private final boolean signingKeySet;
 
+    private final Optional<Boolean> active;
+
+    private final Optional<WebhookWithSigningKeyDeliveryBackend> deliveryBackend;
+
+    private final Optional<WebhookDeliveryState> deliveryState;
+
     private final int createdAt;
 
     private final int updatedAt;
@@ -38,6 +46,9 @@ public final class WebhookWithSigningKey {
             String url,
             String signingKey,
             boolean signingKeySet,
+            Optional<Boolean> active,
+            Optional<WebhookWithSigningKeyDeliveryBackend> deliveryBackend,
+            Optional<WebhookDeliveryState> deliveryState,
             int createdAt,
             int updatedAt,
             Map<String, Object> additionalProperties) {
@@ -45,6 +56,9 @@ public final class WebhookWithSigningKey {
         this.url = url;
         this.signingKey = signingKey;
         this.signingKeySet = signingKeySet;
+        this.active = active;
+        this.deliveryBackend = deliveryBackend;
+        this.deliveryState = deliveryState;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.additionalProperties = additionalProperties;
@@ -82,6 +96,21 @@ public final class WebhookWithSigningKey {
         return signingKeySet;
     }
 
+    @JsonProperty("active")
+    public Optional<Boolean> getActive() {
+        return active;
+    }
+
+    @JsonProperty("delivery_backend")
+    public Optional<WebhookWithSigningKeyDeliveryBackend> getDeliveryBackend() {
+        return deliveryBackend;
+    }
+
+    @JsonProperty("delivery_state")
+    public Optional<WebhookDeliveryState> getDeliveryState() {
+        return deliveryState;
+    }
+
     /**
      * @return The time the webhook was created, in epoch seconds
      */
@@ -114,13 +143,25 @@ public final class WebhookWithSigningKey {
                 && url.equals(other.url)
                 && signingKey.equals(other.signingKey)
                 && signingKeySet == other.signingKeySet
+                && active.equals(other.active)
+                && deliveryBackend.equals(other.deliveryBackend)
+                && deliveryState.equals(other.deliveryState)
                 && createdAt == other.createdAt
                 && updatedAt == other.updatedAt;
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.url, this.signingKey, this.signingKeySet, this.createdAt, this.updatedAt);
+        return Objects.hash(
+                this.id,
+                this.url,
+                this.signingKey,
+                this.signingKeySet,
+                this.active,
+                this.deliveryBackend,
+                this.deliveryState,
+                this.createdAt,
+                this.updatedAt);
     }
 
     @java.lang.Override
@@ -182,6 +223,18 @@ public final class WebhookWithSigningKey {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage active(Optional<Boolean> active);
+
+        _FinalStage active(Boolean active);
+
+        _FinalStage deliveryBackend(Optional<WebhookWithSigningKeyDeliveryBackend> deliveryBackend);
+
+        _FinalStage deliveryBackend(WebhookWithSigningKeyDeliveryBackend deliveryBackend);
+
+        _FinalStage deliveryState(Optional<WebhookDeliveryState> deliveryState);
+
+        _FinalStage deliveryState(WebhookDeliveryState deliveryState);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -205,6 +258,12 @@ public final class WebhookWithSigningKey {
 
         private int updatedAt;
 
+        private Optional<WebhookDeliveryState> deliveryState = Optional.empty();
+
+        private Optional<WebhookWithSigningKeyDeliveryBackend> deliveryBackend = Optional.empty();
+
+        private Optional<Boolean> active = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -216,6 +275,9 @@ public final class WebhookWithSigningKey {
             url(other.getUrl());
             signingKey(other.getSigningKey());
             signingKeySet(other.getSigningKeySet());
+            active(other.getActive());
+            deliveryBackend(other.getDeliveryBackend());
+            deliveryState(other.getDeliveryState());
             createdAt(other.getCreatedAt());
             updatedAt(other.getUpdatedAt());
             return this;
@@ -294,9 +356,57 @@ public final class WebhookWithSigningKey {
         }
 
         @java.lang.Override
+        public _FinalStage deliveryState(WebhookDeliveryState deliveryState) {
+            this.deliveryState = Optional.ofNullable(deliveryState);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "delivery_state", nulls = Nulls.SKIP)
+        public _FinalStage deliveryState(Optional<WebhookDeliveryState> deliveryState) {
+            this.deliveryState = deliveryState;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage deliveryBackend(WebhookWithSigningKeyDeliveryBackend deliveryBackend) {
+            this.deliveryBackend = Optional.ofNullable(deliveryBackend);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "delivery_backend", nulls = Nulls.SKIP)
+        public _FinalStage deliveryBackend(Optional<WebhookWithSigningKeyDeliveryBackend> deliveryBackend) {
+            this.deliveryBackend = deliveryBackend;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage active(Boolean active) {
+            this.active = Optional.ofNullable(active);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "active", nulls = Nulls.SKIP)
+        public _FinalStage active(Optional<Boolean> active) {
+            this.active = active;
+            return this;
+        }
+
+        @java.lang.Override
         public WebhookWithSigningKey build() {
             return new WebhookWithSigningKey(
-                    id, url, signingKey, signingKeySet, createdAt, updatedAt, additionalProperties);
+                    id,
+                    url,
+                    signingKey,
+                    signingKeySet,
+                    active,
+                    deliveryBackend,
+                    deliveryState,
+                    createdAt,
+                    updatedAt,
+                    additionalProperties);
         }
 
         @java.lang.Override

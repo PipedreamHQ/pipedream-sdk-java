@@ -12,6 +12,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersLis
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRegenerateWebhookSigningKeyRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersResetWebhookDeliveryStateRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveWebhookRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
@@ -202,6 +203,29 @@ public class AsyncDeployedTriggersClient {
             RequestOptions requestOptions) {
         return this.rawClient
                 .retrieveWebhook(triggerId, webhookId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Reactivate a disabled webhook and clear its delivery failure evidence
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> resetWebhookDeliveryState(
+            String triggerId, String webhookId, DeployedTriggersResetWebhookDeliveryStateRequest request) {
+        return this.rawClient
+                .resetWebhookDeliveryState(triggerId, webhookId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Reactivate a disabled webhook and clear its delivery failure evidence
+     */
+    public CompletableFuture<GetWebhookWithSigningKeyResponse> resetWebhookDeliveryState(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersResetWebhookDeliveryStateRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .resetWebhookDeliveryState(triggerId, webhookId, request, requestOptions)
                 .thenApply(response -> response.body());
     }
 
