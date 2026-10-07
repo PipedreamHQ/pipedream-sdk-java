@@ -23,16 +23,27 @@ import org.jetbrains.annotations.NotNull;
 public final class CreateOAuthTokenOpts {
     private final String clientId;
 
-    private final String clientSecret;
+    private final Optional<String> clientSecret;
+
+    private final Optional<String> clientAssertionType;
+
+    private final Optional<String> clientAssertion;
 
     private final Optional<String> scope;
 
     private final Map<String, Object> additionalProperties;
 
     private CreateOAuthTokenOpts(
-            String clientId, String clientSecret, Optional<String> scope, Map<String, Object> additionalProperties) {
+            String clientId,
+            Optional<String> clientSecret,
+            Optional<String> clientAssertionType,
+            Optional<String> clientAssertion,
+            Optional<String> scope,
+            Map<String, Object> additionalProperties) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.clientAssertionType = clientAssertionType;
+        this.clientAssertion = clientAssertion;
         this.scope = scope;
         this.additionalProperties = additionalProperties;
     }
@@ -47,9 +58,28 @@ public final class CreateOAuthTokenOpts {
         return clientId;
     }
 
+    /**
+     * @return The client secret, for clients that authenticate with a client secret.
+     */
     @JsonProperty("client_secret")
-    public String getClientSecret() {
+    public Optional<String> getClientSecret() {
         return clientSecret;
+    }
+
+    /**
+     * @return Required with <code>client_assertion</code>.
+     */
+    @JsonProperty("client_assertion_type")
+    public Optional<String> getClientAssertionType() {
+        return clientAssertionType;
+    }
+
+    /**
+     * @return For clients that authenticate with a public key: a JWT signed with the client's private key (ES256 or RS256). Claims: <code>iss</code> and <code>sub</code> set to the client ID, <code>aud</code> set to <code>https://api.pipedream.com</code>, <code>exp</code> at most 1 hour ahead, and a unique <code>jti</code>. Sign a new assertion for every request, including retries.
+     */
+    @JsonProperty("client_assertion")
+    public Optional<String> getClientAssertion() {
+        return clientAssertion;
     }
 
     /**
@@ -72,12 +102,17 @@ public final class CreateOAuthTokenOpts {
     }
 
     private boolean equalTo(CreateOAuthTokenOpts other) {
-        return clientId.equals(other.clientId) && clientSecret.equals(other.clientSecret) && scope.equals(other.scope);
+        return clientId.equals(other.clientId)
+                && clientSecret.equals(other.clientSecret)
+                && clientAssertionType.equals(other.clientAssertionType)
+                && clientAssertion.equals(other.clientAssertion)
+                && scope.equals(other.scope);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.clientId, this.clientSecret, this.scope);
+        return Objects.hash(
+                this.clientId, this.clientSecret, this.clientAssertionType, this.clientAssertion, this.scope);
     }
 
     @java.lang.Override
@@ -90,13 +125,9 @@ public final class CreateOAuthTokenOpts {
     }
 
     public interface ClientIdStage {
-        ClientSecretStage clientId(@NotNull String clientId);
+        _FinalStage clientId(@NotNull String clientId);
 
         Builder from(CreateOAuthTokenOpts other);
-    }
-
-    public interface ClientSecretStage {
-        _FinalStage clientSecret(@NotNull String clientSecret);
     }
 
     public interface _FinalStage {
@@ -107,6 +138,27 @@ public final class CreateOAuthTokenOpts {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
+         * <p>The client secret, for clients that authenticate with a client secret.</p>
+         */
+        _FinalStage clientSecret(Optional<String> clientSecret);
+
+        _FinalStage clientSecret(String clientSecret);
+
+        /**
+         * <p>Required with <code>client_assertion</code>.</p>
+         */
+        _FinalStage clientAssertionType(Optional<String> clientAssertionType);
+
+        _FinalStage clientAssertionType(String clientAssertionType);
+
+        /**
+         * <p>For clients that authenticate with a public key: a JWT signed with the client's private key (ES256 or RS256). Claims: <code>iss</code> and <code>sub</code> set to the client ID, <code>aud</code> set to <code>https://api.pipedream.com</code>, <code>exp</code> at most 1 hour ahead, and a unique <code>jti</code>. Sign a new assertion for every request, including retries.</p>
+         */
+        _FinalStage clientAssertion(Optional<String> clientAssertion);
+
+        _FinalStage clientAssertion(String clientAssertion);
+
+        /**
          * <p>Optional space-separated scopes for the access token. Defaults to <code>*</code>.</p>
          */
         _FinalStage scope(Optional<String> scope);
@@ -115,12 +167,16 @@ public final class CreateOAuthTokenOpts {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ClientIdStage, ClientSecretStage, _FinalStage {
+    public static final class Builder implements ClientIdStage, _FinalStage {
         private String clientId;
 
-        private String clientSecret;
-
         private Optional<String> scope = Optional.empty();
+
+        private Optional<String> clientAssertion = Optional.empty();
+
+        private Optional<String> clientAssertionType = Optional.empty();
+
+        private Optional<String> clientSecret = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -131,21 +187,16 @@ public final class CreateOAuthTokenOpts {
         public Builder from(CreateOAuthTokenOpts other) {
             clientId(other.getClientId());
             clientSecret(other.getClientSecret());
+            clientAssertionType(other.getClientAssertionType());
+            clientAssertion(other.getClientAssertion());
             scope(other.getScope());
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("client_id")
-        public ClientSecretStage clientId(@NotNull String clientId) {
+        public _FinalStage clientId(@NotNull String clientId) {
             this.clientId = Objects.requireNonNull(clientId, "clientId must not be null");
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("client_secret")
-        public _FinalStage clientSecret(@NotNull String clientSecret) {
-            this.clientSecret = Objects.requireNonNull(clientSecret, "clientSecret must not be null");
             return this;
         }
 
@@ -169,9 +220,70 @@ public final class CreateOAuthTokenOpts {
             return this;
         }
 
+        /**
+         * <p>For clients that authenticate with a public key: a JWT signed with the client's private key (ES256 or RS256). Claims: <code>iss</code> and <code>sub</code> set to the client ID, <code>aud</code> set to <code>https://api.pipedream.com</code>, <code>exp</code> at most 1 hour ahead, and a unique <code>jti</code>. Sign a new assertion for every request, including retries.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientAssertion(String clientAssertion) {
+            this.clientAssertion = Optional.ofNullable(clientAssertion);
+            return this;
+        }
+
+        /**
+         * <p>For clients that authenticate with a public key: a JWT signed with the client's private key (ES256 or RS256). Claims: <code>iss</code> and <code>sub</code> set to the client ID, <code>aud</code> set to <code>https://api.pipedream.com</code>, <code>exp</code> at most 1 hour ahead, and a unique <code>jti</code>. Sign a new assertion for every request, including retries.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_assertion", nulls = Nulls.SKIP)
+        public _FinalStage clientAssertion(Optional<String> clientAssertion) {
+            this.clientAssertion = clientAssertion;
+            return this;
+        }
+
+        /**
+         * <p>Required with <code>client_assertion</code>.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientAssertionType(String clientAssertionType) {
+            this.clientAssertionType = Optional.ofNullable(clientAssertionType);
+            return this;
+        }
+
+        /**
+         * <p>Required with <code>client_assertion</code>.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_assertion_type", nulls = Nulls.SKIP)
+        public _FinalStage clientAssertionType(Optional<String> clientAssertionType) {
+            this.clientAssertionType = clientAssertionType;
+            return this;
+        }
+
+        /**
+         * <p>The client secret, for clients that authenticate with a client secret.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientSecret(String clientSecret) {
+            this.clientSecret = Optional.ofNullable(clientSecret);
+            return this;
+        }
+
+        /**
+         * <p>The client secret, for clients that authenticate with a client secret.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_secret", nulls = Nulls.SKIP)
+        public _FinalStage clientSecret(Optional<String> clientSecret) {
+            this.clientSecret = clientSecret;
+            return this;
+        }
+
         @java.lang.Override
         public CreateOAuthTokenOpts build() {
-            return new CreateOAuthTokenOpts(clientId, clientSecret, scope, additionalProperties);
+            return new CreateOAuthTokenOpts(
+                    clientId, clientSecret, clientAssertionType, clientAssertion, scope, additionalProperties);
         }
 
         @java.lang.Override

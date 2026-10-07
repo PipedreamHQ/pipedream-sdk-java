@@ -1,8 +1,10 @@
 package com.pipedream.api;
 
+import com.pipedream.api.core.ClientAssertionSigner;
 import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.ConnectPathNormalizationInterceptor;
 import com.pipedream.api.core.OAuthTokenSupplier;
+import com.pipedream.api.core.PrivateKeyJwtTokenSupplier;
 import com.pipedream.api.resources.oauthtokens.OauthTokensClient;
 import java.util.function.Supplier;
 import okhttp3.OkHttpClient;
@@ -15,8 +17,15 @@ public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<As
     private String projectId;
     private String clientId;
     private String clientSecret;
+    private String privateKey;
+    private String keyId;
     private String token;
     private String scope;
+    // Credentials read from the environment by {@link AsyncPipedreamClientbuilder()}. Explicitly set
+    // credentials take precedence over these.
+    private String envClientSecret;
+    private String envPrivateKey;
+    private String envKeyId;
 
     public AsyncPipedreamClient build() {
         validateConfiguration();
@@ -36,9 +45,39 @@ public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<As
             return () -> "Bearer " + this.token;
         }
 
-        if (this.clientId != null && this.clientSecret != null) {
+        if (this.clientSecret != null && this.privateKey != null) {
+            throw new IllegalStateException("Pass either clientSecret or privateKey, not both");
+        }
+        String secret = this.clientSecret;
+        String key = this.privateKey;
+        String kid = this.keyId;
+        if (secret == null && key == null) {
+            if (this.envClientSecret != null && this.envPrivateKey != null) {
+                throw new IllegalStateException(
+                        "Both PIPEDREAM_CLIENT_SECRET and PIPEDREAM_PRIVATE_KEY are set; set only the one your client uses");
+            }
+            secret = this.envClientSecret;
+            key = this.envPrivateKey;
+        }
+        if (kid == null) {
+            kid = this.envKeyId;
+        }
+
+        if (this.clientId != null && key != null) {
+            // The assertion audience is the API's issuer identifier: the base URL's origin
+            // (https://api.pipedream.com by default).
+            final ClientAssertionSigner signer = new ClientAssertionSigner(
+                    this.clientId,
+                    key,
+                    kid,
+                    PrivateKeyJwtTokenSupplier.issuer(baseOptions.environment().getUrl()));
+            return new PrivateKeyJwtTokenSupplier(this.clientId, this.scope, signer, baseOptions);
+        }
+
+        if (this.clientId != null && secret != null) {
             final OauthTokensClient authClient = new OauthTokensClient(baseOptions);
-            return new OAuthTokenSupplier(this.clientId, this.clientSecret, this.scope, authClient);
+            // The client-secret flow sends no client assertion.
+            return new OAuthTokenSupplier(this.clientId, secret, null, null, this.scope, authClient);
         }
 
         return () -> "";
@@ -79,6 +118,38 @@ public final class AsyncPipedreamClientBuilder extends AsyncBaseClientBuilder<As
      */
     public AsyncPipedreamClientBuilder clientSecret(final String clientSecret) {
         this.clientSecret = clientSecret;
+        return this;
+    }
+
+    /**
+     * For clients that authenticate with a public key instead of a client secret: the matching
+     * private key, as an unencrypted PKCS#8 PEM ({@code -----BEGIN PRIVATE KEY-----}) or a JWK
+     * (JSON). The SDK signs a short-lived client assertion with it for each token request: ES256 for
+     * EC P-256 keys, RS256 for RSA keys. Can't be combined with {@link #clientSecret(String)}.
+     * Defaults to {@code PIPEDREAM_PRIVATE_KEY} when the builder is created via {@link
+     * AsyncPipedreamClientbuilder()}.
+     */
+    public AsyncPipedreamClientBuilder privateKey(final String privateKey) {
+        this.privateKey = privateKey;
+        return this;
+    }
+
+    /**
+     * Optional. The key ID shown in the Pipedream UI, sent as the client assertion's {@code kid}
+     * header. Defaults to {@code PIPEDREAM_KEY_ID} when the builder is created via {@link
+     * AsyncPipedreamClientbuilder()}.
+     */
+    public AsyncPipedreamClientBuilder keyId(final String keyId) {
+        this.keyId = keyId;
+        return this;
+    }
+
+    /** Credentials from the environment, used only when none are set explicitly. */
+    AsyncPipedreamClientBuilder environmentCredentials(
+            final String clientSecret, final String privateKey, final String keyId) {
+        this.envClientSecret = clientSecret;
+        this.envPrivateKey = privateKey;
+        this.envKeyId = keyId;
         return this;
     }
 
