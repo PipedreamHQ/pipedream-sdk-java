@@ -31,7 +31,10 @@ public class PipedreamClient extends BaseClient {
                 : Environment.PROD.getUrl();
         return new PipedreamClientBuilder()
                 .clientId(System.getenv("PIPEDREAM_CLIENT_ID"))
-                .clientSecret(System.getenv("PIPEDREAM_CLIENT_SECRET"))
+                .environmentCredentials(
+                        System.getenv("PIPEDREAM_CLIENT_SECRET"),
+                        System.getenv("PIPEDREAM_PRIVATE_KEY"),
+                        System.getenv("PIPEDREAM_KEY_ID"))
                 .url(baseUrl)
                 .projectEnvironment(System.getenv("PIPEDREAM_PROJECT_ENVIRONMENT"))
                 .projectId(System.getenv("PIPEDREAM_PROJECT_ID"));
