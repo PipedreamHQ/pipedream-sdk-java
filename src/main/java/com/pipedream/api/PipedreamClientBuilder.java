@@ -76,7 +76,8 @@ public final class PipedreamClientBuilder extends BaseClientBuilder<PipedreamCli
 
         if (this.clientId != null && secret != null) {
             final OauthTokensClient authClient = new OauthTokensClient(baseOptions);
-            return new OAuthTokenSupplier(this.clientId, secret, this.scope, authClient);
+            // The client-secret flow sends no client assertion.
+            return new OAuthTokenSupplier(this.clientId, secret, null, null, this.scope, authClient);
         }
 
         return () -> "";

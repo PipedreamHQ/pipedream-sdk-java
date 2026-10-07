@@ -17,6 +17,10 @@ public final class OAuthTokenSupplier implements Supplier<String> {
 
     private final String clientSecret;
 
+    private final String clientAssertionType;
+
+    private final String clientAssertion;
+
     private final String scope;
 
     private final OauthTokensClient authClient;
@@ -25,9 +29,17 @@ public final class OAuthTokenSupplier implements Supplier<String> {
 
     private Instant expiresAt;
 
-    public OAuthTokenSupplier(String clientId, String clientSecret, String scope, OauthTokensClient authClient) {
+    public OAuthTokenSupplier(
+            String clientId,
+            String clientSecret,
+            String clientAssertionType,
+            String clientAssertion,
+            String scope,
+            OauthTokensClient authClient) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.clientAssertionType = clientAssertionType;
+        this.clientAssertion = clientAssertion;
         this.scope = scope;
         this.authClient = authClient;
         this.expiresAt = Instant.now();
@@ -37,6 +49,8 @@ public final class OAuthTokenSupplier implements Supplier<String> {
         CreateOAuthTokenOpts getTokenRequest = CreateOAuthTokenOpts.builder()
                 .clientId(clientId)
                 .clientSecret(clientSecret)
+                .clientAssertionType(clientAssertionType)
+                .clientAssertion(clientAssertion)
                 .scope(scope)
                 .build();
         return authClient.create(getTokenRequest);
