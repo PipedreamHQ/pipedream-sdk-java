@@ -331,7 +331,7 @@ public class BaseClientBuilder<T extends BaseClientBuilder<T>> {
             ClientOptions baseOptions = buildClientOptions();
             OauthTokensClient authClient = new OauthTokensClient(baseOptions);
             OAuthTokenSupplier oAuthTokenSupplier =
-                    new OAuthTokenSupplier(this.clientId, this.clientSecret, this.scope, authClient);
+                    new OAuthTokenSupplier(this.clientId, this.clientSecret, null, null, this.scope, authClient);
             ClientOptions finalOptions = ClientOptions.Builder.from(baseOptions)
                     .addHeader("Authorization", oAuthTokenSupplier)
                     .build();

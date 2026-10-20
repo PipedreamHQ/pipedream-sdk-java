@@ -23,6 +23,10 @@ src/main/java/com/pipedream/api/BaseClientBuilder.java
 # Custom Connect path normalization (strips the empty project-ID segment)
 src/main/java/com/pipedream/api/core/ConnectPathNormalizationInterceptor.java
 
+# Custom private key (private_key_jwt) client authentication
+src/main/java/com/pipedream/api/core/ClientAssertionSigner.java
+src/main/java/com/pipedream/api/core/PrivateKeyJwtTokenSupplier.java
+
 # Custom Pipedream client files
 src/main/java/com/pipedream/api/AsyncPipedreamClient.java
 src/main/java/com/pipedream/api/AsyncPipedreamClientBuilder.java
@@ -56,6 +60,8 @@ src/test/java/com/pipedream/api/ConnectTokenProjectIdWireTest.java
 src/test/java/com/pipedream/api/OauthTokensWireTest.java
 src/test/java/com/pipedream/api/ProxyClientWireTest.java
 src/test/java/com/pipedream/api/TokensWireTest.java
+src/test/java/com/pipedream/api/PrivateKeyJwtTest.java
+src/test/java/com/pipedream/api/core/ClientAssertionSignerDerTest.java
 
 # Test utilities (JDK-only mock-server shim used by wire tests)
 src/test/java/com/pipedream/api/testutil/MockResponse.java
