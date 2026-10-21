@@ -29,6 +29,12 @@ public final class TriggerWebhook {
 
     private final boolean signingKeySet;
 
+    private final Optional<Boolean> active;
+
+    private final Optional<TriggerWebhookDeliveryBackend> deliveryBackend;
+
+    private final Optional<WebhookDeliveryState> deliveryState;
+
     private final Map<String, Object> additionalProperties;
 
     private TriggerWebhook(
@@ -36,11 +42,17 @@ public final class TriggerWebhook {
             String url,
             Optional<String> signingKey,
             boolean signingKeySet,
+            Optional<Boolean> active,
+            Optional<TriggerWebhookDeliveryBackend> deliveryBackend,
+            Optional<WebhookDeliveryState> deliveryState,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.url = url;
         this.signingKey = signingKey;
         this.signingKeySet = signingKeySet;
+        this.active = active;
+        this.deliveryBackend = deliveryBackend;
+        this.deliveryState = deliveryState;
         this.additionalProperties = additionalProperties;
     }
 
@@ -76,6 +88,21 @@ public final class TriggerWebhook {
         return signingKeySet;
     }
 
+    @JsonProperty("active")
+    public Optional<Boolean> getActive() {
+        return active;
+    }
+
+    @JsonProperty("delivery_backend")
+    public Optional<TriggerWebhookDeliveryBackend> getDeliveryBackend() {
+        return deliveryBackend;
+    }
+
+    @JsonProperty("delivery_state")
+    public Optional<WebhookDeliveryState> getDeliveryState() {
+        return deliveryState;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -91,12 +118,22 @@ public final class TriggerWebhook {
         return id.equals(other.id)
                 && url.equals(other.url)
                 && signingKey.equals(other.signingKey)
-                && signingKeySet == other.signingKeySet;
+                && signingKeySet == other.signingKeySet
+                && active.equals(other.active)
+                && deliveryBackend.equals(other.deliveryBackend)
+                && deliveryState.equals(other.deliveryState);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.url, this.signingKey, this.signingKeySet);
+        return Objects.hash(
+                this.id,
+                this.url,
+                this.signingKey,
+                this.signingKeySet,
+                this.active,
+                this.deliveryBackend,
+                this.deliveryState);
     }
 
     @java.lang.Override
@@ -144,6 +181,18 @@ public final class TriggerWebhook {
         _FinalStage signingKey(Optional<String> signingKey);
 
         _FinalStage signingKey(String signingKey);
+
+        _FinalStage active(Optional<Boolean> active);
+
+        _FinalStage active(Boolean active);
+
+        _FinalStage deliveryBackend(Optional<TriggerWebhookDeliveryBackend> deliveryBackend);
+
+        _FinalStage deliveryBackend(TriggerWebhookDeliveryBackend deliveryBackend);
+
+        _FinalStage deliveryState(Optional<WebhookDeliveryState> deliveryState);
+
+        _FinalStage deliveryState(WebhookDeliveryState deliveryState);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -153,6 +202,12 @@ public final class TriggerWebhook {
         private String url;
 
         private boolean signingKeySet;
+
+        private Optional<WebhookDeliveryState> deliveryState = Optional.empty();
+
+        private Optional<TriggerWebhookDeliveryBackend> deliveryBackend = Optional.empty();
+
+        private Optional<Boolean> active = Optional.empty();
 
         private Optional<String> signingKey = Optional.empty();
 
@@ -167,6 +222,9 @@ public final class TriggerWebhook {
             url(other.getUrl());
             signingKey(other.getSigningKey());
             signingKeySet(other.getSigningKeySet());
+            active(other.getActive());
+            deliveryBackend(other.getDeliveryBackend());
+            deliveryState(other.getDeliveryState());
             return this;
         }
 
@@ -206,6 +264,45 @@ public final class TriggerWebhook {
             return this;
         }
 
+        @java.lang.Override
+        public _FinalStage deliveryState(WebhookDeliveryState deliveryState) {
+            this.deliveryState = Optional.ofNullable(deliveryState);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "delivery_state", nulls = Nulls.SKIP)
+        public _FinalStage deliveryState(Optional<WebhookDeliveryState> deliveryState) {
+            this.deliveryState = deliveryState;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage deliveryBackend(TriggerWebhookDeliveryBackend deliveryBackend) {
+            this.deliveryBackend = Optional.ofNullable(deliveryBackend);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "delivery_backend", nulls = Nulls.SKIP)
+        public _FinalStage deliveryBackend(Optional<TriggerWebhookDeliveryBackend> deliveryBackend) {
+            this.deliveryBackend = deliveryBackend;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage active(Boolean active) {
+            this.active = Optional.ofNullable(active);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "active", nulls = Nulls.SKIP)
+        public _FinalStage active(Optional<Boolean> active) {
+            this.active = active;
+            return this;
+        }
+
         /**
          * <p>The webhook signing key, returned only for OAuth-authenticated requests</p>
          * @return Reference to {@code this} so that method calls can be chained together.
@@ -228,7 +325,8 @@ public final class TriggerWebhook {
 
         @java.lang.Override
         public TriggerWebhook build() {
-            return new TriggerWebhook(id, url, signingKey, signingKeySet, additionalProperties);
+            return new TriggerWebhook(
+                    id, url, signingKey, signingKeySet, active, deliveryBackend, deliveryState, additionalProperties);
         }
 
         @java.lang.Override

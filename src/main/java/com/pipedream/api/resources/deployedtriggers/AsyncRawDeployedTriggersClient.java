@@ -20,6 +20,7 @@ import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersLis
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWebhooksRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersListWorkflowsRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRegenerateWebhookSigningKeyRequest;
+import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersResetWebhookDeliveryStateRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.DeployedTriggersRetrieveWebhookRequest;
 import com.pipedream.api.resources.deployedtriggers.requests.UpdateTriggerOpts;
@@ -816,6 +817,86 @@ public class AsyncRawDeployedTriggersClient {
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<BaseClientHttpResponse<GetWebhookWithSigningKeyResponse>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, GetWebhookWithSigningKeyResponse.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        if (response.code() == 429) {
+                            future.completeExceptionally(new TooManyRequestsError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
+                            return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new BaseClientApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Reactivate a disabled webhook and clear its delivery failure evidence
+     */
+    public CompletableFuture<BaseClientHttpResponse<GetWebhookWithSigningKeyResponse>> resetWebhookDeliveryState(
+            String triggerId, String webhookId, DeployedTriggersResetWebhookDeliveryStateRequest request) {
+        return resetWebhookDeliveryState(triggerId, webhookId, request, null);
+    }
+
+    /**
+     * Reactivate a disabled webhook and clear its delivery failure evidence
+     */
+    public CompletableFuture<BaseClientHttpResponse<GetWebhookWithSigningKeyResponse>> resetWebhookDeliveryState(
+            String triggerId,
+            String webhookId,
+            DeployedTriggersResetWebhookDeliveryStateRequest request,
+            RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("deployed-triggers")
+                .addPathSegment(triggerId)
+                .addPathSegments("webhooks")
+                .addPathSegment(webhookId)
+                .addPathSegments("reset_delivery_state");
+        QueryStringMapper.addQueryParameter(httpUrl, "external_user_id", request.getExternalUserId(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();

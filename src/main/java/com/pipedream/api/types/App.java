@@ -43,6 +43,8 @@ public final class App {
 
     private final List<AppScopeProfilesItem> scopeProfiles;
 
+    private final Optional<String> oauthAppId;
+
     private final Map<String, Object> additionalProperties;
 
     private App(
@@ -56,6 +58,7 @@ public final class App {
             List<String> categories,
             double featuredWeight,
             List<AppScopeProfilesItem> scopeProfiles,
+            Optional<String> oauthAppId,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.nameSlug = nameSlug;
@@ -67,6 +70,7 @@ public final class App {
         this.categories = categories;
         this.featuredWeight = featuredWeight;
         this.scopeProfiles = scopeProfiles;
+        this.oauthAppId = oauthAppId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -147,6 +151,14 @@ public final class App {
         return scopeProfiles;
     }
 
+    /**
+     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.
+     */
+    @JsonProperty("oauth_app_id")
+    public Optional<String> getOauthAppId() {
+        return oauthAppId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -168,7 +180,8 @@ public final class App {
                 && customFieldsJson.equals(other.customFieldsJson)
                 && categories.equals(other.categories)
                 && featuredWeight == other.featuredWeight
-                && scopeProfiles.equals(other.scopeProfiles);
+                && scopeProfiles.equals(other.scopeProfiles)
+                && oauthAppId.equals(other.oauthAppId);
     }
 
     @java.lang.Override
@@ -183,7 +196,8 @@ public final class App {
                 this.customFieldsJson,
                 this.categories,
                 this.featuredWeight,
-                this.scopeProfiles);
+                this.scopeProfiles,
+                this.oauthAppId);
     }
 
     @java.lang.Override
@@ -274,6 +288,13 @@ public final class App {
         _FinalStage addScopeProfiles(AppScopeProfilesItem scopeProfiles);
 
         _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         */
+        _FinalStage oauthAppId(Optional<String> oauthAppId);
+
+        _FinalStage oauthAppId(String oauthAppId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -286,6 +307,8 @@ public final class App {
         private String imgSrc;
 
         private double featuredWeight;
+
+        private Optional<String> oauthAppId = Optional.empty();
 
         private List<AppScopeProfilesItem> scopeProfiles = new ArrayList<>();
 
@@ -316,6 +339,7 @@ public final class App {
             categories(other.getCategories());
             featuredWeight(other.getFeaturedWeight());
             scopeProfiles(other.getScopeProfiles());
+            oauthAppId(other.getOauthAppId());
             return this;
         }
 
@@ -364,6 +388,26 @@ public final class App {
         @JsonSetter("featured_weight")
         public _FinalStage featuredWeight(double featuredWeight) {
             this.featuredWeight = featuredWeight;
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
             return this;
         }
 
@@ -523,6 +567,7 @@ public final class App {
                     categories,
                     featuredWeight,
                     scopeProfiles,
+                    oauthAppId,
                     additionalProperties);
         }
 
