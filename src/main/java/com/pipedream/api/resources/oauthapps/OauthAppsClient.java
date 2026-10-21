@@ -71,14 +71,14 @@ public class OauthAppsClient {
     }
 
     /**
-     * Get the configuration of a specific custom OAuth client
+     * Get the configuration of a specific OAuth client: one of your custom clients, or a Pipedream official client (see an app's <code>oauth_app_id</code>)
      */
     public OauthApp retrieve(String id) {
         return this.rawClient.retrieve(id).body();
     }
 
     /**
-     * Get the configuration of a specific custom OAuth client
+     * Get the configuration of a specific OAuth client: one of your custom clients, or a Pipedream official client (see an app's <code>oauth_app_id</code>)
      */
     public OauthApp retrieve(String id, RequestOptions requestOptions) {
         return this.rawClient.retrieve(id, requestOptions).body();
