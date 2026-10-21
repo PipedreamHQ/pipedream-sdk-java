@@ -208,14 +208,14 @@ public class RawOauthAppsClient {
     }
 
     /**
-     * Get the configuration of a specific custom OAuth client
+     * Get the configuration of a specific OAuth client: one of your custom clients, or a Pipedream official client (see an app's <code>oauth_app_id</code>)
      */
     public BaseClientHttpResponse<OauthApp> retrieve(String id) {
         return retrieve(id, null);
     }
 
     /**
-     * Get the configuration of a specific custom OAuth client
+     * Get the configuration of a specific OAuth client: one of your custom clients, or a Pipedream official client (see an app's <code>oauth_app_id</code>)
      */
     public BaseClientHttpResponse<OauthApp> retrieve(String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

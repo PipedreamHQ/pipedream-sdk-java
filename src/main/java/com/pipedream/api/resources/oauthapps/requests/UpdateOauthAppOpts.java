@@ -69,7 +69,7 @@ public final class UpdateOauthAppOpts {
     }
 
     /**
-     * @return The OAuth client ID registered with the upstream provider
+     * @return The OAuth client ID registered with the upstream provider. Blank values are ignored and the existing client ID is kept.
      */
     @JsonProperty("client_id")
     public Optional<String> getClientId() {
@@ -193,7 +193,7 @@ public final class UpdateOauthAppOpts {
         }
 
         /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
+         * <p>The OAuth client ID registered with the upstream provider. Blank values are ignored and the existing client ID is kept.</p>
          */
         @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
         public Builder clientId(Optional<String> clientId) {

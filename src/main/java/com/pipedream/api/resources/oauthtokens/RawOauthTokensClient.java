@@ -11,9 +11,12 @@ import com.pipedream.api.core.ClientOptions;
 import com.pipedream.api.core.MediaTypes;
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.RequestOptions;
+import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnauthorizedError;
 import com.pipedream.api.resources.oauthtokens.requests.CreateOAuthTokenOpts;
 import com.pipedream.api.types.CreateOAuthTokenResponse;
+import com.pipedream.api.types.UnauthorizedErrorBody;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -77,9 +80,17 @@ public class RawOauthTokensClient {
                         response);
             }
             try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UnauthorizedErrorBody.class),
+                                response);
+                    case 429:
+                        throw new TooManyRequestsError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error

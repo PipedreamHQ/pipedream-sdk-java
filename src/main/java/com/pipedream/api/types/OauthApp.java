@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public final class OauthApp {
     private final Optional<String> id;
 
-    private final String clientId;
+    private final Optional<String> clientId;
 
     private final Optional<List<String>> scopes;
 
@@ -34,7 +34,7 @@ public final class OauthApp {
 
     private final Optional<String> redirectUri;
 
-    private final String ownerId;
+    private final Optional<String> ownerId;
 
     private final Optional<OffsetDateTime> createdAt;
 
@@ -58,15 +58,17 @@ public final class OauthApp {
 
     private final List<AppScopeProfilesItem> scopeProfiles;
 
+    private final Optional<String> oauthAppId;
+
     private final Map<String, Object> additionalProperties;
 
     private OauthApp(
             Optional<String> id,
-            String clientId,
+            Optional<String> clientId,
             Optional<List<String>> scopes,
             Optional<List<String>> additionalScopes,
             Optional<String> redirectUri,
-            String ownerId,
+            Optional<String> ownerId,
             Optional<OffsetDateTime> createdAt,
             Optional<OffsetDateTime> updatedAt,
             String nameSlug,
@@ -78,6 +80,7 @@ public final class OauthApp {
             List<String> categories,
             double featuredWeight,
             List<AppScopeProfilesItem> scopeProfiles,
+            Optional<String> oauthAppId,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.clientId = clientId;
@@ -96,6 +99,7 @@ public final class OauthApp {
         this.categories = categories;
         this.featuredWeight = featuredWeight;
         this.scopeProfiles = scopeProfiles;
+        this.oauthAppId = oauthAppId;
         this.additionalProperties = additionalProperties;
     }
 
@@ -108,10 +112,10 @@ public final class OauthApp {
     }
 
     /**
-     * @return The OAuth client ID registered with the upstream provider
+     * @return The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.
      */
     @JsonProperty("client_id")
-    public String getClientId() {
+    public Optional<String> getClientId() {
         return clientId;
     }
 
@@ -140,10 +144,10 @@ public final class OauthApp {
     }
 
     /**
-     * @return Hash ID of the owner: the workspace (o_...) or the project (proj_...)
+     * @return Hash ID of the owner: the workspace (o_...) or the project (proj_...). Null for Pipedream official clients.
      */
     @JsonProperty("owner_id")
-    public String getOwnerId() {
+    public Optional<String> getOwnerId() {
         return ownerId;
     }
 
@@ -226,6 +230,14 @@ public final class OauthApp {
         return scopeProfiles;
     }
 
+    /**
+     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.
+     */
+    @JsonProperty("oauth_app_id")
+    public Optional<String> getOauthAppId() {
+        return oauthAppId;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -254,7 +266,8 @@ public final class OauthApp {
                 && customFieldsJson.equals(other.customFieldsJson)
                 && categories.equals(other.categories)
                 && featuredWeight == other.featuredWeight
-                && scopeProfiles.equals(other.scopeProfiles);
+                && scopeProfiles.equals(other.scopeProfiles)
+                && oauthAppId.equals(other.oauthAppId);
     }
 
     @java.lang.Override
@@ -276,7 +289,8 @@ public final class OauthApp {
                 this.customFieldsJson,
                 this.categories,
                 this.featuredWeight,
-                this.scopeProfiles);
+                this.scopeProfiles,
+                this.oauthAppId);
     }
 
     @java.lang.Override
@@ -284,24 +298,8 @@ public final class OauthApp {
         return ObjectMappers.stringify(this);
     }
 
-    public static ClientIdStage builder() {
+    public static NameSlugStage builder() {
         return new Builder();
-    }
-
-    public interface ClientIdStage {
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         */
-        OwnerIdStage clientId(@NotNull String clientId);
-
-        Builder from(OauthApp other);
-    }
-
-    public interface OwnerIdStage {
-        /**
-         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...)</p>
-         */
-        NameSlugStage ownerId(@NotNull String ownerId);
     }
 
     public interface NameSlugStage {
@@ -309,6 +307,8 @@ public final class OauthApp {
          * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
          */
         NameStage nameSlug(@NotNull String nameSlug);
+
+        Builder from(OauthApp other);
     }
 
     public interface NameStage {
@@ -347,6 +347,13 @@ public final class OauthApp {
         _FinalStage id(String id);
 
         /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         */
+        _FinalStage clientId(Optional<String> clientId);
+
+        _FinalStage clientId(String clientId);
+
+        /**
          * <p>OAuth scopes requested when users connect through this client</p>
          */
         _FinalStage scopes(Optional<List<String>> scopes);
@@ -366,6 +373,13 @@ public final class OauthApp {
         _FinalStage redirectUri(Optional<String> redirectUri);
 
         _FinalStage redirectUri(String redirectUri);
+
+        /**
+         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...). Null for Pipedream official clients.</p>
+         */
+        _FinalStage ownerId(Optional<String> ownerId);
+
+        _FinalStage ownerId(String ownerId);
 
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
@@ -410,21 +424,18 @@ public final class OauthApp {
         _FinalStage addScopeProfiles(AppScopeProfilesItem scopeProfiles);
 
         _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         */
+        _FinalStage oauthAppId(Optional<String> oauthAppId);
+
+        _FinalStage oauthAppId(String oauthAppId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements ClientIdStage,
-                    OwnerIdStage,
-                    NameSlugStage,
-                    NameStage,
-                    ImgSrcStage,
-                    FeaturedWeightStage,
-                    _FinalStage {
-        private String clientId;
-
-        private String ownerId;
-
+            implements NameSlugStage, NameStage, ImgSrcStage, FeaturedWeightStage, _FinalStage {
         private String nameSlug;
 
         private String name;
@@ -432,6 +443,8 @@ public final class OauthApp {
         private String imgSrc;
 
         private double featuredWeight;
+
+        private Optional<String> oauthAppId = Optional.empty();
 
         private List<AppScopeProfilesItem> scopeProfiles = new ArrayList<>();
 
@@ -447,11 +460,15 @@ public final class OauthApp {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
+        private Optional<String> ownerId = Optional.empty();
+
         private Optional<String> redirectUri = Optional.empty();
 
         private Optional<List<String>> additionalScopes = Optional.empty();
 
         private Optional<List<String>> scopes = Optional.empty();
+
+        private Optional<String> clientId = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -479,30 +496,7 @@ public final class OauthApp {
             categories(other.getCategories());
             featuredWeight(other.getFeaturedWeight());
             scopeProfiles(other.getScopeProfiles());
-            return this;
-        }
-
-        /**
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * <p>The OAuth client ID registered with the upstream provider</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("client_id")
-        public OwnerIdStage clientId(@NotNull String clientId) {
-            this.clientId = Objects.requireNonNull(clientId, "clientId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...)</p>
-         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("owner_id")
-        public NameSlugStage ownerId(@NotNull String ownerId) {
-            this.ownerId = Objects.requireNonNull(ownerId, "ownerId must not be null");
+            oauthAppId(other.getOauthAppId());
             return this;
         }
 
@@ -551,6 +545,26 @@ public final class OauthApp {
         @JsonSetter("featured_weight")
         public _FinalStage featuredWeight(double featuredWeight) {
             this.featuredWeight = featuredWeight;
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
             return this;
         }
 
@@ -704,6 +718,26 @@ public final class OauthApp {
         }
 
         /**
+         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...). Null for Pipedream official clients.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage ownerId(String ownerId) {
+            this.ownerId = Optional.ofNullable(ownerId);
+            return this;
+        }
+
+        /**
+         * <p>Hash ID of the owner: the workspace (o_...) or the project (proj_...). Null for Pipedream official clients.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "owner_id", nulls = Nulls.SKIP)
+        public _FinalStage ownerId(Optional<String> ownerId) {
+            this.ownerId = ownerId;
+            return this;
+        }
+
+        /**
          * <p>The redirect URI to register with the upstream OAuth provider</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -764,6 +798,26 @@ public final class OauthApp {
         }
 
         /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage clientId(String clientId) {
+            this.clientId = Optional.ofNullable(clientId);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
+        public _FinalStage clientId(Optional<String> clientId) {
+            this.clientId = clientId;
+            return this;
+        }
+
+        /**
          * <p>Hash ID for the OAuth client</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -803,6 +857,7 @@ public final class OauthApp {
                     categories,
                     featuredWeight,
                     scopeProfiles,
+                    oauthAppId,
                     additionalProperties);
         }
 
