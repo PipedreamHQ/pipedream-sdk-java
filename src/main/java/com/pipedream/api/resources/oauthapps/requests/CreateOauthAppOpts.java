@@ -106,7 +106,7 @@ public final class CreateOauthAppOpts {
     }
 
     /**
-     * @return Extra OAuth scopes users may grant on top of the base scopes
+     * @return A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists. If omitted, the client uses the app's Pipedream official client's additional scopes.
      */
     @JsonProperty("additional_scopes")
     public Optional<List<String>> getAdditionalScopes() {
@@ -207,7 +207,7 @@ public final class CreateOauthAppOpts {
         _FinalStage scopes(List<String> scopes);
 
         /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
+         * <p>A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists. If omitted, the client uses the app's Pipedream official client's additional scopes.</p>
          */
         _FinalStage additionalScopes(Optional<List<String>> additionalScopes);
 
@@ -260,7 +260,7 @@ public final class CreateOauthAppOpts {
         }
 
         /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
+         * <p>A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists. If omitted, the client uses the app's Pipedream official client's additional scopes.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -270,7 +270,7 @@ public final class CreateOauthAppOpts {
         }
 
         /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
+         * <p>A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists. If omitted, the client uses the app's Pipedream official client's additional scopes.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "additional_scopes", nulls = Nulls.SKIP)

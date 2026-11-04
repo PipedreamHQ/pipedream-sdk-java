@@ -16,6 +16,7 @@ import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.NotFoundError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnprocessableEntityError;
 import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
 import com.pipedream.api.resources.projects.requests.ProjectsListRequest;
 import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
@@ -442,10 +443,22 @@ public class AsyncRawProjectsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

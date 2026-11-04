@@ -15,6 +15,7 @@ import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnprocessableEntityError;
 import com.pipedream.api.resources.accounts.requests.AccountsListByExternalUserRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
@@ -177,14 +178,14 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(CreateAccountOpts request) {
         return create(request, null);
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(
             CreateAccountOpts request, RequestOptions requestOptions) {
@@ -236,10 +237,17 @@ public class AsyncRawAccountsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

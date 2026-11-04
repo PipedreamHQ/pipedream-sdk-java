@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +27,8 @@ public final class UpdateProjectOpts {
 
     private final Optional<String> supportEmail;
 
+    private final Optional<List<String>> allowedEmailDomains;
+
     private final Optional<Boolean> connectRequireKeyAuthTest;
 
     private final Map<String, Object> additionalProperties;
@@ -34,11 +37,13 @@ public final class UpdateProjectOpts {
             Optional<String> name,
             Optional<String> appName,
             Optional<String> supportEmail,
+            Optional<List<String>> allowedEmailDomains,
             Optional<Boolean> connectRequireKeyAuthTest,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.appName = appName;
         this.supportEmail = supportEmail;
+        this.allowedEmailDomains = allowedEmailDomains;
         this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
         this.additionalProperties = additionalProperties;
     }
@@ -67,6 +72,11 @@ public final class UpdateProjectOpts {
         return supportEmail;
     }
 
+    @JsonProperty("allowed_email_domains")
+    public Optional<List<String>> getAllowedEmailDomains() {
+        return allowedEmailDomains;
+    }
+
     /**
      * @return Send a test request to the upstream API when adding Connect accounts for key-based apps
      */
@@ -90,12 +100,14 @@ public final class UpdateProjectOpts {
         return name.equals(other.name)
                 && appName.equals(other.appName)
                 && supportEmail.equals(other.supportEmail)
+                && allowedEmailDomains.equals(other.allowedEmailDomains)
                 && connectRequireKeyAuthTest.equals(other.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.appName, this.supportEmail, this.connectRequireKeyAuthTest);
+        return Objects.hash(
+                this.name, this.appName, this.supportEmail, this.allowedEmailDomains, this.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
@@ -115,6 +127,8 @@ public final class UpdateProjectOpts {
 
         private Optional<String> supportEmail = Optional.empty();
 
+        private Optional<List<String>> allowedEmailDomains = Optional.empty();
+
         private Optional<Boolean> connectRequireKeyAuthTest = Optional.empty();
 
         @JsonAnySetter
@@ -126,6 +140,7 @@ public final class UpdateProjectOpts {
             name(other.getName());
             appName(other.getAppName());
             supportEmail(other.getSupportEmail());
+            allowedEmailDomains(other.getAllowedEmailDomains());
             connectRequireKeyAuthTest(other.getConnectRequireKeyAuthTest());
             return this;
         }
@@ -172,6 +187,17 @@ public final class UpdateProjectOpts {
             return this;
         }
 
+        @JsonSetter(value = "allowed_email_domains", nulls = Nulls.SKIP)
+        public Builder allowedEmailDomains(Optional<List<String>> allowedEmailDomains) {
+            this.allowedEmailDomains = allowedEmailDomains;
+            return this;
+        }
+
+        public Builder allowedEmailDomains(List<String> allowedEmailDomains) {
+            this.allowedEmailDomains = Optional.ofNullable(allowedEmailDomains);
+            return this;
+        }
+
         /**
          * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
          */
@@ -187,7 +213,8 @@ public final class UpdateProjectOpts {
         }
 
         public UpdateProjectOpts build() {
-            return new UpdateProjectOpts(name, appName, supportEmail, connectRequireKeyAuthTest, additionalProperties);
+            return new UpdateProjectOpts(
+                    name, appName, supportEmail, allowedEmailDomains, connectRequireKeyAuthTest, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

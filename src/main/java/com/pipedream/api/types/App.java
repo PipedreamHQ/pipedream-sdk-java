@@ -45,6 +45,12 @@ public final class App {
 
     private final Optional<String> oauthAppId;
 
+    private final Optional<List<String>> scopes;
+
+    private final Optional<List<String>> additionalScopes;
+
+    private final Optional<AppScopeLabels> scopeLabels;
+
     private final Map<String, Object> additionalProperties;
 
     private App(
@@ -59,6 +65,9 @@ public final class App {
             double featuredWeight,
             List<AppScopeProfilesItem> scopeProfiles,
             Optional<String> oauthAppId,
+            Optional<List<String>> scopes,
+            Optional<List<String>> additionalScopes,
+            Optional<AppScopeLabels> scopeLabels,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.nameSlug = nameSlug;
@@ -71,6 +80,9 @@ public final class App {
         this.featuredWeight = featuredWeight;
         this.scopeProfiles = scopeProfiles;
         this.oauthAppId = oauthAppId;
+        this.scopes = scopes;
+        this.additionalScopes = additionalScopes;
+        this.scopeLabels = scopeLabels;
         this.additionalProperties = additionalProperties;
     }
 
@@ -152,11 +164,35 @@ public final class App {
     }
 
     /**
-     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.
+     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.
      */
     @JsonProperty("oauth_app_id")
     public Optional<String> getOauthAppId() {
         return oauthAppId;
+    }
+
+    /**
+     * @return The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
+     */
+    @JsonProperty("scopes")
+    public Optional<List<String>> getScopes() {
+        return scopes;
+    }
+
+    /**
+     * @return A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
+     */
+    @JsonProperty("additional_scopes")
+    public Optional<List<String>> getAdditionalScopes() {
+        return additionalScopes;
+    }
+
+    /**
+     * @return Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
+     */
+    @JsonProperty("scope_labels")
+    public Optional<AppScopeLabels> getScopeLabels() {
+        return scopeLabels;
     }
 
     @java.lang.Override
@@ -181,7 +217,10 @@ public final class App {
                 && categories.equals(other.categories)
                 && featuredWeight == other.featuredWeight
                 && scopeProfiles.equals(other.scopeProfiles)
-                && oauthAppId.equals(other.oauthAppId);
+                && oauthAppId.equals(other.oauthAppId)
+                && scopes.equals(other.scopes)
+                && additionalScopes.equals(other.additionalScopes)
+                && scopeLabels.equals(other.scopeLabels);
     }
 
     @java.lang.Override
@@ -197,7 +236,10 @@ public final class App {
                 this.categories,
                 this.featuredWeight,
                 this.scopeProfiles,
-                this.oauthAppId);
+                this.oauthAppId,
+                this.scopes,
+                this.additionalScopes,
+                this.scopeLabels);
     }
 
     @java.lang.Override
@@ -290,11 +332,32 @@ public final class App {
         _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
          */
         _FinalStage oauthAppId(Optional<String> oauthAppId);
 
         _FinalStage oauthAppId(String oauthAppId);
+
+        /**
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        _FinalStage scopes(Optional<List<String>> scopes);
+
+        _FinalStage scopes(List<String> scopes);
+
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        _FinalStage additionalScopes(Optional<List<String>> additionalScopes);
+
+        _FinalStage additionalScopes(List<String> additionalScopes);
+
+        /**
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        _FinalStage scopeLabels(Optional<AppScopeLabels> scopeLabels);
+
+        _FinalStage scopeLabels(AppScopeLabels scopeLabels);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -307,6 +370,12 @@ public final class App {
         private String imgSrc;
 
         private double featuredWeight;
+
+        private Optional<AppScopeLabels> scopeLabels = Optional.empty();
+
+        private Optional<List<String>> additionalScopes = Optional.empty();
+
+        private Optional<List<String>> scopes = Optional.empty();
 
         private Optional<String> oauthAppId = Optional.empty();
 
@@ -340,6 +409,9 @@ public final class App {
             featuredWeight(other.getFeaturedWeight());
             scopeProfiles(other.getScopeProfiles());
             oauthAppId(other.getOauthAppId());
+            scopes(other.getScopes());
+            additionalScopes(other.getAdditionalScopes());
+            scopeLabels(other.getScopeLabels());
             return this;
         }
 
@@ -392,7 +464,67 @@ public final class App {
         }
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scopeLabels(AppScopeLabels scopeLabels) {
+            this.scopeLabels = Optional.ofNullable(scopeLabels);
+            return this;
+        }
+
+        /**
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scope_labels", nulls = Nulls.SKIP)
+        public _FinalStage scopeLabels(Optional<AppScopeLabels> scopeLabels) {
+            this.scopeLabels = scopeLabels;
+            return this;
+        }
+
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage additionalScopes(List<String> additionalScopes) {
+            this.additionalScopes = Optional.ofNullable(additionalScopes);
+            return this;
+        }
+
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "additional_scopes", nulls = Nulls.SKIP)
+        public _FinalStage additionalScopes(Optional<List<String>> additionalScopes) {
+            this.additionalScopes = additionalScopes;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scopes(List<String> scopes) {
+            this.scopes = Optional.ofNullable(scopes);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scopes", nulls = Nulls.SKIP)
+        public _FinalStage scopes(Optional<List<String>> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -402,7 +534,7 @@ public final class App {
         }
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
@@ -568,6 +700,9 @@ public final class App {
                     featuredWeight,
                     scopeProfiles,
                     oauthAppId,
+                    scopes,
+                    additionalScopes,
+                    scopeLabels,
                     additionalProperties);
         }
 

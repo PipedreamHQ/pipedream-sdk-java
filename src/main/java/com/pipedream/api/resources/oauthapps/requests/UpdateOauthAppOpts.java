@@ -93,7 +93,7 @@ public final class UpdateOauthAppOpts {
     }
 
     /**
-     * @return Extra OAuth scopes users may grant on top of the base scopes
+     * @return A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists.
      */
     @JsonProperty("additional_scopes")
     public Optional<List<String>> getAdditionalScopes() {
@@ -235,7 +235,7 @@ public final class UpdateOauthAppOpts {
         }
 
         /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
+         * <p>A second scope list to request alongside <code>scopes</code>. Its meaning depends on the app; the app's <code>scope_labels</code> names both lists.</p>
          */
         @JsonSetter(value = "additional_scopes", nulls = Nulls.SKIP)
         public Builder additionalScopes(Optional<List<String>> additionalScopes) {
