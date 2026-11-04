@@ -61,14 +61,14 @@ public class AsyncAccountsClient {
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<Account> create(CreateAccountOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<Account> create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());

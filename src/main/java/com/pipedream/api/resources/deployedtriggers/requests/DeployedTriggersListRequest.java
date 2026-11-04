@@ -82,7 +82,7 @@ public final class DeployedTriggersListRequest {
     }
 
     /**
-     * @return Filter deployed triggers by emitter type (defaults to 'source' if not provided)
+     * @return Filter deployed triggers by emitter type. Returns all types when omitted.
      */
     @JsonProperty("emitter_type")
     public Optional<EmitterType> getEmitterType() {
@@ -160,7 +160,7 @@ public final class DeployedTriggersListRequest {
         _FinalStage limit(Integer limit);
 
         /**
-         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         * <p>Filter deployed triggers by emitter type. Returns all types when omitted.</p>
          */
         _FinalStage emitterType(Optional<EmitterType> emitterType);
 
@@ -207,7 +207,7 @@ public final class DeployedTriggersListRequest {
         }
 
         /**
-         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         * <p>Filter deployed triggers by emitter type. Returns all types when omitted.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -217,7 +217,7 @@ public final class DeployedTriggersListRequest {
         }
 
         /**
-         * <p>Filter deployed triggers by emitter type (defaults to 'source' if not provided)</p>
+         * <p>Filter deployed triggers by emitter type. Returns all types when omitted.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "emitter_type", nulls = Nulls.SKIP)
