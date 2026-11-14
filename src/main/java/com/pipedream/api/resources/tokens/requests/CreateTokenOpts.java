@@ -22,7 +22,11 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateTokenOpts.Builder.class)
 public final class CreateTokenOpts {
+    private final Optional<Boolean> allowProgressiveScopes;
+
     private final Optional<List<String>> allowedOrigins;
+
+    private final Optional<String> appId;
 
     private final Optional<String> errorRedirectUri;
 
@@ -30,43 +34,47 @@ public final class CreateTokenOpts {
 
     private final String externalUserId;
 
+    private final Optional<String> oauthAppId;
+
     private final Optional<String> scope;
 
     private final Optional<String> successRedirectUri;
 
     private final Optional<String> webhookUri;
 
-    private final Optional<Boolean> allowProgressiveScopes;
-
-    private final Optional<String> appId;
-
-    private final Optional<String> oauthAppId;
-
     private final Map<String, Object> additionalProperties;
 
     private CreateTokenOpts(
+            Optional<Boolean> allowProgressiveScopes,
             Optional<List<String>> allowedOrigins,
+            Optional<String> appId,
             Optional<String> errorRedirectUri,
             Optional<Integer> expiresIn,
             String externalUserId,
+            Optional<String> oauthAppId,
             Optional<String> scope,
             Optional<String> successRedirectUri,
             Optional<String> webhookUri,
-            Optional<Boolean> allowProgressiveScopes,
-            Optional<String> appId,
-            Optional<String> oauthAppId,
             Map<String, Object> additionalProperties) {
+        this.allowProgressiveScopes = allowProgressiveScopes;
         this.allowedOrigins = allowedOrigins;
+        this.appId = appId;
         this.errorRedirectUri = errorRedirectUri;
         this.expiresIn = expiresIn;
         this.externalUserId = externalUserId;
+        this.oauthAppId = oauthAppId;
         this.scope = scope;
         this.successRedirectUri = successRedirectUri;
         this.webhookUri = webhookUri;
-        this.allowProgressiveScopes = allowProgressiveScopes;
-        this.appId = appId;
-        this.oauthAppId = oauthAppId;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.
+     */
+    @JsonProperty("allow_progressive_scopes")
+    public Optional<Boolean> getAllowProgressiveScopes() {
+        return allowProgressiveScopes;
     }
 
     /**
@@ -75,6 +83,14 @@ public final class CreateTokenOpts {
     @JsonProperty("allowed_origins")
     public Optional<List<String>> getAllowedOrigins() {
         return allowedOrigins;
+    }
+
+    /**
+     * @return Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.
+     */
+    @JsonProperty("app_id")
+    public Optional<String> getAppId() {
+        return appId;
     }
 
     /**
@@ -102,6 +118,14 @@ public final class CreateTokenOpts {
     }
 
     /**
+     * @return Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.
+     */
+    @JsonProperty("oauth_app_id")
+    public Optional<String> getOauthAppId() {
+        return oauthAppId;
+    }
+
+    /**
      * @return Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.
      */
     @JsonProperty("scope")
@@ -125,30 +149,6 @@ public final class CreateTokenOpts {
         return webhookUri;
     }
 
-    /**
-     * @return When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.
-     */
-    @JsonProperty("allow_progressive_scopes")
-    public Optional<Boolean> getAllowProgressiveScopes() {
-        return allowProgressiveScopes;
-    }
-
-    /**
-     * @return Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.
-     */
-    @JsonProperty("app_id")
-    public Optional<String> getAppId() {
-        return appId;
-    }
-
-    /**
-     * @return Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.
-     */
-    @JsonProperty("oauth_app_id")
-    public Optional<String> getOauthAppId() {
-        return oauthAppId;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -161,31 +161,31 @@ public final class CreateTokenOpts {
     }
 
     private boolean equalTo(CreateTokenOpts other) {
-        return allowedOrigins.equals(other.allowedOrigins)
+        return allowProgressiveScopes.equals(other.allowProgressiveScopes)
+                && allowedOrigins.equals(other.allowedOrigins)
+                && appId.equals(other.appId)
                 && errorRedirectUri.equals(other.errorRedirectUri)
                 && expiresIn.equals(other.expiresIn)
                 && externalUserId.equals(other.externalUserId)
+                && oauthAppId.equals(other.oauthAppId)
                 && scope.equals(other.scope)
                 && successRedirectUri.equals(other.successRedirectUri)
-                && webhookUri.equals(other.webhookUri)
-                && allowProgressiveScopes.equals(other.allowProgressiveScopes)
-                && appId.equals(other.appId)
-                && oauthAppId.equals(other.oauthAppId);
+                && webhookUri.equals(other.webhookUri);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.allowProgressiveScopes,
                 this.allowedOrigins,
+                this.appId,
                 this.errorRedirectUri,
                 this.expiresIn,
                 this.externalUserId,
+                this.oauthAppId,
                 this.scope,
                 this.successRedirectUri,
-                this.webhookUri,
-                this.allowProgressiveScopes,
-                this.appId,
-                this.oauthAppId);
+                this.webhookUri);
     }
 
     @java.lang.Override
@@ -214,11 +214,25 @@ public final class CreateTokenOpts {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         */
+        _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes);
+
+        _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes);
+
+        /**
          * <p>List of allowed origins for CORS</p>
          */
         _FinalStage allowedOrigins(Optional<List<String>> allowedOrigins);
 
         _FinalStage allowedOrigins(List<String> allowedOrigins);
+
+        /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         */
+        _FinalStage appId(Optional<String> appId);
+
+        _FinalStage appId(String appId);
 
         /**
          * <p>URI to redirect to on error</p>
@@ -233,6 +247,13 @@ public final class CreateTokenOpts {
         _FinalStage expiresIn(Optional<Integer> expiresIn);
 
         _FinalStage expiresIn(Integer expiresIn);
+
+        /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         */
+        _FinalStage oauthAppId(Optional<String> oauthAppId);
+
+        _FinalStage oauthAppId(String oauthAppId);
 
         /**
          * <p>Space-separated scopes to restrict token permissions. Defaults to 'connect:*' if not specified. See https://pipedream.com/docs/connect/api-reference/authentication#connect-token-scopes for more information.</p>
@@ -254,38 +275,11 @@ public final class CreateTokenOpts {
         _FinalStage webhookUri(Optional<String> webhookUri);
 
         _FinalStage webhookUri(String webhookUri);
-
-        /**
-         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
-         */
-        _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes);
-
-        _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes);
-
-        /**
-         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
-         */
-        _FinalStage appId(Optional<String> appId);
-
-        _FinalStage appId(String appId);
-
-        /**
-         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
-         */
-        _FinalStage oauthAppId(Optional<String> oauthAppId);
-
-        _FinalStage oauthAppId(String oauthAppId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ExternalUserIdStage, _FinalStage {
         private String externalUserId;
-
-        private Optional<String> oauthAppId = Optional.empty();
-
-        private Optional<String> appId = Optional.empty();
-
-        private Optional<Boolean> allowProgressiveScopes = Optional.empty();
 
         private Optional<String> webhookUri = Optional.empty();
 
@@ -293,11 +287,17 @@ public final class CreateTokenOpts {
 
         private Optional<String> scope = Optional.empty();
 
+        private Optional<String> oauthAppId = Optional.empty();
+
         private Optional<Integer> expiresIn = Optional.empty();
 
         private Optional<String> errorRedirectUri = Optional.empty();
 
+        private Optional<String> appId = Optional.empty();
+
         private Optional<List<String>> allowedOrigins = Optional.empty();
+
+        private Optional<Boolean> allowProgressiveScopes = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -306,16 +306,16 @@ public final class CreateTokenOpts {
 
         @java.lang.Override
         public Builder from(CreateTokenOpts other) {
+            allowProgressiveScopes(other.getAllowProgressiveScopes());
             allowedOrigins(other.getAllowedOrigins());
+            appId(other.getAppId());
             errorRedirectUri(other.getErrorRedirectUri());
             expiresIn(other.getExpiresIn());
             externalUserId(other.getExternalUserId());
+            oauthAppId(other.getOauthAppId());
             scope(other.getScope());
             successRedirectUri(other.getSuccessRedirectUri());
             webhookUri(other.getWebhookUri());
-            allowProgressiveScopes(other.getAllowProgressiveScopes());
-            appId(other.getAppId());
-            oauthAppId(other.getOauthAppId());
             return this;
         }
 
@@ -328,66 +328,6 @@ public final class CreateTokenOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
-            return this;
-        }
-
-        /**
-         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage oauthAppId(String oauthAppId) {
-            this.oauthAppId = Optional.ofNullable(oauthAppId);
-            return this;
-        }
-
-        /**
-         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
-        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
-            this.oauthAppId = oauthAppId;
-            return this;
-        }
-
-        /**
-         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage appId(String appId) {
-            this.appId = Optional.ofNullable(appId);
-            return this;
-        }
-
-        /**
-         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
-        public _FinalStage appId(Optional<String> appId) {
-            this.appId = appId;
-            return this;
-        }
-
-        /**
-         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes) {
-            this.allowProgressiveScopes = Optional.ofNullable(allowProgressiveScopes);
-            return this;
-        }
-
-        /**
-         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "allow_progressive_scopes", nulls = Nulls.SKIP)
-        public _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes) {
-            this.allowProgressiveScopes = allowProgressiveScopes;
             return this;
         }
 
@@ -452,6 +392,26 @@ public final class CreateTokenOpts {
         }
 
         /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to a specific OAuth client (overrides app_id's resolution). Optional.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
+            return this;
+        }
+
+        /**
          * <p>Token TTL in seconds (max 14400 = 4 hours). Defaults to 4 hours if not specified.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -492,6 +452,26 @@ public final class CreateTokenOpts {
         }
 
         /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage appId(String appId) {
+            this.appId = Optional.ofNullable(appId);
+            return this;
+        }
+
+        /**
+         * <p>Scope the Connect Link to this app, identified by app ID or name slug: resolves the app's official OAuth client for your workspace (when it has one) and pins the link to the host serving that client's OAuth flow pages. Optional.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
+        public _FinalStage appId(Optional<String> appId) {
+            this.appId = appId;
+            return this;
+        }
+
+        /**
          * <p>List of allowed origins for CORS</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -511,19 +491,39 @@ public final class CreateTokenOpts {
             return this;
         }
 
+        /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage allowProgressiveScopes(Boolean allowProgressiveScopes) {
+            this.allowProgressiveScopes = Optional.ofNullable(allowProgressiveScopes);
+            return this;
+        }
+
+        /**
+         * <p>When true, end users may authorize a subset of the app's OAuth scopes; only the app's functional scopes (needed for the post-OAuth test request) are enforced. Defaults to false.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "allow_progressive_scopes", nulls = Nulls.SKIP)
+        public _FinalStage allowProgressiveScopes(Optional<Boolean> allowProgressiveScopes) {
+            this.allowProgressiveScopes = allowProgressiveScopes;
+            return this;
+        }
+
         @java.lang.Override
         public CreateTokenOpts build() {
             return new CreateTokenOpts(
+                    allowProgressiveScopes,
                     allowedOrigins,
+                    appId,
                     errorRedirectUri,
                     expiresIn,
                     externalUserId,
+                    oauthAppId,
                     scope,
                     successRedirectUri,
                     webhookUri,
-                    allowProgressiveScopes,
-                    appId,
-                    oauthAppId,
                     additionalProperties);
         }
 

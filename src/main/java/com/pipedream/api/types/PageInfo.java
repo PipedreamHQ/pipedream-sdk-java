@@ -22,24 +22,24 @@ import java.util.Optional;
 public final class PageInfo {
     private final Optional<Integer> count;
 
-    private final Optional<Integer> totalCount;
+    private final Optional<String> endCursor;
 
     private final Optional<String> startCursor;
 
-    private final Optional<String> endCursor;
+    private final Optional<Integer> totalCount;
 
     private final Map<String, Object> additionalProperties;
 
     private PageInfo(
             Optional<Integer> count,
-            Optional<Integer> totalCount,
-            Optional<String> startCursor,
             Optional<String> endCursor,
+            Optional<String> startCursor,
+            Optional<Integer> totalCount,
             Map<String, Object> additionalProperties) {
         this.count = count;
-        this.totalCount = totalCount;
-        this.startCursor = startCursor;
         this.endCursor = endCursor;
+        this.startCursor = startCursor;
+        this.totalCount = totalCount;
         this.additionalProperties = additionalProperties;
     }
 
@@ -52,11 +52,11 @@ public final class PageInfo {
     }
 
     /**
-     * @return Total number of items
+     * @return Used to fetch the next page of items
      */
-    @JsonProperty("total_count")
-    public Optional<Integer> getTotalCount() {
-        return totalCount;
+    @JsonProperty("end_cursor")
+    public Optional<String> getEndCursor() {
+        return endCursor;
     }
 
     /**
@@ -68,11 +68,11 @@ public final class PageInfo {
     }
 
     /**
-     * @return Used to fetch the next page of items
+     * @return Total number of items
      */
-    @JsonProperty("end_cursor")
-    public Optional<String> getEndCursor() {
-        return endCursor;
+    @JsonProperty("total_count")
+    public Optional<Integer> getTotalCount() {
+        return totalCount;
     }
 
     @java.lang.Override
@@ -88,14 +88,14 @@ public final class PageInfo {
 
     private boolean equalTo(PageInfo other) {
         return count.equals(other.count)
-                && totalCount.equals(other.totalCount)
+                && endCursor.equals(other.endCursor)
                 && startCursor.equals(other.startCursor)
-                && endCursor.equals(other.endCursor);
+                && totalCount.equals(other.totalCount);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.count, this.totalCount, this.startCursor, this.endCursor);
+        return Objects.hash(this.count, this.endCursor, this.startCursor, this.totalCount);
     }
 
     @java.lang.Override
@@ -111,11 +111,11 @@ public final class PageInfo {
     public static final class Builder {
         private Optional<Integer> count = Optional.empty();
 
-        private Optional<Integer> totalCount = Optional.empty();
+        private Optional<String> endCursor = Optional.empty();
 
         private Optional<String> startCursor = Optional.empty();
 
-        private Optional<String> endCursor = Optional.empty();
+        private Optional<Integer> totalCount = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -124,9 +124,9 @@ public final class PageInfo {
 
         public Builder from(PageInfo other) {
             count(other.getCount());
-            totalCount(other.getTotalCount());
-            startCursor(other.getStartCursor());
             endCursor(other.getEndCursor());
+            startCursor(other.getStartCursor());
+            totalCount(other.getTotalCount());
             return this;
         }
 
@@ -145,16 +145,16 @@ public final class PageInfo {
         }
 
         /**
-         * <p>Total number of items</p>
+         * <p>Used to fetch the next page of items</p>
          */
-        @JsonSetter(value = "total_count", nulls = Nulls.SKIP)
-        public Builder totalCount(Optional<Integer> totalCount) {
-            this.totalCount = totalCount;
+        @JsonSetter(value = "end_cursor", nulls = Nulls.SKIP)
+        public Builder endCursor(Optional<String> endCursor) {
+            this.endCursor = endCursor;
             return this;
         }
 
-        public Builder totalCount(Integer totalCount) {
-            this.totalCount = Optional.ofNullable(totalCount);
+        public Builder endCursor(String endCursor) {
+            this.endCursor = Optional.ofNullable(endCursor);
             return this;
         }
 
@@ -173,21 +173,21 @@ public final class PageInfo {
         }
 
         /**
-         * <p>Used to fetch the next page of items</p>
+         * <p>Total number of items</p>
          */
-        @JsonSetter(value = "end_cursor", nulls = Nulls.SKIP)
-        public Builder endCursor(Optional<String> endCursor) {
-            this.endCursor = endCursor;
+        @JsonSetter(value = "total_count", nulls = Nulls.SKIP)
+        public Builder totalCount(Optional<Integer> totalCount) {
+            this.totalCount = totalCount;
             return this;
         }
 
-        public Builder endCursor(String endCursor) {
-            this.endCursor = Optional.ofNullable(endCursor);
+        public Builder totalCount(Integer totalCount) {
+            this.totalCount = Optional.ofNullable(totalCount);
             return this;
         }
 
         public PageInfo build() {
-            return new PageInfo(count, totalCount, startCursor, endCursor, additionalProperties);
+            return new PageInfo(count, endCursor, startCursor, totalCount, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -77,7 +77,7 @@ public final class ActionsListRequest {
     }
 
     /**
-     * @return A search query to filter the actions
+     * @return A full-text search query matched against the name, key and description of the actions
      */
     @JsonProperty("q")
     public Optional<String> getQ() {
@@ -206,7 +206,7 @@ public final class ActionsListRequest {
         }
 
         /**
-         * <p>A search query to filter the actions</p>
+         * <p>A full-text search query matched against the name, key and description of the actions</p>
          */
         @JsonSetter(value = "q", nulls = Nulls.SKIP)
         public Builder q(Optional<String> q) {

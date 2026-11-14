@@ -22,43 +22,27 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfiguredPropValueSql.Builder.class)
 public final class ConfiguredPropValueSql {
-    private final String value;
+    private final List<String> params;
 
     private final String query;
 
-    private final List<String> params;
-
     private final boolean usePreparedStatements;
+
+    private final String value;
 
     private final Map<String, Object> additionalProperties;
 
     private ConfiguredPropValueSql(
-            String value,
-            String query,
             List<String> params,
+            String query,
             boolean usePreparedStatements,
+            String value,
             Map<String, Object> additionalProperties) {
-        this.value = value;
-        this.query = query;
         this.params = params;
+        this.query = query;
         this.usePreparedStatements = usePreparedStatements;
+        this.value = value;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The raw SQL query, as provided by the user
-     */
-    @JsonProperty("value")
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @return The SQL query to execute
-     */
-    @JsonProperty("query")
-    public String getQuery() {
-        return query;
     }
 
     /**
@@ -70,11 +54,27 @@ public final class ConfiguredPropValueSql {
     }
 
     /**
+     * @return The SQL query to execute
+     */
+    @JsonProperty("query")
+    public String getQuery() {
+        return query;
+    }
+
+    /**
      * @return Whether to use prepared statements for the query or not
      */
     @JsonProperty("usePreparedStatements")
     public boolean getUsePreparedStatements() {
         return usePreparedStatements;
+    }
+
+    /**
+     * @return The raw SQL query, as provided by the user
+     */
+    @JsonProperty("value")
+    public String getValue() {
+        return value;
     }
 
     @java.lang.Override
@@ -89,15 +89,15 @@ public final class ConfiguredPropValueSql {
     }
 
     private boolean equalTo(ConfiguredPropValueSql other) {
-        return value.equals(other.value)
+        return params.equals(other.params)
                 && query.equals(other.query)
-                && params.equals(other.params)
-                && usePreparedStatements == other.usePreparedStatements;
+                && usePreparedStatements == other.usePreparedStatements
+                && value.equals(other.value);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.value, this.query, this.params, this.usePreparedStatements);
+        return Objects.hash(this.params, this.query, this.usePreparedStatements, this.value);
     }
 
     @java.lang.Override
@@ -105,17 +105,8 @@ public final class ConfiguredPropValueSql {
         return ObjectMappers.stringify(this);
     }
 
-    public static ValueStage builder() {
+    public static QueryStage builder() {
         return new Builder();
-    }
-
-    public interface ValueStage {
-        /**
-         * <p>The raw SQL query, as provided by the user</p>
-         */
-        QueryStage value(@NotNull String value);
-
-        Builder from(ConfiguredPropValueSql other);
     }
 
     public interface QueryStage {
@@ -123,13 +114,22 @@ public final class ConfiguredPropValueSql {
          * <p>The SQL query to execute</p>
          */
         UsePreparedStatementsStage query(@NotNull String query);
+
+        Builder from(ConfiguredPropValueSql other);
     }
 
     public interface UsePreparedStatementsStage {
         /**
          * <p>Whether to use prepared statements for the query or not</p>
          */
-        _FinalStage usePreparedStatements(boolean usePreparedStatements);
+        ValueStage usePreparedStatements(boolean usePreparedStatements);
+    }
+
+    public interface ValueStage {
+        /**
+         * <p>The raw SQL query, as provided by the user</p>
+         */
+        _FinalStage value(@NotNull String value);
     }
 
     public interface _FinalStage {
@@ -150,12 +150,12 @@ public final class ConfiguredPropValueSql {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ValueStage, QueryStage, UsePreparedStatementsStage, _FinalStage {
-        private String value;
-
+    public static final class Builder implements QueryStage, UsePreparedStatementsStage, ValueStage, _FinalStage {
         private String query;
 
         private boolean usePreparedStatements;
+
+        private String value;
 
         private List<String> params = new ArrayList<>();
 
@@ -166,22 +166,10 @@ public final class ConfiguredPropValueSql {
 
         @java.lang.Override
         public Builder from(ConfiguredPropValueSql other) {
-            value(other.getValue());
-            query(other.getQuery());
             params(other.getParams());
+            query(other.getQuery());
             usePreparedStatements(other.getUsePreparedStatements());
-            return this;
-        }
-
-        /**
-         * <p>The raw SQL query, as provided by the user</p>
-         * <p>The raw SQL query, as provided by the user</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("value")
-        public QueryStage value(@NotNull String value) {
-            this.value = Objects.requireNonNull(value, "value must not be null");
+            value(other.getValue());
             return this;
         }
 
@@ -204,8 +192,20 @@ public final class ConfiguredPropValueSql {
          */
         @java.lang.Override
         @JsonSetter("usePreparedStatements")
-        public _FinalStage usePreparedStatements(boolean usePreparedStatements) {
+        public ValueStage usePreparedStatements(boolean usePreparedStatements) {
             this.usePreparedStatements = usePreparedStatements;
+            return this;
+        }
+
+        /**
+         * <p>The raw SQL query, as provided by the user</p>
+         * <p>The raw SQL query, as provided by the user</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("value")
+        public _FinalStage value(@NotNull String value) {
+            this.value = Objects.requireNonNull(value, "value must not be null");
             return this;
         }
 
@@ -246,7 +246,7 @@ public final class ConfiguredPropValueSql {
 
         @java.lang.Override
         public ConfiguredPropValueSql build() {
-            return new ConfiguredPropValueSql(value, query, params, usePreparedStatements, additionalProperties);
+            return new ConfiguredPropValueSql(params, query, usePreparedStatements, value, additionalProperties);
         }
 
         @java.lang.Override

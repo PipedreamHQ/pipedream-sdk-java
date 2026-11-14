@@ -21,49 +21,31 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurePropResponse.Builder.class)
 public final class ConfigurePropResponse {
-    private final Optional<List<ConfigurePropOptionsItem>> options;
-
-    private final Optional<List<String>> stringOptions;
-
-    private final Optional<List<Observation>> observations;
-
     private final Optional<Map<String, Object>> context;
 
     private final Optional<List<String>> errors;
 
+    private final Optional<List<Observation>> observations;
+
+    private final Optional<List<ConfigurePropOptionsItem>> options;
+
+    private final Optional<List<String>> stringOptions;
+
     private final Map<String, Object> additionalProperties;
 
     private ConfigurePropResponse(
-            Optional<List<ConfigurePropOptionsItem>> options,
-            Optional<List<String>> stringOptions,
-            Optional<List<Observation>> observations,
             Optional<Map<String, Object>> context,
             Optional<List<String>> errors,
+            Optional<List<Observation>> observations,
+            Optional<List<ConfigurePropOptionsItem>> options,
+            Optional<List<String>> stringOptions,
             Map<String, Object> additionalProperties) {
-        this.options = options;
-        this.stringOptions = stringOptions;
-        this.observations = observations;
         this.context = context;
         this.errors = errors;
+        this.observations = observations;
+        this.options = options;
+        this.stringOptions = stringOptions;
         this.additionalProperties = additionalProperties;
-    }
-
-    @JsonProperty("options")
-    public Optional<List<ConfigurePropOptionsItem>> getOptions() {
-        return options;
-    }
-
-    /**
-     * @return Available options for the configured prop
-     */
-    @JsonProperty("stringOptions")
-    public Optional<List<String>> getStringOptions() {
-        return stringOptions;
-    }
-
-    @JsonProperty("observations")
-    public Optional<List<Observation>> getObservations() {
-        return observations;
     }
 
     /**
@@ -82,6 +64,24 @@ public final class ConfigurePropResponse {
         return errors;
     }
 
+    @JsonProperty("observations")
+    public Optional<List<Observation>> getObservations() {
+        return observations;
+    }
+
+    @JsonProperty("options")
+    public Optional<List<ConfigurePropOptionsItem>> getOptions() {
+        return options;
+    }
+
+    /**
+     * @return Available options for the configured prop
+     */
+    @JsonProperty("stringOptions")
+    public Optional<List<String>> getStringOptions() {
+        return stringOptions;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -94,16 +94,16 @@ public final class ConfigurePropResponse {
     }
 
     private boolean equalTo(ConfigurePropResponse other) {
-        return options.equals(other.options)
-                && stringOptions.equals(other.stringOptions)
+        return context.equals(other.context)
+                && errors.equals(other.errors)
                 && observations.equals(other.observations)
-                && context.equals(other.context)
-                && errors.equals(other.errors);
+                && options.equals(other.options)
+                && stringOptions.equals(other.stringOptions);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.options, this.stringOptions, this.observations, this.context, this.errors);
+        return Objects.hash(this.context, this.errors, this.observations, this.options, this.stringOptions);
     }
 
     @java.lang.Override
@@ -117,15 +117,15 @@ public final class ConfigurePropResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<ConfigurePropOptionsItem>> options = Optional.empty();
-
-        private Optional<List<String>> stringOptions = Optional.empty();
-
-        private Optional<List<Observation>> observations = Optional.empty();
-
         private Optional<Map<String, Object>> context = Optional.empty();
 
         private Optional<List<String>> errors = Optional.empty();
+
+        private Optional<List<Observation>> observations = Optional.empty();
+
+        private Optional<List<ConfigurePropOptionsItem>> options = Optional.empty();
+
+        private Optional<List<String>> stringOptions = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -133,47 +133,11 @@ public final class ConfigurePropResponse {
         private Builder() {}
 
         public Builder from(ConfigurePropResponse other) {
-            options(other.getOptions());
-            stringOptions(other.getStringOptions());
-            observations(other.getObservations());
             context(other.getContext());
             errors(other.getErrors());
-            return this;
-        }
-
-        @JsonSetter(value = "options", nulls = Nulls.SKIP)
-        public Builder options(Optional<List<ConfigurePropOptionsItem>> options) {
-            this.options = options;
-            return this;
-        }
-
-        public Builder options(List<ConfigurePropOptionsItem> options) {
-            this.options = Optional.ofNullable(options);
-            return this;
-        }
-
-        /**
-         * <p>Available options for the configured prop</p>
-         */
-        @JsonSetter(value = "stringOptions", nulls = Nulls.SKIP)
-        public Builder stringOptions(Optional<List<String>> stringOptions) {
-            this.stringOptions = stringOptions;
-            return this;
-        }
-
-        public Builder stringOptions(List<String> stringOptions) {
-            this.stringOptions = Optional.ofNullable(stringOptions);
-            return this;
-        }
-
-        @JsonSetter(value = "observations", nulls = Nulls.SKIP)
-        public Builder observations(Optional<List<Observation>> observations) {
-            this.observations = observations;
-            return this;
-        }
-
-        public Builder observations(List<Observation> observations) {
-            this.observations = Optional.ofNullable(observations);
+            observations(other.getObservations());
+            options(other.getOptions());
+            stringOptions(other.getStringOptions());
             return this;
         }
 
@@ -205,9 +169,45 @@ public final class ConfigurePropResponse {
             return this;
         }
 
+        @JsonSetter(value = "observations", nulls = Nulls.SKIP)
+        public Builder observations(Optional<List<Observation>> observations) {
+            this.observations = observations;
+            return this;
+        }
+
+        public Builder observations(List<Observation> observations) {
+            this.observations = Optional.ofNullable(observations);
+            return this;
+        }
+
+        @JsonSetter(value = "options", nulls = Nulls.SKIP)
+        public Builder options(Optional<List<ConfigurePropOptionsItem>> options) {
+            this.options = options;
+            return this;
+        }
+
+        public Builder options(List<ConfigurePropOptionsItem> options) {
+            this.options = Optional.ofNullable(options);
+            return this;
+        }
+
+        /**
+         * <p>Available options for the configured prop</p>
+         */
+        @JsonSetter(value = "stringOptions", nulls = Nulls.SKIP)
+        public Builder stringOptions(Optional<List<String>> stringOptions) {
+            this.stringOptions = stringOptions;
+            return this;
+        }
+
+        public Builder stringOptions(List<String> stringOptions) {
+            this.stringOptions = Optional.ofNullable(stringOptions);
+            return this;
+        }
+
         public ConfigurePropResponse build() {
             return new ConfigurePropResponse(
-                    options, stringOptions, observations, context, errors, additionalProperties);
+                    context, errors, observations, options, stringOptions, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

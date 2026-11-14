@@ -61,14 +61,14 @@ public class AsyncAccountsClient {
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<Account> create(CreateAccountOpts request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<Account> create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
@@ -132,21 +132,21 @@ public class AsyncAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<List<Account>> listByExternalUser(String externalUserId) {
         return this.rawClient.listByExternalUser(externalUserId).thenApply(response -> response.body());
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<List<Account>> listByExternalUser(String externalUserId, RequestOptions requestOptions) {
         return this.rawClient.listByExternalUser(externalUserId, requestOptions).thenApply(response -> response.body());
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<List<Account>> listByExternalUser(
             String externalUserId, AccountsListByExternalUserRequest request) {
@@ -154,7 +154,7 @@ public class AsyncAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<List<Account>> listByExternalUser(
             String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {

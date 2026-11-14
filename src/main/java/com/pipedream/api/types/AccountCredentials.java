@@ -20,39 +20,31 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = AccountCredentials.Builder.class)
 public final class AccountCredentials {
-    private final Optional<String> oauthClientId;
-
     private final Optional<String> oauthAccessToken;
+
+    private final Optional<String> oauthClientId;
 
     private final Optional<String> oauthRefreshToken;
 
-    private final Optional<String> oauthUid;
-
     private final Optional<String> oauthSignerUri;
+
+    private final Optional<String> oauthUid;
 
     private final Map<String, Object> additionalProperties;
 
     private AccountCredentials(
-            Optional<String> oauthClientId,
             Optional<String> oauthAccessToken,
+            Optional<String> oauthClientId,
             Optional<String> oauthRefreshToken,
-            Optional<String> oauthUid,
             Optional<String> oauthSignerUri,
+            Optional<String> oauthUid,
             Map<String, Object> additionalProperties) {
-        this.oauthClientId = oauthClientId;
         this.oauthAccessToken = oauthAccessToken;
+        this.oauthClientId = oauthClientId;
         this.oauthRefreshToken = oauthRefreshToken;
-        this.oauthUid = oauthUid;
         this.oauthSignerUri = oauthSignerUri;
+        this.oauthUid = oauthUid;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The OAuth client ID for the app, if applicable
-     */
-    @JsonProperty("oauth_client_id")
-    public Optional<String> getOauthClientId() {
-        return oauthClientId;
     }
 
     /**
@@ -64,6 +56,14 @@ public final class AccountCredentials {
     }
 
     /**
+     * @return The OAuth client ID for the app, if applicable
+     */
+    @JsonProperty("oauth_client_id")
+    public Optional<String> getOauthClientId() {
+        return oauthClientId;
+    }
+
+    /**
      * @return The OAuth refresh token
      */
     @JsonProperty("oauth_refresh_token")
@@ -72,19 +72,19 @@ public final class AccountCredentials {
     }
 
     /**
-     * @return The unique OAuth user identifier
-     */
-    @JsonProperty("oauth_uid")
-    public Optional<String> getOauthUid() {
-        return oauthUid;
-    }
-
-    /**
      * @return The OAuth signer URI, if the app uses a custom OAuth signer
      */
     @JsonProperty("oauth_signer_uri")
     public Optional<String> getOauthSignerUri() {
         return oauthSignerUri;
+    }
+
+    /**
+     * @return The unique OAuth user identifier
+     */
+    @JsonProperty("oauth_uid")
+    public Optional<String> getOauthUid() {
+        return oauthUid;
     }
 
     @java.lang.Override
@@ -99,17 +99,17 @@ public final class AccountCredentials {
     }
 
     private boolean equalTo(AccountCredentials other) {
-        return oauthClientId.equals(other.oauthClientId)
-                && oauthAccessToken.equals(other.oauthAccessToken)
+        return oauthAccessToken.equals(other.oauthAccessToken)
+                && oauthClientId.equals(other.oauthClientId)
                 && oauthRefreshToken.equals(other.oauthRefreshToken)
-                && oauthUid.equals(other.oauthUid)
-                && oauthSignerUri.equals(other.oauthSignerUri);
+                && oauthSignerUri.equals(other.oauthSignerUri)
+                && oauthUid.equals(other.oauthUid);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.oauthClientId, this.oauthAccessToken, this.oauthRefreshToken, this.oauthUid, this.oauthSignerUri);
+                this.oauthAccessToken, this.oauthClientId, this.oauthRefreshToken, this.oauthSignerUri, this.oauthUid);
     }
 
     @java.lang.Override
@@ -123,15 +123,15 @@ public final class AccountCredentials {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<String> oauthClientId = Optional.empty();
-
         private Optional<String> oauthAccessToken = Optional.empty();
+
+        private Optional<String> oauthClientId = Optional.empty();
 
         private Optional<String> oauthRefreshToken = Optional.empty();
 
-        private Optional<String> oauthUid = Optional.empty();
-
         private Optional<String> oauthSignerUri = Optional.empty();
+
+        private Optional<String> oauthUid = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -139,25 +139,11 @@ public final class AccountCredentials {
         private Builder() {}
 
         public Builder from(AccountCredentials other) {
-            oauthClientId(other.getOauthClientId());
             oauthAccessToken(other.getOauthAccessToken());
+            oauthClientId(other.getOauthClientId());
             oauthRefreshToken(other.getOauthRefreshToken());
-            oauthUid(other.getOauthUid());
             oauthSignerUri(other.getOauthSignerUri());
-            return this;
-        }
-
-        /**
-         * <p>The OAuth client ID for the app, if applicable</p>
-         */
-        @JsonSetter(value = "oauth_client_id", nulls = Nulls.SKIP)
-        public Builder oauthClientId(Optional<String> oauthClientId) {
-            this.oauthClientId = oauthClientId;
-            return this;
-        }
-
-        public Builder oauthClientId(String oauthClientId) {
-            this.oauthClientId = Optional.ofNullable(oauthClientId);
+            oauthUid(other.getOauthUid());
             return this;
         }
 
@@ -176,6 +162,20 @@ public final class AccountCredentials {
         }
 
         /**
+         * <p>The OAuth client ID for the app, if applicable</p>
+         */
+        @JsonSetter(value = "oauth_client_id", nulls = Nulls.SKIP)
+        public Builder oauthClientId(Optional<String> oauthClientId) {
+            this.oauthClientId = oauthClientId;
+            return this;
+        }
+
+        public Builder oauthClientId(String oauthClientId) {
+            this.oauthClientId = Optional.ofNullable(oauthClientId);
+            return this;
+        }
+
+        /**
          * <p>The OAuth refresh token</p>
          */
         @JsonSetter(value = "oauth_refresh_token", nulls = Nulls.SKIP)
@@ -186,20 +186,6 @@ public final class AccountCredentials {
 
         public Builder oauthRefreshToken(String oauthRefreshToken) {
             this.oauthRefreshToken = Optional.ofNullable(oauthRefreshToken);
-            return this;
-        }
-
-        /**
-         * <p>The unique OAuth user identifier</p>
-         */
-        @JsonSetter(value = "oauth_uid", nulls = Nulls.SKIP)
-        public Builder oauthUid(Optional<String> oauthUid) {
-            this.oauthUid = oauthUid;
-            return this;
-        }
-
-        public Builder oauthUid(String oauthUid) {
-            this.oauthUid = Optional.ofNullable(oauthUid);
             return this;
         }
 
@@ -217,9 +203,23 @@ public final class AccountCredentials {
             return this;
         }
 
+        /**
+         * <p>The unique OAuth user identifier</p>
+         */
+        @JsonSetter(value = "oauth_uid", nulls = Nulls.SKIP)
+        public Builder oauthUid(Optional<String> oauthUid) {
+            this.oauthUid = oauthUid;
+            return this;
+        }
+
+        public Builder oauthUid(String oauthUid) {
+            this.oauthUid = Optional.ofNullable(oauthUid);
+            return this;
+        }
+
         public AccountCredentials build() {
             return new AccountCredentials(
-                    oauthClientId, oauthAccessToken, oauthRefreshToken, oauthUid, oauthSignerUri, additionalProperties);
+                    oauthAccessToken, oauthClientId, oauthRefreshToken, oauthSignerUri, oauthUid, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

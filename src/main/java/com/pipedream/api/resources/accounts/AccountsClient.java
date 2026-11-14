@@ -59,14 +59,14 @@ public class AccountsClient {
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public Account create(CreateAccountOpts request) {
         return this.rawClient.create(request).body();
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public Account create(CreateAccountOpts request, RequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
@@ -129,28 +129,28 @@ public class AccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public List<Account> listByExternalUser(String externalUserId) {
         return this.rawClient.listByExternalUser(externalUserId).body();
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public List<Account> listByExternalUser(String externalUserId, RequestOptions requestOptions) {
         return this.rawClient.listByExternalUser(externalUserId, requestOptions).body();
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public List<Account> listByExternalUser(String externalUserId, AccountsListByExternalUserRequest request) {
         return this.rawClient.listByExternalUser(externalUserId, request).body();
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public List<Account> listByExternalUser(
             String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {

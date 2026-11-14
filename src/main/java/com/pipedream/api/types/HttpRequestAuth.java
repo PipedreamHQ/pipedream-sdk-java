@@ -20,27 +20,37 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = HttpRequestAuth.Builder.class)
 public final class HttpRequestAuth {
-    private final Optional<HttpRequestAuthType> type;
-
-    private final Optional<String> username;
-
     private final Optional<String> password;
 
     private final Optional<String> token;
 
+    private final Optional<HttpRequestAuthType> type;
+
+    private final Optional<String> username;
+
     private final Map<String, Object> additionalProperties;
 
     private HttpRequestAuth(
-            Optional<HttpRequestAuthType> type,
-            Optional<String> username,
             Optional<String> password,
             Optional<String> token,
+            Optional<HttpRequestAuthType> type,
+            Optional<String> username,
             Map<String, Object> additionalProperties) {
-        this.type = type;
-        this.username = username;
         this.password = password;
         this.token = token;
+        this.type = type;
+        this.username = username;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("password")
+    public Optional<String> getPassword() {
+        return password;
+    }
+
+    @JsonProperty("token")
+    public Optional<String> getToken() {
+        return token;
     }
 
     /**
@@ -56,16 +66,6 @@ public final class HttpRequestAuth {
         return username;
     }
 
-    @JsonProperty("password")
-    public Optional<String> getPassword() {
-        return password;
-    }
-
-    @JsonProperty("token")
-    public Optional<String> getToken() {
-        return token;
-    }
-
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -78,15 +78,15 @@ public final class HttpRequestAuth {
     }
 
     private boolean equalTo(HttpRequestAuth other) {
-        return type.equals(other.type)
-                && username.equals(other.username)
-                && password.equals(other.password)
-                && token.equals(other.token);
+        return password.equals(other.password)
+                && token.equals(other.token)
+                && type.equals(other.type)
+                && username.equals(other.username);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.type, this.username, this.password, this.token);
+        return Objects.hash(this.password, this.token, this.type, this.username);
     }
 
     @java.lang.Override
@@ -100,13 +100,13 @@ public final class HttpRequestAuth {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<HttpRequestAuthType> type = Optional.empty();
-
-        private Optional<String> username = Optional.empty();
-
         private Optional<String> password = Optional.empty();
 
         private Optional<String> token = Optional.empty();
+
+        private Optional<HttpRequestAuthType> type = Optional.empty();
+
+        private Optional<String> username = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -114,10 +114,32 @@ public final class HttpRequestAuth {
         private Builder() {}
 
         public Builder from(HttpRequestAuth other) {
-            type(other.getType());
-            username(other.getUsername());
             password(other.getPassword());
             token(other.getToken());
+            type(other.getType());
+            username(other.getUsername());
+            return this;
+        }
+
+        @JsonSetter(value = "password", nulls = Nulls.SKIP)
+        public Builder password(Optional<String> password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = Optional.ofNullable(password);
+            return this;
+        }
+
+        @JsonSetter(value = "token", nulls = Nulls.SKIP)
+        public Builder token(Optional<String> token) {
+            this.token = token;
+            return this;
+        }
+
+        public Builder token(String token) {
+            this.token = Optional.ofNullable(token);
             return this;
         }
 
@@ -146,30 +168,8 @@ public final class HttpRequestAuth {
             return this;
         }
 
-        @JsonSetter(value = "password", nulls = Nulls.SKIP)
-        public Builder password(Optional<String> password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = Optional.ofNullable(password);
-            return this;
-        }
-
-        @JsonSetter(value = "token", nulls = Nulls.SKIP)
-        public Builder token(Optional<String> token) {
-            this.token = token;
-            return this;
-        }
-
-        public Builder token(String token) {
-            this.token = Optional.ofNullable(token);
-            return this;
-        }
-
         public HttpRequestAuth build() {
-            return new HttpRequestAuth(type, username, password, token, additionalProperties);
+            return new HttpRequestAuth(password, token, type, username, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

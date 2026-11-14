@@ -23,80 +23,120 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Account.Builder.class)
 public final class Account {
-    private final String id;
+    private final Optional<App> app;
 
-    private final Optional<String> name;
+    private final Optional<List<String>> authorizedScopes;
+
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<AccountCredentials> credentials;
+
+    private final Optional<Boolean> dead;
+
+    private final Optional<String> error;
+
+    private final Optional<OffsetDateTime> expiresAt;
 
     private final Optional<String> externalId;
 
     private final Optional<Boolean> healthy;
 
-    private final Optional<Boolean> dead;
-
-    private final Optional<App> app;
-
-    private final Optional<OffsetDateTime> createdAt;
-
-    private final Optional<OffsetDateTime> updatedAt;
-
-    private final Optional<List<String>> authorizedScopes;
-
-    private final Optional<AccountCredentials> credentials;
-
-    private final Optional<OffsetDateTime> expiresAt;
-
-    private final Optional<String> error;
+    private final String id;
 
     private final Optional<OffsetDateTime> lastRefreshedAt;
 
+    private final Optional<String> name;
+
     private final Optional<OffsetDateTime> nextRefreshAt;
+
+    private final Optional<OffsetDateTime> updatedAt;
 
     private final Map<String, Object> additionalProperties;
 
     private Account(
-            String id,
-            Optional<String> name,
+            Optional<App> app,
+            Optional<List<String>> authorizedScopes,
+            Optional<OffsetDateTime> createdAt,
+            Optional<AccountCredentials> credentials,
+            Optional<Boolean> dead,
+            Optional<String> error,
+            Optional<OffsetDateTime> expiresAt,
             Optional<String> externalId,
             Optional<Boolean> healthy,
-            Optional<Boolean> dead,
-            Optional<App> app,
-            Optional<OffsetDateTime> createdAt,
-            Optional<OffsetDateTime> updatedAt,
-            Optional<List<String>> authorizedScopes,
-            Optional<AccountCredentials> credentials,
-            Optional<OffsetDateTime> expiresAt,
-            Optional<String> error,
+            String id,
             Optional<OffsetDateTime> lastRefreshedAt,
+            Optional<String> name,
             Optional<OffsetDateTime> nextRefreshAt,
+            Optional<OffsetDateTime> updatedAt,
             Map<String, Object> additionalProperties) {
-        this.id = id;
-        this.name = name;
+        this.app = app;
+        this.authorizedScopes = authorizedScopes;
+        this.createdAt = createdAt;
+        this.credentials = credentials;
+        this.dead = dead;
+        this.error = error;
+        this.expiresAt = expiresAt;
         this.externalId = externalId;
         this.healthy = healthy;
-        this.dead = dead;
-        this.app = app;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.authorizedScopes = authorizedScopes;
-        this.credentials = credentials;
-        this.expiresAt = expiresAt;
-        this.error = error;
+        this.id = id;
         this.lastRefreshedAt = lastRefreshedAt;
+        this.name = name;
         this.nextRefreshAt = nextRefreshAt;
+        this.updatedAt = updatedAt;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("id")
-    public String getId() {
-        return id;
+    @JsonProperty("app")
+    public Optional<App> getApp() {
+        return app;
     }
 
     /**
-     * @return The custom name of the account if set.
+     * @return The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.
      */
-    @JsonProperty("name")
-    public Optional<String> getName() {
-        return name;
+    @JsonProperty("authorized_scopes")
+    public Optional<List<String>> getAuthorizedScopes() {
+        return authorizedScopes;
+    }
+
+    /**
+     * @return The date and time the account was created, an ISO 8601 formatted string
+     */
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).
+     */
+    @JsonProperty("credentials")
+    public Optional<AccountCredentials> getCredentials() {
+        return credentials;
+    }
+
+    /**
+     * @return Indicates if the account is no longer active
+     */
+    @JsonProperty("dead")
+    public Optional<Boolean> getDead() {
+        return dead;
+    }
+
+    /**
+     * @return The error message if the account is unhealthy or dead, null otherwise
+     */
+    @JsonProperty("error")
+    public Optional<String> getError() {
+        return error;
+    }
+
+    /**
+     * @return The date and time the account's credentials expiration, an ISO 8601 formatted string
+     */
+    @JsonProperty("expires_at")
+    public Optional<OffsetDateTime> getExpiresAt() {
+        return expiresAt;
     }
 
     /**
@@ -115,65 +155,9 @@ public final class Account {
         return healthy;
     }
 
-    /**
-     * @return Indicates if the account is no longer active
-     */
-    @JsonProperty("dead")
-    public Optional<Boolean> getDead() {
-        return dead;
-    }
-
-    @JsonProperty("app")
-    public Optional<App> getApp() {
-        return app;
-    }
-
-    /**
-     * @return The date and time the account was created, an ISO 8601 formatted string
-     */
-    @JsonProperty("created_at")
-    public Optional<OffsetDateTime> getCreatedAt() {
-        return createdAt;
-    }
-
-    /**
-     * @return The date and time the account was last updated, an ISO 8601 formatted string
-     */
-    @JsonProperty("updated_at")
-    public Optional<OffsetDateTime> getUpdatedAt() {
-        return updatedAt;
-    }
-
-    /**
-     * @return The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.
-     */
-    @JsonProperty("authorized_scopes")
-    public Optional<List<String>> getAuthorizedScopes() {
-        return authorizedScopes;
-    }
-
-    /**
-     * @return The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).
-     */
-    @JsonProperty("credentials")
-    public Optional<AccountCredentials> getCredentials() {
-        return credentials;
-    }
-
-    /**
-     * @return The date and time the account's credentials expiration, an ISO 8601 formatted string
-     */
-    @JsonProperty("expires_at")
-    public Optional<OffsetDateTime> getExpiresAt() {
-        return expiresAt;
-    }
-
-    /**
-     * @return The error message if the account is unhealthy or dead, null otherwise
-     */
-    @JsonProperty("error")
-    public Optional<String> getError() {
-        return error;
+    @JsonProperty("id")
+    public String getId() {
+        return id;
     }
 
     /**
@@ -185,11 +169,27 @@ public final class Account {
     }
 
     /**
+     * @return The custom name of the account if set.
+     */
+    @JsonProperty("name")
+    public Optional<String> getName() {
+        return name;
+    }
+
+    /**
      * @return The date and time the account will next be refreshed, an ISO 8601 formatted string
      */
     @JsonProperty("next_refresh_at")
     public Optional<OffsetDateTime> getNextRefreshAt() {
         return nextRefreshAt;
+    }
+
+    /**
+     * @return The date and time the account was last updated, an ISO 8601 formatted string
+     */
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
     }
 
     @java.lang.Override
@@ -204,39 +204,39 @@ public final class Account {
     }
 
     private boolean equalTo(Account other) {
-        return id.equals(other.id)
-                && name.equals(other.name)
+        return app.equals(other.app)
+                && authorizedScopes.equals(other.authorizedScopes)
+                && createdAt.equals(other.createdAt)
+                && credentials.equals(other.credentials)
+                && dead.equals(other.dead)
+                && error.equals(other.error)
+                && expiresAt.equals(other.expiresAt)
                 && externalId.equals(other.externalId)
                 && healthy.equals(other.healthy)
-                && dead.equals(other.dead)
-                && app.equals(other.app)
-                && createdAt.equals(other.createdAt)
-                && updatedAt.equals(other.updatedAt)
-                && authorizedScopes.equals(other.authorizedScopes)
-                && credentials.equals(other.credentials)
-                && expiresAt.equals(other.expiresAt)
-                && error.equals(other.error)
+                && id.equals(other.id)
                 && lastRefreshedAt.equals(other.lastRefreshedAt)
-                && nextRefreshAt.equals(other.nextRefreshAt);
+                && name.equals(other.name)
+                && nextRefreshAt.equals(other.nextRefreshAt)
+                && updatedAt.equals(other.updatedAt);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
-                this.name,
+                this.app,
+                this.authorizedScopes,
+                this.createdAt,
+                this.credentials,
+                this.dead,
+                this.error,
+                this.expiresAt,
                 this.externalId,
                 this.healthy,
-                this.dead,
-                this.app,
-                this.createdAt,
-                this.updatedAt,
-                this.authorizedScopes,
-                this.credentials,
-                this.expiresAt,
-                this.error,
+                this.id,
                 this.lastRefreshedAt,
-                this.nextRefreshAt);
+                this.name,
+                this.nextRefreshAt,
+                this.updatedAt);
     }
 
     @java.lang.Override
@@ -261,12 +261,51 @@ public final class Account {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
-        /**
-         * <p>The custom name of the account if set.</p>
-         */
-        _FinalStage name(Optional<String> name);
+        _FinalStage app(Optional<App> app);
 
-        _FinalStage name(String name);
+        _FinalStage app(App app);
+
+        /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         */
+        _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes);
+
+        _FinalStage authorizedScopes(List<String> authorizedScopes);
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         */
+        _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
+
+        _FinalStage createdAt(OffsetDateTime createdAt);
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
+         */
+        _FinalStage credentials(Optional<AccountCredentials> credentials);
+
+        _FinalStage credentials(AccountCredentials credentials);
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         */
+        _FinalStage dead(Optional<Boolean> dead);
+
+        _FinalStage dead(Boolean dead);
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         */
+        _FinalStage error(Optional<String> error);
+
+        _FinalStage error(String error);
+
+        /**
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
+         */
+        _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt);
+
+        _FinalStage expiresAt(OffsetDateTime expiresAt);
 
         /**
          * <p>The external ID associated with the account.</p>
@@ -283,59 +322,6 @@ public final class Account {
         _FinalStage healthy(Boolean healthy);
 
         /**
-         * <p>Indicates if the account is no longer active</p>
-         */
-        _FinalStage dead(Optional<Boolean> dead);
-
-        _FinalStage dead(Boolean dead);
-
-        _FinalStage app(Optional<App> app);
-
-        _FinalStage app(App app);
-
-        /**
-         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
-         */
-        _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
-
-        _FinalStage createdAt(OffsetDateTime createdAt);
-
-        /**
-         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
-         */
-        _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
-
-        _FinalStage updatedAt(OffsetDateTime updatedAt);
-
-        /**
-         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
-         */
-        _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes);
-
-        _FinalStage authorizedScopes(List<String> authorizedScopes);
-
-        /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
-         */
-        _FinalStage credentials(Optional<AccountCredentials> credentials);
-
-        _FinalStage credentials(AccountCredentials credentials);
-
-        /**
-         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
-         */
-        _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt);
-
-        _FinalStage expiresAt(OffsetDateTime expiresAt);
-
-        /**
-         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
-         */
-        _FinalStage error(Optional<String> error);
-
-        _FinalStage error(String error);
-
-        /**
          * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
          */
         _FinalStage lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt);
@@ -343,42 +329,56 @@ public final class Account {
         _FinalStage lastRefreshedAt(OffsetDateTime lastRefreshedAt);
 
         /**
+         * <p>The custom name of the account if set.</p>
+         */
+        _FinalStage name(Optional<String> name);
+
+        _FinalStage name(String name);
+
+        /**
          * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
          */
         _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt);
 
         _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt);
+
+        /**
+         * <p>The date and time the account was last updated, an ISO 8601 formatted string</p>
+         */
+        _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
+
+        _FinalStage updatedAt(OffsetDateTime updatedAt);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements IdStage, _FinalStage {
         private String id;
 
-        private Optional<OffsetDateTime> nextRefreshAt = Optional.empty();
-
-        private Optional<OffsetDateTime> lastRefreshedAt = Optional.empty();
-
-        private Optional<String> error = Optional.empty();
-
-        private Optional<OffsetDateTime> expiresAt = Optional.empty();
-
-        private Optional<AccountCredentials> credentials = Optional.empty();
-
-        private Optional<List<String>> authorizedScopes = Optional.empty();
-
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<OffsetDateTime> createdAt = Optional.empty();
+        private Optional<OffsetDateTime> nextRefreshAt = Optional.empty();
 
-        private Optional<App> app = Optional.empty();
+        private Optional<String> name = Optional.empty();
 
-        private Optional<Boolean> dead = Optional.empty();
+        private Optional<OffsetDateTime> lastRefreshedAt = Optional.empty();
 
         private Optional<Boolean> healthy = Optional.empty();
 
         private Optional<String> externalId = Optional.empty();
 
-        private Optional<String> name = Optional.empty();
+        private Optional<OffsetDateTime> expiresAt = Optional.empty();
+
+        private Optional<String> error = Optional.empty();
+
+        private Optional<Boolean> dead = Optional.empty();
+
+        private Optional<AccountCredentials> credentials = Optional.empty();
+
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<List<String>> authorizedScopes = Optional.empty();
+
+        private Optional<App> app = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -387,20 +387,20 @@ public final class Account {
 
         @java.lang.Override
         public Builder from(Account other) {
-            id(other.getId());
-            name(other.getName());
+            app(other.getApp());
+            authorizedScopes(other.getAuthorizedScopes());
+            createdAt(other.getCreatedAt());
+            credentials(other.getCredentials());
+            dead(other.getDead());
+            error(other.getError());
+            expiresAt(other.getExpiresAt());
             externalId(other.getExternalId());
             healthy(other.getHealthy());
-            dead(other.getDead());
-            app(other.getApp());
-            createdAt(other.getCreatedAt());
-            updatedAt(other.getUpdatedAt());
-            authorizedScopes(other.getAuthorizedScopes());
-            credentials(other.getCredentials());
-            expiresAt(other.getExpiresAt());
-            error(other.getError());
+            id(other.getId());
             lastRefreshedAt(other.getLastRefreshedAt());
+            name(other.getName());
             nextRefreshAt(other.getNextRefreshAt());
+            updatedAt(other.getUpdatedAt());
             return this;
         }
 
@@ -408,126 +408,6 @@ public final class Account {
         @JsonSetter("id")
         public _FinalStage id(@NotNull String id) {
             this.id = Objects.requireNonNull(id, "id must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt) {
-            this.nextRefreshAt = Optional.ofNullable(nextRefreshAt);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "next_refresh_at", nulls = Nulls.SKIP)
-        public _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt) {
-            this.nextRefreshAt = nextRefreshAt;
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage lastRefreshedAt(OffsetDateTime lastRefreshedAt) {
-            this.lastRefreshedAt = Optional.ofNullable(lastRefreshedAt);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "last_refreshed_at", nulls = Nulls.SKIP)
-        public _FinalStage lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt) {
-            this.lastRefreshedAt = lastRefreshedAt;
-            return this;
-        }
-
-        /**
-         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage error(String error) {
-            this.error = Optional.ofNullable(error);
-            return this;
-        }
-
-        /**
-         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "error", nulls = Nulls.SKIP)
-        public _FinalStage error(Optional<String> error) {
-            this.error = error;
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage expiresAt(OffsetDateTime expiresAt) {
-            this.expiresAt = Optional.ofNullable(expiresAt);
-            return this;
-        }
-
-        /**
-         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
-        public _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt) {
-            this.expiresAt = expiresAt;
-            return this;
-        }
-
-        /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage credentials(AccountCredentials credentials) {
-            this.credentials = Optional.ofNullable(credentials);
-            return this;
-        }
-
-        /**
-         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
-        public _FinalStage credentials(Optional<AccountCredentials> credentials) {
-            this.credentials = credentials;
-            return this;
-        }
-
-        /**
-         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage authorizedScopes(List<String> authorizedScopes) {
-            this.authorizedScopes = Optional.ofNullable(authorizedScopes);
-            return this;
-        }
-
-        /**
-         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "authorized_scopes", nulls = Nulls.SKIP)
-        public _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes) {
-            this.authorizedScopes = authorizedScopes;
             return this;
         }
 
@@ -552,55 +432,62 @@ public final class Account {
         }
 
         /**
-         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.ofNullable(createdAt);
+        public _FinalStage nextRefreshAt(OffsetDateTime nextRefreshAt) {
+            this.nextRefreshAt = Optional.ofNullable(nextRefreshAt);
             return this;
         }
 
         /**
-         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         * <p>The date and time the account will next be refreshed, an ISO 8601 formatted string</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
-        public _FinalStage createdAt(Optional<OffsetDateTime> createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage app(App app) {
-            this.app = Optional.ofNullable(app);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "app", nulls = Nulls.SKIP)
-        public _FinalStage app(Optional<App> app) {
-            this.app = app;
+        @JsonSetter(value = "next_refresh_at", nulls = Nulls.SKIP)
+        public _FinalStage nextRefreshAt(Optional<OffsetDateTime> nextRefreshAt) {
+            this.nextRefreshAt = nextRefreshAt;
             return this;
         }
 
         /**
-         * <p>Indicates if the account is no longer active</p>
+         * <p>The custom name of the account if set.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage dead(Boolean dead) {
-            this.dead = Optional.ofNullable(dead);
+        public _FinalStage name(String name) {
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
         /**
-         * <p>Indicates if the account is no longer active</p>
+         * <p>The custom name of the account if set.</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "dead", nulls = Nulls.SKIP)
-        public _FinalStage dead(Optional<Boolean> dead) {
-            this.dead = dead;
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public _FinalStage name(Optional<String> name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage lastRefreshedAt(OffsetDateTime lastRefreshedAt) {
+            this.lastRefreshedAt = Optional.ofNullable(lastRefreshedAt);
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was last refreshed, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "last_refreshed_at", nulls = Nulls.SKIP)
+        public _FinalStage lastRefreshedAt(Optional<OffsetDateTime> lastRefreshedAt) {
+            this.lastRefreshedAt = lastRefreshedAt;
             return this;
         }
 
@@ -645,42 +532,155 @@ public final class Account {
         }
 
         /**
-         * <p>The custom name of the account if set.</p>
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage name(String name) {
-            this.name = Optional.ofNullable(name);
+        public _FinalStage expiresAt(OffsetDateTime expiresAt) {
+            this.expiresAt = Optional.ofNullable(expiresAt);
             return this;
         }
 
         /**
-         * <p>The custom name of the account if set.</p>
+         * <p>The date and time the account's credentials expiration, an ISO 8601 formatted string</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public _FinalStage name(Optional<String> name) {
-            this.name = name;
+        @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
+        public _FinalStage expiresAt(Optional<OffsetDateTime> expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage error(String error) {
+            this.error = Optional.ofNullable(error);
+            return this;
+        }
+
+        /**
+         * <p>The error message if the account is unhealthy or dead, null otherwise</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "error", nulls = Nulls.SKIP)
+        public _FinalStage error(Optional<String> error) {
+            this.error = error;
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage dead(Boolean dead) {
+            this.dead = Optional.ofNullable(dead);
+            return this;
+        }
+
+        /**
+         * <p>Indicates if the account is no longer active</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "dead", nulls = Nulls.SKIP)
+        public _FinalStage dead(Optional<Boolean> dead) {
+            this.dead = dead;
+            return this;
+        }
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage credentials(AccountCredentials credentials) {
+            this.credentials = Optional.ofNullable(credentials);
+            return this;
+        }
+
+        /**
+         * <p>The credentials associated with the account, if the <code>include_credentials</code> parameter was set to true in the request (only applicable for BYOA apps). In addition to the well-known OAuth fields listed below, this object may contain app-specific custom fields (e.g. <code>base_url</code>).</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "credentials", nulls = Nulls.SKIP)
+        public _FinalStage credentials(Optional<AccountCredentials> credentials) {
+            this.credentials = credentials;
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.ofNullable(createdAt);
+            return this;
+        }
+
+        /**
+         * <p>The date and time the account was created, an ISO 8601 formatted string</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public _FinalStage createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage authorizedScopes(List<String> authorizedScopes) {
+            this.authorizedScopes = Optional.ofNullable(authorizedScopes);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes effectively granted to this account. Empty for non-OAuth apps.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "authorized_scopes", nulls = Nulls.SKIP)
+        public _FinalStage authorizedScopes(Optional<List<String>> authorizedScopes) {
+            this.authorizedScopes = authorizedScopes;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage app(App app) {
+            this.app = Optional.ofNullable(app);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "app", nulls = Nulls.SKIP)
+        public _FinalStage app(Optional<App> app) {
+            this.app = app;
             return this;
         }
 
         @java.lang.Override
         public Account build() {
             return new Account(
-                    id,
-                    name,
+                    app,
+                    authorizedScopes,
+                    createdAt,
+                    credentials,
+                    dead,
+                    error,
+                    expiresAt,
                     externalId,
                     healthy,
-                    dead,
-                    app,
-                    createdAt,
-                    updatedAt,
-                    authorizedScopes,
-                    credentials,
-                    expiresAt,
-                    error,
+                    id,
                     lastRefreshedAt,
+                    name,
                     nextRefreshAt,
+                    updatedAt,
                     additionalProperties);
         }
 

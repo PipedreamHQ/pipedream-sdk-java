@@ -20,31 +20,23 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ObservationError.Builder.class)
 public final class ObservationError {
-    private final Optional<String> name;
-
     private final Optional<String> message;
+
+    private final Optional<String> name;
 
     private final Optional<String> stack;
 
     private final Map<String, Object> additionalProperties;
 
     private ObservationError(
-            Optional<String> name,
             Optional<String> message,
+            Optional<String> name,
             Optional<String> stack,
             Map<String, Object> additionalProperties) {
-        this.name = name;
         this.message = message;
+        this.name = name;
         this.stack = stack;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The name of the error/exception
-     */
-    @JsonProperty("name")
-    public Optional<String> getName() {
-        return name;
     }
 
     /**
@@ -53,6 +45,14 @@ public final class ObservationError {
     @JsonProperty("message")
     public Optional<String> getMessage() {
         return message;
+    }
+
+    /**
+     * @return The name of the error/exception
+     */
+    @JsonProperty("name")
+    public Optional<String> getName() {
+        return name;
     }
 
     /**
@@ -75,12 +75,12 @@ public final class ObservationError {
     }
 
     private boolean equalTo(ObservationError other) {
-        return name.equals(other.name) && message.equals(other.message) && stack.equals(other.stack);
+        return message.equals(other.message) && name.equals(other.name) && stack.equals(other.stack);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.message, this.stack);
+        return Objects.hash(this.message, this.name, this.stack);
     }
 
     @java.lang.Override
@@ -94,9 +94,9 @@ public final class ObservationError {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<String> name = Optional.empty();
-
         private Optional<String> message = Optional.empty();
+
+        private Optional<String> name = Optional.empty();
 
         private Optional<String> stack = Optional.empty();
 
@@ -106,23 +106,9 @@ public final class ObservationError {
         private Builder() {}
 
         public Builder from(ObservationError other) {
-            name(other.getName());
             message(other.getMessage());
+            name(other.getName());
             stack(other.getStack());
-            return this;
-        }
-
-        /**
-         * <p>The name of the error/exception</p>
-         */
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -141,6 +127,20 @@ public final class ObservationError {
         }
 
         /**
+         * <p>The name of the error/exception</p>
+         */
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public Builder name(Optional<String> name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = Optional.ofNullable(name);
+            return this;
+        }
+
+        /**
          * <p>The stack trace of the error</p>
          */
         @JsonSetter(value = "stack", nulls = Nulls.SKIP)
@@ -155,7 +155,7 @@ public final class ObservationError {
         }
 
         public ObservationError build() {
-            return new ObservationError(name, message, stack, additionalProperties);
+            return new ObservationError(message, name, stack, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -21,31 +21,23 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ErrorResponse.Builder.class)
 public final class ErrorResponse {
-    private final String error;
-
     private final Optional<String> code;
 
     private final Optional<Map<String, Object>> details;
 
+    private final String error;
+
     private final Map<String, Object> additionalProperties;
 
     private ErrorResponse(
-            String error,
             Optional<String> code,
             Optional<Map<String, Object>> details,
+            String error,
             Map<String, Object> additionalProperties) {
-        this.error = error;
         this.code = code;
         this.details = details;
+        this.error = error;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The error message
-     */
-    @JsonProperty("error")
-    public String getError() {
-        return error;
     }
 
     /**
@@ -64,6 +56,14 @@ public final class ErrorResponse {
         return details;
     }
 
+    /**
+     * @return The error message
+     */
+    @JsonProperty("error")
+    public String getError() {
+        return error;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -76,12 +76,12 @@ public final class ErrorResponse {
     }
 
     private boolean equalTo(ErrorResponse other) {
-        return error.equals(other.error) && code.equals(other.code) && details.equals(other.details);
+        return code.equals(other.code) && details.equals(other.details) && error.equals(other.error);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.error, this.code, this.details);
+        return Objects.hash(this.code, this.details, this.error);
     }
 
     @java.lang.Override
@@ -139,9 +139,9 @@ public final class ErrorResponse {
 
         @java.lang.Override
         public Builder from(ErrorResponse other) {
-            error(other.getError());
             code(other.getCode());
             details(other.getDetails());
+            error(other.getError());
             return this;
         }
 
@@ -199,7 +199,7 @@ public final class ErrorResponse {
 
         @java.lang.Override
         public ErrorResponse build() {
-            return new ErrorResponse(error, code, details, additionalProperties);
+            return new ErrorResponse(code, details, error, additionalProperties);
         }
 
         @java.lang.Override

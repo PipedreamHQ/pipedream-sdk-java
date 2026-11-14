@@ -21,83 +21,55 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurePropOpts.Builder.class)
 public final class ConfigurePropOpts {
-    private final String id;
-
-    private final Optional<String> version;
-
-    private final String externalUserId;
-
-    private final String propName;
-
     private final Optional<Boolean> blocking;
 
     private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
 
     private final Optional<String> dynamicPropsId;
 
+    private final String externalUserId;
+
+    private final String id;
+
     private final Optional<Double> page;
+
+    private final Optional<String> platformVersion;
 
     private final Optional<Map<String, Object>> prevContext;
 
+    private final String propName;
+
     private final Optional<String> query;
+
+    private final Optional<String> version;
 
     private final Map<String, Object> additionalProperties;
 
     private ConfigurePropOpts(
-            String id,
-            Optional<String> version,
-            String externalUserId,
-            String propName,
             Optional<Boolean> blocking,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
+            String externalUserId,
+            String id,
             Optional<Double> page,
+            Optional<String> platformVersion,
             Optional<Map<String, Object>> prevContext,
+            String propName,
             Optional<String> query,
+            Optional<String> version,
             Map<String, Object> additionalProperties) {
-        this.id = id;
-        this.version = version;
-        this.externalUserId = externalUserId;
-        this.propName = propName;
         this.blocking = blocking;
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
+        this.externalUserId = externalUserId;
+        this.id = id;
         this.page = page;
+        this.platformVersion = platformVersion;
         this.prevContext = prevContext;
+        this.propName = propName;
         this.query = query;
+        this.version = version;
         this.additionalProperties = additionalProperties;
-    }
-
-    /**
-     * @return The component ID
-     */
-    @JsonProperty("id")
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @return Component semantic version
-     */
-    @JsonProperty("version")
-    public Optional<String> getVersion() {
-        return version;
-    }
-
-    /**
-     * @return The external user ID
-     */
-    @JsonProperty("external_user_id")
-    public String getExternalUserId() {
-        return externalUserId;
-    }
-
-    /**
-     * @return The name of the prop to configure
-     */
-    @JsonProperty("prop_name")
-    public String getPropName() {
-        return propName;
     }
 
     /**
@@ -122,11 +94,35 @@ public final class ConfigurePropOpts {
     }
 
     /**
+     * @return The external user ID
+     */
+    @JsonProperty("external_user_id")
+    public String getExternalUserId() {
+        return externalUserId;
+    }
+
+    /**
+     * @return The component ID
+     */
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+
+    /**
      * @return Page number for paginated results
      */
     @JsonProperty("page")
     public Optional<Double> getPage() {
         return page;
+    }
+
+    /**
+     * @return Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.
+     */
+    @JsonProperty("platform_version")
+    public Optional<String> getPlatformVersion() {
+        return platformVersion;
     }
 
     /**
@@ -138,11 +134,27 @@ public final class ConfigurePropOpts {
     }
 
     /**
+     * @return The name of the prop to configure
+     */
+    @JsonProperty("prop_name")
+    public String getPropName() {
+        return propName;
+    }
+
+    /**
      * @return Search query for filtering options
      */
     @JsonProperty("query")
     public Optional<String> getQuery() {
         return query;
+    }
+
+    /**
+     * @return Component semantic version
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     @java.lang.Override
@@ -157,31 +169,33 @@ public final class ConfigurePropOpts {
     }
 
     private boolean equalTo(ConfigurePropOpts other) {
-        return id.equals(other.id)
-                && version.equals(other.version)
-                && externalUserId.equals(other.externalUserId)
-                && propName.equals(other.propName)
-                && blocking.equals(other.blocking)
+        return blocking.equals(other.blocking)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
+                && externalUserId.equals(other.externalUserId)
+                && id.equals(other.id)
                 && page.equals(other.page)
+                && platformVersion.equals(other.platformVersion)
                 && prevContext.equals(other.prevContext)
-                && query.equals(other.query);
+                && propName.equals(other.propName)
+                && query.equals(other.query)
+                && version.equals(other.version);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
-                this.version,
-                this.externalUserId,
-                this.propName,
                 this.blocking,
                 this.configuredProps,
                 this.dynamicPropsId,
+                this.externalUserId,
+                this.id,
                 this.page,
+                this.platformVersion,
                 this.prevContext,
-                this.query);
+                this.propName,
+                this.query,
+                this.version);
     }
 
     @java.lang.Override
@@ -189,24 +203,24 @@ public final class ConfigurePropOpts {
         return ObjectMappers.stringify(this);
     }
 
-    public static IdStage builder() {
+    public static ExternalUserIdStage builder() {
         return new Builder();
-    }
-
-    public interface IdStage {
-        /**
-         * <p>The component ID</p>
-         */
-        ExternalUserIdStage id(@NotNull String id);
-
-        Builder from(ConfigurePropOpts other);
     }
 
     public interface ExternalUserIdStage {
         /**
          * <p>The external user ID</p>
          */
-        PropNameStage externalUserId(@NotNull String externalUserId);
+        IdStage externalUserId(@NotNull String externalUserId);
+
+        Builder from(ConfigurePropOpts other);
+    }
+
+    public interface IdStage {
+        /**
+         * <p>The component ID</p>
+         */
+        PropNameStage id(@NotNull String id);
     }
 
     public interface PropNameStage {
@@ -222,13 +236,6 @@ public final class ConfigurePropOpts {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
-
-        /**
-         * <p>Component semantic version</p>
-         */
-        _FinalStage version(Optional<String> version);
-
-        _FinalStage version(String version);
 
         /**
          * <p>Whether this operation should block until completion</p>
@@ -256,6 +263,13 @@ public final class ConfigurePropOpts {
         _FinalStage page(Double page);
 
         /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        _FinalStage platformVersion(Optional<String> platformVersion);
+
+        _FinalStage platformVersion(String platformVersion);
+
+        /**
          * <p>Previous context for pagination</p>
          */
         _FinalStage prevContext(Optional<Map<String, Object>> prevContext);
@@ -268,19 +282,30 @@ public final class ConfigurePropOpts {
         _FinalStage query(Optional<String> query);
 
         _FinalStage query(String query);
+
+        /**
+         * <p>Component semantic version</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements IdStage, ExternalUserIdStage, PropNameStage, _FinalStage {
-        private String id;
-
+    public static final class Builder implements ExternalUserIdStage, IdStage, PropNameStage, _FinalStage {
         private String externalUserId;
 
+        private String id;
+
         private String propName;
+
+        private Optional<String> version = Optional.empty();
 
         private Optional<String> query = Optional.empty();
 
         private Optional<Map<String, Object>> prevContext = Optional.empty();
+
+        private Optional<String> platformVersion = Optional.empty();
 
         private Optional<Double> page = Optional.empty();
 
@@ -290,8 +315,6 @@ public final class ConfigurePropOpts {
 
         private Optional<Boolean> blocking = Optional.empty();
 
-        private Optional<String> version = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -299,28 +322,17 @@ public final class ConfigurePropOpts {
 
         @java.lang.Override
         public Builder from(ConfigurePropOpts other) {
-            id(other.getId());
-            version(other.getVersion());
-            externalUserId(other.getExternalUserId());
-            propName(other.getPropName());
             blocking(other.getBlocking());
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
+            externalUserId(other.getExternalUserId());
+            id(other.getId());
             page(other.getPage());
+            platformVersion(other.getPlatformVersion());
             prevContext(other.getPrevContext());
+            propName(other.getPropName());
             query(other.getQuery());
-            return this;
-        }
-
-        /**
-         * <p>The component ID</p>
-         * <p>The component ID</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("id")
-        public ExternalUserIdStage id(@NotNull String id) {
-            this.id = Objects.requireNonNull(id, "id must not be null");
+            version(other.getVersion());
             return this;
         }
 
@@ -331,8 +343,20 @@ public final class ConfigurePropOpts {
          */
         @java.lang.Override
         @JsonSetter("external_user_id")
-        public PropNameStage externalUserId(@NotNull String externalUserId) {
+        public IdStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The component ID</p>
+         * <p>The component ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("id")
+        public PropNameStage id(@NotNull String id) {
+            this.id = Objects.requireNonNull(id, "id must not be null");
             return this;
         }
 
@@ -345,6 +369,26 @@ public final class ConfigurePropOpts {
         @JsonSetter("prop_name")
         public _FinalStage propName(@NotNull String propName) {
             this.propName = Objects.requireNonNull(propName, "propName must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Component semantic version</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
+        /**
+         * <p>Component semantic version</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public _FinalStage version(Optional<String> version) {
+            this.version = version;
             return this;
         }
 
@@ -385,6 +429,26 @@ public final class ConfigurePropOpts {
         @JsonSetter(value = "prev_context", nulls = Nulls.SKIP)
         public _FinalStage prevContext(Optional<Map<String, Object>> prevContext) {
             this.prevContext = prevContext;
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage platformVersion(String platformVersion) {
+            this.platformVersion = Optional.ofNullable(platformVersion);
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "platform_version", nulls = Nulls.SKIP)
+        public _FinalStage platformVersion(Optional<String> platformVersion) {
+            this.platformVersion = platformVersion;
             return this;
         }
 
@@ -461,39 +525,20 @@ public final class ConfigurePropOpts {
             return this;
         }
 
-        /**
-         * <p>Component semantic version</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage version(String version) {
-            this.version = Optional.ofNullable(version);
-            return this;
-        }
-
-        /**
-         * <p>Component semantic version</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "version", nulls = Nulls.SKIP)
-        public _FinalStage version(Optional<String> version) {
-            this.version = version;
-            return this;
-        }
-
         @java.lang.Override
         public ConfigurePropOpts build() {
             return new ConfigurePropOpts(
-                    id,
-                    version,
-                    externalUserId,
-                    propName,
                     blocking,
                     configuredProps,
                     dynamicPropsId,
+                    externalUserId,
+                    id,
                     page,
+                    platformVersion,
                     prevContext,
+                    propName,
                     query,
+                    version,
                     additionalProperties);
         }
 
