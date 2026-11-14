@@ -145,10 +145,10 @@ public final class ConfiguredPropValue {
                 }
             }
             if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("value")
-                    && ((Map<?, ?>) value).containsKey("query")
                     && ((Map<?, ?>) value).containsKey("params")
-                    && ((Map<?, ?>) value).containsKey("usePreparedStatements")) {
+                    && ((Map<?, ?>) value).containsKey("query")
+                    && ((Map<?, ?>) value).containsKey("usePreparedStatements")
+                    && ((Map<?, ?>) value).containsKey("value")) {
                 try {
                     return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfiguredPropValueSql.class));
                 } catch (RuntimeException e) {

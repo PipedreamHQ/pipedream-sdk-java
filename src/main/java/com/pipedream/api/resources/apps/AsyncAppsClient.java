@@ -8,6 +8,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.apps.requests.AppsListRequest;
 import com.pipedream.api.types.App;
+import com.pipedream.api.types.FacetsResponse;
 import com.pipedream.api.types.GetAppResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,6 +55,20 @@ public class AsyncAppsClient {
      */
     public CompletableFuture<SyncPagingIterable<App>> list(AppsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public CompletableFuture<FacetsResponse> facets() {
+        return this.rawClient.facets().thenApply(response -> response.body());
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public CompletableFuture<FacetsResponse> facets(RequestOptions requestOptions) {
+        return this.rawClient.facets(requestOptions).thenApply(response -> response.body());
     }
 
     /**

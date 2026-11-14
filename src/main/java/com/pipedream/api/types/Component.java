@@ -23,43 +23,69 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Component.Builder.class)
 public final class Component {
-    private final String key;
+    private final Optional<ToolAnnotations> annotations;
 
-    private final String name;
-
-    private final String version;
+    private final Optional<String> componentType;
 
     private final List<ConfigurableProp> configurableProps;
 
     private final Optional<String> description;
 
-    private final Optional<String> componentType;
+    private final String key;
+
+    private final String name;
 
     private final Optional<ComponentStash> stash;
 
-    private final Optional<ToolAnnotations> annotations;
+    private final String version;
 
     private final Map<String, Object> additionalProperties;
 
     private Component(
-            String key,
-            String name,
-            String version,
+            Optional<ToolAnnotations> annotations,
+            Optional<String> componentType,
             List<ConfigurableProp> configurableProps,
             Optional<String> description,
-            Optional<String> componentType,
+            String key,
+            String name,
             Optional<ComponentStash> stash,
-            Optional<ToolAnnotations> annotations,
+            String version,
             Map<String, Object> additionalProperties) {
-        this.key = key;
-        this.name = name;
-        this.version = version;
+        this.annotations = annotations;
+        this.componentType = componentType;
         this.configurableProps = configurableProps;
         this.description = description;
-        this.componentType = componentType;
+        this.key = key;
+        this.name = name;
         this.stash = stash;
-        this.annotations = annotations;
+        this.version = version;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("annotations")
+    public Optional<ToolAnnotations> getAnnotations() {
+        return annotations;
+    }
+
+    /**
+     * @return The type of component (trigger or action)
+     */
+    @JsonProperty("component_type")
+    public Optional<String> getComponentType() {
+        return componentType;
+    }
+
+    @JsonProperty("configurable_props")
+    public List<ConfigurableProp> getConfigurableProps() {
+        return configurableProps;
+    }
+
+    /**
+     * @return A description of the component
+     */
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
     }
 
     /**
@@ -78,43 +104,17 @@ public final class Component {
         return name;
     }
 
+    @JsonProperty("stash")
+    public Optional<ComponentStash> getStash() {
+        return stash;
+    }
+
     /**
      * @return The latest version of the component, in semantic versioning format.
      */
     @JsonProperty("version")
     public String getVersion() {
         return version;
-    }
-
-    @JsonProperty("configurable_props")
-    public List<ConfigurableProp> getConfigurableProps() {
-        return configurableProps;
-    }
-
-    /**
-     * @return A description of the component
-     */
-    @JsonProperty("description")
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return The type of component (trigger or action)
-     */
-    @JsonProperty("component_type")
-    public Optional<String> getComponentType() {
-        return componentType;
-    }
-
-    @JsonProperty("stash")
-    public Optional<ComponentStash> getStash() {
-        return stash;
-    }
-
-    @JsonProperty("annotations")
-    public Optional<ToolAnnotations> getAnnotations() {
-        return annotations;
     }
 
     @java.lang.Override
@@ -129,27 +129,27 @@ public final class Component {
     }
 
     private boolean equalTo(Component other) {
-        return key.equals(other.key)
-                && name.equals(other.name)
-                && version.equals(other.version)
+        return annotations.equals(other.annotations)
+                && componentType.equals(other.componentType)
                 && configurableProps.equals(other.configurableProps)
                 && description.equals(other.description)
-                && componentType.equals(other.componentType)
+                && key.equals(other.key)
+                && name.equals(other.name)
                 && stash.equals(other.stash)
-                && annotations.equals(other.annotations);
+                && version.equals(other.version);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.key,
-                this.name,
-                this.version,
+                this.annotations,
+                this.componentType,
                 this.configurableProps,
                 this.description,
-                this.componentType,
+                this.key,
+                this.name,
                 this.stash,
-                this.annotations);
+                this.version);
     }
 
     @java.lang.Override
@@ -191,6 +191,17 @@ public final class Component {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        _FinalStage annotations(Optional<ToolAnnotations> annotations);
+
+        _FinalStage annotations(ToolAnnotations annotations);
+
+        /**
+         * <p>The type of component (trigger or action)</p>
+         */
+        _FinalStage componentType(Optional<String> componentType);
+
+        _FinalStage componentType(String componentType);
+
         _FinalStage configurableProps(List<ConfigurableProp> configurableProps);
 
         _FinalStage addConfigurableProps(ConfigurableProp configurableProps);
@@ -204,20 +215,9 @@ public final class Component {
 
         _FinalStage description(String description);
 
-        /**
-         * <p>The type of component (trigger or action)</p>
-         */
-        _FinalStage componentType(Optional<String> componentType);
-
-        _FinalStage componentType(String componentType);
-
         _FinalStage stash(Optional<ComponentStash> stash);
 
         _FinalStage stash(ComponentStash stash);
-
-        _FinalStage annotations(Optional<ToolAnnotations> annotations);
-
-        _FinalStage annotations(ToolAnnotations annotations);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -228,15 +228,15 @@ public final class Component {
 
         private String version;
 
-        private Optional<ToolAnnotations> annotations = Optional.empty();
-
         private Optional<ComponentStash> stash = Optional.empty();
-
-        private Optional<String> componentType = Optional.empty();
 
         private Optional<String> description = Optional.empty();
 
         private List<ConfigurableProp> configurableProps = new ArrayList<>();
+
+        private Optional<String> componentType = Optional.empty();
+
+        private Optional<ToolAnnotations> annotations = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -245,14 +245,14 @@ public final class Component {
 
         @java.lang.Override
         public Builder from(Component other) {
-            key(other.getKey());
-            name(other.getName());
-            version(other.getVersion());
+            annotations(other.getAnnotations());
+            componentType(other.getComponentType());
             configurableProps(other.getConfigurableProps());
             description(other.getDescription());
-            componentType(other.getComponentType());
+            key(other.getKey());
+            name(other.getName());
             stash(other.getStash());
-            annotations(other.getAnnotations());
+            version(other.getVersion());
             return this;
         }
 
@@ -293,19 +293,6 @@ public final class Component {
         }
 
         @java.lang.Override
-        public _FinalStage annotations(ToolAnnotations annotations) {
-            this.annotations = Optional.ofNullable(annotations);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "annotations", nulls = Nulls.SKIP)
-        public _FinalStage annotations(Optional<ToolAnnotations> annotations) {
-            this.annotations = annotations;
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage stash(ComponentStash stash) {
             this.stash = Optional.ofNullable(stash);
             return this;
@@ -315,26 +302,6 @@ public final class Component {
         @JsonSetter(value = "stash", nulls = Nulls.SKIP)
         public _FinalStage stash(Optional<ComponentStash> stash) {
             this.stash = stash;
-            return this;
-        }
-
-        /**
-         * <p>The type of component (trigger or action)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage componentType(String componentType) {
-            this.componentType = Optional.ofNullable(componentType);
-            return this;
-        }
-
-        /**
-         * <p>The type of component (trigger or action)</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "component_type", nulls = Nulls.SKIP)
-        public _FinalStage componentType(Optional<String> componentType) {
-            this.componentType = componentType;
             return this;
         }
 
@@ -382,17 +349,50 @@ public final class Component {
             return this;
         }
 
+        /**
+         * <p>The type of component (trigger or action)</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage componentType(String componentType) {
+            this.componentType = Optional.ofNullable(componentType);
+            return this;
+        }
+
+        /**
+         * <p>The type of component (trigger or action)</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "component_type", nulls = Nulls.SKIP)
+        public _FinalStage componentType(Optional<String> componentType) {
+            this.componentType = componentType;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage annotations(ToolAnnotations annotations) {
+            this.annotations = Optional.ofNullable(annotations);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "annotations", nulls = Nulls.SKIP)
+        public _FinalStage annotations(Optional<ToolAnnotations> annotations) {
+            this.annotations = annotations;
+            return this;
+        }
+
         @java.lang.Override
         public Component build() {
             return new Component(
-                    key,
-                    name,
-                    version,
+                    annotations,
+                    componentType,
                     configurableProps,
                     description,
-                    componentType,
+                    key,
+                    name,
                     stash,
-                    annotations,
+                    version,
                     additionalProperties);
         }
 

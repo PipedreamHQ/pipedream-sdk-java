@@ -77,7 +77,7 @@ public final class TriggersListRequest {
     }
 
     /**
-     * @return A search query to filter the triggers
+     * @return A full-text search query matched against the name, key and description of the triggers
      */
     @JsonProperty("q")
     public Optional<String> getQ() {
@@ -206,7 +206,7 @@ public final class TriggersListRequest {
         }
 
         /**
-         * <p>A search query to filter the triggers</p>
+         * <p>A full-text search query matched against the name, key and description of the triggers</p>
          */
         @JsonSetter(value = "q", nulls = Nulls.SKIP)
         public Builder q(Optional<String> q) {

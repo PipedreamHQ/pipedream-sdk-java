@@ -82,7 +82,7 @@ public final class ComponentsListRequest {
     }
 
     /**
-     * @return A search query to filter the components
+     * @return A full-text search query matched against the name, key and description of the components
      */
     @JsonProperty("q")
     public Optional<String> getQ() {
@@ -223,7 +223,7 @@ public final class ComponentsListRequest {
         }
 
         /**
-         * <p>A search query to filter the components</p>
+         * <p>A full-text search query matched against the name, key and description of the components</p>
          */
         @JsonSetter(value = "q", nulls = Nulls.SKIP)
         public Builder q(Optional<String> q) {

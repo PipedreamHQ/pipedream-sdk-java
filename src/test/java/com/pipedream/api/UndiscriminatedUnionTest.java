@@ -7,11 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.types.ConfigurableProp;
-import com.pipedream.api.types.ConfigurablePropAlert;
+import com.pipedream.api.types.ConfigurablePropAirtableBaseId;
+import com.pipedream.api.types.ConfigurablePropAirtableFieldId;
+import com.pipedream.api.types.ConfigurablePropAirtableTableId;
 import com.pipedream.api.types.ConfigurablePropAnyOptionsItem;
-import com.pipedream.api.types.ConfigurablePropApp;
-import com.pipedream.api.types.ConfigurablePropBoolean;
 import com.pipedream.api.types.ConfigurablePropBooleanOptionsItem;
+import com.pipedream.api.types.ConfigurablePropDiscordChannelArray;
 import com.pipedream.api.types.ConfigurablePropIntegerArrayOptionsItem;
 import com.pipedream.api.types.ConfigurablePropIntegerOptionsItem;
 import com.pipedream.api.types.ConfigurablePropObjectOptionsItem;
@@ -213,29 +214,39 @@ public final class UndiscriminatedUnionTest {
     }
 
     @Test
-    public void testConfigurableProp_ConfigurablePropAlert() throws Exception {
-        String json = "{\"content\":\"test\",\"name\":\"test\"}";
+    public void testConfigurableProp_ConfigurablePropAirtableBaseId() throws Exception {
+        String json = "{\"appProp\":\"test\",\"name\":\"test\"}";
         ConfigurableProp union = ObjectMappers.JSON_MAPPER.readValue(json, ConfigurableProp.class);
         assertTrue(
-                union.get() instanceof ConfigurablePropAlert,
-                "Expected ConfigurablePropAlert but got different variant");
+                union.get() instanceof ConfigurablePropAirtableBaseId,
+                "Expected ConfigurablePropAirtableBaseId but got different variant");
     }
 
     @Test
-    public void testConfigurableProp_ConfigurablePropApp() throws Exception {
-        String json = "{\"app\":\"test\",\"name\":\"test\"}";
+    public void testConfigurableProp_ConfigurablePropAirtableFieldId() throws Exception {
+        String json = "{\"tableIdProp\":\"test\",\"name\":\"test\"}";
         ConfigurableProp union = ObjectMappers.JSON_MAPPER.readValue(json, ConfigurableProp.class);
         assertTrue(
-                union.get() instanceof ConfigurablePropApp, "Expected ConfigurablePropApp but got different variant");
+                union.get() instanceof ConfigurablePropAirtableFieldId,
+                "Expected ConfigurablePropAirtableFieldId but got different variant");
     }
 
     @Test
-    public void testConfigurableProp_ConfigurablePropBoolean() throws Exception {
+    public void testConfigurableProp_ConfigurablePropAirtableTableId() throws Exception {
+        String json = "{\"baseIdProp\":\"test\",\"name\":\"test\"}";
+        ConfigurableProp union = ObjectMappers.JSON_MAPPER.readValue(json, ConfigurableProp.class);
+        assertTrue(
+                union.get() instanceof ConfigurablePropAirtableTableId,
+                "Expected ConfigurablePropAirtableTableId but got different variant");
+    }
+
+    @Test
+    public void testConfigurableProp_ConfigurablePropDiscordChannelArray() throws Exception {
         String json = "{\"name\":\"test\"}";
         ConfigurableProp union = ObjectMappers.JSON_MAPPER.readValue(json, ConfigurableProp.class);
         assertTrue(
-                union.get() instanceof ConfigurablePropBoolean,
-                "Expected ConfigurablePropBoolean but got different variant");
+                union.get() instanceof ConfigurablePropDiscordChannelArray,
+                "Expected ConfigurablePropDiscordChannelArray but got different variant");
     }
 
     @Test
@@ -263,7 +274,7 @@ public final class UndiscriminatedUnionTest {
 
     @Test
     public void testConfiguredPropValue_ConfiguredPropValueSql() throws Exception {
-        String json = "{\"value\":\"test\",\"query\":\"test\",\"params\":[],\"usePreparedStatements\":true}";
+        String json = "{\"params\":[],\"query\":\"test\",\"usePreparedStatements\":true,\"value\":\"test\"}";
         ConfiguredPropValue union = ObjectMappers.JSON_MAPPER.readValue(json, ConfiguredPropValue.class);
         assertTrue(
                 union.get() instanceof ConfiguredPropValueSql,

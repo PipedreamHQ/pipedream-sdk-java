@@ -21,8 +21,6 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = HttpRequestBody.Builder.class)
 public final class HttpRequestBody {
-    private final Optional<HttpRequestBodyType> type;
-
     private final Optional<String> contentType;
 
     private final Optional<List<HttpRequestField>> fields;
@@ -31,26 +29,23 @@ public final class HttpRequestBody {
 
     private final Optional<String> raw;
 
+    private final Optional<HttpRequestBodyType> type;
+
     private final Map<String, Object> additionalProperties;
 
     private HttpRequestBody(
-            Optional<HttpRequestBodyType> type,
             Optional<String> contentType,
             Optional<List<HttpRequestField>> fields,
             Optional<HttpRequestBodyMode> mode,
             Optional<String> raw,
+            Optional<HttpRequestBodyType> type,
             Map<String, Object> additionalProperties) {
-        this.type = type;
         this.contentType = contentType;
         this.fields = fields;
         this.mode = mode;
         this.raw = raw;
+        this.type = type;
         this.additionalProperties = additionalProperties;
-    }
-
-    @JsonProperty("type")
-    public Optional<HttpRequestBodyType> getType() {
-        return type;
     }
 
     @JsonProperty("contentType")
@@ -73,6 +68,11 @@ public final class HttpRequestBody {
         return raw;
     }
 
+    @JsonProperty("type")
+    public Optional<HttpRequestBodyType> getType() {
+        return type;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -85,16 +85,16 @@ public final class HttpRequestBody {
     }
 
     private boolean equalTo(HttpRequestBody other) {
-        return type.equals(other.type)
-                && contentType.equals(other.contentType)
+        return contentType.equals(other.contentType)
                 && fields.equals(other.fields)
                 && mode.equals(other.mode)
-                && raw.equals(other.raw);
+                && raw.equals(other.raw)
+                && type.equals(other.type);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.type, this.contentType, this.fields, this.mode, this.raw);
+        return Objects.hash(this.contentType, this.fields, this.mode, this.raw, this.type);
     }
 
     @java.lang.Override
@@ -108,8 +108,6 @@ public final class HttpRequestBody {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<HttpRequestBodyType> type = Optional.empty();
-
         private Optional<String> contentType = Optional.empty();
 
         private Optional<List<HttpRequestField>> fields = Optional.empty();
@@ -118,28 +116,19 @@ public final class HttpRequestBody {
 
         private Optional<String> raw = Optional.empty();
 
+        private Optional<HttpRequestBodyType> type = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
         public Builder from(HttpRequestBody other) {
-            type(other.getType());
             contentType(other.getContentType());
             fields(other.getFields());
             mode(other.getMode());
             raw(other.getRaw());
-            return this;
-        }
-
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public Builder type(Optional<HttpRequestBodyType> type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder type(HttpRequestBodyType type) {
-            this.type = Optional.ofNullable(type);
+            type(other.getType());
             return this;
         }
 
@@ -187,8 +176,19 @@ public final class HttpRequestBody {
             return this;
         }
 
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public Builder type(Optional<HttpRequestBodyType> type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(HttpRequestBodyType type) {
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
         public HttpRequestBody build() {
-            return new HttpRequestBody(type, contentType, fields, mode, raw, additionalProperties);
+            return new HttpRequestBody(contentType, fields, mode, raw, type, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

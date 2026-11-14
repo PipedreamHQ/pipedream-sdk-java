@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pipedream.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +28,10 @@ public final class CreateProjectOpts {
 
     private final Optional<String> supportEmail;
 
+    private final Optional<List<String>> allowedEmailDomains;
+
+    private final Optional<Boolean> skipMissingEmail;
+
     private final Optional<Boolean> connectRequireKeyAuthTest;
 
     private final Map<String, Object> additionalProperties;
@@ -35,11 +40,15 @@ public final class CreateProjectOpts {
             String name,
             Optional<String> appName,
             Optional<String> supportEmail,
+            Optional<List<String>> allowedEmailDomains,
+            Optional<Boolean> skipMissingEmail,
             Optional<Boolean> connectRequireKeyAuthTest,
             Map<String, Object> additionalProperties) {
         this.name = name;
         this.appName = appName;
         this.supportEmail = supportEmail;
+        this.allowedEmailDomains = allowedEmailDomains;
+        this.skipMissingEmail = skipMissingEmail;
         this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
         this.additionalProperties = additionalProperties;
     }
@@ -68,6 +77,19 @@ public final class CreateProjectOpts {
         return supportEmail;
     }
 
+    @JsonProperty("allowed_email_domains")
+    public Optional<List<String>> getAllowedEmailDomains() {
+        return allowedEmailDomains;
+    }
+
+    /**
+     * @return Skip this project's domain allowlist when the app does not return an account email. Organization restrictions still apply.
+     */
+    @JsonProperty("skip_missing_email")
+    public Optional<Boolean> getSkipMissingEmail() {
+        return skipMissingEmail;
+    }
+
     /**
      * @return Send a test request to the upstream API when adding Connect accounts for key-based apps
      */
@@ -91,12 +113,20 @@ public final class CreateProjectOpts {
         return name.equals(other.name)
                 && appName.equals(other.appName)
                 && supportEmail.equals(other.supportEmail)
+                && allowedEmailDomains.equals(other.allowedEmailDomains)
+                && skipMissingEmail.equals(other.skipMissingEmail)
                 && connectRequireKeyAuthTest.equals(other.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.appName, this.supportEmail, this.connectRequireKeyAuthTest);
+        return Objects.hash(
+                this.name,
+                this.appName,
+                this.supportEmail,
+                this.allowedEmailDomains,
+                this.skipMissingEmail,
+                this.connectRequireKeyAuthTest);
     }
 
     @java.lang.Override
@@ -138,6 +168,17 @@ public final class CreateProjectOpts {
 
         _FinalStage supportEmail(String supportEmail);
 
+        _FinalStage allowedEmailDomains(Optional<List<String>> allowedEmailDomains);
+
+        _FinalStage allowedEmailDomains(List<String> allowedEmailDomains);
+
+        /**
+         * <p>Skip this project's domain allowlist when the app does not return an account email. Organization restrictions still apply.</p>
+         */
+        _FinalStage skipMissingEmail(Optional<Boolean> skipMissingEmail);
+
+        _FinalStage skipMissingEmail(Boolean skipMissingEmail);
+
         /**
          * <p>Send a test request to the upstream API when adding Connect accounts for key-based apps</p>
          */
@@ -151,6 +192,10 @@ public final class CreateProjectOpts {
         private String name;
 
         private Optional<Boolean> connectRequireKeyAuthTest = Optional.empty();
+
+        private Optional<Boolean> skipMissingEmail = Optional.empty();
+
+        private Optional<List<String>> allowedEmailDomains = Optional.empty();
 
         private Optional<String> supportEmail = Optional.empty();
 
@@ -166,6 +211,8 @@ public final class CreateProjectOpts {
             name(other.getName());
             appName(other.getAppName());
             supportEmail(other.getSupportEmail());
+            allowedEmailDomains(other.getAllowedEmailDomains());
+            skipMissingEmail(other.getSkipMissingEmail());
             connectRequireKeyAuthTest(other.getConnectRequireKeyAuthTest());
             return this;
         }
@@ -199,6 +246,39 @@ public final class CreateProjectOpts {
         @JsonSetter(value = "connect_require_key_auth_test", nulls = Nulls.SKIP)
         public _FinalStage connectRequireKeyAuthTest(Optional<Boolean> connectRequireKeyAuthTest) {
             this.connectRequireKeyAuthTest = connectRequireKeyAuthTest;
+            return this;
+        }
+
+        /**
+         * <p>Skip this project's domain allowlist when the app does not return an account email. Organization restrictions still apply.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage skipMissingEmail(Boolean skipMissingEmail) {
+            this.skipMissingEmail = Optional.ofNullable(skipMissingEmail);
+            return this;
+        }
+
+        /**
+         * <p>Skip this project's domain allowlist when the app does not return an account email. Organization restrictions still apply.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "skip_missing_email", nulls = Nulls.SKIP)
+        public _FinalStage skipMissingEmail(Optional<Boolean> skipMissingEmail) {
+            this.skipMissingEmail = skipMissingEmail;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage allowedEmailDomains(List<String> allowedEmailDomains) {
+            this.allowedEmailDomains = Optional.ofNullable(allowedEmailDomains);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "allowed_email_domains", nulls = Nulls.SKIP)
+        public _FinalStage allowedEmailDomains(Optional<List<String>> allowedEmailDomains) {
+            this.allowedEmailDomains = allowedEmailDomains;
             return this;
         }
 
@@ -244,7 +324,14 @@ public final class CreateProjectOpts {
 
         @java.lang.Override
         public CreateProjectOpts build() {
-            return new CreateProjectOpts(name, appName, supportEmail, connectRequireKeyAuthTest, additionalProperties);
+            return new CreateProjectOpts(
+                    name,
+                    appName,
+                    supportEmail,
+                    allowedEmailDomains,
+                    skipMissingEmail,
+                    connectRequireKeyAuthTest,
+                    additionalProperties);
         }
 
         @java.lang.Override

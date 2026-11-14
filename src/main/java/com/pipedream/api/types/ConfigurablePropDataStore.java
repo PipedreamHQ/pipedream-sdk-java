@@ -22,53 +22,53 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurablePropDataStore.Builder.class)
 public final class ConfigurablePropDataStore {
-    private final String name;
-
-    private final Optional<String> label;
-
     private final Optional<String> description;
-
-    private final Optional<Boolean> optional;
 
     private final Optional<Boolean> disabled;
 
+    private final Optional<Boolean> hidden;
+
+    private final Optional<String> label;
+
+    private final String name;
+
+    private final Optional<Boolean> optional;
+
     private final Optional<Boolean> readOnly;
 
-    private final Optional<Boolean> hidden;
+    private final Optional<Boolean> reloadProps;
 
     private final Optional<Boolean> remoteOptions;
 
     private final Optional<Boolean> useQuery;
-
-    private final Optional<Boolean> reloadProps;
 
     private final Optional<Boolean> withLabel;
 
     private final Map<String, Object> additionalProperties;
 
     private ConfigurablePropDataStore(
-            String name,
-            Optional<String> label,
             Optional<String> description,
-            Optional<Boolean> optional,
             Optional<Boolean> disabled,
-            Optional<Boolean> readOnly,
             Optional<Boolean> hidden,
+            Optional<String> label,
+            String name,
+            Optional<Boolean> optional,
+            Optional<Boolean> readOnly,
+            Optional<Boolean> reloadProps,
             Optional<Boolean> remoteOptions,
             Optional<Boolean> useQuery,
-            Optional<Boolean> reloadProps,
             Optional<Boolean> withLabel,
             Map<String, Object> additionalProperties) {
-        this.name = name;
-        this.label = label;
         this.description = description;
-        this.optional = optional;
         this.disabled = disabled;
-        this.readOnly = readOnly;
         this.hidden = hidden;
+        this.label = label;
+        this.name = name;
+        this.optional = optional;
+        this.readOnly = readOnly;
+        this.reloadProps = reloadProps;
         this.remoteOptions = remoteOptions;
         this.useQuery = useQuery;
-        this.reloadProps = reloadProps;
         this.withLabel = withLabel;
         this.additionalProperties = additionalProperties;
     }
@@ -76,22 +76,6 @@ public final class ConfigurablePropDataStore {
     @JsonProperty("type")
     public String getType() {
         return "data_store";
-    }
-
-    /**
-     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
-     */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
-     */
-    @JsonProperty("label")
-    public Optional<String> getLabel() {
-        return label;
     }
 
     /**
@@ -103,19 +87,43 @@ public final class ConfigurablePropDataStore {
     }
 
     /**
-     * @return If true, this prop does not need to be specified.
-     */
-    @JsonProperty("optional")
-    public Optional<Boolean> getOptional() {
-        return optional;
-    }
-
-    /**
      * @return If true, this prop will be ignored.
      */
     @JsonProperty("disabled")
     public Optional<Boolean> getDisabled() {
         return disabled;
+    }
+
+    /**
+     * @return If true, should not expose this prop to the user
+     */
+    @JsonProperty("hidden")
+    public Optional<Boolean> getHidden() {
+        return hidden;
+    }
+
+    /**
+     * @return Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.
+     */
+    @JsonProperty("label")
+    public Optional<String> getLabel() {
+        return label;
+    }
+
+    /**
+     * @return When building <code>configuredProps</code>, make sure to use this field as the key when setting the prop value
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return If true, this prop does not need to be specified.
+     */
+    @JsonProperty("optional")
+    public Optional<Boolean> getOptional() {
+        return optional;
     }
 
     /**
@@ -127,11 +135,11 @@ public final class ConfigurablePropDataStore {
     }
 
     /**
-     * @return If true, should not expose this prop to the user
+     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
      */
-    @JsonProperty("hidden")
-    public Optional<Boolean> getHidden() {
-        return hidden;
+    @JsonProperty("reloadProps")
+    public Optional<Boolean> getReloadProps() {
+        return reloadProps;
     }
 
     /**
@@ -148,14 +156,6 @@ public final class ConfigurablePropDataStore {
     @JsonProperty("useQuery")
     public Optional<Boolean> getUseQuery() {
         return useQuery;
-    }
-
-    /**
-     * @return If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one
-     */
-    @JsonProperty("reloadProps")
-    public Optional<Boolean> getReloadProps() {
-        return reloadProps;
     }
 
     /**
@@ -178,32 +178,32 @@ public final class ConfigurablePropDataStore {
     }
 
     private boolean equalTo(ConfigurablePropDataStore other) {
-        return name.equals(other.name)
-                && label.equals(other.label)
-                && description.equals(other.description)
-                && optional.equals(other.optional)
+        return description.equals(other.description)
                 && disabled.equals(other.disabled)
-                && readOnly.equals(other.readOnly)
                 && hidden.equals(other.hidden)
+                && label.equals(other.label)
+                && name.equals(other.name)
+                && optional.equals(other.optional)
+                && readOnly.equals(other.readOnly)
+                && reloadProps.equals(other.reloadProps)
                 && remoteOptions.equals(other.remoteOptions)
                 && useQuery.equals(other.useQuery)
-                && reloadProps.equals(other.reloadProps)
                 && withLabel.equals(other.withLabel);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.name,
-                this.label,
                 this.description,
-                this.optional,
                 this.disabled,
-                this.readOnly,
                 this.hidden,
+                this.label,
+                this.name,
+                this.optional,
+                this.readOnly,
+                this.reloadProps,
                 this.remoteOptions,
                 this.useQuery,
-                this.reloadProps,
                 this.withLabel);
     }
 
@@ -233,25 +233,11 @@ public final class ConfigurablePropDataStore {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
-         */
-        _FinalStage label(Optional<String> label);
-
-        _FinalStage label(String label);
-
-        /**
          * <p>A description of the prop, shown to the user when configuring the component.</p>
          */
         _FinalStage description(Optional<String> description);
 
         _FinalStage description(String description);
-
-        /**
-         * <p>If true, this prop does not need to be specified.</p>
-         */
-        _FinalStage optional(Optional<Boolean> optional);
-
-        _FinalStage optional(Boolean optional);
 
         /**
          * <p>If true, this prop will be ignored.</p>
@@ -261,6 +247,27 @@ public final class ConfigurablePropDataStore {
         _FinalStage disabled(Boolean disabled);
 
         /**
+         * <p>If true, should not expose this prop to the user</p>
+         */
+        _FinalStage hidden(Optional<Boolean> hidden);
+
+        _FinalStage hidden(Boolean hidden);
+
+        /**
+         * <p>Value to use as an input label. In cases where <code>type</code> is &quot;app&quot;, should load the app via <code>getApp</code>, etc. and show <code>app.name</code> instead.</p>
+         */
+        _FinalStage label(Optional<String> label);
+
+        _FinalStage label(String label);
+
+        /**
+         * <p>If true, this prop does not need to be specified.</p>
+         */
+        _FinalStage optional(Optional<Boolean> optional);
+
+        _FinalStage optional(Boolean optional);
+
+        /**
          * <p>If true, this prop is read-only — its value is either fixed by the component author (<code>static</code>) or the prop is purely informational (e.g. <code>alert</code>, <code>dir</code>). Connect clients should render it without treating it as a configurable input.</p>
          */
         _FinalStage readOnly(Optional<Boolean> readOnly);
@@ -268,11 +275,11 @@ public final class ConfigurablePropDataStore {
         _FinalStage readOnly(Boolean readOnly);
 
         /**
-         * <p>If true, should not expose this prop to the user</p>
+         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
          */
-        _FinalStage hidden(Optional<Boolean> hidden);
+        _FinalStage reloadProps(Optional<Boolean> reloadProps);
 
-        _FinalStage hidden(Boolean hidden);
+        _FinalStage reloadProps(Boolean reloadProps);
 
         /**
          * <p>If true, call <code>configureComponent</code> for this prop to load remote options. It is safe, and preferred, given a returned list of { label: string; value: any } objects to set the prop value to { __lv: { label: string; value: any } }. This way, on load, you can access label for the value without necessarily reloading these options</p>
@@ -289,13 +296,6 @@ public final class ConfigurablePropDataStore {
         _FinalStage useQuery(Boolean useQuery);
 
         /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        _FinalStage reloadProps(Optional<Boolean> reloadProps);
-
-        _FinalStage reloadProps(Boolean reloadProps);
-
-        /**
          * <p>If true, you must save the configured prop value as a &quot;label-value&quot; object which should look like: { __lv: { label: string; value: any } } because the execution needs to access the label</p>
          */
         _FinalStage withLabel(Optional<Boolean> withLabel);
@@ -309,23 +309,23 @@ public final class ConfigurablePropDataStore {
 
         private Optional<Boolean> withLabel = Optional.empty();
 
-        private Optional<Boolean> reloadProps = Optional.empty();
-
         private Optional<Boolean> useQuery = Optional.empty();
 
         private Optional<Boolean> remoteOptions = Optional.empty();
 
-        private Optional<Boolean> hidden = Optional.empty();
+        private Optional<Boolean> reloadProps = Optional.empty();
 
         private Optional<Boolean> readOnly = Optional.empty();
 
-        private Optional<Boolean> disabled = Optional.empty();
-
         private Optional<Boolean> optional = Optional.empty();
 
-        private Optional<String> description = Optional.empty();
-
         private Optional<String> label = Optional.empty();
+
+        private Optional<Boolean> hidden = Optional.empty();
+
+        private Optional<Boolean> disabled = Optional.empty();
+
+        private Optional<String> description = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -334,16 +334,16 @@ public final class ConfigurablePropDataStore {
 
         @java.lang.Override
         public Builder from(ConfigurablePropDataStore other) {
-            name(other.getName());
-            label(other.getLabel());
             description(other.getDescription());
-            optional(other.getOptional());
             disabled(other.getDisabled());
-            readOnly(other.getReadOnly());
             hidden(other.getHidden());
+            label(other.getLabel());
+            name(other.getName());
+            optional(other.getOptional());
+            readOnly(other.getReadOnly());
+            reloadProps(other.getReloadProps());
             remoteOptions(other.getRemoteOptions());
             useQuery(other.getUseQuery());
-            reloadProps(other.getReloadProps());
             withLabel(other.getWithLabel());
             return this;
         }
@@ -378,26 +378,6 @@ public final class ConfigurablePropDataStore {
         @JsonSetter(value = "withLabel", nulls = Nulls.SKIP)
         public _FinalStage withLabel(Optional<Boolean> withLabel) {
             this.withLabel = withLabel;
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage reloadProps(Boolean reloadProps) {
-            this.reloadProps = Optional.ofNullable(reloadProps);
-            return this;
-        }
-
-        /**
-         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "reloadProps", nulls = Nulls.SKIP)
-        public _FinalStage reloadProps(Optional<Boolean> reloadProps) {
-            this.reloadProps = reloadProps;
             return this;
         }
 
@@ -442,22 +422,22 @@ public final class ConfigurablePropDataStore {
         }
 
         /**
-         * <p>If true, should not expose this prop to the user</p>
+         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage hidden(Boolean hidden) {
-            this.hidden = Optional.ofNullable(hidden);
+        public _FinalStage reloadProps(Boolean reloadProps) {
+            this.reloadProps = Optional.ofNullable(reloadProps);
             return this;
         }
 
         /**
-         * <p>If true, should not expose this prop to the user</p>
+         * <p>If true, after setting a value for this prop, a call to <code>reloadComponentProps</code> is required as the component has dynamic configurable props dependent on this one</p>
          */
         @java.lang.Override
-        @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
-        public _FinalStage hidden(Optional<Boolean> hidden) {
-            this.hidden = hidden;
+        @JsonSetter(value = "reloadProps", nulls = Nulls.SKIP)
+        public _FinalStage reloadProps(Optional<Boolean> reloadProps) {
+            this.reloadProps = reloadProps;
             return this;
         }
 
@@ -482,26 +462,6 @@ public final class ConfigurablePropDataStore {
         }
 
         /**
-         * <p>If true, this prop will be ignored.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage disabled(Boolean disabled) {
-            this.disabled = Optional.ofNullable(disabled);
-            return this;
-        }
-
-        /**
-         * <p>If true, this prop will be ignored.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
-        public _FinalStage disabled(Optional<Boolean> disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
-        /**
          * <p>If true, this prop does not need to be specified.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -518,26 +478,6 @@ public final class ConfigurablePropDataStore {
         @JsonSetter(value = "optional", nulls = Nulls.SKIP)
         public _FinalStage optional(Optional<Boolean> optional) {
             this.optional = optional;
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(String description) {
-            this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        /**
-         * <p>A description of the prop, shown to the user when configuring the component.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "description", nulls = Nulls.SKIP)
-        public _FinalStage description(Optional<String> description) {
-            this.description = description;
             return this;
         }
 
@@ -561,19 +501,79 @@ public final class ConfigurablePropDataStore {
             return this;
         }
 
+        /**
+         * <p>If true, should not expose this prop to the user</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage hidden(Boolean hidden) {
+            this.hidden = Optional.ofNullable(hidden);
+            return this;
+        }
+
+        /**
+         * <p>If true, should not expose this prop to the user</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "hidden", nulls = Nulls.SKIP)
+        public _FinalStage hidden(Optional<Boolean> hidden) {
+            this.hidden = hidden;
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop will be ignored.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage disabled(Boolean disabled) {
+            this.disabled = Optional.ofNullable(disabled);
+            return this;
+        }
+
+        /**
+         * <p>If true, this prop will be ignored.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
+        public _FinalStage disabled(Optional<Boolean> disabled) {
+            this.disabled = disabled;
+            return this;
+        }
+
+        /**
+         * <p>A description of the prop, shown to the user when configuring the component.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage description(String description) {
+            this.description = Optional.ofNullable(description);
+            return this;
+        }
+
+        /**
+         * <p>A description of the prop, shown to the user when configuring the component.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "description", nulls = Nulls.SKIP)
+        public _FinalStage description(Optional<String> description) {
+            this.description = description;
+            return this;
+        }
+
         @java.lang.Override
         public ConfigurablePropDataStore build() {
             return new ConfigurablePropDataStore(
-                    name,
-                    label,
                     description,
-                    optional,
                     disabled,
-                    readOnly,
                     hidden,
+                    label,
+                    name,
+                    optional,
+                    readOnly,
+                    reloadProps,
                     remoteOptions,
                     useQuery,
-                    reloadProps,
                     withLabel,
                     additionalProperties);
         }

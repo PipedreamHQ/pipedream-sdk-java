@@ -44,6 +44,12 @@ public final class AppsListRequest {
 
     private final Optional<Boolean> hasTriggers;
 
+    private final Optional<Integer> page;
+
+    private final Optional<String> categoryName;
+
+    private final Optional<String> authType;
+
     private final Map<String, Object> additionalProperties;
 
     private AppsListRequest(
@@ -57,6 +63,9 @@ public final class AppsListRequest {
             Optional<Boolean> hasComponents,
             Optional<Boolean> hasActions,
             Optional<Boolean> hasTriggers,
+            Optional<Integer> page,
+            Optional<String> categoryName,
+            Optional<String> authType,
             Map<String, Object> additionalProperties) {
         this.categoryIds = categoryIds;
         this.after = after;
@@ -68,6 +77,9 @@ public final class AppsListRequest {
         this.hasComponents = hasComponents;
         this.hasActions = hasActions;
         this.hasTriggers = hasTriggers;
+        this.page = page;
+        this.categoryName = categoryName;
+        this.authType = authType;
         this.additionalProperties = additionalProperties;
     }
 
@@ -151,6 +163,31 @@ public final class AppsListRequest {
         return hasTriggers;
     }
 
+    /**
+     * @return The page of results to return, 1-based. An alternative to <code>after</code>/
+     * <code>before</code> cursor pagination; ignored when either cursor is supplied.
+     */
+    @JsonProperty("page")
+    public Optional<Integer> getPage() {
+        return page;
+    }
+
+    /**
+     * @return Only return apps in this category, by name (e.g. <code>Developer Tools</code>)
+     */
+    @JsonProperty("category_name")
+    public Optional<String> getCategoryName() {
+        return categoryName;
+    }
+
+    /**
+     * @return Only return apps using this authentication type
+     */
+    @JsonProperty("auth_type")
+    public Optional<String> getAuthType() {
+        return authType;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -172,7 +209,10 @@ public final class AppsListRequest {
                 && sortDirection.equals(other.sortDirection)
                 && hasComponents.equals(other.hasComponents)
                 && hasActions.equals(other.hasActions)
-                && hasTriggers.equals(other.hasTriggers);
+                && hasTriggers.equals(other.hasTriggers)
+                && page.equals(other.page)
+                && categoryName.equals(other.categoryName)
+                && authType.equals(other.authType);
     }
 
     @java.lang.Override
@@ -187,7 +227,10 @@ public final class AppsListRequest {
                 this.sortDirection,
                 this.hasComponents,
                 this.hasActions,
-                this.hasTriggers);
+                this.hasTriggers,
+                this.page,
+                this.categoryName,
+                this.authType);
     }
 
     @java.lang.Override
@@ -221,6 +264,12 @@ public final class AppsListRequest {
 
         private Optional<Boolean> hasTriggers = Optional.empty();
 
+        private Optional<Integer> page = Optional.empty();
+
+        private Optional<String> categoryName = Optional.empty();
+
+        private Optional<String> authType = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -237,6 +286,9 @@ public final class AppsListRequest {
             hasComponents(other.getHasComponents());
             hasActions(other.getHasActions());
             hasTriggers(other.getHasTriggers());
+            page(other.getPage());
+            categoryName(other.getCategoryName());
+            authType(other.getAuthType());
             return this;
         }
 
@@ -385,6 +437,49 @@ public final class AppsListRequest {
             return this;
         }
 
+        /**
+         * <p>The page of results to return, 1-based. An alternative to <code>after</code>/
+         * <code>before</code> cursor pagination; ignored when either cursor is supplied.</p>
+         */
+        @JsonSetter(value = "page", nulls = Nulls.SKIP)
+        public Builder page(Optional<Integer> page) {
+            this.page = page;
+            return this;
+        }
+
+        public Builder page(Integer page) {
+            this.page = Optional.ofNullable(page);
+            return this;
+        }
+
+        /**
+         * <p>Only return apps in this category, by name (e.g. <code>Developer Tools</code>)</p>
+         */
+        @JsonSetter(value = "category_name", nulls = Nulls.SKIP)
+        public Builder categoryName(Optional<String> categoryName) {
+            this.categoryName = categoryName;
+            return this;
+        }
+
+        public Builder categoryName(String categoryName) {
+            this.categoryName = Optional.ofNullable(categoryName);
+            return this;
+        }
+
+        /**
+         * <p>Only return apps using this authentication type</p>
+         */
+        @JsonSetter(value = "auth_type", nulls = Nulls.SKIP)
+        public Builder authType(Optional<String> authType) {
+            this.authType = authType;
+            return this;
+        }
+
+        public Builder authType(String authType) {
+            this.authType = Optional.ofNullable(authType);
+            return this;
+        }
+
         public AppsListRequest build() {
             return new AppsListRequest(
                     categoryIds,
@@ -397,6 +492,9 @@ public final class AppsListRequest {
                     hasComponents,
                     hasActions,
                     hasTriggers,
+                    page,
+                    categoryName,
+                    authType,
                     additionalProperties);
         }
 

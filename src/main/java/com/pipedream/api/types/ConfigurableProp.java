@@ -33,51 +33,51 @@ public final class ConfigurableProp {
     @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
-            return visitor.visit((ConfigurablePropAlert) this.value);
+            return visitor.visit((ConfigurablePropAirtableBaseId) this.value);
         } else if (this.type == 1) {
-            return visitor.visit((ConfigurablePropApp) this.value);
+            return visitor.visit((ConfigurablePropAirtableFieldId) this.value);
         } else if (this.type == 2) {
-            return visitor.visit((ConfigurablePropBoolean) this.value);
+            return visitor.visit((ConfigurablePropAirtableTableId) this.value);
         } else if (this.type == 3) {
-            return visitor.visit((ConfigurablePropDataStore) this.value);
+            return visitor.visit((ConfigurablePropAirtableViewId) this.value);
         } else if (this.type == 4) {
-            return visitor.visit((ConfigurablePropDir) this.value);
+            return visitor.visit((ConfigurablePropDiscordChannel) this.value);
         } else if (this.type == 5) {
-            return visitor.visit((ConfigurablePropTimer) this.value);
+            return visitor.visit((ConfigurablePropDiscordChannelArray) this.value);
         } else if (this.type == 6) {
             return visitor.visit((ConfigurablePropApphook) this.value);
         } else if (this.type == 7) {
-            return visitor.visit((ConfigurablePropIntegerArray) this.value);
-        } else if (this.type == 8) {
             return visitor.visit((ConfigurablePropHttp) this.value);
+        } else if (this.type == 8) {
+            return visitor.visit((ConfigurablePropTimer) this.value);
         } else if (this.type == 9) {
-            return visitor.visit((ConfigurablePropHttpRequest) this.value);
-        } else if (this.type == 10) {
             return visitor.visit((ConfigurablePropDb) this.value);
+        } else if (this.type == 10) {
+            return visitor.visit((ConfigurablePropAlert) this.value);
         } else if (this.type == 11) {
-            return visitor.visit((ConfigurablePropSql) this.value);
-        } else if (this.type == 12) {
-            return visitor.visit((ConfigurablePropAirtableBaseId) this.value);
-        } else if (this.type == 13) {
-            return visitor.visit((ConfigurablePropAirtableTableId) this.value);
-        } else if (this.type == 14) {
-            return visitor.visit((ConfigurablePropAirtableViewId) this.value);
-        } else if (this.type == 15) {
-            return visitor.visit((ConfigurablePropAirtableFieldId) this.value);
-        } else if (this.type == 16) {
-            return visitor.visit((ConfigurablePropDiscordChannel) this.value);
-        } else if (this.type == 17) {
-            return visitor.visit((ConfigurablePropDiscordChannelArray) this.value);
-        } else if (this.type == 18) {
-            return visitor.visit((ConfigurablePropInteger) this.value);
-        } else if (this.type == 19) {
-            return visitor.visit((ConfigurablePropString) this.value);
-        } else if (this.type == 20) {
-            return visitor.visit((ConfigurablePropStringArray) this.value);
-        } else if (this.type == 21) {
-            return visitor.visit((ConfigurablePropObject) this.value);
-        } else if (this.type == 22) {
             return visitor.visit((ConfigurablePropAny) this.value);
+        } else if (this.type == 12) {
+            return visitor.visit((ConfigurablePropApp) this.value);
+        } else if (this.type == 13) {
+            return visitor.visit((ConfigurablePropBoolean) this.value);
+        } else if (this.type == 14) {
+            return visitor.visit((ConfigurablePropDataStore) this.value);
+        } else if (this.type == 15) {
+            return visitor.visit((ConfigurablePropDir) this.value);
+        } else if (this.type == 16) {
+            return visitor.visit((ConfigurablePropHttpRequest) this.value);
+        } else if (this.type == 17) {
+            return visitor.visit((ConfigurablePropInteger) this.value);
+        } else if (this.type == 18) {
+            return visitor.visit((ConfigurablePropIntegerArray) this.value);
+        } else if (this.type == 19) {
+            return visitor.visit((ConfigurablePropObject) this.value);
+        } else if (this.type == 20) {
+            return visitor.visit((ConfigurablePropSql) this.value);
+        } else if (this.type == 21) {
+            return visitor.visit((ConfigurablePropString) this.value);
+        } else if (this.type == 22) {
+            return visitor.visit((ConfigurablePropStringArray) this.value);
         }
         throw new IllegalStateException("Failed to visit value. This should never happen.");
     }
@@ -102,27 +102,27 @@ public final class ConfigurableProp {
         return this.value.toString();
     }
 
-    public static ConfigurableProp of(ConfigurablePropAlert value) {
+    public static ConfigurableProp of(ConfigurablePropAirtableBaseId value) {
         return new ConfigurableProp(value, 0);
     }
 
-    public static ConfigurableProp of(ConfigurablePropApp value) {
+    public static ConfigurableProp of(ConfigurablePropAirtableFieldId value) {
         return new ConfigurableProp(value, 1);
     }
 
-    public static ConfigurableProp of(ConfigurablePropBoolean value) {
+    public static ConfigurableProp of(ConfigurablePropAirtableTableId value) {
         return new ConfigurableProp(value, 2);
     }
 
-    public static ConfigurableProp of(ConfigurablePropDataStore value) {
+    public static ConfigurableProp of(ConfigurablePropAirtableViewId value) {
         return new ConfigurableProp(value, 3);
     }
 
-    public static ConfigurableProp of(ConfigurablePropDir value) {
+    public static ConfigurableProp of(ConfigurablePropDiscordChannel value) {
         return new ConfigurableProp(value, 4);
     }
 
-    public static ConfigurableProp of(ConfigurablePropTimer value) {
+    public static ConfigurableProp of(ConfigurablePropDiscordChannelArray value) {
         return new ConfigurableProp(value, 5);
     }
 
@@ -130,72 +130,94 @@ public final class ConfigurableProp {
         return new ConfigurableProp(value, 6);
     }
 
-    public static ConfigurableProp of(ConfigurablePropIntegerArray value) {
+    public static ConfigurableProp of(ConfigurablePropHttp value) {
         return new ConfigurableProp(value, 7);
     }
 
-    public static ConfigurableProp of(ConfigurablePropHttp value) {
+    public static ConfigurableProp of(ConfigurablePropTimer value) {
         return new ConfigurableProp(value, 8);
     }
 
-    public static ConfigurableProp of(ConfigurablePropHttpRequest value) {
+    public static ConfigurableProp of(ConfigurablePropDb value) {
         return new ConfigurableProp(value, 9);
     }
 
-    public static ConfigurableProp of(ConfigurablePropDb value) {
+    public static ConfigurableProp of(ConfigurablePropAlert value) {
         return new ConfigurableProp(value, 10);
     }
 
-    public static ConfigurableProp of(ConfigurablePropSql value) {
+    public static ConfigurableProp of(ConfigurablePropAny value) {
         return new ConfigurableProp(value, 11);
     }
 
-    public static ConfigurableProp of(ConfigurablePropAirtableBaseId value) {
+    public static ConfigurableProp of(ConfigurablePropApp value) {
         return new ConfigurableProp(value, 12);
     }
 
-    public static ConfigurableProp of(ConfigurablePropAirtableTableId value) {
+    public static ConfigurableProp of(ConfigurablePropBoolean value) {
         return new ConfigurableProp(value, 13);
     }
 
-    public static ConfigurableProp of(ConfigurablePropAirtableViewId value) {
+    public static ConfigurableProp of(ConfigurablePropDataStore value) {
         return new ConfigurableProp(value, 14);
     }
 
-    public static ConfigurableProp of(ConfigurablePropAirtableFieldId value) {
+    public static ConfigurableProp of(ConfigurablePropDir value) {
         return new ConfigurableProp(value, 15);
     }
 
-    public static ConfigurableProp of(ConfigurablePropDiscordChannel value) {
+    public static ConfigurableProp of(ConfigurablePropHttpRequest value) {
         return new ConfigurableProp(value, 16);
     }
 
-    public static ConfigurableProp of(ConfigurablePropDiscordChannelArray value) {
+    public static ConfigurableProp of(ConfigurablePropInteger value) {
         return new ConfigurableProp(value, 17);
     }
 
-    public static ConfigurableProp of(ConfigurablePropInteger value) {
+    public static ConfigurableProp of(ConfigurablePropIntegerArray value) {
         return new ConfigurableProp(value, 18);
     }
 
-    public static ConfigurableProp of(ConfigurablePropString value) {
+    public static ConfigurableProp of(ConfigurablePropObject value) {
         return new ConfigurableProp(value, 19);
     }
 
-    public static ConfigurableProp of(ConfigurablePropStringArray value) {
+    public static ConfigurableProp of(ConfigurablePropSql value) {
         return new ConfigurableProp(value, 20);
     }
 
-    public static ConfigurableProp of(ConfigurablePropObject value) {
+    public static ConfigurableProp of(ConfigurablePropString value) {
         return new ConfigurableProp(value, 21);
     }
 
-    public static ConfigurableProp of(ConfigurablePropAny value) {
+    public static ConfigurableProp of(ConfigurablePropStringArray value) {
         return new ConfigurableProp(value, 22);
     }
 
     public interface Visitor<T> {
+        T visit(ConfigurablePropAirtableBaseId value);
+
+        T visit(ConfigurablePropAirtableFieldId value);
+
+        T visit(ConfigurablePropAirtableTableId value);
+
+        T visit(ConfigurablePropAirtableViewId value);
+
+        T visit(ConfigurablePropDiscordChannel value);
+
+        T visit(ConfigurablePropDiscordChannelArray value);
+
+        T visit(ConfigurablePropApphook value);
+
+        T visit(ConfigurablePropHttp value);
+
+        T visit(ConfigurablePropTimer value);
+
+        T visit(ConfigurablePropDb value);
+
         T visit(ConfigurablePropAlert value);
+
+        T visit(ConfigurablePropAny value);
 
         T visit(ConfigurablePropApp value);
 
@@ -205,41 +227,19 @@ public final class ConfigurableProp {
 
         T visit(ConfigurablePropDir value);
 
-        T visit(ConfigurablePropTimer value);
+        T visit(ConfigurablePropHttpRequest value);
 
-        T visit(ConfigurablePropApphook value);
+        T visit(ConfigurablePropInteger value);
 
         T visit(ConfigurablePropIntegerArray value);
 
-        T visit(ConfigurablePropHttp value);
-
-        T visit(ConfigurablePropHttpRequest value);
-
-        T visit(ConfigurablePropDb value);
+        T visit(ConfigurablePropObject value);
 
         T visit(ConfigurablePropSql value);
-
-        T visit(ConfigurablePropAirtableBaseId value);
-
-        T visit(ConfigurablePropAirtableTableId value);
-
-        T visit(ConfigurablePropAirtableViewId value);
-
-        T visit(ConfigurablePropAirtableFieldId value);
-
-        T visit(ConfigurablePropDiscordChannel value);
-
-        T visit(ConfigurablePropDiscordChannelArray value);
-
-        T visit(ConfigurablePropInteger value);
 
         T visit(ConfigurablePropString value);
 
         T visit(ConfigurablePropStringArray value);
-
-        T visit(ConfigurablePropObject value);
-
-        T visit(ConfigurablePropAny value);
     }
 
     static final class Deserializer extends StdDeserializer<ConfigurableProp> {
@@ -251,10 +251,88 @@ public final class ConfigurableProp {
         public ConfigurableProp deserialize(JsonParser p, DeserializationContext context) throws IOException {
             Object value = p.readValueAs(Object.class);
             if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableBaseId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("tableIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableFieldId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("baseIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableTableId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("tableIdProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableViewId.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannel.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannelArray.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
+                    && ((Map<?, ?>) value).containsKey("appProp")
+                    && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropApphook.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttp.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropTimer.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDb.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?>
                     && ((Map<?, ?>) value).containsKey("content")
                     && ((Map<?, ?>) value).containsKey("name")) {
                 try {
                     return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAlert.class));
+                } catch (RuntimeException e) {
+                }
+            }
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
+                try {
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAny.class));
                 } catch (RuntimeException e) {
                 }
             }
@@ -286,15 +364,13 @@ public final class ConfigurableProp {
             }
             if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
                 try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropTimer.class));
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttpRequest.class));
                 } catch (RuntimeException e) {
                 }
             }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("appProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
+            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
                 try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropApphook.class));
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropInteger.class));
                 } catch (RuntimeException e) {
                 }
             }
@@ -306,77 +382,13 @@ public final class ConfigurableProp {
             }
             if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
                 try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttp.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropHttpRequest.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDb.class));
+                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropObject.class));
                 } catch (RuntimeException e) {
                 }
             }
             if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
                 try {
                     return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropSql.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("appProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableBaseId.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("baseIdProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableTableId.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("tableIdProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableViewId.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("tableIdProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAirtableFieldId.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?>
-                    && ((Map<?, ?>) value).containsKey("appProp")
-                    && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannel.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropDiscordChannelArray.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropInteger.class));
                 } catch (RuntimeException e) {
                 }
             }
@@ -389,18 +401,6 @@ public final class ConfigurableProp {
             if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
                 try {
                     return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropStringArray.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropObject.class));
-                } catch (RuntimeException e) {
-                }
-            }
-            if (value instanceof Map<?, ?> && ((Map<?, ?>) value).containsKey("name")) {
-                try {
-                    return of(ObjectMappers.JSON_MAPPER.convertValue(value, ConfigurablePropAny.class));
                 } catch (RuntimeException e) {
                 }
             }

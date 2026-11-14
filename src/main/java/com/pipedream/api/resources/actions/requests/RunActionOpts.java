@@ -23,35 +23,72 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RunActionOpts.Builder.class)
 public final class RunActionOpts {
-    private final String id;
-
-    private final Optional<String> version;
-
-    private final String externalUserId;
-
     private final Optional<Map<String, ConfiguredPropValue>> configuredProps;
+
+    private final Optional<Boolean> debug;
 
     private final Optional<String> dynamicPropsId;
 
+    private final String externalUserId;
+
+    private final String id;
+
+    private final Optional<String> platformVersion;
+
     private final Optional<RunActionOptsStashId> stashId;
+
+    private final Optional<String> version;
 
     private final Map<String, Object> additionalProperties;
 
     private RunActionOpts(
-            String id,
-            Optional<String> version,
-            String externalUserId,
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
+            Optional<Boolean> debug,
             Optional<String> dynamicPropsId,
+            String externalUserId,
+            String id,
+            Optional<String> platformVersion,
             Optional<RunActionOptsStashId> stashId,
+            Optional<String> version,
             Map<String, Object> additionalProperties) {
-        this.id = id;
-        this.version = version;
-        this.externalUserId = externalUserId;
         this.configuredProps = configuredProps;
+        this.debug = debug;
         this.dynamicPropsId = dynamicPropsId;
+        this.externalUserId = externalUserId;
+        this.id = id;
+        this.platformVersion = platformVersion;
         this.stashId = stashId;
+        this.version = version;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("configured_props")
+    public Optional<Map<String, ConfiguredPropValue>> getConfiguredProps() {
+        return configuredProps;
+    }
+
+    /**
+     * @return Enable verbose debug logging for this execution. Defaults to false.
+     */
+    @JsonProperty("debug")
+    public Optional<Boolean> getDebug() {
+        return debug;
+    }
+
+    /**
+     * @return The ID for dynamic props
+     */
+    @JsonProperty("dynamic_props_id")
+    public Optional<String> getDynamicPropsId() {
+        return dynamicPropsId;
+    }
+
+    /**
+     * @return The external user ID
+     */
+    @JsonProperty("external_user_id")
+    public String getExternalUserId() {
+        return externalUserId;
     }
 
     /**
@@ -63,37 +100,24 @@ public final class RunActionOpts {
     }
 
     /**
-     * @return Action component semantic version
+     * @return Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.
      */
-    @JsonProperty("version")
-    public Optional<String> getVersion() {
-        return version;
-    }
-
-    /**
-     * @return The external user ID
-     */
-    @JsonProperty("external_user_id")
-    public String getExternalUserId() {
-        return externalUserId;
-    }
-
-    @JsonProperty("configured_props")
-    public Optional<Map<String, ConfiguredPropValue>> getConfiguredProps() {
-        return configuredProps;
-    }
-
-    /**
-     * @return The ID for dynamic props
-     */
-    @JsonProperty("dynamic_props_id")
-    public Optional<String> getDynamicPropsId() {
-        return dynamicPropsId;
+    @JsonProperty("platform_version")
+    public Optional<String> getPlatformVersion() {
+        return platformVersion;
     }
 
     @JsonProperty("stash_id")
     public Optional<RunActionOptsStashId> getStashId() {
         return stashId;
+    }
+
+    /**
+     * @return Action component semantic version
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
     }
 
     @java.lang.Override
@@ -108,18 +132,27 @@ public final class RunActionOpts {
     }
 
     private boolean equalTo(RunActionOpts other) {
-        return id.equals(other.id)
-                && version.equals(other.version)
-                && externalUserId.equals(other.externalUserId)
-                && configuredProps.equals(other.configuredProps)
+        return configuredProps.equals(other.configuredProps)
+                && debug.equals(other.debug)
                 && dynamicPropsId.equals(other.dynamicPropsId)
-                && stashId.equals(other.stashId);
+                && externalUserId.equals(other.externalUserId)
+                && id.equals(other.id)
+                && platformVersion.equals(other.platformVersion)
+                && stashId.equals(other.stashId)
+                && version.equals(other.version);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.id, this.version, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.stashId);
+                this.configuredProps,
+                this.debug,
+                this.dynamicPropsId,
+                this.externalUserId,
+                this.id,
+                this.platformVersion,
+                this.stashId,
+                this.version);
     }
 
     @java.lang.Override
@@ -127,24 +160,24 @@ public final class RunActionOpts {
         return ObjectMappers.stringify(this);
     }
 
-    public static IdStage builder() {
+    public static ExternalUserIdStage builder() {
         return new Builder();
-    }
-
-    public interface IdStage {
-        /**
-         * <p>The action component ID</p>
-         */
-        ExternalUserIdStage id(@NotNull String id);
-
-        Builder from(RunActionOpts other);
     }
 
     public interface ExternalUserIdStage {
         /**
          * <p>The external user ID</p>
          */
-        _FinalStage externalUserId(@NotNull String externalUserId);
+        IdStage externalUserId(@NotNull String externalUserId);
+
+        Builder from(RunActionOpts other);
+    }
+
+    public interface IdStage {
+        /**
+         * <p>The action component ID</p>
+         */
+        _FinalStage id(@NotNull String id);
     }
 
     public interface _FinalStage {
@@ -154,16 +187,16 @@ public final class RunActionOpts {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
-        /**
-         * <p>Action component semantic version</p>
-         */
-        _FinalStage version(Optional<String> version);
-
-        _FinalStage version(String version);
-
         _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps);
 
         _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps);
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         */
+        _FinalStage debug(Optional<Boolean> debug);
+
+        _FinalStage debug(Boolean debug);
 
         /**
          * <p>The ID for dynamic props</p>
@@ -172,24 +205,42 @@ public final class RunActionOpts {
 
         _FinalStage dynamicPropsId(String dynamicPropsId);
 
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        _FinalStage platformVersion(Optional<String> platformVersion);
+
+        _FinalStage platformVersion(String platformVersion);
+
         _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
 
         _FinalStage stashId(RunActionOptsStashId stashId);
+
+        /**
+         * <p>Action component semantic version</p>
+         */
+        _FinalStage version(Optional<String> version);
+
+        _FinalStage version(String version);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements IdStage, ExternalUserIdStage, _FinalStage {
+    public static final class Builder implements ExternalUserIdStage, IdStage, _FinalStage {
+        private String externalUserId;
+
         private String id;
 
-        private String externalUserId;
+        private Optional<String> version = Optional.empty();
 
         private Optional<RunActionOptsStashId> stashId = Optional.empty();
 
+        private Optional<String> platformVersion = Optional.empty();
+
         private Optional<String> dynamicPropsId = Optional.empty();
 
-        private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
+        private Optional<Boolean> debug = Optional.empty();
 
-        private Optional<String> version = Optional.empty();
+        private Optional<Map<String, ConfiguredPropValue>> configuredProps = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -198,24 +249,14 @@ public final class RunActionOpts {
 
         @java.lang.Override
         public Builder from(RunActionOpts other) {
-            id(other.getId());
-            version(other.getVersion());
-            externalUserId(other.getExternalUserId());
             configuredProps(other.getConfiguredProps());
+            debug(other.getDebug());
             dynamicPropsId(other.getDynamicPropsId());
+            externalUserId(other.getExternalUserId());
+            id(other.getId());
+            platformVersion(other.getPlatformVersion());
             stashId(other.getStashId());
-            return this;
-        }
-
-        /**
-         * <p>The action component ID</p>
-         * <p>The action component ID</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("id")
-        public ExternalUserIdStage id(@NotNull String id) {
-            this.id = Objects.requireNonNull(id, "id must not be null");
+            version(other.getVersion());
             return this;
         }
 
@@ -226,54 +267,20 @@ public final class RunActionOpts {
          */
         @java.lang.Override
         @JsonSetter("external_user_id")
-        public _FinalStage externalUserId(@NotNull String externalUserId) {
+        public IdStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
             return this;
         }
 
-        @java.lang.Override
-        public _FinalStage stashId(RunActionOptsStashId stashId) {
-            this.stashId = Optional.ofNullable(stashId);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
-        public _FinalStage stashId(Optional<RunActionOptsStashId> stashId) {
-            this.stashId = stashId;
-            return this;
-        }
-
         /**
-         * <p>The ID for dynamic props</p>
+         * <p>The action component ID</p>
+         * <p>The action component ID</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage dynamicPropsId(String dynamicPropsId) {
-            this.dynamicPropsId = Optional.ofNullable(dynamicPropsId);
-            return this;
-        }
-
-        /**
-         * <p>The ID for dynamic props</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "dynamic_props_id", nulls = Nulls.SKIP)
-        public _FinalStage dynamicPropsId(Optional<String> dynamicPropsId) {
-            this.dynamicPropsId = dynamicPropsId;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
-            this.configuredProps = Optional.ofNullable(configuredProps);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
-        public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
-            this.configuredProps = configuredProps;
+        @JsonSetter("id")
+        public _FinalStage id(@NotNull String id) {
+            this.id = Objects.requireNonNull(id, "id must not be null");
             return this;
         }
 
@@ -298,9 +305,103 @@ public final class RunActionOpts {
         }
 
         @java.lang.Override
+        public _FinalStage stashId(RunActionOptsStashId stashId) {
+            this.stashId = Optional.ofNullable(stashId);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "stash_id", nulls = Nulls.SKIP)
+        public _FinalStage stashId(Optional<RunActionOptsStashId> stashId) {
+            this.stashId = stashId;
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage platformVersion(String platformVersion) {
+            this.platformVersion = Optional.ofNullable(platformVersion);
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "platform_version", nulls = Nulls.SKIP)
+        public _FinalStage platformVersion(Optional<String> platformVersion) {
+            this.platformVersion = platformVersion;
+            return this;
+        }
+
+        /**
+         * <p>The ID for dynamic props</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage dynamicPropsId(String dynamicPropsId) {
+            this.dynamicPropsId = Optional.ofNullable(dynamicPropsId);
+            return this;
+        }
+
+        /**
+         * <p>The ID for dynamic props</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "dynamic_props_id", nulls = Nulls.SKIP)
+        public _FinalStage dynamicPropsId(Optional<String> dynamicPropsId) {
+            this.dynamicPropsId = dynamicPropsId;
+            return this;
+        }
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage debug(Boolean debug) {
+            this.debug = Optional.ofNullable(debug);
+            return this;
+        }
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "debug", nulls = Nulls.SKIP)
+        public _FinalStage debug(Optional<Boolean> debug) {
+            this.debug = debug;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage configuredProps(Map<String, ConfiguredPropValue> configuredProps) {
+            this.configuredProps = Optional.ofNullable(configuredProps);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "configured_props", nulls = Nulls.SKIP)
+        public _FinalStage configuredProps(Optional<Map<String, ConfiguredPropValue>> configuredProps) {
+            this.configuredProps = configuredProps;
+            return this;
+        }
+
+        @java.lang.Override
         public RunActionOpts build() {
             return new RunActionOpts(
-                    id, version, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
+                    configuredProps,
+                    debug,
+                    dynamicPropsId,
+                    externalUserId,
+                    id,
+                    platformVersion,
+                    stashId,
+                    version,
+                    additionalProperties);
         }
 
         @java.lang.Override

@@ -4,21 +4,20 @@
 package com.pipedream.api.errors;
 
 import com.pipedream.api.core.BaseClientApiException;
-import com.pipedream.api.types.UnauthorizedErrorBody;
 import okhttp3.Response;
 
 public final class UnauthorizedError extends BaseClientApiException {
     /**
      * The body of the response that triggered the exception.
      */
-    private final UnauthorizedErrorBody body;
+    private final Object body;
 
-    public UnauthorizedError(UnauthorizedErrorBody body) {
+    public UnauthorizedError(Object body) {
         super("UnauthorizedError", 401, body);
         this.body = body;
     }
 
-    public UnauthorizedError(UnauthorizedErrorBody body, Response rawResponse) {
+    public UnauthorizedError(Object body, Response rawResponse) {
         super("UnauthorizedError", 401, body, rawResponse);
         this.body = body;
     }
@@ -27,7 +26,7 @@ public final class UnauthorizedError extends BaseClientApiException {
      * @return the body
      */
     @java.lang.Override
-    public UnauthorizedErrorBody body() {
+    public Object body() {
         return this.body;
     }
 }

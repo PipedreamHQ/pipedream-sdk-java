@@ -13,8 +13,13 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadGatewayError;
 import com.pipedream.api.errors.BadRequestError;
+import com.pipedream.api.errors.InternalServerError;
+import com.pipedream.api.errors.NotFoundError;
+import com.pipedream.api.errors.ServiceUnavailableError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnauthorizedError;
 import com.pipedream.api.resources.triggers.requests.DeployTriggerOpts;
 import com.pipedream.api.resources.triggers.requests.TriggersListRequest;
 import com.pipedream.api.resources.triggers.requests.TriggersRetrieveRequest;
@@ -23,6 +28,7 @@ import com.pipedream.api.types.ConfigurePropOpts;
 import com.pipedream.api.types.ConfigurePropResponse;
 import com.pipedream.api.types.DeployTriggerResponse;
 import com.pipedream.api.types.Emitter;
+import com.pipedream.api.types.ErrorResponse;
 import com.pipedream.api.types.GetComponentResponse;
 import com.pipedream.api.types.GetComponentsResponse;
 import com.pipedream.api.types.ReloadPropsOpts;
@@ -48,308 +54,6 @@ public class AsyncRawTriggersClient {
 
     public AsyncRawTriggersClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
-    }
-
-    /**
-     * Retrieve available triggers with optional search and app filtering
-     */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
-        return list(TriggersListRequest.builder().build());
-    }
-
-    /**
-     * Retrieve available triggers with optional search and app filtering
-     */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
-            RequestOptions requestOptions) {
-        return list(TriggersListRequest.builder().build(), requestOptions);
-    }
-
-    /**
-     * Retrieve available triggers with optional search and app filtering
-     */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(TriggersListRequest request) {
-        return list(request, null);
-    }
-
-    /**
-     * Retrieve available triggers with optional search and app filtering
-     */
-    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
-            TriggersListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect")
-                .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers");
-        if (request.getAfter().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "after", request.getAfter().get(), false);
-        }
-        if (request.getBefore().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "before", request.getBefore().get(), false);
-        }
-        if (request.getLimit().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "limit", request.getLimit().get(), false);
-        }
-        if (request.getQ().isPresent()) {
-            QueryStringMapper.addQueryParameter(httpUrl, "q", request.getQ().get(), false);
-        }
-        if (request.getApp().isPresent()) {
-            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
-        }
-        if (request.getRegistry().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "registry", request.getRegistry().get(), false);
-        }
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        GetComponentsResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
-                        Optional<String> startingAfter =
-                                parsedResponse.getPageInfo().getEndCursor();
-                        TriggersListRequest nextRequest = TriggersListRequest.builder()
-                                .from(request)
-                                .after(startingAfter)
-                                .build();
-                        List<Component> result = parsedResponse.getData();
-                        future.complete(new BaseClientHttpResponse<>(
-                                new SyncPagingIterable<Component>(
-                                        startingAfter.isPresent(), result, parsedResponse, () -> {
-                                            try {
-                                                return list(nextRequest, requestOptions)
-                                                        .get()
-                                                        .body();
-                                            } catch (InterruptedException | ExecutionException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        }),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 400:
-                                future.completeExceptionally(new BadRequestError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                                        response));
-                                return;
-                            case 429:
-                                future.completeExceptionally(new TooManyRequestsError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Get detailed configuration for a specific trigger by its key
-     */
-    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
-        return retrieve(componentId, TriggersRetrieveRequest.builder().build());
-    }
-
-    /**
-     * Get detailed configuration for a specific trigger by its key
-     */
-    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, RequestOptions requestOptions) {
-        return retrieve(componentId, TriggersRetrieveRequest.builder().build(), requestOptions);
-    }
-
-    /**
-     * Get detailed configuration for a specific trigger by its key
-     */
-    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, TriggersRetrieveRequest request) {
-        return retrieve(componentId, request, null);
-    }
-
-    /**
-     * Get detailed configuration for a specific trigger by its key
-     */
-    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
-            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect")
-                .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers")
-                .addPathSegment(componentId);
-        if (request.getVersion().isPresent()) {
-            QueryStringMapper.addQueryParameter(
-                    httpUrl, "version", request.getVersion().get(), false);
-        }
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<BaseClientHttpResponse<Component>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        GetComponentResponse parsedResponse =
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
-                        future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
-                        return;
-                    }
-                    try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
-        return configureProp(request, null);
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("v1/connect")
-                .addPathSegment(clientOptions.projectId())
-                .addPathSegments("triggers")
-                .addPathSegments("configure");
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new BaseClientException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new BaseClientHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new BaseClientApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
     }
 
     /**
@@ -489,6 +193,372 @@ public class AsyncRawTriggersClient {
                             future.completeExceptionally(new TooManyRequestsError(
                                     ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
                             return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new BaseClientApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list() {
+        return list(TriggersListRequest.builder().build());
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
+            RequestOptions requestOptions) {
+        return list(TriggersListRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(TriggersListRequest request) {
+        return list(request, null);
+    }
+
+    /**
+     * Retrieve available triggers with optional search and app filtering
+     */
+    public CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> list(
+            TriggersListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("triggers");
+        if (request.getAfter().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "after", request.getAfter().get(), false);
+        }
+        if (request.getBefore().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "before", request.getBefore().get(), false);
+        }
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getQ().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "q", request.getQ().get(), false);
+        }
+        if (request.getApp().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "app", request.getApp().get(), false);
+        }
+        if (request.getRegistry().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "registry", request.getRegistry().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<BaseClientHttpResponse<SyncPagingIterable<Component>>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        GetComponentsResponse parsedResponse =
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentsResponse.class);
+                        Optional<String> startingAfter =
+                                parsedResponse.getPageInfo().getEndCursor();
+                        TriggersListRequest nextRequest = TriggersListRequest.builder()
+                                .from(request)
+                                .after(startingAfter)
+                                .build();
+                        List<Component> result = parsedResponse.getData();
+                        future.complete(new BaseClientHttpResponse<>(
+                                new SyncPagingIterable<Component>(
+                                        startingAfter.isPresent(), result, parsedResponse, () -> {
+                                            try {
+                                                return list(nextRequest, requestOptions)
+                                                        .get()
+                                                        .body();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 502:
+                                future.completeExceptionally(new BadGatewayError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new BaseClientApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(ConfigurePropOpts request) {
+        return configureProp(request, null);
+    }
+
+    /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> configureProp(
+            ConfigurePropOpts request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("triggers")
+                .addPathSegments("configure");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new BaseClientException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<BaseClientHttpResponse<ConfigurePropResponse>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new BaseClientHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ConfigurePropResponse.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new BaseClientApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new BaseClientException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(String componentId) {
+        return retrieve(componentId, TriggersRetrieveRequest.builder().build());
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, RequestOptions requestOptions) {
+        return retrieve(componentId, TriggersRetrieveRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, TriggersRetrieveRequest request) {
+        return retrieve(componentId, request, null);
+    }
+
+    /**
+     * Get detailed configuration for a specific trigger by its key
+     */
+    public CompletableFuture<BaseClientHttpResponse<Component>> retrieve(
+            String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect")
+                .addPathSegment(clientOptions.projectId())
+                .addPathSegments("triggers")
+                .addPathSegment(componentId);
+        if (request.getVersion().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "version", request.getVersion().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<BaseClientHttpResponse<Component>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        GetComponentResponse parsedResponse =
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetComponentResponse.class);
+                        future.complete(new BaseClientHttpResponse<>(parsedResponse.getData(), response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 502:
+                                future.completeExceptionally(new BadGatewayError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

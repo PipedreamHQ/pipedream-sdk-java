@@ -28,10 +28,6 @@ public final class OauthApp {
 
     private final Optional<String> clientId;
 
-    private final Optional<List<String>> scopes;
-
-    private final Optional<List<String>> additionalScopes;
-
     private final Optional<String> redirectUri;
 
     private final Optional<String> ownerId;
@@ -40,66 +36,74 @@ public final class OauthApp {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final String nameSlug;
-
-    private final String name;
+    private final Optional<List<String>> additionalScopes;
 
     private final Optional<AppAuthType> authType;
 
-    private final Optional<String> description;
-
-    private final String imgSrc;
+    private final List<String> categories;
 
     private final Optional<String> customFieldsJson;
 
-    private final List<String> categories;
+    private final Optional<String> description;
 
     private final double featuredWeight;
 
-    private final List<AppScopeProfilesItem> scopeProfiles;
+    private final String imgSrc;
+
+    private final String name;
+
+    private final String nameSlug;
 
     private final Optional<String> oauthAppId;
+
+    private final Optional<AppScopeLabels> scopeLabels;
+
+    private final List<AppScopeProfilesItem> scopeProfiles;
+
+    private final Optional<List<String>> scopes;
 
     private final Map<String, Object> additionalProperties;
 
     private OauthApp(
             Optional<String> id,
             Optional<String> clientId,
-            Optional<List<String>> scopes,
-            Optional<List<String>> additionalScopes,
             Optional<String> redirectUri,
             Optional<String> ownerId,
             Optional<OffsetDateTime> createdAt,
             Optional<OffsetDateTime> updatedAt,
-            String nameSlug,
-            String name,
+            Optional<List<String>> additionalScopes,
             Optional<AppAuthType> authType,
-            Optional<String> description,
-            String imgSrc,
-            Optional<String> customFieldsJson,
             List<String> categories,
+            Optional<String> customFieldsJson,
+            Optional<String> description,
             double featuredWeight,
-            List<AppScopeProfilesItem> scopeProfiles,
+            String imgSrc,
+            String name,
+            String nameSlug,
             Optional<String> oauthAppId,
+            Optional<AppScopeLabels> scopeLabels,
+            List<AppScopeProfilesItem> scopeProfiles,
+            Optional<List<String>> scopes,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.clientId = clientId;
-        this.scopes = scopes;
-        this.additionalScopes = additionalScopes;
         this.redirectUri = redirectUri;
         this.ownerId = ownerId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.nameSlug = nameSlug;
-        this.name = name;
+        this.additionalScopes = additionalScopes;
         this.authType = authType;
-        this.description = description;
-        this.imgSrc = imgSrc;
-        this.customFieldsJson = customFieldsJson;
         this.categories = categories;
+        this.customFieldsJson = customFieldsJson;
+        this.description = description;
         this.featuredWeight = featuredWeight;
-        this.scopeProfiles = scopeProfiles;
+        this.imgSrc = imgSrc;
+        this.name = name;
+        this.nameSlug = nameSlug;
         this.oauthAppId = oauthAppId;
+        this.scopeLabels = scopeLabels;
+        this.scopeProfiles = scopeProfiles;
+        this.scopes = scopes;
         this.additionalProperties = additionalProperties;
     }
 
@@ -117,22 +121,6 @@ public final class OauthApp {
     @JsonProperty("client_id")
     public Optional<String> getClientId() {
         return clientId;
-    }
-
-    /**
-     * @return OAuth scopes requested when users connect through this client
-     */
-    @JsonProperty("scopes")
-    public Optional<List<String>> getScopes() {
-        return scopes;
-    }
-
-    /**
-     * @return Extra OAuth scopes users may grant on top of the base scopes
-     */
-    @JsonProperty("additional_scopes")
-    public Optional<List<String>> getAdditionalScopes() {
-        return additionalScopes;
     }
 
     /**
@@ -162,48 +150,16 @@ public final class OauthApp {
     }
 
     /**
-     * @return The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)
+     * @return A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
      */
-    @JsonProperty("name_slug")
-    public String getNameSlug() {
-        return nameSlug;
-    }
-
-    /**
-     * @return The human-readable name of the app
-     */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
+    @JsonProperty("additional_scopes")
+    public Optional<List<String>> getAdditionalScopes() {
+        return additionalScopes;
     }
 
     @JsonProperty("auth_type")
     public Optional<AppAuthType> getAuthType() {
         return authType;
-    }
-
-    /**
-     * @return A short description of the app
-     */
-    @JsonProperty("description")
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    /**
-     * @return The URL to the app's logo
-     */
-    @JsonProperty("img_src")
-    public String getImgSrc() {
-        return imgSrc;
-    }
-
-    /**
-     * @return A JSON string representing the custom fields for the app
-     */
-    @JsonProperty("custom_fields_json")
-    public Optional<String> getCustomFieldsJson() {
-        return customFieldsJson;
     }
 
     /**
@@ -215,11 +171,67 @@ public final class OauthApp {
     }
 
     /**
+     * @return A JSON string representing the custom fields for the app
+     */
+    @JsonProperty("custom_fields_json")
+    public Optional<String> getCustomFieldsJson() {
+        return customFieldsJson;
+    }
+
+    /**
+     * @return A short description of the app
+     */
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    /**
      * @return A rough directional ordering of app popularity, subject to changes by Pipedream
      */
     @JsonProperty("featured_weight")
     public double getFeaturedWeight() {
         return featuredWeight;
+    }
+
+    /**
+     * @return The URL to the app's logo
+     */
+    @JsonProperty("img_src")
+    public String getImgSrc() {
+        return imgSrc;
+    }
+
+    /**
+     * @return The human-readable name of the app
+     */
+    @JsonProperty("name")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)
+     */
+    @JsonProperty("name_slug")
+    public String getNameSlug() {
+        return nameSlug;
+    }
+
+    /**
+     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.
+     */
+    @JsonProperty("oauth_app_id")
+    public Optional<String> getOauthAppId() {
+        return oauthAppId;
+    }
+
+    /**
+     * @return Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
+     */
+    @JsonProperty("scope_labels")
+    public Optional<AppScopeLabels> getScopeLabels() {
+        return scopeLabels;
     }
 
     /**
@@ -231,11 +243,11 @@ public final class OauthApp {
     }
 
     /**
-     * @return ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.
+     * @return The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.
      */
-    @JsonProperty("oauth_app_id")
-    public Optional<String> getOauthAppId() {
-        return oauthAppId;
+    @JsonProperty("scopes")
+    public Optional<List<String>> getScopes() {
+        return scopes;
     }
 
     @java.lang.Override
@@ -252,22 +264,23 @@ public final class OauthApp {
     private boolean equalTo(OauthApp other) {
         return id.equals(other.id)
                 && clientId.equals(other.clientId)
-                && scopes.equals(other.scopes)
-                && additionalScopes.equals(other.additionalScopes)
                 && redirectUri.equals(other.redirectUri)
                 && ownerId.equals(other.ownerId)
                 && createdAt.equals(other.createdAt)
                 && updatedAt.equals(other.updatedAt)
-                && nameSlug.equals(other.nameSlug)
-                && name.equals(other.name)
+                && additionalScopes.equals(other.additionalScopes)
                 && authType.equals(other.authType)
-                && description.equals(other.description)
-                && imgSrc.equals(other.imgSrc)
-                && customFieldsJson.equals(other.customFieldsJson)
                 && categories.equals(other.categories)
+                && customFieldsJson.equals(other.customFieldsJson)
+                && description.equals(other.description)
                 && featuredWeight == other.featuredWeight
+                && imgSrc.equals(other.imgSrc)
+                && name.equals(other.name)
+                && nameSlug.equals(other.nameSlug)
+                && oauthAppId.equals(other.oauthAppId)
+                && scopeLabels.equals(other.scopeLabels)
                 && scopeProfiles.equals(other.scopeProfiles)
-                && oauthAppId.equals(other.oauthAppId);
+                && scopes.equals(other.scopes);
     }
 
     @java.lang.Override
@@ -275,22 +288,23 @@ public final class OauthApp {
         return Objects.hash(
                 this.id,
                 this.clientId,
-                this.scopes,
-                this.additionalScopes,
                 this.redirectUri,
                 this.ownerId,
                 this.createdAt,
                 this.updatedAt,
-                this.nameSlug,
-                this.name,
+                this.additionalScopes,
                 this.authType,
-                this.description,
-                this.imgSrc,
-                this.customFieldsJson,
                 this.categories,
+                this.customFieldsJson,
+                this.description,
                 this.featuredWeight,
+                this.imgSrc,
+                this.name,
+                this.nameSlug,
+                this.oauthAppId,
+                this.scopeLabels,
                 this.scopeProfiles,
-                this.oauthAppId);
+                this.scopes);
     }
 
     @java.lang.Override
@@ -298,38 +312,38 @@ public final class OauthApp {
         return ObjectMappers.stringify(this);
     }
 
-    public static NameSlugStage builder() {
+    public static FeaturedWeightStage builder() {
         return new Builder();
-    }
-
-    public interface NameSlugStage {
-        /**
-         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
-         */
-        NameStage nameSlug(@NotNull String nameSlug);
-
-        Builder from(OauthApp other);
-    }
-
-    public interface NameStage {
-        /**
-         * <p>The human-readable name of the app</p>
-         */
-        ImgSrcStage name(@NotNull String name);
-    }
-
-    public interface ImgSrcStage {
-        /**
-         * <p>The URL to the app's logo</p>
-         */
-        FeaturedWeightStage imgSrc(@NotNull String imgSrc);
     }
 
     public interface FeaturedWeightStage {
         /**
          * <p>A rough directional ordering of app popularity, subject to changes by Pipedream</p>
          */
-        _FinalStage featuredWeight(double featuredWeight);
+        ImgSrcStage featuredWeight(double featuredWeight);
+
+        Builder from(OauthApp other);
+    }
+
+    public interface ImgSrcStage {
+        /**
+         * <p>The URL to the app's logo</p>
+         */
+        NameStage imgSrc(@NotNull String imgSrc);
+    }
+
+    public interface NameStage {
+        /**
+         * <p>The human-readable name of the app</p>
+         */
+        NameSlugStage name(@NotNull String name);
+    }
+
+    public interface NameSlugStage {
+        /**
+         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
+         */
+        _FinalStage nameSlug(@NotNull String nameSlug);
     }
 
     public interface _FinalStage {
@@ -354,20 +368,6 @@ public final class OauthApp {
         _FinalStage clientId(String clientId);
 
         /**
-         * <p>OAuth scopes requested when users connect through this client</p>
-         */
-        _FinalStage scopes(Optional<List<String>> scopes);
-
-        _FinalStage scopes(List<String> scopes);
-
-        /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
-         */
-        _FinalStage additionalScopes(Optional<List<String>> additionalScopes);
-
-        _FinalStage additionalScopes(List<String> additionalScopes);
-
-        /**
          * <p>The redirect URI to register with the upstream OAuth provider</p>
          */
         _FinalStage redirectUri(Optional<String> redirectUri);
@@ -389,23 +389,16 @@ public final class OauthApp {
 
         _FinalStage updatedAt(OffsetDateTime updatedAt);
 
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        _FinalStage additionalScopes(Optional<List<String>> additionalScopes);
+
+        _FinalStage additionalScopes(List<String> additionalScopes);
+
         _FinalStage authType(Optional<AppAuthType> authType);
 
         _FinalStage authType(AppAuthType authType);
-
-        /**
-         * <p>A short description of the app</p>
-         */
-        _FinalStage description(Optional<String> description);
-
-        _FinalStage description(String description);
-
-        /**
-         * <p>A JSON string representing the custom fields for the app</p>
-         */
-        _FinalStage customFieldsJson(Optional<String> customFieldsJson);
-
-        _FinalStage customFieldsJson(String customFieldsJson);
 
         /**
          * <p>Categories associated with the app</p>
@@ -417,6 +410,34 @@ public final class OauthApp {
         _FinalStage addAllCategories(List<String> categories);
 
         /**
+         * <p>A JSON string representing the custom fields for the app</p>
+         */
+        _FinalStage customFieldsJson(Optional<String> customFieldsJson);
+
+        _FinalStage customFieldsJson(String customFieldsJson);
+
+        /**
+         * <p>A short description of the app</p>
+         */
+        _FinalStage description(Optional<String> description);
+
+        _FinalStage description(String description);
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
+         */
+        _FinalStage oauthAppId(Optional<String> oauthAppId);
+
+        _FinalStage oauthAppId(String oauthAppId);
+
+        /**
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        _FinalStage scopeLabels(Optional<AppScopeLabels> scopeLabels);
+
+        _FinalStage scopeLabels(AppScopeLabels scopeLabels);
+
+        /**
          * <p>Named subsets of the app's OAuth scopes that may be requested when users connect their accounts (via the <code>oauth_scope_profile</code> parameter). Empty for apps that don't define any.</p>
          */
         _FinalStage scopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
@@ -426,35 +447,41 @@ public final class OauthApp {
         _FinalStage addAllScopeProfiles(List<AppScopeProfilesItem> scopeProfiles);
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
          */
-        _FinalStage oauthAppId(Optional<String> oauthAppId);
+        _FinalStage scopes(Optional<List<String>> scopes);
 
-        _FinalStage oauthAppId(String oauthAppId);
+        _FinalStage scopes(List<String> scopes);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements NameSlugStage, NameStage, ImgSrcStage, FeaturedWeightStage, _FinalStage {
-        private String nameSlug;
-
-        private String name;
+            implements FeaturedWeightStage, ImgSrcStage, NameStage, NameSlugStage, _FinalStage {
+        private double featuredWeight;
 
         private String imgSrc;
 
-        private double featuredWeight;
+        private String name;
 
-        private Optional<String> oauthAppId = Optional.empty();
+        private String nameSlug;
+
+        private Optional<List<String>> scopes = Optional.empty();
 
         private List<AppScopeProfilesItem> scopeProfiles = new ArrayList<>();
 
-        private List<String> categories = new ArrayList<>();
+        private Optional<AppScopeLabels> scopeLabels = Optional.empty();
 
-        private Optional<String> customFieldsJson = Optional.empty();
+        private Optional<String> oauthAppId = Optional.empty();
 
         private Optional<String> description = Optional.empty();
 
+        private Optional<String> customFieldsJson = Optional.empty();
+
+        private List<String> categories = new ArrayList<>();
+
         private Optional<AppAuthType> authType = Optional.empty();
+
+        private Optional<List<String>> additionalScopes = Optional.empty();
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
@@ -463,10 +490,6 @@ public final class OauthApp {
         private Optional<String> ownerId = Optional.empty();
 
         private Optional<String> redirectUri = Optional.empty();
-
-        private Optional<List<String>> additionalScopes = Optional.empty();
-
-        private Optional<List<String>> scopes = Optional.empty();
 
         private Optional<String> clientId = Optional.empty();
 
@@ -481,58 +504,23 @@ public final class OauthApp {
         public Builder from(OauthApp other) {
             id(other.getId());
             clientId(other.getClientId());
-            scopes(other.getScopes());
-            additionalScopes(other.getAdditionalScopes());
             redirectUri(other.getRedirectUri());
             ownerId(other.getOwnerId());
             createdAt(other.getCreatedAt());
             updatedAt(other.getUpdatedAt());
-            nameSlug(other.getNameSlug());
-            name(other.getName());
+            additionalScopes(other.getAdditionalScopes());
             authType(other.getAuthType());
-            description(other.getDescription());
-            imgSrc(other.getImgSrc());
-            customFieldsJson(other.getCustomFieldsJson());
             categories(other.getCategories());
+            customFieldsJson(other.getCustomFieldsJson());
+            description(other.getDescription());
             featuredWeight(other.getFeaturedWeight());
-            scopeProfiles(other.getScopeProfiles());
+            imgSrc(other.getImgSrc());
+            name(other.getName());
+            nameSlug(other.getNameSlug());
             oauthAppId(other.getOauthAppId());
-            return this;
-        }
-
-        /**
-         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
-         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("name_slug")
-        public NameStage nameSlug(@NotNull String nameSlug) {
-            this.nameSlug = Objects.requireNonNull(nameSlug, "nameSlug must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The human-readable name of the app</p>
-         * <p>The human-readable name of the app</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("name")
-        public ImgSrcStage name(@NotNull String name) {
-            this.name = Objects.requireNonNull(name, "name must not be null");
-            return this;
-        }
-
-        /**
-         * <p>The URL to the app's logo</p>
-         * <p>The URL to the app's logo</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("img_src")
-        public FeaturedWeightStage imgSrc(@NotNull String imgSrc) {
-            this.imgSrc = Objects.requireNonNull(imgSrc, "imgSrc must not be null");
+            scopeLabels(other.getScopeLabels());
+            scopeProfiles(other.getScopeProfiles());
+            scopes(other.getScopes());
             return this;
         }
 
@@ -543,28 +531,64 @@ public final class OauthApp {
          */
         @java.lang.Override
         @JsonSetter("featured_weight")
-        public _FinalStage featuredWeight(double featuredWeight) {
+        public ImgSrcStage featuredWeight(double featuredWeight) {
             this.featuredWeight = featuredWeight;
             return this;
         }
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>The URL to the app's logo</p>
+         * <p>The URL to the app's logo</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage oauthAppId(String oauthAppId) {
-            this.oauthAppId = Optional.ofNullable(oauthAppId);
+        @JsonSetter("img_src")
+        public NameStage imgSrc(@NotNull String imgSrc) {
+            this.imgSrc = Objects.requireNonNull(imgSrc, "imgSrc must not be null");
             return this;
         }
 
         /**
-         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Retrieve the client, including its scopes, with the Retrieve OAuth client endpoint. Returned by the List apps and Retrieve app endpoints.</p>
+         * <p>The human-readable name of the app</p>
+         * <p>The human-readable name of the app</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
-        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
-            this.oauthAppId = oauthAppId;
+        @JsonSetter("name")
+        public NameSlugStage name(@NotNull String name) {
+            this.name = Objects.requireNonNull(name, "name must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
+         * <p>The name slug of the target app (see https://pipedream.com/docs/connect/quickstart#find-your-apps-name-slug)</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("name_slug")
+        public _FinalStage nameSlug(@NotNull String nameSlug) {
+            this.nameSlug = Objects.requireNonNull(nameSlug, "nameSlug must not be null");
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scopes(List<String> scopes) {
+            this.scopes = Optional.ofNullable(scopes);
+            return this;
+        }
+
+        /**
+         * <p>The OAuth scopes requested when an account connects through this OAuth client, or, on an app, through the app's Pipedream official OAuth client and no <code>oauth_scope_profile</code>. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scopes", nulls = Nulls.SKIP)
+        public _FinalStage scopes(Optional<List<String>> scopes) {
+            this.scopes = scopes;
             return this;
         }
 
@@ -604,6 +628,86 @@ public final class OauthApp {
         }
 
         /**
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage scopeLabels(AppScopeLabels scopeLabels) {
+            this.scopeLabels = Optional.ofNullable(scopeLabels);
+            return this;
+        }
+
+        /**
+         * <p>Display names for <code>scopes</code> and <code>additional_scopes</code>; their meaning depends on the app. <code>null</code> when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "scope_labels", nulls = Nulls.SKIP)
+        public _FinalStage scopeLabels(Optional<AppScopeLabels> scopeLabels) {
+            this.scopeLabels = scopeLabels;
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage oauthAppId(String oauthAppId) {
+            this.oauthAppId = Optional.ofNullable(oauthAppId);
+            return this;
+        }
+
+        /**
+         * <p>ID of the app's Pipedream official OAuth client, or null if the app doesn't use OAuth or has no official client. Useful for retrieving the OAuth client's <code>client_id</code> and redirect URI with the Retrieve OAuth client endpoint.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "oauth_app_id", nulls = Nulls.SKIP)
+        public _FinalStage oauthAppId(Optional<String> oauthAppId) {
+            this.oauthAppId = oauthAppId;
+            return this;
+        }
+
+        /**
+         * <p>A short description of the app</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage description(String description) {
+            this.description = Optional.ofNullable(description);
+            return this;
+        }
+
+        /**
+         * <p>A short description of the app</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "description", nulls = Nulls.SKIP)
+        public _FinalStage description(Optional<String> description) {
+            this.description = description;
+            return this;
+        }
+
+        /**
+         * <p>A JSON string representing the custom fields for the app</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage customFieldsJson(String customFieldsJson) {
+            this.customFieldsJson = Optional.ofNullable(customFieldsJson);
+            return this;
+        }
+
+        /**
+         * <p>A JSON string representing the custom fields for the app</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "custom_fields_json", nulls = Nulls.SKIP)
+        public _FinalStage customFieldsJson(Optional<String> customFieldsJson) {
+            this.customFieldsJson = customFieldsJson;
+            return this;
+        }
+
+        /**
          * <p>Categories associated with the app</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -638,46 +742,6 @@ public final class OauthApp {
             return this;
         }
 
-        /**
-         * <p>A JSON string representing the custom fields for the app</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage customFieldsJson(String customFieldsJson) {
-            this.customFieldsJson = Optional.ofNullable(customFieldsJson);
-            return this;
-        }
-
-        /**
-         * <p>A JSON string representing the custom fields for the app</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "custom_fields_json", nulls = Nulls.SKIP)
-        public _FinalStage customFieldsJson(Optional<String> customFieldsJson) {
-            this.customFieldsJson = customFieldsJson;
-            return this;
-        }
-
-        /**
-         * <p>A short description of the app</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage description(String description) {
-            this.description = Optional.ofNullable(description);
-            return this;
-        }
-
-        /**
-         * <p>A short description of the app</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "description", nulls = Nulls.SKIP)
-        public _FinalStage description(Optional<String> description) {
-            this.description = description;
-            return this;
-        }
-
         @java.lang.Override
         public _FinalStage authType(AppAuthType authType) {
             this.authType = Optional.ofNullable(authType);
@@ -688,6 +752,26 @@ public final class OauthApp {
         @JsonSetter(value = "auth_type", nulls = Nulls.SKIP)
         public _FinalStage authType(Optional<AppAuthType> authType) {
             this.authType = authType;
+            return this;
+        }
+
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage additionalScopes(List<String> additionalScopes) {
+            this.additionalScopes = Optional.ofNullable(additionalScopes);
+            return this;
+        }
+
+        /**
+         * <p>A second list of scopes requested alongside <code>scopes</code>. The connection does not require the user to grant them. <code>scope_labels</code> names both lists. <code>null</code> when there are none, or when the app doesn't use OAuth or has no official client. Absent when the app is embedded in another resource, such as an account.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "additional_scopes", nulls = Nulls.SKIP)
+        public _FinalStage additionalScopes(Optional<List<String>> additionalScopes) {
+            this.additionalScopes = additionalScopes;
             return this;
         }
 
@@ -758,46 +842,6 @@ public final class OauthApp {
         }
 
         /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage additionalScopes(List<String> additionalScopes) {
-            this.additionalScopes = Optional.ofNullable(additionalScopes);
-            return this;
-        }
-
-        /**
-         * <p>Extra OAuth scopes users may grant on top of the base scopes</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "additional_scopes", nulls = Nulls.SKIP)
-        public _FinalStage additionalScopes(Optional<List<String>> additionalScopes) {
-            this.additionalScopes = additionalScopes;
-            return this;
-        }
-
-        /**
-         * <p>OAuth scopes requested when users connect through this client</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage scopes(List<String> scopes) {
-            this.scopes = Optional.ofNullable(scopes);
-            return this;
-        }
-
-        /**
-         * <p>OAuth scopes requested when users connect through this client</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "scopes", nulls = Nulls.SKIP)
-        public _FinalStage scopes(Optional<List<String>> scopes) {
-            this.scopes = scopes;
-            return this;
-        }
-
-        /**
          * <p>The OAuth client ID registered with the upstream provider. Null for a client registered before its provider issued credentials.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -842,22 +886,23 @@ public final class OauthApp {
             return new OauthApp(
                     id,
                     clientId,
-                    scopes,
-                    additionalScopes,
                     redirectUri,
                     ownerId,
                     createdAt,
                     updatedAt,
-                    nameSlug,
-                    name,
+                    additionalScopes,
                     authType,
-                    description,
-                    imgSrc,
-                    customFieldsJson,
                     categories,
+                    customFieldsJson,
+                    description,
                     featuredWeight,
-                    scopeProfiles,
+                    imgSrc,
+                    name,
+                    nameSlug,
                     oauthAppId,
+                    scopeLabels,
+                    scopeProfiles,
+                    scopes,
                     additionalProperties);
         }
 

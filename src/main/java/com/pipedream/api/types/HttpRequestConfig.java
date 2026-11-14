@@ -27,11 +27,11 @@ public final class HttpRequestConfig {
 
     private final Optional<List<HttpRequestField>> headers;
 
+    private final Optional<String> method;
+
     private final Optional<List<HttpRequestField>> params;
 
     private final Optional<String> tab;
-
-    private final Optional<String> method;
 
     private final Optional<String> url;
 
@@ -41,17 +41,17 @@ public final class HttpRequestConfig {
             Optional<HttpRequestAuth> auth,
             Optional<HttpRequestBody> body,
             Optional<List<HttpRequestField>> headers,
+            Optional<String> method,
             Optional<List<HttpRequestField>> params,
             Optional<String> tab,
-            Optional<String> method,
             Optional<String> url,
             Map<String, Object> additionalProperties) {
         this.auth = auth;
         this.body = body;
         this.headers = headers;
+        this.method = method;
         this.params = params;
         this.tab = tab;
-        this.method = method;
         this.url = url;
         this.additionalProperties = additionalProperties;
     }
@@ -71,6 +71,11 @@ public final class HttpRequestConfig {
         return headers;
     }
 
+    @JsonProperty("method")
+    public Optional<String> getMethod() {
+        return method;
+    }
+
     @JsonProperty("params")
     public Optional<List<HttpRequestField>> getParams() {
         return params;
@@ -79,11 +84,6 @@ public final class HttpRequestConfig {
     @JsonProperty("tab")
     public Optional<String> getTab() {
         return tab;
-    }
-
-    @JsonProperty("method")
-    public Optional<String> getMethod() {
-        return method;
     }
 
     @JsonProperty("url")
@@ -106,15 +106,15 @@ public final class HttpRequestConfig {
         return auth.equals(other.auth)
                 && body.equals(other.body)
                 && headers.equals(other.headers)
+                && method.equals(other.method)
                 && params.equals(other.params)
                 && tab.equals(other.tab)
-                && method.equals(other.method)
                 && url.equals(other.url);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.auth, this.body, this.headers, this.params, this.tab, this.method, this.url);
+        return Objects.hash(this.auth, this.body, this.headers, this.method, this.params, this.tab, this.url);
     }
 
     @java.lang.Override
@@ -134,11 +134,11 @@ public final class HttpRequestConfig {
 
         private Optional<List<HttpRequestField>> headers = Optional.empty();
 
+        private Optional<String> method = Optional.empty();
+
         private Optional<List<HttpRequestField>> params = Optional.empty();
 
         private Optional<String> tab = Optional.empty();
-
-        private Optional<String> method = Optional.empty();
 
         private Optional<String> url = Optional.empty();
 
@@ -151,9 +151,9 @@ public final class HttpRequestConfig {
             auth(other.getAuth());
             body(other.getBody());
             headers(other.getHeaders());
+            method(other.getMethod());
             params(other.getParams());
             tab(other.getTab());
-            method(other.getMethod());
             url(other.getUrl());
             return this;
         }
@@ -191,6 +191,17 @@ public final class HttpRequestConfig {
             return this;
         }
 
+        @JsonSetter(value = "method", nulls = Nulls.SKIP)
+        public Builder method(Optional<String> method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder method(String method) {
+            this.method = Optional.ofNullable(method);
+            return this;
+        }
+
         @JsonSetter(value = "params", nulls = Nulls.SKIP)
         public Builder params(Optional<List<HttpRequestField>> params) {
             this.params = params;
@@ -213,17 +224,6 @@ public final class HttpRequestConfig {
             return this;
         }
 
-        @JsonSetter(value = "method", nulls = Nulls.SKIP)
-        public Builder method(Optional<String> method) {
-            this.method = method;
-            return this;
-        }
-
-        public Builder method(String method) {
-            this.method = Optional.ofNullable(method);
-            return this;
-        }
-
         @JsonSetter(value = "url", nulls = Nulls.SKIP)
         public Builder url(Optional<String> url) {
             this.url = url;
@@ -236,7 +236,7 @@ public final class HttpRequestConfig {
         }
 
         public HttpRequestConfig build() {
-            return new HttpRequestConfig(auth, body, headers, params, tab, method, url, additionalProperties);
+            return new HttpRequestConfig(auth, body, headers, method, params, tab, url, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {
