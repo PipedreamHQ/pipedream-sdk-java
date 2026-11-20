@@ -34,6 +34,34 @@ public class TriggersClient {
     }
 
     /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+        return this.rawClient.reloadProps(request).body();
+    }
+
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+        return this.rawClient.reloadProps(request, requestOptions).body();
+    }
+
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
+    public Emitter deploy(DeployTriggerOpts request) {
+        return this.rawClient.deploy(request).body();
+    }
+
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
+    public Emitter deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+        return this.rawClient.deploy(request, requestOptions).body();
+    }
+
+    /**
      * Retrieve available triggers with optional search and app filtering
      */
     public SyncPagingIterable<Component> list() {
@@ -62,6 +90,20 @@ public class TriggersClient {
     }
 
     /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+        return this.rawClient.configureProp(request).body();
+    }
+
+    /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+        return this.rawClient.configureProp(request, requestOptions).body();
+    }
+
+    /**
      * Get detailed configuration for a specific trigger by its key
      */
     public Component retrieve(String componentId) {
@@ -87,47 +129,5 @@ public class TriggersClient {
      */
     public Component retrieve(String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
-        return this.rawClient.configureProp(request).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
-        return this.rawClient.configureProp(request, requestOptions).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
-        return this.rawClient.reloadProps(request).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
-        return this.rawClient.reloadProps(request, requestOptions).body();
-    }
-
-    /**
-     * Deploy a trigger to listen for and emit events
-     */
-    public Emitter deploy(DeployTriggerOpts request) {
-        return this.rawClient.deploy(request).body();
-    }
-
-    /**
-     * Deploy a trigger to listen for and emit events
-     */
-    public Emitter deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
-        return this.rawClient.deploy(request, requestOptions).body();
     }
 }

@@ -44,7 +44,7 @@ public final class TokensValidateRequest {
     }
 
     /**
-     * @return The app ID to validate against. Required unless account_id or app_override_id identifies the app.
+     * @return The app ID to validate against. One of <code>app_id</code>, <code>account_id</code> or <code>app_override_id</code> must be provided.
      */
     @JsonProperty("app_id")
     public Optional<String> getAppId() {
@@ -68,7 +68,7 @@ public final class TokensValidateRequest {
     }
 
     /**
-     * @return An app override ID. Selects the override's app, pre-defined custom fields, and OAuth client. With account_id, re-links the account to this override; it must belong to the account's app, and an override that pins a different OAuth client switches the account to that client when the reconnect flow completes. A conflicting app_id or oauth_app_id is an error. To resolve an override by name, list them with GET /v1/connect/{project_id}/app_overrides and match on name.
+     * @return An app override to connect through; resolves the app and any pinned OAuth client from the override.
      */
     @JsonProperty("app_override_id")
     public Optional<String> getAppOverrideId() {
@@ -131,7 +131,7 @@ public final class TokensValidateRequest {
         }
 
         /**
-         * <p>The app ID to validate against. Required unless account_id or app_override_id identifies the app.</p>
+         * <p>The app ID to validate against. One of <code>app_id</code>, <code>account_id</code> or <code>app_override_id</code> must be provided.</p>
          */
         @JsonSetter(value = "app_id", nulls = Nulls.SKIP)
         public Builder appId(Optional<String> appId) {
@@ -173,7 +173,7 @@ public final class TokensValidateRequest {
         }
 
         /**
-         * <p>An app override ID. Selects the override's app, pre-defined custom fields, and OAuth client. With account_id, re-links the account to this override; it must belong to the account's app, and an override that pins a different OAuth client switches the account to that client when the reconnect flow completes. A conflicting app_id or oauth_app_id is an error. To resolve an override by name, list them with GET /v1/connect/{project_id}/app_overrides and match on name.</p>
+         * <p>An app override to connect through; resolves the app and any pinned OAuth client from the override.</p>
          */
         @JsonSetter(value = "app_override_id", nulls = Nulls.SKIP)
         public Builder appOverrideId(Optional<String> appOverrideId) {

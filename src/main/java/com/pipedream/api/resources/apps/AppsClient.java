@@ -8,6 +8,7 @@ import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.resources.apps.requests.AppsListRequest;
 import com.pipedream.api.types.App;
+import com.pipedream.api.types.FacetsResponse;
 import com.pipedream.api.types.GetAppResponse;
 
 public class AppsClient {
@@ -53,6 +54,20 @@ public class AppsClient {
      */
     public SyncPagingIterable<App> list(AppsListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public FacetsResponse facets() {
+        return this.rawClient.facets().body();
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public FacetsResponse facets(RequestOptions requestOptions) {
+        return this.rawClient.facets(requestOptions).body();
     }
 
     /**

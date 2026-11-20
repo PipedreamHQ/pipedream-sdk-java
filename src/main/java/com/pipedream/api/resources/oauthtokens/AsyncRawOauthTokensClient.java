@@ -16,7 +16,6 @@ import com.pipedream.api.errors.TooManyRequestsError;
 import com.pipedream.api.errors.UnauthorizedError;
 import com.pipedream.api.resources.oauthtokens.requests.CreateOAuthTokenOpts;
 import com.pipedream.api.types.CreateOAuthTokenResponse;
-import com.pipedream.api.types.UnauthorizedErrorBody;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
@@ -96,8 +95,7 @@ public class AsyncRawOauthTokensClient {
                                 return;
                             case 401:
                                 future.completeExceptionally(new UnauthorizedError(
-                                        ObjectMappers.JSON_MAPPER.readValue(
-                                                responseBodyString, UnauthorizedErrorBody.class),
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
                                         response));
                                 return;
                             case 429:

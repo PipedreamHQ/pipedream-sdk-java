@@ -34,6 +34,20 @@ public class ActionsClient {
     }
 
     /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+        return this.rawClient.reloadProps(request).body();
+    }
+
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+        return this.rawClient.reloadProps(request, requestOptions).body();
+    }
+
+    /**
      * Retrieve available actions with optional search and app filtering
      */
     public SyncPagingIterable<Component> list() {
@@ -62,6 +76,34 @@ public class ActionsClient {
     }
 
     /**
+     * Configure a prop of an action to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+        return this.rawClient.configureProp(request).body();
+    }
+
+    /**
+     * Configure a prop of an action to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+        return this.rawClient.configureProp(request, requestOptions).body();
+    }
+
+    /**
+     * Execute an action with the provided configuration and return results
+     */
+    public RunActionResponse run(RunActionOpts request) {
+        return this.rawClient.run(request).body();
+    }
+
+    /**
+     * Execute an action with the provided configuration and return results
+     */
+    public RunActionResponse run(RunActionOpts request, RequestOptions requestOptions) {
+        return this.rawClient.run(request, requestOptions).body();
+    }
+
+    /**
      * Get detailed configuration for a specific action by its key
      */
     public Component retrieve(String componentId) {
@@ -87,47 +129,5 @@ public class ActionsClient {
      */
     public Component retrieve(String componentId, ActionsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a action
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
-        return this.rawClient.configureProp(request).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a action
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
-        return this.rawClient.configureProp(request, requestOptions).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
-        return this.rawClient.reloadProps(request).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
-        return this.rawClient.reloadProps(request, requestOptions).body();
-    }
-
-    /**
-     * Execute an action with the provided configuration and return results
-     */
-    public RunActionResponse run(RunActionOpts request) {
-        return this.rawClient.run(request).body();
-    }
-
-    /**
-     * Execute an action with the provided configuration and return results
-     */
-    public RunActionResponse run(RunActionOpts request, RequestOptions requestOptions) {
-        return this.rawClient.run(request, requestOptions).body();
     }
 }

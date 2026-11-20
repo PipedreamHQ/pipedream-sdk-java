@@ -3,6 +3,7 @@
  */
 package com.pipedream.api.resources.apps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pipedream.api.core.BaseClientApiException;
 import com.pipedream.api.core.BaseClientException;
 import com.pipedream.api.core.BaseClientHttpResponse;
@@ -11,8 +12,17 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.BadGatewayError;
+import com.pipedream.api.errors.BadRequestError;
+import com.pipedream.api.errors.InternalServerError;
+import com.pipedream.api.errors.NotFoundError;
+import com.pipedream.api.errors.NotImplementedError;
+import com.pipedream.api.errors.ServiceUnavailableError;
+import com.pipedream.api.errors.UnauthorizedError;
 import com.pipedream.api.resources.apps.requests.AppsListRequest;
 import com.pipedream.api.types.App;
+import com.pipedream.api.types.ErrorResponse;
+import com.pipedream.api.types.FacetsResponse;
 import com.pipedream.api.types.GetAppResponse;
 import com.pipedream.api.types.ListAppsResponse;
 import java.io.IOException;
@@ -96,6 +106,18 @@ public class RawAppsClient {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "has_triggers", request.getHasTriggers().get(), false);
         }
+        if (request.getPage().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page", request.getPage().get(), false);
+        }
+        if (request.getCategoryName().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "category_name", request.getCategoryName().get(), false);
+        }
+        if (request.getAuthType().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "auth_type", request.getAuthType().get(), false);
+        }
         if (request.getCategoryIds().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "category_ids", request.getCategoryIds().get(), true);
@@ -132,6 +154,92 @@ public class RawAppsClient {
                                         nextRequest, requestOptions)
                                 .body()),
                         response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 501:
+                        throw new NotImplementedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class), response);
+                    case 502:
+                        throw new BadGatewayError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new BaseClientApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new BaseClientException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public BaseClientHttpResponse<FacetsResponse> facets() {
+        return facets(null);
+    }
+
+    /**
+     * Retrieve the available filter values for apps, and how many apps carry each one
+     */
+    public BaseClientHttpResponse<FacetsResponse> facets(RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("v1/connect/apps/facets");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new BaseClientHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, FacetsResponse.class), response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 502:
+                        throw new BadGatewayError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
             }
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(
@@ -177,6 +285,27 @@ public class RawAppsClient {
             if (response.isSuccessful()) {
                 return new BaseClientHttpResponse<>(
                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, GetAppResponse.class), response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 502:
+                        throw new BadGatewayError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ErrorResponse.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
             }
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new BaseClientApiException(

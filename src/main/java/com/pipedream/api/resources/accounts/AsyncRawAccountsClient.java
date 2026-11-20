@@ -14,12 +14,16 @@ import com.pipedream.api.core.ObjectMappers;
 import com.pipedream.api.core.QueryStringMapper;
 import com.pipedream.api.core.RequestOptions;
 import com.pipedream.api.core.pagination.SyncPagingIterable;
+import com.pipedream.api.errors.ContentTooLargeError;
+import com.pipedream.api.errors.NotFoundError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnprocessableEntityError;
 import com.pipedream.api.resources.accounts.requests.AccountsListByExternalUserRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsListRequest;
 import com.pipedream.api.resources.accounts.requests.AccountsRetrieveRequest;
 import com.pipedream.api.resources.accounts.requests.CreateAccountOpts;
 import com.pipedream.api.types.Account;
+import com.pipedream.api.types.AccountLimitReached;
 import com.pipedream.api.types.ListAccountsResponse;
 import java.io.IOException;
 import java.util.List;
@@ -177,14 +181,14 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(CreateAccountOpts request) {
         return create(request, null);
     }
 
     /**
-     * Connect a new account for an external user in the project
+     * Connect a new account for an external user in the project.
      */
     public CompletableFuture<BaseClientHttpResponse<Account>> create(
             CreateAccountOpts request, RequestOptions requestOptions) {
@@ -236,10 +240,17 @@ public class AsyncRawAccountsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -492,7 +503,7 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(String externalUserId) {
         return listByExternalUser(
@@ -500,7 +511,7 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
             String externalUserId, RequestOptions requestOptions) {
@@ -509,7 +520,7 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
             String externalUserId, AccountsListByExternalUserRequest request) {
@@ -517,7 +528,7 @@ public class AsyncRawAccountsClient {
     }
 
     /**
-     * List all connected accounts for a specific external user. Equivalent to GET /accounts with external_user_id filter but uses path-based routing.
+     * List all connected accounts for a specific external user, unpaginated and newest first
      */
     public CompletableFuture<BaseClientHttpResponse<List<Account>>> listByExternalUser(
             String externalUserId, AccountsListByExternalUserRequest request, RequestOptions requestOptions) {
@@ -567,10 +578,23 @@ public class AsyncRawAccountsClient {
                         return;
                     }
                     try {
-                        if (response.code() == 429) {
-                            future.completeExceptionally(new TooManyRequestsError(
-                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response));
-                            return;
+                        switch (response.code()) {
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
+                            case 413:
+                                future.completeExceptionally(new ContentTooLargeError(
+                                        ObjectMappers.JSON_MAPPER.readValue(
+                                                responseBodyString, AccountLimitReached.class),
+                                        response));
+                                return;
+                            case 429:
+                                future.completeExceptionally(new TooManyRequestsError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class),
+                                        response));
+                                return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error

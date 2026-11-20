@@ -35,6 +35,10 @@ public final class RunActionOpts {
 
     private final Optional<RunActionOptsStashId> stashId;
 
+    private final Optional<String> platformVersion;
+
+    private final Optional<Boolean> debug;
+
     private final Map<String, Object> additionalProperties;
 
     private RunActionOpts(
@@ -44,6 +48,8 @@ public final class RunActionOpts {
             Optional<Map<String, ConfiguredPropValue>> configuredProps,
             Optional<String> dynamicPropsId,
             Optional<RunActionOptsStashId> stashId,
+            Optional<String> platformVersion,
+            Optional<Boolean> debug,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.version = version;
@@ -51,6 +57,8 @@ public final class RunActionOpts {
         this.configuredProps = configuredProps;
         this.dynamicPropsId = dynamicPropsId;
         this.stashId = stashId;
+        this.platformVersion = platformVersion;
+        this.debug = debug;
         this.additionalProperties = additionalProperties;
     }
 
@@ -96,6 +104,22 @@ public final class RunActionOpts {
         return stashId;
     }
 
+    /**
+     * @return Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.
+     */
+    @JsonProperty("platform_version")
+    public Optional<String> getPlatformVersion() {
+        return platformVersion;
+    }
+
+    /**
+     * @return Enable verbose debug logging for this execution. Defaults to false.
+     */
+    @JsonProperty("debug")
+    public Optional<Boolean> getDebug() {
+        return debug;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -113,13 +137,22 @@ public final class RunActionOpts {
                 && externalUserId.equals(other.externalUserId)
                 && configuredProps.equals(other.configuredProps)
                 && dynamicPropsId.equals(other.dynamicPropsId)
-                && stashId.equals(other.stashId);
+                && stashId.equals(other.stashId)
+                && platformVersion.equals(other.platformVersion)
+                && debug.equals(other.debug);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.id, this.version, this.externalUserId, this.configuredProps, this.dynamicPropsId, this.stashId);
+                this.id,
+                this.version,
+                this.externalUserId,
+                this.configuredProps,
+                this.dynamicPropsId,
+                this.stashId,
+                this.platformVersion,
+                this.debug);
     }
 
     @java.lang.Override
@@ -175,6 +208,20 @@ public final class RunActionOpts {
         _FinalStage stashId(Optional<RunActionOptsStashId> stashId);
 
         _FinalStage stashId(RunActionOptsStashId stashId);
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        _FinalStage platformVersion(Optional<String> platformVersion);
+
+        _FinalStage platformVersion(String platformVersion);
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         */
+        _FinalStage debug(Optional<Boolean> debug);
+
+        _FinalStage debug(Boolean debug);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -182,6 +229,10 @@ public final class RunActionOpts {
         private String id;
 
         private String externalUserId;
+
+        private Optional<Boolean> debug = Optional.empty();
+
+        private Optional<String> platformVersion = Optional.empty();
 
         private Optional<RunActionOptsStashId> stashId = Optional.empty();
 
@@ -204,6 +255,8 @@ public final class RunActionOpts {
             configuredProps(other.getConfiguredProps());
             dynamicPropsId(other.getDynamicPropsId());
             stashId(other.getStashId());
+            platformVersion(other.getPlatformVersion());
+            debug(other.getDebug());
             return this;
         }
 
@@ -228,6 +281,46 @@ public final class RunActionOpts {
         @JsonSetter("external_user_id")
         public _FinalStage externalUserId(@NotNull String externalUserId) {
             this.externalUserId = Objects.requireNonNull(externalUserId, "externalUserId must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage debug(Boolean debug) {
+            this.debug = Optional.ofNullable(debug);
+            return this;
+        }
+
+        /**
+         * <p>Enable verbose debug logging for this execution. Defaults to false.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "debug", nulls = Nulls.SKIP)
+        public _FinalStage debug(Optional<Boolean> debug) {
+            this.debug = debug;
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage platformVersion(String platformVersion) {
+            this.platformVersion = Optional.ofNullable(platformVersion);
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "platform_version", nulls = Nulls.SKIP)
+        public _FinalStage platformVersion(Optional<String> platformVersion) {
+            this.platformVersion = platformVersion;
             return this;
         }
 
@@ -300,7 +393,15 @@ public final class RunActionOpts {
         @java.lang.Override
         public RunActionOpts build() {
             return new RunActionOpts(
-                    id, version, externalUserId, configuredProps, dynamicPropsId, stashId, additionalProperties);
+                    id,
+                    version,
+                    externalUserId,
+                    configuredProps,
+                    dynamicPropsId,
+                    stashId,
+                    platformVersion,
+                    debug,
+                    additionalProperties);
         }
 
         @java.lang.Override

@@ -33,6 +33,20 @@ public class AsyncComponentsClient {
     }
 
     /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
+        return this.rawClient.reloadProps(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+        return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Retrieve available components with optional search and app filtering
      */
     public CompletableFuture<SyncPagingIterable<Component>> list() {
@@ -62,6 +76,21 @@ public class AsyncComponentsClient {
     }
 
     /**
+     * Configure a prop of a component to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
+        return this.rawClient.configureProp(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Configure a prop of a component to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<ConfigurePropResponse> configureProp(
+            ConfigurePropOpts request, RequestOptions requestOptions) {
+        return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Get detailed configuration for a specific component by its key
      */
     public CompletableFuture<Component> retrieve(String componentId) {
@@ -88,34 +117,5 @@ public class AsyncComponentsClient {
     public CompletableFuture<Component> retrieve(
             String componentId, ComponentsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a component
-     */
-    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
-        return this.rawClient.configureProp(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a component
-     */
-    public CompletableFuture<ConfigurePropResponse> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
-        return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
-        return this.rawClient.reloadProps(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
-        return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
     }
 }
