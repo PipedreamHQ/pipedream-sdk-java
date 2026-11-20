@@ -33,11 +33,17 @@ public final class AccountsListByExternalUserRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Set to <code>true</code> to include account credentials in the response (BYOA and key-based accounts only)
+     */
     @JsonProperty("include_credentials")
     public Optional<Boolean> getIncludeCredentials() {
         return includeCredentials;
     }
 
+    /**
+     * @return Only return accounts connected to this app, identified by its <code>name_slug</code>
+     */
     @JsonProperty("app")
     public Optional<String> getApp() {
         return app;
@@ -89,6 +95,9 @@ public final class AccountsListByExternalUserRequest {
             return this;
         }
 
+        /**
+         * <p>Set to <code>true</code> to include account credentials in the response (BYOA and key-based accounts only)</p>
+         */
         @JsonSetter(value = "include_credentials", nulls = Nulls.SKIP)
         public Builder includeCredentials(Optional<Boolean> includeCredentials) {
             this.includeCredentials = includeCredentials;
@@ -100,6 +109,9 @@ public final class AccountsListByExternalUserRequest {
             return this;
         }
 
+        /**
+         * <p>Only return accounts connected to this app, identified by its <code>name_slug</code></p>
+         */
         @JsonSetter(value = "app", nulls = Nulls.SKIP)
         public Builder app(Optional<String> app) {
             this.app = app;

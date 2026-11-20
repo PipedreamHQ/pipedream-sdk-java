@@ -41,6 +41,8 @@ public final class ConfigurePropOpts {
 
     private final Optional<String> query;
 
+    private final Optional<String> platformVersion;
+
     private final Map<String, Object> additionalProperties;
 
     private ConfigurePropOpts(
@@ -54,6 +56,7 @@ public final class ConfigurePropOpts {
             Optional<Double> page,
             Optional<Map<String, Object>> prevContext,
             Optional<String> query,
+            Optional<String> platformVersion,
             Map<String, Object> additionalProperties) {
         this.id = id;
         this.version = version;
@@ -65,6 +68,7 @@ public final class ConfigurePropOpts {
         this.page = page;
         this.prevContext = prevContext;
         this.query = query;
+        this.platformVersion = platformVersion;
         this.additionalProperties = additionalProperties;
     }
 
@@ -145,6 +149,14 @@ public final class ConfigurePropOpts {
         return query;
     }
 
+    /**
+     * @return Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.
+     */
+    @JsonProperty("platform_version")
+    public Optional<String> getPlatformVersion() {
+        return platformVersion;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -166,7 +178,8 @@ public final class ConfigurePropOpts {
                 && dynamicPropsId.equals(other.dynamicPropsId)
                 && page.equals(other.page)
                 && prevContext.equals(other.prevContext)
-                && query.equals(other.query);
+                && query.equals(other.query)
+                && platformVersion.equals(other.platformVersion);
     }
 
     @java.lang.Override
@@ -181,7 +194,8 @@ public final class ConfigurePropOpts {
                 this.dynamicPropsId,
                 this.page,
                 this.prevContext,
-                this.query);
+                this.query,
+                this.platformVersion);
     }
 
     @java.lang.Override
@@ -268,6 +282,13 @@ public final class ConfigurePropOpts {
         _FinalStage query(Optional<String> query);
 
         _FinalStage query(String query);
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        _FinalStage platformVersion(Optional<String> platformVersion);
+
+        _FinalStage platformVersion(String platformVersion);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -277,6 +298,8 @@ public final class ConfigurePropOpts {
         private String externalUserId;
 
         private String propName;
+
+        private Optional<String> platformVersion = Optional.empty();
 
         private Optional<String> query = Optional.empty();
 
@@ -309,6 +332,7 @@ public final class ConfigurePropOpts {
             page(other.getPage());
             prevContext(other.getPrevContext());
             query(other.getQuery());
+            platformVersion(other.getPlatformVersion());
             return this;
         }
 
@@ -345,6 +369,26 @@ public final class ConfigurePropOpts {
         @JsonSetter("prop_name")
         public _FinalStage propName(@NotNull String propName) {
             this.propName = Objects.requireNonNull(propName, "propName must not be null");
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage platformVersion(String platformVersion) {
+            this.platformVersion = Optional.ofNullable(platformVersion);
+            return this;
+        }
+
+        /**
+         * <p>Pin a later platform version for the execution runtime. Honored only when strictly later than the current default.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "platform_version", nulls = Nulls.SKIP)
+        public _FinalStage platformVersion(Optional<String> platformVersion) {
+            this.platformVersion = platformVersion;
             return this;
         }
 
@@ -494,6 +538,7 @@ public final class ConfigurePropOpts {
                     page,
                     prevContext,
                     query,
+                    platformVersion,
                     additionalProperties);
         }
 

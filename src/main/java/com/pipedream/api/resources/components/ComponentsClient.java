@@ -32,6 +32,20 @@ public class ComponentsClient {
     }
 
     /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
+        return this.rawClient.reloadProps(request).body();
+    }
+
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+        return this.rawClient.reloadProps(request, requestOptions).body();
+    }
+
+    /**
      * Retrieve available components with optional search and app filtering
      */
     public SyncPagingIterable<Component> list() {
@@ -60,6 +74,20 @@ public class ComponentsClient {
     }
 
     /**
+     * Configure a prop of a component to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
+        return this.rawClient.configureProp(request).body();
+    }
+
+    /**
+     * Configure a prop of a component to retrieve its options or validate its configuration
+     */
+    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
+        return this.rawClient.configureProp(request, requestOptions).body();
+    }
+
+    /**
      * Get detailed configuration for a specific component by its key
      */
     public Component retrieve(String componentId) {
@@ -85,33 +113,5 @@ public class ComponentsClient {
      */
     public Component retrieve(String componentId, ComponentsRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a component
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request) {
-        return this.rawClient.configureProp(request).body();
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a component
-     */
-    public ConfigurePropResponse configureProp(ConfigurePropOpts request, RequestOptions requestOptions) {
-        return this.rawClient.configureProp(request, requestOptions).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request) {
-        return this.rawClient.reloadProps(request).body();
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public ReloadPropsResponse reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
-        return this.rawClient.reloadProps(request, requestOptions).body();
     }
 }

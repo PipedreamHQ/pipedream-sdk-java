@@ -16,6 +16,7 @@ import com.pipedream.api.core.pagination.SyncPagingIterable;
 import com.pipedream.api.errors.BadRequestError;
 import com.pipedream.api.errors.NotFoundError;
 import com.pipedream.api.errors.TooManyRequestsError;
+import com.pipedream.api.errors.UnprocessableEntityError;
 import com.pipedream.api.resources.projects.requests.CreateProjectOpts;
 import com.pipedream.api.resources.projects.requests.ProjectsListRequest;
 import com.pipedream.api.resources.projects.requests.UpdateProjectLogoOpts;
@@ -364,9 +365,16 @@ public class RawProjectsClient {
                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Project.class), response);
             }
             try {
-                if (response.code() == 429) {
-                    throw new TooManyRequestsError(
-                            ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
+                    case 429:
+                        throw new TooManyRequestsError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, Object.class), response);
                 }
             } catch (JsonProcessingException ignored) {
                 // unable to map error response, throwing generic error

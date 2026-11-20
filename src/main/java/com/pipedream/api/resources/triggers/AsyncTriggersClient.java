@@ -35,6 +35,34 @@ public class AsyncTriggersClient {
     }
 
     /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
+        return this.rawClient.reloadProps(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Reload the prop definition based on the currently configured props
+     */
+    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
+        return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
+    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request) {
+        return this.rawClient.deploy(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Deploy a trigger to listen for and emit events
+     */
+    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
+        return this.rawClient.deploy(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Retrieve available triggers with optional search and app filtering
      */
     public CompletableFuture<SyncPagingIterable<Component>> list() {
@@ -64,6 +92,21 @@ public class AsyncTriggersClient {
     }
 
     /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
+        return this.rawClient.configureProp(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Configure a prop of a trigger to retrieve its options or validate its configuration
+     */
+    public CompletableFuture<ConfigurePropResponse> configureProp(
+            ConfigurePropOpts request, RequestOptions requestOptions) {
+        return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
      * Get detailed configuration for a specific trigger by its key
      */
     public CompletableFuture<Component> retrieve(String componentId) {
@@ -90,48 +133,5 @@ public class AsyncTriggersClient {
     public CompletableFuture<Component> retrieve(
             String componentId, TriggersRetrieveRequest request, RequestOptions requestOptions) {
         return this.rawClient.retrieve(componentId, request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public CompletableFuture<ConfigurePropResponse> configureProp(ConfigurePropOpts request) {
-        return this.rawClient.configureProp(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Retrieve remote options for a given prop for a trigger
-     */
-    public CompletableFuture<ConfigurePropResponse> configureProp(
-            ConfigurePropOpts request, RequestOptions requestOptions) {
-        return this.rawClient.configureProp(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request) {
-        return this.rawClient.reloadProps(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Reload the prop definition based on the currently configured props
-     */
-    public CompletableFuture<ReloadPropsResponse> reloadProps(ReloadPropsOpts request, RequestOptions requestOptions) {
-        return this.rawClient.reloadProps(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
-     * Deploy a trigger to listen for and emit events
-     */
-    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request) {
-        return this.rawClient.deploy(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Deploy a trigger to listen for and emit events
-     */
-    public CompletableFuture<Emitter> deploy(DeployTriggerOpts request, RequestOptions requestOptions) {
-        return this.rawClient.deploy(request, requestOptions).thenApply(response -> response.body());
     }
 }

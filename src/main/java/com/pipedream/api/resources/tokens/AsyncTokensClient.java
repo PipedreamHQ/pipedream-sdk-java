@@ -29,20 +29,6 @@ public class AsyncTokensClient {
     }
 
     /**
-     * Generate a Connect token to use for client-side authentication
-     */
-    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
-    }
-
-    /**
-     * Generate a Connect token to use for client-side authentication
-     */
-    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request, RequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
-    }
-
-    /**
      * Confirm the validity of a Connect token
      */
     public CompletableFuture<ValidateTokenResponse> validate(String ctok) {
@@ -69,5 +55,19 @@ public class AsyncTokensClient {
     public CompletableFuture<ValidateTokenResponse> validate(
             String ctok, TokensValidateRequest request, RequestOptions requestOptions) {
         return this.rawClient.validate(ctok, request, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
+    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request) {
+        return this.rawClient.create(request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Generate a Connect token to use for client-side authentication
+     */
+    public CompletableFuture<CreateTokenResponse> create(CreateTokenOpts request, RequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 }
